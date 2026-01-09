@@ -15,10 +15,11 @@ import {
 export default async function AnalyticsEventsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string | string[] }>;
 }) {
   const { q } = await searchParams;
-  const query = (q ?? "").trim();
+  const queryParam = Array.isArray(q) ? q[0] : q;
+  const query = (queryParam ?? "").trim();
   const snapshot = await getAnalyticsSnapshot();
   const hits = query.length > 0 ? searchAnalyticsOccurrences(snapshot, query).slice(0, 200) : [];
 
