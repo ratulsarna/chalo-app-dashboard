@@ -20,6 +20,7 @@ Primary proof it works:
 - [x] (2026-01-09) Bootstrapped Next.js + shadcn/ui + Convex skeleton (`src/app`, `src/components/ui`, `convex/`).
 - [x] (2026-01-09) Imported analytics snapshot into `content/analytics/` (all flows).
 - [x] (2026-01-09) Added filesystem analytics adapter + flows/events pages (merged in PR #1).
+- [x] (2026-01-09) Resolved ExecPlan open questions (`defaults`).
 - [ ] Add canonical event pages and link integration.
 - [ ] Render Mermaid diagrams inline on flow detail page.
 - [ ] Show event details (description, properties used) on flow detail page.
@@ -43,6 +44,22 @@ Primary proof it works:
 
 - Decision: Store per-flow occurrences as the primary display unit; provide a canonical event page that aggregates occurrences.
   Rationale: Events repeat across flows (not a 1:1 parent-child relationship).
+  Date/Author: 2026-01-09 / ratul + agent
+
+- Decision: Render full `flow-diagrams.md` markdown, with Mermaid code blocks rendered inline.
+  Rationale: Keeps the existing docs readable (headings/notes/guides) while making diagrams interactive.
+  Date/Author: 2026-01-09 / ratul
+
+- Decision: Canonical event URL is `/analytics/events/[eventName]` where `[eventName]` is `encodeURIComponent(eventName)`.
+  Rationale: Simple, debuggable, and preserves the exact event string in the URL.
+  Date/Author: 2026-01-09 / ratul
+
+- Decision: Flow detail event table includes `description` + “properties used” (in addition to name/stage/component).
+  Rationale: Matches MVP needs for PM/engineer exploration without requiring secondary drawers/modals.
+  Date/Author: 2026-01-09 / ratul
+
+- Decision: Do not add a new unit test runner for MVP; rely on `pnpm lint`, `pnpm build`, and manual verification of routes.
+  Rationale: Repo currently has no test harness; MVP is UI-heavy and can be validated via deterministic pages and builds.
   Date/Author: 2026-01-09 / ratul + agent
 
 ## Outcomes & Retrospective
@@ -124,26 +141,16 @@ Before implementing Mermaid rendering, confirm:
 
 ## Open Questions (User Clarification)
 
-Reply format: `1a 2a 3b` (or `defaults`).
-
-1) Inline diagrams: how should the flow diagram section render?
-   a) Render the full `flow-diagrams.md` as markdown, with Mermaid blocks rendered inline (Recommended).
-   b) Render only Mermaid diagrams (ignore explanatory text/headings).
-   c) Keep a “Show source” toggle only (no rendered diagrams) for MVP.
-
-2) Canonical event page URL shape:
-   a) `/analytics/events/[eventName]` where `[eventName]` is `encodeURIComponent(eventName)` (Recommended).
-   b) Use a stable hash ID (e.g., `/analytics/events/id/<sha1>`) and show the original string on the page.
-
-3) Flow detail event table content:
-   a) Add `description` + properties used columns (Recommended).
-   b) Keep table minimal; show details only in a “row expand”/drawer.
+Resolved (defaults accepted).
 
 ## Test Specification
 
 ### Unit tests (write first)
 
-If adding a unit test runner is acceptable for this repo (recommended), add `vitest` and implement:
+This repo currently has no automated test runner. For MVP, do not add one.
+
+Instead, treat the items below as *specification targets* and validate via manual steps + `pnpm lint` + `pnpm build`.
+If a test runner is added later (Phase 2), implement these as unit tests.
 
 1) `extractMermaidBlocks(markdown: string): string[]`
    - Returns all fenced code blocks labeled `mermaid` (in order).
@@ -158,8 +165,6 @@ If adding a unit test runner is acceptable for this repo (recommended), add `vit
 3) `getAnalyticsSnapshot()` invariants (pure-level assertions by factoring logic)
    - Occurrence IDs are unique within a snapshot (especially for repeated events).
    - Path traversal attempts are rejected by `readAnalyticsFlow()` (e.g., `../..`).
-
-If the team prefers not to add test infra in MVP, document manual verification steps for (1) and (3) and ensure `pnpm lint` and `pnpm build` pass.
 
 ## Plan of Work
 
@@ -181,7 +186,7 @@ If the team prefers not to add test infra in MVP, document manual verification s
 
 1) Add markdown rendering component(s):
    - Add a client component under `src/components/analytics/FlowDiagram.tsx` (new directory).
-   - Render markdown text with `react-markdown` (or an equivalent) and a custom renderer for code blocks:
+   - Render the full markdown from `flow-diagrams.md` using `react-markdown` and a custom renderer for code blocks:
      - For `language === "mermaid"`, render using a `MermaidBlock` client component.
 
 2) Add Mermaid renderer:
@@ -303,4 +308,4 @@ gh pr create --base main --head feat/analytics-mvp
 ## Plan Revision Notes
 
 - (2026-01-09) Initial ExecPlan created to cover remaining MVP work after PR #1 merged.
-
+- (2026-01-09) Open questions resolved via `defaults` (inline full markdown + Mermaid, canonical event URL shape, richer flow event table, no new test runner for MVP).
