@@ -40,11 +40,14 @@ function assertNonEmptyString(value: unknown, label: string): asserts value is s
 function toOccurrenceId(
   flowSlug: AnalyticsFlowSlug,
   eventName: string,
+  eventIndex: number,
   stage?: string,
   component?: string,
 ) {
   // Encode segments to avoid collisions if values contain the separator.
-  return [flowSlug, eventName, stage ?? "", component ?? ""]
+  // Include eventIndex to ensure uniqueness when the same event appears multiple times
+  // within the same flow with identical stage/component metadata.
+  return [flowSlug, String(eventIndex), eventName, stage ?? "", component ?? ""]
     .map((value) => encodeURIComponent(value))
     .join("::");
 }
@@ -130,7 +133,7 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
       }
 
       const occurrence: AnalyticsEventOccurrence = {
-        id: toOccurrenceId(flow.slug, event.name, event.stage, event.component),
+        id: toOccurrenceId(flow.slug, event.name, index, event.stage, event.component),
         flowSlug: flow.slug,
         flowId: flow.flowId,
         flowName: flow.flowName,
