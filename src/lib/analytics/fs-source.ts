@@ -43,7 +43,10 @@ function toOccurrenceId(
   stage?: string,
   component?: string,
 ) {
-  return [flowSlug, eventName, stage ?? "", component ?? ""].join("::");
+  // Encode segments to avoid collisions if values contain the separator.
+  return [flowSlug, eventName, stage ?? "", component ?? ""]
+    .map((value) => encodeURIComponent(value))
+    .join("::");
 }
 
 /**
@@ -141,7 +144,10 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
       };
 
       occurrences.push(occurrence);
-      (occurrencesByEventName[event.name] ??= []).push(occurrence);
+      if (!occurrencesByEventName[event.name]) {
+        occurrencesByEventName[event.name] = [];
+      }
+      occurrencesByEventName[event.name].push(occurrence);
     }
   }
 

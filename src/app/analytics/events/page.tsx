@@ -21,7 +21,9 @@ export default async function AnalyticsEventsPage({
   const queryParam = Array.isArray(q) ? q[0] : q;
   const query = (queryParam ?? "").trim();
   const snapshot = await getAnalyticsSnapshot();
-  const hits = query.length > 0 ? searchAnalyticsOccurrences(snapshot, query).slice(0, 200) : [];
+  const allHits = query.length > 0 ? searchAnalyticsOccurrences(snapshot, query) : [];
+  const hits = allHits.slice(0, 200);
+  const truncated = allHits.length > 200;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
@@ -42,40 +44,46 @@ export default async function AnalyticsEventsPage({
           Enter a query to search across all flows.
         </p>
       ) : (
-        <div className="mt-6 rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Event</TableHead>
-                <TableHead className="w-[200px]">Stage</TableHead>
-                <TableHead className="w-[260px]">Component</TableHead>
-                <TableHead className="w-[220px]">Flow</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {hits.map(({ occurrence }) => (
-                <TableRow key={occurrence.id}>
-                  <TableCell className="font-medium">{occurrence.eventName}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {occurrence.stage ?? ""}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {occurrence.component ?? ""}
-                  </TableCell>
-                  <TableCell>
-                    <Link
-                      className="underline underline-offset-4 hover:text-primary"
-                      href={`/analytics/flows/${encodeURIComponent(
-                        occurrence.flowSlug,
-                      )}#${occurrenceAnchorId(occurrence)}`}
-                    >
-                      {occurrence.flowName}
-                    </Link>
-                  </TableCell>
+        <div className="mt-6 space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Showing {hits.length} result{hits.length === 1 ? "" : "s"}
+            {truncated ? " (first 200; refine your query to narrow results)." : "."}
+          </p>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Event</TableHead>
+                  <TableHead className="w-[200px]">Stage</TableHead>
+                  <TableHead className="w-[260px]">Component</TableHead>
+                  <TableHead className="w-[220px]">Flow</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {hits.map(({ occurrence }) => (
+                  <TableRow key={occurrence.id}>
+                    <TableCell className="font-medium">{occurrence.eventName}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {occurrence.stage ?? ""}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {occurrence.component ?? ""}
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        className="underline underline-offset-4 hover:text-primary"
+                        href={`/analytics/flows/${encodeURIComponent(
+                          occurrence.flowSlug,
+                        )}#${occurrenceAnchorId(occurrence)}`}
+                      >
+                        {occurrence.flowName}
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       )}
     </main>

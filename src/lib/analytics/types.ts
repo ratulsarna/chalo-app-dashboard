@@ -30,6 +30,7 @@ export type AnalyticsDiagramFlowchartStep = {
 export type AnalyticsDiagram =
   | { type: "sequence"; steps: AnalyticsDiagramSequenceStep[]; notes?: string }
   | { type: "flowchart"; steps: AnalyticsDiagramFlowchartStep[]; notes?: string }
+  // Forward compatibility for future diagram types not yet modeled here.
   | Record<string, unknown>;
 
 export type AnalyticsPropertyDefinition = {
