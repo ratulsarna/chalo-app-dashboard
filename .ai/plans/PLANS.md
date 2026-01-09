@@ -1,0 +1,1 @@
+/home/ratul/Developer/ClaudeSetup/.ai/plans/PLANS.md
