@@ -12,6 +12,8 @@ import type {
 } from "@/lib/analytics/types";
 
 const ANALYTICS_ROOT = path.join(process.cwd(), "content", "analytics");
+const ANALYTICS_ROOT_RESOLVED = path.resolve(ANALYTICS_ROOT);
+const FLOW_SLUG_PATTERN = /^[a-z0-9][a-z0-9_-]*$/i;
 
 async function pathExists(filePath: string): Promise<boolean> {
   try {
@@ -35,6 +37,25 @@ function assertNonEmptyString(value: unknown, label: string): asserts value is s
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`Invalid ${label}: expected non-empty string`);
   }
+}
+
+function assertSafeFlowSlug(flowSlug: string): void {
+  // `flowSlug` may come from user-controlled input in future usages.
+  // Enforce a conservative character set and block path traversal.
+  if (!FLOW_SLUG_PATTERN.test(flowSlug)) {
+    throw new Error(`Invalid flowSlug: ${flowSlug}`);
+  }
+}
+
+function resolveUnderAnalyticsRoot(...segments: string[]) {
+  const resolved = path.resolve(ANALYTICS_ROOT, ...segments);
+  if (resolved === ANALYTICS_ROOT_RESOLVED) {
+    throw new Error("Invalid analytics path resolution");
+  }
+  if (!resolved.startsWith(`${ANALYTICS_ROOT_RESOLVED}${path.sep}`)) {
+    throw new Error("Resolved path escapes analytics root");
+  }
+  return resolved;
 }
 
 function toOccurrenceId(
@@ -74,8 +95,13 @@ export const listAnalyticsFlowSlugs = cache(async (): Promise<AnalyticsFlowSlug[
  * Reads a flow from disk (events + optional diagram markdown).
  */
 export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Promise<AnalyticsFlow> => {
+  assertSafeFlowSlug(flowSlug);
+
   const eventsPath = path.join(ANALYTICS_ROOT, flowSlug, "events.json");
   const diagramsPath = path.join(ANALYTICS_ROOT, flowSlug, "flow-diagrams.md");
+  // Secondary safety: ensure the resulting paths stay under `content/analytics`.
+  resolveUnderAnalyticsRoot(flowSlug, "events.json");
+  resolveUnderAnalyticsRoot(flowSlug, "flow-diagrams.md");
 
   const file = await readJsonFile<AnalyticsFlowEventsFile>(eventsPath);
   if (!isRecord(file)) throw new Error(`Invalid events.json for flow ${flowSlug}`);
