@@ -21,10 +21,10 @@ Primary proof it works:
 - [x] (2026-01-09) Imported analytics snapshot into `content/analytics/` (all flows).
 - [x] (2026-01-09) Added filesystem analytics adapter + flows/events pages (merged in PR #1).
 - [x] (2026-01-09) Resolved ExecPlan open questions (`defaults`).
-- [ ] Add canonical event pages and link integration.
-- [ ] Render Mermaid diagrams inline on flow detail page.
-- [ ] Show event details (description, properties used) on flow detail page.
-- [ ] Add unit tests for adapter utilities and markdown parsing (or document manual verification if test infra is deferred).
+- [x] (2026-01-09) Add canonical event pages and link integration.
+- [x] (2026-01-09) Render Mermaid diagrams inline on flow detail page.
+- [x] (2026-01-09) Show event details (description, properties used) on flow detail page.
+- [ ] MVP QA pass + screenshots for PR.
 
 ## Surprises & Discoveries
 
@@ -309,3 +309,4 @@ gh pr create --base main --head feat/analytics-mvp
 
 - (2026-01-09) Initial ExecPlan created to cover remaining MVP work after PR #1 merged.
 - (2026-01-09) Open questions resolved via `defaults` (inline full markdown + Mermaid, canonical event URL shape, richer flow event table, no new test runner for MVP).
+- (2026-01-09) Implemented Milestones 1–3 on `feat/analytics-mvp` (canonical event page, inline Mermaid, richer flow event table); remaining is QA/screenshot pass.
