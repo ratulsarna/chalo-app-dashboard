@@ -1,6 +1,11 @@
 import Link from "next/link";
 import Form from "next/form";
-import { getAnalyticsSnapshot, searchAnalyticsOccurrences, occurrenceAnchorId } from "@/lib/analytics";
+import {
+  encodeEventNameForPath,
+  getAnalyticsSnapshot,
+  occurrenceAnchorId,
+  searchAnalyticsOccurrences,
+} from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,6 +62,7 @@ export default async function AnalyticsEventsPage({
                   <TableHead className="w-[200px]">Stage</TableHead>
                   <TableHead className="w-[260px]">Component</TableHead>
                   <TableHead className="w-[220px]">Flow</TableHead>
+                  <TableHead className="w-[120px]">Event Page</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -77,6 +83,14 @@ export default async function AnalyticsEventsPage({
                         )}#${occurrenceAnchorId(occurrence)}`}
                       >
                         {occurrence.flowName}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        className="underline underline-offset-4 hover:text-primary"
+                        href={`/analytics/events/${encodeEventNameForPath(occurrence.eventName)}`}
+                      >
+                        View
                       </Link>
                     </TableCell>
                   </TableRow>

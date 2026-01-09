@@ -14,9 +14,20 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FlowDiagramMarkdown } from "@/components/analytics/flow-diagram-markdown";
 
 function byFlowSlug(snapshotFlows: AnalyticsFlow[], flowSlug: string) {
   return snapshotFlows.find((flow) => flow.slug === flowSlug);
+}
+
+function propertyAnchorId(propertyKey: string) {
+  return `prop-${encodeURIComponent(propertyKey)}`;
+}
+
+function formatPropertiesUsed(properties: { property: string; context?: string }[]) {
+  const keys = properties.map((p) => p.property);
+  if (keys.length <= 4) return keys.join(", ");
+  return `${keys.slice(0, 4).join(", ")} +${keys.length - 4} more`;
 }
 
 export default async function AnalyticsFlowDetailPage({
@@ -68,7 +79,7 @@ export default async function AnalyticsFlowDetailPage({
                   </TableHeader>
                   <TableBody>
                     {propertyRows.map(([key, def]) => (
-                      <TableRow key={key}>
+                      <TableRow key={key} id={propertyAnchorId(key)}>
                         <TableCell className="font-medium">{key}</TableCell>
                         <TableCell className="text-muted-foreground">{def.type}</TableCell>
                         <TableCell className="text-muted-foreground">
@@ -95,6 +106,8 @@ export default async function AnalyticsFlowDetailPage({
                     <TableHead>Event</TableHead>
                     <TableHead className="w-[200px]">Stage</TableHead>
                     <TableHead className="w-[260px]">Component</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="w-[260px]">Properties Used</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -107,6 +120,30 @@ export default async function AnalyticsFlowDetailPage({
                       <TableCell className="text-muted-foreground">
                         {occurrence.component ?? ""}
                       </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {occurrence.description ?? ""}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {occurrence.propertiesUsed && occurrence.propertiesUsed.length > 0 ? (
+                          <div className="space-y-1">
+                            <p>{formatPropertiesUsed(occurrence.propertiesUsed)}</p>
+                            <div className="flex flex-wrap gap-2 text-xs">
+                              {occurrence.propertiesUsed.slice(0, 6).map((prop) => (
+                                <a
+                                  key={`${occurrence.id}::${prop.property}`}
+                                  className="underline underline-offset-4 hover:text-primary"
+                                  href={`#${propertyAnchorId(prop.property)}`}
+                                  title={prop.context ?? prop.property}
+                                >
+                                  {prop.property}
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -117,18 +154,11 @@ export default async function AnalyticsFlowDetailPage({
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Flow Diagram (source)</CardTitle>
+            <CardTitle className="text-base">Flow Diagram</CardTitle>
           </CardHeader>
           <CardContent>
             {flow.diagramMarkdown ? (
-              <details>
-                <summary className="cursor-pointer text-sm text-muted-foreground">
-                  Show <code>flow-diagrams.md</code>
-                </summary>
-                <pre className="mt-4 max-h-[520px] overflow-auto rounded-md bg-muted p-4 text-xs leading-5">
-                  {flow.diagramMarkdown}
-                </pre>
-              </details>
+              <FlowDiagramMarkdown markdown={flow.diagramMarkdown} />
             ) : (
               <p className="text-sm text-muted-foreground">No diagram file found.</p>
             )}
