@@ -24,6 +24,10 @@ export function MermaidBlock({ code }: { code: string }) {
   const [svg, setSvg] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const renderId = React.useId();
+  const safeRenderId = React.useMemo(
+    () => renderId.replace(/[^a-zA-Z0-9_-]/g, "_"),
+    [renderId],
+  );
 
   React.useEffect(() => {
     let cancelled = false;
@@ -36,7 +40,7 @@ export function MermaidBlock({ code }: { code: string }) {
         await ensureMermaidInitialized();
         const mermaid = (await import("mermaid")).default;
 
-        const result = await mermaid.render(`mmd-${renderId}`, code);
+        const result = await mermaid.render(`mmd-${safeRenderId}`, code);
         if (!cancelled) setSvg(result.svg);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Failed to render Mermaid diagram.";
@@ -49,7 +53,7 @@ export function MermaidBlock({ code }: { code: string }) {
     return () => {
       cancelled = true;
     };
-  }, [code, renderId]);
+  }, [code, safeRenderId]);
 
   if (error) {
     return (
@@ -78,4 +82,3 @@ export function MermaidBlock({ code }: { code: string }) {
     />
   );
 }
-
