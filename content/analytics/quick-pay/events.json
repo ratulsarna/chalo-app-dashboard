@@ -1,0 +1,1280 @@
+{
+  "flowId": "quick_pay",
+  "flowName": "Quick Pay (Chalo Pay) purchase & validation",
+  "description": "Complete analytics map for the Quick Pay (Chalo Pay) flow - wallet-based fare payment on bus with amount entry, wallet validation, order creation, and on-bus validation.",
+  "propertyDefinitions": {
+    "isQuickPay": {
+      "type": "boolean",
+      "description": "Hard-coded `true` (via ATTRIBUTE_IS_QUICK_PAY_ORDER) for Quick Pay events to filter Quick Pay event family."
+    },
+    "isChaloPay": {
+      "type": "boolean",
+      "description": "Alias for isQuickPay used in some events (ATTRIBUTE_IS_QUICK_PAY_ORDER)."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Product type; these events always log `quickpay` (QUICK_PAY_PRODUCT_TYPE constant)."
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type; always `quickpay` (QUICK_PAY_PRODUCT_SUB_TYPE constant)."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Unique order ID created from walletId + expiryTime (via createOrderIdFromWalletIdAndExpiryTime). Used to track Quick Pay order lifecycle."
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "Server transaction ID returned after successful validation/punch."
+    },
+    "chalo pay trip amount": {
+      "type": "string",
+      "description": "Trip amount entered by user in the amount entry screen (serialized to string)."
+    },
+    "chalo pay trip amount failure message": {
+      "type": "string",
+      "description": "Error message when amount validation or order creation fails."
+    },
+    "chalo pay bottom sheet amount": {
+      "type": "string",
+      "description": "Amount displayed in the confirmation bottom sheet."
+    },
+    "chalo pay bottom sheet wallet balance left": {
+      "type": "number",
+      "description": "Wallet balance remaining after deduction (in subcurrency/paisa)."
+    },
+    "activationTimeStamp": {
+      "type": "number",
+      "description": "Epoch timestamp when Quick Pay order was activated/created."
+    },
+    "expiryTime": {
+      "type": "number",
+      "description": "Epoch timestamp when Quick Pay ticket expires (activation + activation duration, default 15 mins)."
+    },
+    "activationDuration": {
+      "type": "number",
+      "description": "Duration in milliseconds from activation to expiry (default 900000ms / 15 mins from config)."
+    },
+    "punchTime": {
+      "type": "number",
+      "description": "Epoch timestamp when ticket was validated/punched by conductor."
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Bus vehicle number from receipt after validation."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Bus route name from receipt after validation."
+    },
+    "startStop": {
+      "type": "string",
+      "description": "Starting stop name from receipt."
+    },
+    "endStop": {
+      "type": "string",
+      "description": "Ending stop name from receipt after validation."
+    },
+    "endStopId": {
+      "type": "string",
+      "description": "Ending stop ID from receipt."
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Conductor ID who validated the ticket."
+    },
+    "fullName": {
+      "type": "string",
+      "description": "User's full name from wallet KYC details."
+    },
+    "time": {
+      "type": "string",
+      "description": "Formatted time string for validation events."
+    },
+    "date": {
+      "type": "string",
+      "description": "Formatted date string for validation events."
+    },
+    "source": {
+      "type": "string",
+      "description": "Navigation source indicating where user came from (Source enum values)."
+    },
+    "isSuccessful": {
+      "type": "boolean",
+      "description": "Indicates if receipt fetch/display was successful."
+    },
+    "isBlePermissionGranted": {
+      "type": "boolean",
+      "description": "BLE permission status for validation screen."
+    },
+    "validationFlowType": {
+      "type": "string",
+      "description": "Type of validation flow (e.g., conductor, TITO)."
+    },
+    "wasTitoValidation": {
+      "type": "boolean",
+      "description": "True if validation was done via TITO (Tap In Tap Out) instead of conductor."
+    },
+    "notificationDeliveryMedium": {
+      "type": "string",
+      "description": "How validation acknowledgment was delivered (e.g., internet, BLE)."
+    },
+    "validationAckDataType": {
+      "type": "string",
+      "description": "Type of validation acknowledgment data received."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Failure reason for invalid validation data or sync failures."
+    },
+    "rawData": {
+      "type": "string",
+      "description": "Raw validation data received for debugging invalid data scenarios."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "General failure reason for syncing or validation operations."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Full receipt payload for debugging (QUICKPAY_RECEIPT_PAYLOAD event)."
+    },
+    "quick pay booking count": {
+      "type": "number",
+      "description": "Total Quick Pay bookings count for the user."
+    },
+    "active quick pay count": {
+      "type": "number",
+      "description": "Count of currently active Quick Pay tickets."
+    },
+    "expired quick pay count": {
+      "type": "number",
+      "description": "Count of expired Quick Pay tickets."
+    },
+    "is quick pay bought once": {
+      "type": "boolean",
+      "description": "Flag indicating if user has purchased Quick Pay at least once."
+    },
+    "chaloPayWalletState": {
+      "type": "string",
+      "description": "Wallet state for Chalo Pay checkout integration (ACTIVE, KYC_INITIATED, etc.)."
+    },
+    "chaloPayWalletBalance": {
+      "type": "number",
+      "description": "Wallet balance displayed in Chalo Pay checkout payment method."
+    },
+    "bottomsheetCTA": {
+      "type": "string",
+      "description": "CTA action taken from Chalo Pay checkout bottom sheet."
+    },
+    "tripAmountInPaisa": {
+      "type": "string",
+      "description": "Pre-filled trip amount when navigating from checkout (in paisa)."
+    },
+    "isFromCheckout": {
+      "type": "boolean",
+      "description": "Flag indicating navigation origin was from checkout flow."
+    }
+  },
+  "stages": [
+    {
+      "name": "Entry",
+      "description": "User enters Quick Pay flow from various sources (home, wallet, checkout, pay-for-ticket selection).",
+      "events": [
+        "pay for ticket screen opened",
+        "chalo pay card clicked"
+      ]
+    },
+    {
+      "name": "Amount entry",
+      "description": "User enters trip amount, app validates prerequisites (KYC, wallet activation, balance), and displays amount validation errors.",
+      "events": [
+        "chalo pay trip amount fragment opened",
+        "chalo pay trip amount fragment next button clicked",
+        "chalo pay trip amount fragment next button clicked failure",
+        "chalo pay prerequisites failed",
+        "chalo pay trip amount fragment chalo pay history clicked"
+      ]
+    },
+    {
+      "name": "Confirmation",
+      "description": "Bottom sheet displays amount confirmation, balance check, and allows user to proceed or recharge wallet.",
+      "events": [
+        "chalo pay bottom sheet fragment opened",
+        "chalo pay bottom sheet fragment next button clicked",
+        "chalo pay bottom sheet recharge button clicked"
+      ]
+    },
+    {
+      "name": "Order creation",
+      "description": "App creates Quick Pay order, deducts balance, and generates validation credentials (QR code + sound tone).",
+      "events": [
+        "chalo pay order created",
+        "chalo pay summary screen opened"
+      ]
+    },
+    {
+      "name": "Validation screen",
+      "description": "Validation screen with QR code and BLE validation, permission checks, and validation mode switching.",
+      "events": [
+        "qr screen open",
+        "ble screen open",
+        "ble permission check on initialization",
+        "ble permission granted",
+        "ble permission denied",
+        "ble permissions rationale screen opened",
+        "ble permission rationale accepted",
+        "ble permissions settings opened",
+        "ble denial qr option shown",
+        "ble denial use qr clicked",
+        "ble switch to qr got it clicked",
+        "ble open qr btn clicked",
+        "simple qr validation zoom clicked",
+        "ble validation help btn clicked",
+        "ble bottom sheet clicked",
+        "confirmation on back press shown",
+        "confirmation on back press yes clicked",
+        "confirmation on back press no clicked",
+        "chalo pay ticket clicked"
+      ]
+    },
+    {
+      "name": "Validation acknowledgment",
+      "description": "Conductor scans ticket, app receives punch notification via BLE or polling, validates receipt data.",
+      "events": [
+        "chalo pay ticket punched",
+        "chalo pay punch received",
+        "quickpay receipt payload",
+        "tito tap in notification received on conductor validation",
+        "tito tap in polling stopped due to notification received",
+        "valid tito tap in data received in polling",
+        "invalid tito tap in data received in polling",
+        "invalid ble validation ack data received",
+        "ble validation ack data consumed",
+        "syncing post ble validation failed"
+      ]
+    },
+    {
+      "name": "Post validation",
+      "description": "User views receipt, exit validation screen, or navigates to detailed receipt.",
+      "events": [
+        "post validation screen opened",
+        "view receipt post validation clicked",
+        "exit post validation clicked",
+        "chalo pay view receipt clicked",
+        "chalo pay receipt shown",
+        "chalo pay receipt opened",
+        "view trip receipt from menu clicked"
+      ]
+    },
+    {
+      "name": "Chalo Pay (Checkout integration)",
+      "description": "Chalo Pay as payment method in checkout flow for other products (mTicket, metro, premium bus, etc.).",
+      "events": [
+        "chaloPayItemRendered",
+        "chaloPayItemClicked",
+        "chaloPayBottomsheetOpened",
+        "chaloPayBottomsheetTncClicked",
+        "chaloPayBottomsheetConfirmPaymentClicked",
+        "chaloPayBottomsheetRechargeClicked",
+        "chaloPayOrderCreationSuccess",
+        "chaloPayOrderCreationFailed",
+        "chaloPayPaymentSuccess",
+        "chaloPayPaymentFailed"
+      ]
+    },
+    {
+      "name": "Global",
+      "description": "Events that can fire from multiple screens.",
+      "events": [
+        "report problem clicked v2",
+        "quickpay fetched"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "pay for ticket screen opened",
+      "component": "PayForTicketComponent",
+      "stage": "Entry",
+      "source": "Source.PAY_FOR_TICKET_SCREEN",
+      "description": "Entry screen with Chalo Pay and Find Fare cards. User selects payment method. If only one option enabled, navigates automatically.",
+      "properties": [],
+      "notes": "sendToPlotline is true. Shows Quick Pay card if enableQuickPay && enableWallet. Shows Find Fare if enableNonChaloPayTicketing (default true)."
+    },
+    {
+      "name": "chalo pay card clicked",
+      "component": "PayForTicketComponent",
+      "stage": "Entry",
+      "source": "Source.PAY_FOR_TICKET_SCREEN",
+      "description": "User taps the Chalo Pay card to enter Quick Pay flow.",
+      "properties": [],
+      "notes": "sendToPlotline is false."
+    },
+    {
+      "name": "chalo pay trip amount fragment opened",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Amount entry",
+      "source": "args.source?.sourceName or empty string",
+      "description": "Amount entry screen opens where user enters trip amount. Shows wallet balance and max amount from config.",
+      "properties": [],
+      "notes": "Raised in ViewCreatedIntent handler."
+    },
+    {
+      "name": "chalo pay trip amount fragment next button clicked",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Amount entry",
+      "source": "Source.CHALO_PAY_PAGE",
+      "description": "User taps Next button after entering amount. App validates amount format and prerequisites.",
+      "properties": [
+        {
+          "property": "chalo pay trip amount",
+          "context": "Amount entered by user (string)"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay trip amount fragment next button clicked failure",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Amount entry",
+      "source": "Source.CHALO_PAY_PAGE",
+      "description": "Next button clicked but validation failed (invalid amount, format error, prerequisites not met).",
+      "properties": [
+        {
+          "property": "chalo pay trip amount fragment next button clicked failure message",
+          "context": "Error message describing failure"
+        },
+        {
+          "property": "chalo pay trip amount",
+          "context": "Amount that failed validation"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay prerequisites failed",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Amount entry",
+      "source": "Source.CHALO_PAY_PAGE",
+      "description": "Prerequisites check failed (KYC not done, wallet not activated, wallet blocked, etc.).",
+      "properties": []
+    },
+    {
+      "name": "chalo pay trip amount fragment chalo pay history clicked",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Amount entry",
+      "source": "Source.CHALO_PAY_PAGE",
+      "description": "User taps history icon to view all Quick Pay transactions.",
+      "properties": [],
+      "notes": "Navigates to WalletAllTransactionsArgs with onlyShowQuickPayTransactions=true."
+    },
+    {
+      "name": "chalo pay bottom sheet fragment opened",
+      "component": "QuickPayBottomSheetHelper",
+      "stage": "Confirmation",
+      "source": "Source.QUICK_PAY_TRIP_AMOUNT_SCREEN",
+      "description": "Confirmation bottom sheet opens showing amount, balance check in progress.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay bottom sheet fragment next button clicked",
+      "component": "QuickPayBottomSheetHelper",
+      "stage": "Confirmation",
+      "source": "Source.QUICK_PAY_BOTTOM_SHEET",
+      "description": "User confirms payment in bottom sheet. App validates balance and creates order.",
+      "properties": [
+        {
+          "property": "chalo pay bottom sheet amount",
+          "context": "Amount to be paid"
+        },
+        {
+          "property": "chalo pay bottom sheet wallet balance left",
+          "context": "Remaining balance after deduction"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay bottom sheet recharge button clicked",
+      "component": "QuickPayBottomSheetHelper",
+      "stage": "Confirmation",
+      "source": "Source.QUICK_PAY_BOTTOM_SHEET",
+      "description": "Insufficient balance detected, user taps recharge button to load money.",
+      "properties": [
+        {
+          "property": "chalo pay bottom sheet amount",
+          "context": "Amount user wanted to pay"
+        },
+        {
+          "property": "chalo pay bottom sheet wallet balance left",
+          "context": "Current insufficient balance (if available)"
+        }
+      ],
+      "notes": "Navigates to WalletLoadMoneyArgs with pre-filled amount."
+    },
+    {
+      "name": "chalo pay order created",
+      "component": "CreateQuickPayOrderUsecase",
+      "stage": "Order creation",
+      "source": "CreateQuickPayOrderUsecase class name",
+      "description": "Quick Pay order successfully created, balance deducted, transaction recorded, QR code and sound tone generated.",
+      "properties": [
+        {
+          "property": "orderId",
+          "context": "Unique order ID (walletId + expiryTime)"
+        },
+        {
+          "property": "isQuickPay",
+          "context": "Always true"
+        },
+        {
+          "property": "productType",
+          "context": "Always 'quickpay'"
+        },
+        {
+          "property": "productSubType",
+          "context": "Always 'quickpay'"
+        },
+        {
+          "property": "chalo pay trip amount",
+          "context": "Trip amount in paisa"
+        },
+        {
+          "property": "activationTimeStamp",
+          "context": "Order creation timestamp"
+        },
+        {
+          "property": "expiryTime",
+          "context": "Calculated expiry (activation + duration)"
+        }
+      ],
+      "notes": "Order status is PENDING. Navigates to ProductActivationArgs with QUICK_PAY_PRODUCT_TYPE."
+    },
+    {
+      "name": "chalo pay summary screen opened",
+      "component": "ProductActivationArgs navigation",
+      "stage": "Order creation",
+      "source": "Various",
+      "description": "User navigates to Quick Pay validation screen (summary of order with QR/BLE validation).",
+      "properties": []
+    },
+    {
+      "name": "qr screen open",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "QR validation screen opens showing QR code for conductor scanning.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble screen open",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "BLE validation screen opens for automatic validation via Bluetooth.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": [
+        {
+          "property": "validationFlowType",
+          "context": "Type of validation flow (conductor, TITO, etc.)"
+        }
+      ]
+    },
+    {
+      "name": "ble permission check on initialization",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "BLE permission status checked when validation screen initializes.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "isBlePermissionGranted",
+          "context": "Permission status"
+        }
+      ]
+    },
+    {
+      "name": "ble permission granted",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User grants BLE permission.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble permission denied",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User denies BLE permission.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble permissions rationale screen opened",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "Permission rationale explanation screen shown to user.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble permission rationale accepted",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User accepts rationale and proceeds to grant permission.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble permissions settings opened",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User navigates to system settings to grant BLE permission.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble denial qr option shown",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "QR fallback option shown after BLE permission denied.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble denial use qr clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User chooses to use QR validation after denying BLE permission.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble switch to qr got it clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User acknowledges switch from BLE to QR mode.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble open qr btn clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User manually opens QR code from BLE screen.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "simple qr validation zoom clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User zooms QR code for better scanning.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble validation help btn clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User taps help button on validation screen.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "ble bottom sheet clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User interacts with BLE validation bottom sheet.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "confirmation on back press shown",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "Confirmation dialog shown when user presses back on validation screen.",
+      "properties": []
+    },
+    {
+      "name": "confirmation on back press yes clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User confirms exit from validation screen.",
+      "properties": []
+    },
+    {
+      "name": "confirmation on back press no clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation screen",
+      "source": "Various validation sources",
+      "description": "User cancels exit and stays on validation screen.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay ticket clicked",
+      "component": "Validation list/My Tickets",
+      "stage": "Validation screen",
+      "source": "Various",
+      "description": "User taps Quick Pay ticket in My Tickets list to open validation screen.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay ticket punched",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "Conductor successfully validated/punched the Quick Pay ticket. Receipt data received and validated.",
+      "properties": [
+        {
+          "property": "isQuickPay",
+          "context": "Always true"
+        },
+        {
+          "property": "orderId",
+          "context": "Quick Pay order ID"
+        },
+        {
+          "property": "punchTime",
+          "context": "Validation timestamp"
+        },
+        {
+          "property": "chalo pay trip amount",
+          "context": "Trip amount"
+        },
+        {
+          "property": "vehicleNo",
+          "context": "Bus vehicle number"
+        },
+        {
+          "property": "routeName",
+          "context": "Route name"
+        },
+        {
+          "property": "startStop",
+          "context": "Start stop name"
+        },
+        {
+          "property": "endStop",
+          "context": "End stop name"
+        },
+        {
+          "property": "endStopId",
+          "context": "End stop ID"
+        },
+        {
+          "property": "conductorId",
+          "context": "Conductor ID"
+        }
+      ],
+      "notes": "Order status changes to SUCCESS. Receipt is stored locally."
+    },
+    {
+      "name": "chalo pay punch received",
+      "component": "Legacy validation",
+      "stage": "Validation acknowledgment",
+      "source": "Various",
+      "description": "Legacy event for punch acknowledgment (may be deprecated in favor of 'chalo pay ticket punched').",
+      "properties": []
+    },
+    {
+      "name": "quickpay receipt payload",
+      "component": "QuickPayTicketProductValidationConfig",
+      "stage": "Validation acknowledgment",
+      "source": "QuickPayTicketProductValidationConfig",
+      "description": "Raw receipt payload logged for debugging when punch notification received.",
+      "properties": [
+        {
+          "property": "payload",
+          "context": "Full QuickPayReceiptInfo JSON string"
+        }
+      ],
+      "notes": "Includes expiryTime, transactionId, amount, toStopId, endStop, via, routeNamingScheme."
+    },
+    {
+      "name": "tito tap in notification received on conductor validation",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "TITO (Tap In Tap Out) tap-in notification received during conductor validation flow.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "notificationDeliveryMedium",
+          "context": "How notification was delivered (internet, BLE, etc.)"
+        }
+      ],
+      "notes": "TITO events also include tap-in specific properties from TITOTapInNotificationEvent."
+    },
+    {
+      "name": "tito tap in polling stopped due to notification received",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "TITO polling stopped because tap-in notification was received.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "notificationDeliveryMedium"
+        }
+      ]
+    },
+    {
+      "name": "valid tito tap in data received in polling",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "Valid TITO tap-in data received while polling.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": []
+    },
+    {
+      "name": "invalid tito tap in data received in polling",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "Invalid TITO tap-in data received while polling.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Why data was invalid"
+        }
+      ]
+    },
+    {
+      "name": "invalid ble validation ack data received",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "Invalid BLE validation acknowledgment data received.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Error message"
+        },
+        {
+          "property": "rawData",
+          "context": "Raw data received for debugging"
+        },
+        {
+          "property": "notificationDeliveryMedium"
+        }
+      ]
+    },
+    {
+      "name": "ble validation ack data consumed",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "BLE validation acknowledgment data successfully consumed/processed.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "notificationDeliveryMedium"
+        },
+        {
+          "property": "validationAckDataType",
+          "context": "Type of ack data (ConductorValidation, TITOTapIn, etc.)"
+        }
+      ]
+    },
+    {
+      "name": "syncing post ble validation failed",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Validation acknowledgment",
+      "source": "Various validation sources",
+      "description": "Syncing receipt data with backend failed after BLE validation.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "failureReason"
+        }
+      ]
+    },
+    {
+      "name": "post validation screen opened",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Post validation",
+      "source": "Various validation sources",
+      "description": "Post-validation success screen opens showing validation confirmation.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Post validation",
+      "source": "Various validation sources",
+      "description": "User taps 'View Receipt' on post-validation screen.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "wasTitoValidation"
+        }
+      ]
+    },
+    {
+      "name": "exit post validation clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Post validation",
+      "source": "Various validation sources",
+      "description": "User exits post-validation screen.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "wasTitoValidation"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay view receipt clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Post validation",
+      "source": "Various",
+      "description": "User taps to view detailed receipt from My Tickets or validation screen.",
+      "properties": [
+        {
+          "property": "isQuickPay",
+          "context": "Always true"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "punchTime"
+        },
+        {
+          "property": "chalo pay trip amount"
+        },
+        {
+          "property": "vehicleNo"
+        },
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "startStop"
+        },
+        {
+          "property": "endStop"
+        },
+        {
+          "property": "endStopId"
+        },
+        {
+          "property": "conductorId"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay receipt shown",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Post validation",
+      "source": "Various",
+      "description": "Receipt screen successfully displayed to user.",
+      "autoProperties": [
+        "orderId",
+        "productType",
+        "productSubType"
+      ],
+      "properties": [
+        {
+          "property": "isSuccessful",
+          "context": "Whether receipt fetch was successful"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay receipt opened",
+      "component": "Receipt screen",
+      "stage": "Post validation",
+      "source": "Various",
+      "description": "Detailed receipt screen opened (may be from history or validation).",
+      "properties": []
+    },
+    {
+      "name": "view trip receipt from menu clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Post validation",
+      "source": "ATTRIBUTE_SOURCE_VALIDATION_SCREEN",
+      "description": "User taps 'View Trip Receipt' from validation screen menu.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": []
+    },
+    {
+      "name": "chaloPayItemRendered",
+      "component": "Checkout UI",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout/Payment method list",
+      "description": "Chalo Pay payment method rendered in checkout payment method list for products like mTicket, metro, premium bus.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet status (ACTIVE, KYC_INITIATED, etc.)"
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Current wallet balance"
+        }
+      ],
+      "notes": "Part of checkout flow when Chalo Pay is available as payment method."
+    },
+    {
+      "name": "chaloPayItemClicked",
+      "component": "Checkout UI",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout/Payment method list",
+      "description": "User selects Chalo Pay as payment method in checkout.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState"
+        },
+        {
+          "property": "chaloPayWalletBalance"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetOpened",
+      "component": "Checkout UI",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "Chalo Pay confirmation bottom sheet opened in checkout flow.",
+      "properties": [
+        {
+          "property": "chaloPayWalletBalance"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetTncClicked",
+      "component": "Checkout UI",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "User taps Terms & Conditions link in Chalo Pay bottom sheet.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayBottomsheetConfirmPaymentClicked",
+      "component": "Checkout UI",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "User confirms payment via Chalo Pay in checkout bottom sheet.",
+      "properties": [
+        {
+          "property": "bottomsheetCTA",
+          "context": "CTA action taken"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetRechargeClicked",
+      "component": "Checkout UI",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "Insufficient balance in checkout, user taps recharge from bottom sheet.",
+      "properties": [
+        {
+          "property": "bottomsheetCTA"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayOrderCreationSuccess",
+      "component": "Checkout flow",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "Order for other product (mTicket, metro, etc.) created successfully using Chalo Pay.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayOrderCreationFailed",
+      "component": "Checkout flow",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "Order creation failed when using Chalo Pay as payment method.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayPaymentSuccess",
+      "component": "Checkout flow",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "Payment via Chalo Pay succeeded for other product purchase.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayPaymentFailed",
+      "component": "Checkout flow",
+      "stage": "Chalo Pay (Checkout integration)",
+      "source": "Checkout",
+      "description": "Payment via Chalo Pay failed for other product purchase.",
+      "properties": []
+    },
+    {
+      "name": "report problem clicked v2",
+      "component": "Various Quick Pay screens",
+      "stage": "Global",
+      "source": "ReportProblemFeatureConstants.SRC_VALIDATION_SCREEN or others",
+      "description": "User taps report problem/help icon from validation or other Quick Pay screens.",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": [
+        {
+          "property": "type",
+          "context": "PROBLEM_TYPE_ACTIVATION_SCREEN_TICKETING_PROBLEMS"
+        },
+        {
+          "property": "problemSource",
+          "context": "SRC_VALIDATION_SCREEN or other source"
+        }
+      ]
+    },
+    {
+      "name": "quickpay fetched",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Global",
+      "source": "Various",
+      "description": "Quick Pay data fetched/loaded (e.g., when opening validation screen or My Tickets).",
+      "autoProperties": [
+        "isQuickPay",
+        "orderId",
+        "activationTimeStamp",
+        "fullName",
+        "time",
+        "date"
+      ],
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Entry",
+        "events": [
+          "pay for ticket screen opened",
+          "chalo pay card clicked"
+        ],
+        "next": "Amount entry"
+      },
+      {
+        "label": "Amount entry",
+        "events": [
+          "chalo pay trip amount fragment opened",
+          "chalo pay trip amount fragment next button clicked",
+          "chalo pay trip amount fragment next button clicked failure"
+        ],
+        "next": "Confirmation"
+      },
+      {
+        "label": "Confirmation",
+        "events": [
+          "chalo pay bottom sheet fragment opened",
+          "chalo pay bottom sheet fragment next button clicked"
+        ],
+        "next": "Order creation"
+      },
+      {
+        "label": "Order creation",
+        "events": [
+          "chalo pay order created",
+          "chalo pay summary screen opened"
+        ],
+        "next": "Validation"
+      },
+      {
+        "label": "Validation",
+        "events": [
+          "ble screen open",
+          "qr screen open",
+          "chalo pay ticket punched"
+        ],
+        "next": "Post validation"
+      },
+      {
+        "label": "Post validation",
+        "events": [
+          "post validation screen opened",
+          "chalo pay view receipt clicked",
+          "chalo pay receipt shown"
+        ]
+      }
+    ],
+    "notes": "Recharge flow (chalo pay bottom sheet recharge button clicked) branches to wallet load money. History access (chalo pay trip amount fragment chalo pay history clicked) branches to transaction list. Chalo Pay checkout events (chaloPayItem*, chaloPayBottomsheet*, chaloPayOrderCreation*, chaloPayPayment*) represent using Quick Pay wallet for other product purchases."
+  }
+}

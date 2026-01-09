@@ -1,0 +1,505 @@
+{
+  "flowId": "ads",
+  "flowName": "In-app Advertising",
+  "description": "Complete analytics map for in-app ads including native inline ads (route details, checkout payment methods) and banner ads (home screen, regular bus screen).",
+  "propertyDefinitions": {
+    "adUnitId": {
+      "type": "string",
+      "description": "Google Ad Manager ad unit ID for the ad placement."
+    },
+    "placement": {
+      "type": "string",
+      "description": "Ad placement identifier; always `default` for all ads in this flow.",
+      "values": [
+        "default"
+      ]
+    },
+    "screen": {
+      "type": "string",
+      "description": "Screen name where the ad is displayed.",
+      "values": [
+        "route details",
+        "checkout payment methods",
+        "home screen",
+        "regular bus screen"
+      ]
+    },
+    "nativeAdLoadTime": {
+      "type": "number",
+      "description": "Time taken to load the native inline ad in milliseconds."
+    },
+    "nativeAdAspectRatio": {
+      "type": "string",
+      "description": "Media aspect ratio category for native ads.",
+      "values": [
+        "landscape",
+        "square",
+        "portrait",
+        "unknown"
+      ]
+    },
+    "nativeAdLoadSource": {
+      "type": "string",
+      "description": "Source of the native ad load - either directly loaded or from prefetch cache.",
+      "values": [
+        "direct",
+        "prefetch"
+      ]
+    },
+    "nativeAdAdditionalData": {
+      "type": "string",
+      "description": "Additional ad metadata in JSON format (optional, added by component layer)."
+    },
+    "hasVideo": {
+      "type": "boolean",
+      "description": "True if the native ad contains video content."
+    },
+    "adLoadTime": {
+      "type": "number",
+      "description": "Time taken to load the banner ad in milliseconds."
+    },
+    "valueMicros": {
+      "type": "number",
+      "description": "Ad revenue value in micros (1/1,000,000 of the currency unit) from Google Ad Manager."
+    },
+    "currencyCode": {
+      "type": "string",
+      "description": "Currency code for the ad revenue (e.g., USD, INR)."
+    },
+    "precision": {
+      "type": "number",
+      "description": "Precision type for the ad revenue value from Google Ad Manager."
+    },
+    "responseId": {
+      "type": "string",
+      "description": "Google Ad Manager response ID for the ad request."
+    }
+  },
+  "stages": [
+    {
+      "name": "Native Inline Ad Lifecycle",
+      "description": "Native ads shown inline within route details and checkout payment methods screens.",
+      "events": [
+        "native inline ad requested",
+        "native inline ad loaded",
+        "native inline ad rendered",
+        "native inline ad impression",
+        "native inline ad clicked",
+        "native inline ad paid impression"
+      ]
+    },
+    {
+      "name": "Banner Ad Lifecycle",
+      "description": "Banner ads shown inline within home screen and regular bus screen.",
+      "events": [
+        "banner ad requested",
+        "banner ad loaded",
+        "banner ad impression",
+        "banner ad clicked",
+        "banner ad paid impression"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "Adjust Attribution Received",
+        "Adjust Label Info Received"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Adjust Attribution Received",
+      "component": "AdjustManagerImpl",
+      "stage": "Misc",
+      "source": "Source.ADJUST.sourceName",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/features/adjust/AdjustManagerImpl.kt:66",
+      "properties": []
+    },
+    {
+      "name": "Adjust Label Info Received",
+      "component": "AdjustManagerImpl",
+      "stage": "Misc",
+      "source": "Source.ADJUST.sourceName",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/features/adjust/AdjustManagerImpl.kt:133",
+      "properties": []
+    },
+    {
+      "name": "banner ad clicked",
+      "component": "InlineAdaptiveBannerAd (BannerAdAnalyticsHelper)",
+      "stage": "Banner Ad Lifecycle",
+      "source": "homeScreenTab (HOME_SCREEN_TAB) or regularBusScreenTab (REGULAR_BUS_SCREEN_TAB)",
+      "description": "Fired when the user clicks on a banner ad.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "banner ad impression",
+      "component": "InlineAdaptiveBannerAd (BannerAdAnalyticsHelper)",
+      "stage": "Banner Ad Lifecycle",
+      "source": "homeScreenTab (HOME_SCREEN_TAB) or regularBusScreenTab (REGULAR_BUS_SCREEN_TAB)",
+      "description": "Fired when a banner ad impression is recorded by Google SDK.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "banner ad loaded",
+      "component": "InlineAdaptiveBannerAd (BannerAdAnalyticsHelper)",
+      "stage": "Banner Ad Lifecycle",
+      "source": "homeScreenTab (HOME_SCREEN_TAB) or regularBusScreenTab (REGULAR_BUS_SCREEN_TAB)",
+      "description": "Fired when a banner ad successfully loads.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        },
+        {
+          "property": "adLoadTime",
+          "context": "Load time in milliseconds."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "banner ad paid impression",
+      "component": "InlineAdaptiveBannerAd (BannerAdAnalyticsHelper)",
+      "stage": "Banner Ad Lifecycle",
+      "source": "homeScreenTab (HOME_SCREEN_TAB) or regularBusScreenTab (REGULAR_BUS_SCREEN_TAB)",
+      "description": "Fired when a paid impression event is received from Google Ad SDK with revenue information.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        },
+        {
+          "property": "valueMicros",
+          "context": "Ad revenue value in micros."
+        },
+        {
+          "property": "currencyCode",
+          "context": "Currency code for revenue."
+        },
+        {
+          "property": "precision",
+          "context": "Precision type from Google Ad Manager."
+        },
+        {
+          "property": "responseId",
+          "context": "Google Ad Manager response ID."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "banner ad requested",
+      "component": "InlineAdaptiveBannerAd (BannerAdAnalyticsHelper)",
+      "stage": "Banner Ad Lifecycle",
+      "source": "homeScreenTab (HOME_SCREEN_TAB) or regularBusScreenTab (REGULAR_BUS_SCREEN_TAB)",
+      "description": "Fired when a banner ad request is initiated on home screen or regular bus screen.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID for this placement."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "screen",
+          "context": "`home screen` or `regular bus screen`."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "native inline ad clicked",
+      "component": "NativeInlineAd (NativeInlineAdAnalyticsHelper)",
+      "stage": "Native Inline Ad Lifecycle",
+      "source": "route details (ROUTE_DETAILS) or checkoutPaymentActivity (CHECKOUT_PAYMENT_ACTIVITY)",
+      "description": "Fired when the user clicks on the native inline ad.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "hasVideo",
+          "context": "True if ad contains video."
+        },
+        {
+          "property": "nativeAdLoadSource",
+          "context": "`direct` or `prefetch`."
+        },
+        {
+          "property": "nativeAdAspectRatio",
+          "context": "Media aspect ratio."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "native inline ad impression",
+      "component": "NativeInlineAd (NativeInlineAdAnalyticsHelper)",
+      "stage": "Native Inline Ad Lifecycle",
+      "source": "route details (ROUTE_DETAILS) or checkoutPaymentActivity (CHECKOUT_PAYMENT_ACTIVITY)",
+      "description": "Fired when the native inline ad impression is recorded (via Google SDK callback or paid event).",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "hasVideo",
+          "context": "True if ad contains video."
+        },
+        {
+          "property": "nativeAdLoadSource",
+          "context": "`direct` or `prefetch`."
+        },
+        {
+          "property": "nativeAdAspectRatio",
+          "context": "Media aspect ratio."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "native inline ad loaded",
+      "component": "NativeInlineAd (raiseNativeInlineAdLoaded from component layer)",
+      "stage": "Native Inline Ad Lifecycle",
+      "source": "route details (ROUTE_DETAILS) or checkoutPaymentActivity (CHECKOUT_PAYMENT_ACTIVITY)",
+      "description": "Fired when a native inline ad successfully loads and binds to the view. Called from component layer with additional metadata.",
+      "properties": [
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        },
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "nativeAdLoadTime",
+          "context": "Load time in milliseconds."
+        },
+        {
+          "property": "nativeAdAspectRatio",
+          "context": "Media aspect ratio (landscape/square/portrait/unknown), optional."
+        },
+        {
+          "property": "nativeAdLoadSource",
+          "context": "`direct` or `prefetch`, added by component layer."
+        },
+        {
+          "property": "nativeAdAdditionalData",
+          "context": "Additional ad metadata JSON, optional, added by component layer."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "native inline ad paid impression",
+      "component": "NativeInlineAd (NativeInlineAdAnalyticsHelper)",
+      "stage": "Native Inline Ad Lifecycle",
+      "source": "route details (ROUTE_DETAILS) or checkoutPaymentActivity (CHECKOUT_PAYMENT_ACTIVITY)",
+      "description": "Fired when a paid impression event is received from Google Ad SDK with revenue information.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "hasVideo",
+          "context": "True if ad contains video."
+        },
+        {
+          "property": "nativeAdLoadSource",
+          "context": "`direct` or `prefetch`."
+        },
+        {
+          "property": "nativeAdAspectRatio",
+          "context": "Media aspect ratio."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        },
+        {
+          "property": "valueMicros",
+          "context": "Ad revenue value in micros."
+        },
+        {
+          "property": "currencyCode",
+          "context": "Currency code for revenue."
+        },
+        {
+          "property": "precision",
+          "context": "Precision type from Google Ad Manager."
+        },
+        {
+          "property": "responseId",
+          "context": "Google Ad Manager response ID."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "native inline ad rendered",
+      "component": "NativeInlineAd (NativeInlineAdAnalyticsHelper)",
+      "stage": "Native Inline Ad Lifecycle",
+      "source": "route details (ROUTE_DETAILS) or checkoutPaymentActivity (CHECKOUT_PAYMENT_ACTIVITY)",
+      "description": "Fired when the native inline ad is actually rendered in the UI for the first time.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "hasVideo",
+          "context": "True if ad contains video."
+        },
+        {
+          "property": "nativeAdLoadSource",
+          "context": "`direct` or `prefetch`."
+        },
+        {
+          "property": "nativeAdAspectRatio",
+          "context": "Media aspect ratio."
+        },
+        {
+          "property": "screen",
+          "context": "Screen name where ad is displayed."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    },
+    {
+      "name": "native inline ad requested",
+      "component": "NativeInlineAd (NativeInlineAdAnalyticsHelper)",
+      "stage": "Native Inline Ad Lifecycle",
+      "source": "route details (ROUTE_DETAILS) or checkoutPaymentActivity (CHECKOUT_PAYMENT_ACTIVITY)",
+      "description": "Fired when a native inline ad request is initiated on route details or checkout payment methods screen.",
+      "properties": [
+        {
+          "property": "adUnitId",
+          "context": "The ad unit ID for this placement."
+        },
+        {
+          "property": "placement",
+          "context": "Always `default`."
+        },
+        {
+          "property": "screen",
+          "context": "`route details` or `checkout payment methods`."
+        }
+      ],
+      "notes": "sendToPlotline is false; frequency is Always."
+    }
+  ],
+  "diagram": {
+    "type": "parallel",
+    "steps": [
+      {
+        "label": "Native Inline Ad Flow",
+        "events": [
+          "native inline ad requested",
+          "native inline ad loaded",
+          "native inline ad rendered",
+          "native inline ad impression",
+          "native inline ad clicked (optional)",
+          "native inline ad paid impression"
+        ]
+      },
+      {
+        "label": "Banner Ad Flow",
+        "events": [
+          "banner ad requested",
+          "banner ad loaded",
+          "banner ad impression",
+          "banner ad clicked (optional)",
+          "banner ad paid impression"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "Adjust Attribution Received",
+          "Adjust Label Info Received"
+        ]
+      }
+    ],
+    "notes": "Both ad types follow similar lifecycles: request → load → impression/render → click (optional) → paid impression. Native ads have an additional 'rendered' event. Paid impressions include revenue data. All events use screen property to segment by placement."
+  }
+}

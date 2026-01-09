@@ -1,0 +1,1885 @@
+{
+  "flowId": "payment",
+  "flowName": "Payment & Checkout",
+  "description": "Complete analytics map for payment processing across all products - checkout screens, payment methods, UPI, cards, net banking, wallet, Razorpay, Juspay, Inai, payment status, success/failure handling.",
+  "propertyDefinitions": {
+    "source": {
+      "type": "string",
+      "description": "Screen/component where the event was fired (mainPaymentScreen, upiScreen, walletScreen, netbankingScreen, cardDetailsScreen, checkoutScreen, postPaymentScreen, checkoutActivity).",
+      "values": [
+        "mainPaymentScreen",
+        "upiScreen",
+        "walletScreen",
+        "netbankingScreen",
+        "cardDetailsScreen",
+        "checkoutScreen",
+        "postPaymentScreen",
+        "checkoutActivity"
+      ]
+    },
+    "preferred mode": {
+      "type": "boolean",
+      "description": "True if this is user's preferred payment mode."
+    },
+    "popular mode": {
+      "type": "number",
+      "description": "Count of popular payment modes shown on main payment screen."
+    },
+    "installedUpiAppFlow": {
+      "type": "string",
+      "description": "Whether native UPI app flow is available (\"true\" or \"false\")."
+    },
+    "installedUpiAppsCount": {
+      "type": "string",
+      "description": "Number of installed UPI apps detected on device."
+    },
+    "installedUpiApps": {
+      "type": "string",
+      "description": "Comma-separated list of installed UPI app names."
+    },
+    "mode": {
+      "type": "string",
+      "description": "Payment method code identifier (e.g., \"upi\", \"card\", \"netbanking\", \"wallet\")."
+    },
+    "payment app name": {
+      "type": "string",
+      "description": "Human-readable display name of the payment app/method."
+    },
+    "top mode": {
+      "type": "boolean",
+      "description": "True if this is a top/featured payment mode."
+    },
+    "checkoutFlowType": {
+      "type": "string",
+      "description": "Type of checkout flow (\"razorpay\" or \"lazypay\").",
+      "values": [
+        "razorpay",
+        "lazypay"
+      ]
+    },
+    "isAccountIdAvailable": {
+      "type": "boolean",
+      "description": "Whether Razorpay account ID is available."
+    },
+    "paymentProvider": {
+      "type": "string",
+      "description": "Payment gateway provider name (Razorpay, Inai, Juspay, etc.)."
+    },
+    "paymentId": {
+      "type": "string",
+      "description": "Payment transaction ID from payment gateway."
+    },
+    "hourOfEvent": {
+      "type": "string",
+      "description": "Hour of day when event occurred (0-23)."
+    },
+    "agency": {
+      "type": "string",
+      "description": "Transit agency name for product-specific payments."
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "Booking/transaction ID."
+    },
+    "passengerTypes": {
+      "type": "array",
+      "description": "JSON array of passenger types (e.g., [\"ADULT\", \"CHILD\"])."
+    },
+    "fare": {
+      "type": "string",
+      "description": "Ticket/product fare amount."
+    },
+    "startDate": {
+      "type": "string",
+      "description": "Product start date."
+    },
+    "expiryDate": {
+      "type": "string",
+      "description": "Product expiry date."
+    },
+    "city": {
+      "type": "string",
+      "description": "City name for the transaction."
+    },
+    "upTripRouteId": {
+      "type": "string",
+      "description": "Route ID for upward trip."
+    },
+    "upTripStartStopId": {
+      "type": "string",
+      "description": "Start stop ID for upward trip."
+    },
+    "upTripEndStopId": {
+      "type": "string",
+      "description": "End stop ID for upward trip."
+    },
+    "isFreeRide": {
+      "type": "string",
+      "description": "Whether this is a free ride (\"true\" or \"false\")."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Type of product being purchased."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Product configuration ID."
+    },
+    "durationName": {
+      "type": "string",
+      "description": "Duration name for time-based products."
+    },
+    "error": {
+      "type": "string",
+      "description": "Error code from payment gateway (Razorpay/Inai)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Error description from Razorpay."
+    },
+    "step": {
+      "type": "string",
+      "description": "Step where error occurred in Razorpay flow."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for payment failure or status."
+    },
+    "code": {
+      "type": "string",
+      "description": "Error code from Inai payment gateway."
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "Transaction ID from Inai."
+    },
+    "message": {
+      "type": "string",
+      "description": "Error message from Inai."
+    },
+    "response": {
+      "type": "string",
+      "description": "Response status or data (e.g., \"SUCCESS\", \"FAILURE\")."
+    },
+    "isSuccess": {
+      "type": "boolean",
+      "description": "Whether the underlying operation succeeded (debug diagnostics)."
+    },
+    "providerId": {
+      "type": "string",
+      "description": "Payment provider identifier (e.g., Razorpay/Inai provider id)."
+    },
+    "appModel": {
+      "type": "string",
+      "description": "Debug: app model serialized via toString()."
+    },
+    "apps": {
+      "type": "string",
+      "description": "Debug: supported apps list serialized via toString()."
+    },
+    "validPaymentMethodsCount": {
+      "type": "number",
+      "description": "Debug: count of valid payment methods after filtering."
+    },
+    "preferredModeCount": {
+      "type": "number",
+      "description": "Debug: count of preferred modes computed for the user."
+    },
+    "vendor_response": {
+      "type": "string",
+      "description": "Vendor-specific response from Inai."
+    },
+    "type": {
+      "type": "string",
+      "description": "Error type from Inai."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Order ID from payment provider."
+    },
+    "chaloOrderId": {
+      "type": "string",
+      "description": "Internal Chalo order ID."
+    },
+    "resultStatus": {
+      "type": "string",
+      "description": "Result status from native UPI app."
+    },
+    "transaction id": {
+      "type": "string",
+      "description": "Transaction ID from native UPI app result."
+    },
+    "transactionReference": {
+      "type": "string",
+      "description": "Transaction reference from native UPI app."
+    },
+    "resultCode": {
+      "type": "string",
+      "description": "Result code from native UPI app."
+    },
+    "isOperationCancelled": {
+      "type": "string",
+      "description": "Whether UPI operation was cancelled (\"true\" or \"false\")."
+    },
+    "historyCallRetryCount": {
+      "type": "number",
+      "description": "Number of retries for fetching booking history after payment."
+    },
+    "transactionAmount": {
+      "type": "number",
+      "description": "Transaction amount in subcurrency units (paise)."
+    },
+    "chaloPayWalletState": {
+      "type": "string",
+      "description": "State of Chalo Pay wallet (\"active\", \"blocked\", \"inactive\").",
+      "values": [
+        "active",
+        "blocked",
+        "inactive"
+      ]
+    },
+    "chaloPayWalletBalance": {
+      "type": "string",
+      "description": "Current balance in Chalo Pay wallet."
+    },
+    "bottomsheetCTA": {
+      "type": "string",
+      "description": "Text of CTA shown in Chalo Pay bottomsheet."
+    },
+    "juspayNoOfAccountsLinked": {
+      "type": "number",
+      "description": "Number of UPI accounts linked via Juspay SDK."
+    },
+    "juspayLinkedAccountNames": {
+      "type": "string",
+      "description": "Comma-separated list of linked UPI account names in Juspay."
+    },
+    "paymentMethod": {
+      "type": "string",
+      "description": "Selected payment method identifier."
+    },
+    "lpEligibilityValue": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Payment Method Selection",
+      "description": "User selects payment method from main payment screen including UPI apps, cards, wallets, net banking.",
+      "events": [
+        "Payment Modes Screen opened",
+        "Payment mode selected",
+        "checkout upi list screen opened",
+        "add upi id selected",
+        "upi id entered successfully",
+        "upi id entered failure",
+        "checkout wallet list screen opened",
+        "Banking Screen Opened",
+        "card screen opened",
+        "card details submitted",
+        "save card details"
+      ]
+    },
+    {
+      "name": "Chalo Pay Wallet",
+      "description": "Chalo Pay wallet selection and payment flow.",
+      "events": [
+        "chaloPayItemRendered",
+        "chaloPayItemClicked",
+        "chaloPayBottomsheetOpened",
+        "chaloPayBottomsheetTncClicked",
+        "chaloPayBottomsheetConfirmPaymentClicked",
+        "chaloPayBottomsheetRechargeClicked",
+        "chaloPayOrderCreationSuccess",
+        "chaloPayOrderCreationFailed",
+        "chaloPayPaymentSuccess",
+        "chaloPayPaymentFailed"
+      ]
+    },
+    {
+      "name": "Checkout Processing",
+      "description": "Payment gateway checkout screens (Razorpay, Inai, custom URL, Juspay SDK).",
+      "events": [
+        "checkout screen opened",
+        "Razorpay webview loaded",
+        "Lazypay url fetch error",
+        "custom checkout url override",
+        "custom checkout url on upi uri received",
+        "custom checkout url back pressed",
+        "payment cancel dialog shown",
+        "payment cancel dialog yes clicked",
+        "payment cancel dialog no clicked",
+        "custom checkout url page loaded",
+        "installed upi app result",
+        "custom checkout url upi app result",
+        "installed upi app check failed"
+      ]
+    },
+    {
+      "name": "Juspay SDK",
+      "description": "Juspay SDK integration for UPI autopay and mandate management.",
+      "events": [
+        "juspay sdk initiate request",
+        "juspay sdk flow applicable",
+        "juspay action initiated",
+        "juspay request creation failed",
+        "juspay sdk result error",
+        "juspay sdk session expired",
+        "juspay sdk result not available",
+        "juspay sdk operation error",
+        "juspay sdk initiate failed",
+        "juspay sdk onboarding and pay result",
+        "juspay sdk upi session token received",
+        "juspay sdk management result",
+        "juspay sdk result object processing error"
+      ]
+    },
+    {
+      "name": "Payment Status Tracking",
+      "description": "Polling and tracking payment status after submission.",
+      "events": [
+        "payment status response",
+        "order status response",
+        "payment cancelled"
+      ]
+    },
+    {
+      "name": "Payment Success",
+      "description": "Product-specific payment success events.",
+      "events": [
+        "mticket payment success",
+        "pass booked",
+        "wallet load balance payment successful",
+        "online card recharge payment successful",
+        "electricity bill payment successful",
+        "ncmc recharge payment successful",
+        "instant ticket payment successful",
+        "premium bus ticket payment successful",
+        "ondc ticket payment successful",
+        "ondc metro ticket payment successful",
+        "metro ticket payment successful"
+      ]
+    },
+    {
+      "name": "Payment Failure",
+      "description": "Product-specific payment failure events.",
+      "events": [
+        "mticket payment failed",
+        "pass payment failed",
+        "wallet load balance payment failed",
+        "online card recharge payment failed",
+        "electricity bill payment failed",
+        "ncmc recharge payment failed",
+        "instant ticket payment failed",
+        "premium bus ticket payment failed",
+        "ondc ticket payment failed",
+        "ondc metro ticket payment failed",
+        "metro ticket payment failed"
+      ]
+    },
+    {
+      "name": "Post-Payment",
+      "description": "Post-payment screens and booking details fetching.",
+      "events": [
+        "checkout post payment screen opened",
+        "post payment mticket details fetched",
+        "post payment super pass details fetched",
+        "post payment history call use case failure",
+        "ticket details not available",
+        "metro ticket details not available",
+        "ondc metro ticket details not available",
+        "checkout activity finished",
+        "checkout navigating to home screen"
+      ]
+    },
+    {
+      "name": "Miscellaneous",
+      "description": "Other payment-related events.",
+      "events": [
+        "checkout payment native ad loaded"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "lpEligibility",
+        "payment methods api response received",
+        "payment methods api model fetched from backend",
+        "payment method app model created for inai",
+        "payment method app model created for razorpay",
+        "razorpay upi supported apps",
+        "Payment methods app model fetched",
+        "valid payment methods created",
+        "payment methods failed response",
+        "payment methods success response",
+        "upi management clicked"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Banking Screen Opened",
+      "component": "CheckoutNetBankingComponent",
+      "stage": "Payment Method Selection",
+      "source": "netbankingScreen",
+      "description": "Net banking selection screen opened showing list of banks.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "Lazypay url fetch error",
+      "component": "CheckoutComponent (Razorpay)",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "Error fetching LazyPay checkout URL.",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "Payment Modes Screen opened",
+      "component": "PaymentMainComponent",
+      "stage": "Payment Method Selection",
+      "source": "mainPaymentScreen",
+      "description": "Main payment modes selection screen opened, showing available payment methods including recent modes, UPI apps, cards, wallets.",
+      "properties": [
+        {
+          "property": "preferred mode",
+          "context": "Count of recent payment modes"
+        },
+        {
+          "property": "popular mode",
+          "context": "Count of preferred modes"
+        },
+        {
+          "property": "installedUpiAppFlow",
+          "context": "\"true\" or \"false\""
+        },
+        {
+          "property": "installedUpiAppsCount",
+          "context": "Number of installed UPI apps"
+        },
+        {
+          "property": "installedUpiApps",
+          "context": "Comma-separated app names"
+        },
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "Payment mode selected",
+      "component": "PaymentMainComponent",
+      "stage": "Payment Method Selection",
+      "source": "mainPaymentScreen",
+      "description": "User clicked on a payment method (UPI app, card, wallet, net banking, etc.).",
+      "properties": [
+        {
+          "property": "mode",
+          "context": "Payment method code"
+        },
+        {
+          "property": "payment app name",
+          "context": "Display name of payment app"
+        },
+        {
+          "property": "top mode",
+          "context": "Is top/featured mode"
+        },
+        {
+          "property": "preferred mode",
+          "context": "Is preferred mode"
+        },
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "Razorpay webview loaded",
+      "component": "CheckoutComponent (Razorpay)",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "Razorpay payment webview successfully loaded.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "add upi id selected",
+      "component": "CheckoutAddUpiIdComponent",
+      "stage": "Payment Method Selection",
+      "source": "upiScreen",
+      "description": "User clicked on 'Add UPI ID' option to manually enter UPI VPA.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "card details submitted",
+      "component": "CheckoutCardComponent",
+      "stage": "Payment Method Selection",
+      "source": "cardDetailsScreen",
+      "description": "User submitted card details for payment.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "card screen opened",
+      "component": "CheckoutCardComponent",
+      "stage": "Payment Method Selection",
+      "source": "cardDetailsScreen",
+      "description": "Card details entry screen opened for entering card number, CVV, expiry.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetConfirmPaymentClicked",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "User clicked confirm payment button in Chalo Pay bottomsheet.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayBottomsheetOpened",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "Chalo Pay bottomsheet opened showing wallet balance and payment confirmation.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState"
+        },
+        {
+          "property": "chaloPayWalletBalance"
+        },
+        {
+          "property": "bottomsheetCTA"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetRechargeClicked",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "User clicked recharge wallet button when insufficient balance.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayBottomsheetTncClicked",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "User clicked on T&C link in Chalo Pay bottomsheet.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayItemClicked",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "User clicked on Chalo Pay wallet option.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayItemRendered",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "Chalo Pay wallet option rendered on payment screen.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayOrderCreationFailed",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "Chalo Pay order creation failed.",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayOrderCreationSuccess",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "Chalo Pay order created successfully on backend.",
+      "properties": [
+        {
+          "property": "transactionAmount"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayPaymentFailed",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "Chalo Pay wallet payment failed.",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "chaloPayPaymentSuccess",
+      "component": "PaymentMainComponent (ChaloPayManager)",
+      "stage": "Chalo Pay Wallet",
+      "source": "mainPaymentScreen",
+      "description": "Chalo Pay wallet payment successful.",
+      "properties": [
+        {
+          "property": "transactionAmount"
+        },
+        {
+          "property": "chaloPayWalletBalance"
+        }
+      ],
+      "notes": "Also includes product-specific properties from productEventProperties"
+    },
+    {
+      "name": "checkout activity finished",
+      "component": "CheckoutComponent",
+      "stage": "Post-Payment",
+      "source": "checkoutActivity",
+      "description": "Checkout activity closed/finished.",
+      "properties": []
+    },
+    {
+      "name": "checkout navigating to home screen",
+      "component": "CheckoutComponent",
+      "stage": "Post-Payment",
+      "source": "checkoutActivity",
+      "description": "Navigating from checkout back to home screen.",
+      "properties": []
+    },
+    {
+      "name": "checkout payment native ad loaded",
+      "component": "PaymentMainComponent",
+      "stage": "Miscellaneous",
+      "source": "mainPaymentScreen",
+      "description": "Native advertisement loaded on payment screen.",
+      "properties": []
+    },
+    {
+      "name": "checkout post payment screen opened",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "Post-payment success/failure screen opened showing booking details or error.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "checkout screen opened",
+      "component": "CheckoutComponent (Razorpay/Inai)",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "Razorpay or Inai checkout screen opened with webview/SDK.",
+      "properties": [
+        {
+          "property": "checkoutFlowType",
+          "context": "\"razorpay\" or \"lazypay\""
+        },
+        {
+          "property": "isAccountIdAvailable"
+        },
+        {
+          "property": "paymentProvider"
+        },
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "checkout upi list screen opened",
+      "component": "CheckoutUpiAppsComponent",
+      "stage": "Payment Method Selection",
+      "source": "upiScreen",
+      "description": "UPI apps selection screen opened showing list of installed UPI apps.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "checkout wallet list screen opened",
+      "component": "CheckoutWalletAppsComponent",
+      "stage": "Payment Method Selection",
+      "source": "walletScreen",
+      "description": "Wallet apps selection screen opened.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "custom checkout url back pressed",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "User pressed back button during custom URL checkout.",
+      "properties": []
+    },
+    {
+      "name": "custom checkout url on upi uri received",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "UPI intent URI received in custom checkout URL flow.",
+      "properties": []
+    },
+    {
+      "name": "custom checkout url override",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "Custom checkout URL override detected (non-standard payment flow).",
+      "properties": []
+    },
+    {
+      "name": "custom checkout url page loaded",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "Custom checkout URL page successfully loaded in webview.",
+      "properties": []
+    },
+    {
+      "name": "custom checkout url upi app result",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "UPI app result received in custom URL checkout flow.",
+      "properties": [
+        {
+          "property": "resultStatus"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "transactionReference"
+        },
+        {
+          "property": "resultCode"
+        },
+        {
+          "property": "isOperationCancelled"
+        },
+        {
+          "property": "response"
+        }
+      ]
+    },
+    {
+      "name": "electricity bill payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Electricity bill payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "electricity bill payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Electricity bill payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        }
+      ]
+    },
+    {
+      "name": "installed upi app check failed",
+      "component": "PaymentMainComponent",
+      "stage": "Checkout Processing",
+      "source": "mainPaymentScreen",
+      "description": "Failed to check for installed UPI apps on device.",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "installed upi app result",
+      "component": "PaymentMainComponent",
+      "stage": "Checkout Processing",
+      "source": "mainPaymentScreen",
+      "description": "Result received from native UPI app after payment attempt.",
+      "properties": [
+        {
+          "property": "resultStatus"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "transactionReference"
+        },
+        {
+          "property": "resultCode"
+        },
+        {
+          "property": "isOperationCancelled"
+        },
+        {
+          "property": "response"
+        }
+      ]
+    },
+    {
+      "name": "instant ticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Instant ticket payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "instant ticket payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Instant ticket payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "fare"
+        }
+      ]
+    },
+    {
+      "name": "juspay action initiated",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK action started (onboarding/payment/mandate).",
+      "properties": []
+    },
+    {
+      "name": "juspay request creation failed",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Failed to create Juspay SDK request.",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "juspay sdk flow applicable",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK flow is applicable for this payment.",
+      "properties": []
+    },
+    {
+      "name": "juspay sdk initiate failed",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK initialization failed.",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "juspay sdk initiate request",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK initialization requested.",
+      "properties": []
+    },
+    {
+      "name": "juspay sdk management result",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK mandate management operation result.",
+      "properties": []
+    },
+    {
+      "name": "juspay sdk onboarding and pay result",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK onboarding and payment result received.",
+      "properties": [
+        {
+          "property": "juspayNoOfAccountsLinked"
+        },
+        {
+          "property": "juspayLinkedAccountNames"
+        }
+      ]
+    },
+    {
+      "name": "juspay sdk operation error",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK operation failed.",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "juspay sdk result error",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK returned an error result.",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "juspay sdk result not available",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK result not available.",
+      "properties": []
+    },
+    {
+      "name": "juspay sdk result object processing error",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Error parsing Juspay SDK result object.",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "juspay sdk session expired",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK session expired.",
+      "properties": []
+    },
+    {
+      "name": "juspay sdk upi session token received",
+      "component": "JuspaySdkManager",
+      "stage": "Juspay SDK",
+      "source": "checkoutScreen",
+      "description": "Juspay SDK UPI session token received successfully.",
+      "properties": []
+    },
+    {
+      "name": "lpEligibility",
+      "component": "FilterValidPaymentMethodsUseCase",
+      "stage": "Misc",
+      "source": "eventProperties = mapOf(AnalyticsEventConstants.ATTRIBUTE_ELIGIBILITY_VALUE to isLpEligible)",
+      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/domain/FilterValidPaymentMethodsUseCase.kt:25",
+      "properties": [
+        {
+          "property": "lpEligibilityValue"
+        }
+      ]
+    },
+    {
+      "name": "metro ticket details not available",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "Metro ticket details not available in post-payment response.",
+      "properties": []
+    },
+    {
+      "name": "metro ticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Metro ticket payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "metro ticket payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Metro ticket payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "mticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "M-Ticket payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error",
+          "context": "Razorpay error code OR Inai error code"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay only"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay only"
+        },
+        {
+          "property": "code",
+          "context": "Inai only"
+        },
+        {
+          "property": "transaction_id",
+          "context": "Inai only"
+        },
+        {
+          "property": "message",
+          "context": "Inai only"
+        },
+        {
+          "property": "response",
+          "context": "Inai only"
+        },
+        {
+          "property": "vendor_response",
+          "context": "Inai only"
+        },
+        {
+          "property": "type",
+          "context": "Inai only"
+        }
+      ]
+    },
+    {
+      "name": "mticket payment success",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "M-Ticket payment completed successfully.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "passengerTypes"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "expiryDate"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "upTripStartStopId"
+        },
+        {
+          "property": "upTripEndStopId"
+        },
+        {
+          "property": "isFreeRide"
+        }
+      ]
+    },
+    {
+      "name": "ncmc recharge payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "NCMC card recharge payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "ncmc recharge payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "NCMC card recharge payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        }
+      ]
+    },
+    {
+      "name": "ondc metro ticket details not available",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "ONDC metro ticket details not available in post-payment response.",
+      "properties": []
+    },
+    {
+      "name": "ondc metro ticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "ONDC metro ticket payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "ondc metro ticket payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "ONDC metro ticket payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ondc ticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "ONDC bus ticket payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "ondc ticket payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "ONDC bus ticket payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "online card recharge payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Card recharge payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "online card recharge payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Physical card (Chalo Card/NCMC) recharge payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        }
+      ]
+    },
+    {
+      "name": "order status response",
+      "component": "CheckoutComponent",
+      "stage": "Payment Status Tracking",
+      "source": "checkoutScreen",
+      "description": "Order status API response received.",
+      "properties": [
+        {
+          "property": "response"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "chaloOrderId"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "pass booked",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Super Pass payment completed successfully.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "expiryDate"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "durationName"
+        }
+      ]
+    },
+    {
+      "name": "pass payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Super Pass payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        },
+        {
+          "property": "description"
+        },
+        {
+          "property": "source"
+        },
+        {
+          "property": "step"
+        },
+        {
+          "property": "reason"
+        }
+      ],
+      "notes": "Similar error properties as mticket payment failed"
+    },
+    {
+      "name": "payment cancel dialog no clicked",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "User dismissed payment cancellation dialog.",
+      "properties": []
+    },
+    {
+      "name": "payment cancel dialog shown",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "Payment cancellation confirmation dialog shown.",
+      "properties": []
+    },
+    {
+      "name": "payment cancel dialog yes clicked",
+      "component": "CustomUrlCheckoutComponent",
+      "stage": "Checkout Processing",
+      "source": "checkoutScreen",
+      "description": "User confirmed payment cancellation.",
+      "properties": []
+    },
+    {
+      "name": "payment cancelled",
+      "component": "CheckoutComponent",
+      "stage": "Payment Status Tracking",
+      "source": "checkoutScreen",
+      "description": "User cancelled payment or payment was aborted.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "paymentProvider"
+        }
+      ]
+    },
+    {
+      "name": "payment methods api response received",
+      "component": "CheckoutRemoteDataSource",
+      "stage": "Misc",
+      "source": "checkoutRemoteDataSource",
+      "description": "Debug: raw network response received for payment methods API.",
+      "properties": [
+        {
+          "property": "response"
+        },
+        {
+          "property": "isSuccess"
+        }
+      ]
+    },
+    {
+      "name": "payment methods api model fetched from backend",
+      "component": "GetPaymentMethodsUseCase",
+      "stage": "Misc",
+      "source": "checkoutDomain",
+      "description": "Debug: payment methods API model parsed successfully from backend response.",
+      "properties": [
+        {
+          "property": "response"
+        },
+        {
+          "property": "providerId"
+        }
+      ]
+    },
+    {
+      "name": "payment method app model created for inai",
+      "component": "ConvertPaymentMethodsApiModelToAppModelForInaiUseCase",
+      "stage": "Misc",
+      "source": "checkoutDomain",
+      "description": "Debug: payment methods app model created for Inai provider.",
+      "properties": [
+        {
+          "property": "appModel"
+        }
+      ]
+    },
+    {
+      "name": "payment method app model created for razorpay",
+      "component": "ConvertPaymentMethodsApiToAppModelForRazorpayUseCase",
+      "stage": "Misc",
+      "source": "checkoutDomain",
+      "description": "Debug: payment methods app model created for Razorpay provider.",
+      "properties": [
+        {
+          "property": "appModel"
+        }
+      ]
+    },
+    {
+      "name": "razorpay upi supported apps",
+      "component": "ConvertPaymentMethodsApiToAppModelForRazorpayUseCase",
+      "stage": "Misc",
+      "source": "checkoutDomain",
+      "description": "Debug: supported UPI apps resolved for Razorpay UPI payment instrument mapping.",
+      "properties": [
+        {
+          "property": "apps"
+        }
+      ]
+    },
+    {
+      "name": "Payment methods app model fetched",
+      "component": "PaymentMainComponent",
+      "stage": "Misc",
+      "source": "mainPaymentScreen",
+      "description": "Debug: result of fetching payment methods app model from domain layer.",
+      "properties": [
+        {
+          "property": "appModel"
+        }
+      ]
+    },
+    {
+      "name": "valid payment methods created",
+      "component": "PaymentMainComponent",
+      "stage": "Misc",
+      "source": "mainPaymentScreen",
+      "description": "Debug: valid payment methods and preferred modes list built for rendering.",
+      "properties": [
+        {
+          "property": "validPaymentMethodsCount"
+        },
+        {
+          "property": "preferredModeCount"
+        }
+      ]
+    },
+    {
+      "name": "payment methods failed response",
+      "component": "PaymentMainComponent",
+      "stage": "Misc",
+      "source": "eventProperties = mapOf(AnalyticsEventConstants.ATTRIBUTE_REASON to paymentMethodsResult.error.description)",
+      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/ui/screen/payment/PaymentMainComponent.kt:2548",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "payment methods success response",
+      "component": "PaymentMainComponent",
+      "stage": "Misc",
+      "source": "Unknown",
+      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/ui/screen/payment/PaymentMainComponent.kt:2464",
+      "properties": []
+    },
+    {
+      "name": "payment status response",
+      "component": "CheckoutComponent",
+      "stage": "Payment Status Tracking",
+      "source": "checkoutScreen",
+      "description": "Payment status API response received after polling.",
+      "properties": [
+        {
+          "property": "response",
+          "context": "Status like \"SUCCESS\", \"FAILURE\", \"PENDING\""
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "chaloOrderId"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "post payment history call use case failure",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "Failed to fetch booking history after payment (all retries exhausted).",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "post payment mticket details fetched",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "M-Ticket booking details fetched successfully after payment.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Always true for success"
+        },
+        {
+          "property": "historyCallRetryCount",
+          "context": "Number of retry attempts"
+        }
+      ],
+      "notes": "Also includes full ticket details (bookingId, fare, dates, routes, stops)"
+    },
+    {
+      "name": "post payment super pass details fetched",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "Super Pass booking details fetched successfully after payment.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Always true for success"
+        },
+        {
+          "property": "historyCallRetryCount"
+        }
+      ],
+      "notes": "Also includes pass details (bookingId, fare, dates, product info)"
+    },
+    {
+      "name": "premium bus ticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Premium bus ticket payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "premium bus ticket payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Premium bus ticket payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "fare"
+        }
+      ]
+    },
+    {
+      "name": "save card details",
+      "component": "CheckoutCardComponent",
+      "stage": "Payment Method Selection",
+      "source": "cardDetailsScreen",
+      "description": "User toggled 'Save card details' checkbox.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "ticket details not available",
+      "component": "CheckoutPostPaymentComponent",
+      "stage": "Post-Payment",
+      "source": "postPaymentScreen",
+      "description": "M-Ticket details not available in post-payment response.",
+      "properties": []
+    },
+    {
+      "name": "upi id entered failure",
+      "component": "CheckoutAddUpiIdComponent",
+      "stage": "Payment Method Selection",
+      "source": "upiScreen",
+      "description": "User entered an invalid UPI ID/VPA.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "upi id entered successfully",
+      "component": "CheckoutAddUpiIdComponent",
+      "stage": "Payment Method Selection",
+      "source": "upiScreen",
+      "description": "User successfully entered a valid UPI ID/VPA.",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "upi management clicked",
+      "component": "PaymentMainComponent",
+      "stage": "Misc",
+      "source": "Unknown",
+      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/ui/screen/payment/PaymentMainComponent.kt:1028",
+      "properties": []
+    },
+    {
+      "name": "wallet load balance payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Failure",
+      "source": "checkoutScreen",
+      "description": "Wallet recharge payment failed.",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "error"
+        }
+      ],
+      "notes": "Similar error properties as other payment failures"
+    },
+    {
+      "name": "wallet load balance payment successful",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Payment Success",
+      "source": "checkoutScreen",
+      "description": "Wallet recharge/load balance payment successful.",
+      "properties": [
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "flowchart",
+    "steps": [
+      {
+        "label": "Entry",
+        "events": [
+          "Payment Modes Screen opened"
+        ],
+        "next": "Payment Method Selection"
+      },
+      {
+        "label": "Payment Method Selection",
+        "branches": [
+          {
+            "label": "Chalo Pay Wallet",
+            "events": [
+              "chaloPayItemClicked",
+              "chaloPayBottomsheetOpened",
+              "chaloPayBottomsheetConfirmPaymentClicked",
+              "chaloPayOrderCreationSuccess",
+              "chaloPayPaymentSuccess"
+            ]
+          },
+          {
+            "label": "UPI Apps",
+            "events": [
+              "Payment mode selected",
+              "checkout upi list screen opened",
+              "installed upi app result"
+            ]
+          },
+          {
+            "label": "Cards",
+            "events": [
+              "card screen opened",
+              "card details submitted",
+              "checkout screen opened"
+            ]
+          },
+          {
+            "label": "Net Banking / Wallet",
+            "events": [
+              "Banking Screen Opened",
+              "checkout screen opened"
+            ]
+          }
+        ],
+        "next": "Payment Processing"
+      },
+      {
+        "label": "Payment Processing",
+        "events": [
+          "checkout screen opened",
+          "Razorpay webview loaded",
+          "payment status response"
+        ],
+        "next": "Payment Result"
+      },
+      {
+        "label": "Payment Result",
+        "branches": [
+          {
+            "label": "Success",
+            "events": [
+              "mticket payment success / pass booked / instant ticket payment successful / etc."
+            ],
+            "next": "Post-Payment"
+          },
+          {
+            "label": "Failure",
+            "events": [
+              "mticket payment failed / pass payment failed / etc."
+            ],
+            "next": "Exit"
+          }
+        ]
+      },
+      {
+        "label": "Post-Payment",
+        "events": [
+          "checkout post payment screen opened",
+          "post payment mticket details fetched",
+          "checkout activity finished"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "lpEligibility",
+          "payment methods api response received",
+          "payment methods api model fetched from backend",
+          "payment method app model created for inai",
+          "payment method app model created for razorpay",
+          "razorpay upi supported apps",
+          "Payment methods app model fetched",
+          "valid payment methods created",
+          "payment methods failed response",
+          "payment methods success response",
+          "upi management clicked"
+        ]
+      }
+    ],
+    "notes": "Juspay SDK events (juspay sdk initiate request, juspay action initiated, etc.) run in parallel during UPI autopay flows. Custom URL checkout events fire for non-standard payment gateways. ChaloP Pay has a separate flow branch."
+  }
+}

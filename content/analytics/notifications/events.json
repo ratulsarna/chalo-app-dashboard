@@ -1,0 +1,640 @@
+{
+  "flowId": "notifications",
+  "flowName": "Notifications - Push, Permission, and Interactions",
+  "description": "Complete analytics map for the notifications flow including FCM push notifications, notification permissions, Plotline notifications, punch notifications, TITO notifications, and all notification-related user interactions.",
+  "propertyDefinitions": {
+    "notificationType": {
+      "type": "string",
+      "description": "Type of notification received (e.g., ALERT, BOOKING_SUCCESSFUL, M_TICKET_PUNCH, TITO_TAP_IN, SUPER_PASS_PUNCH, etc.)"
+    },
+    "notificationTitle": {
+      "type": "string",
+      "description": "Title text of the notification"
+    },
+    "notificationMessage": {
+      "type": "string",
+      "description": "Message body of the notification"
+    },
+    "notificationBody": {
+      "type": "string",
+      "description": "Full body content of the notification"
+    },
+    "notificationData": {
+      "type": "object",
+      "description": "Complete payload data received with the notification"
+    },
+    "isPlotlineNotification": {
+      "type": "boolean",
+      "description": "Whether this notification was sent via Plotline SDK"
+    },
+    "plotlineNotifPayload": {
+      "type": "string",
+      "description": "Plotline-specific notification payload (JSON string)"
+    },
+    "plotlineNotifCustomId": {
+      "type": "string",
+      "description": "Custom identifier for Plotline notifications"
+    },
+    "isNotificationPermissionGranted": {
+      "type": "boolean",
+      "description": "Whether the POST_NOTIFICATIONS permission is currently granted"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source screen or component from which the event was triggered"
+    },
+    "punchNotificationDelay": {
+      "type": "number",
+      "description": "Time delay in milliseconds between punch action and notification delivery"
+    },
+    "punchTime": {
+      "type": "string",
+      "description": "GMT timestamp when the ticket/pass was punched"
+    },
+    "punchTsInMillis": {
+      "type": "number",
+      "description": "Punch timestamp in milliseconds since epoch"
+    },
+    "activationTime": {
+      "type": "string",
+      "description": "GMT timestamp when the ticket/pass was activated"
+    },
+    "productType": {
+      "type": "string",
+      "description": "Type of product (superPass, mTicket, quickPay, premiumReserveTicket, etc.)"
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Sub-type of the product (magicPass, ridePass, etc.)"
+    },
+    "passId": {
+      "type": "string",
+      "description": "Unique identifier for the pass that was punched"
+    },
+    "ticketId": {
+      "type": "string",
+      "description": "Unique identifier for the ticket"
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Name/number of the route where validation occurred"
+    },
+    "startStopName": {
+      "type": "string",
+      "description": "Name of the boarding stop"
+    },
+    "endStopName": {
+      "type": "string",
+      "description": "Name of the alighting stop"
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Vehicle number where the punch occurred"
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Identifier of the conductor who validated the ticket/pass"
+    },
+    "isTripReceiptAvailable": {
+      "type": "boolean",
+      "description": "Whether trip receipt information is available in the punch notification"
+    },
+    "notificationDeliveryMedium": {
+      "type": "string",
+      "description": "How the validation notification was delivered (PUSH_NOTIFICATION, POLLING_API, BLE)"
+    },
+    "cardNumber": {
+      "type": "string",
+      "description": "Chalo Card number for card transaction notifications"
+    },
+    "titoTapInAckData": {
+      "type": "object",
+      "description": "TITO tap-in acknowledgment data received"
+    },
+    "titoTapOutAckData": {
+      "type": "object",
+      "description": "TITO tap-out acknowledgment data received"
+    },
+    "titoTapOut": {
+      "type": "object",
+      "description": "TITO tap-out event data"
+    },
+    "wasTitoValidation": {
+      "type": "boolean",
+      "description": "Whether this was a TITO validation flow"
+    },
+    "titoRideExpiryTimeInMillis": {
+      "type": "number",
+      "description": "Expiry time for TITO ride in milliseconds"
+    },
+    "airshipNotificationId": {
+      "type": "string",
+      "description": "Airship notification identifier"
+    },
+    "airshipNotificationTag": {
+      "type": "string",
+      "description": "Airship notification tag"
+    },
+    "airshipNotificationBtnId": {
+      "type": "string",
+      "description": "Airship notification action button ID"
+    },
+    "airshipNotificationBtnDescription": {
+      "type": "string",
+      "description": "Airship notification action button description"
+    },
+    "invalidConductorPunchDataRecv": {
+      "type": "boolean",
+      "description": "Whether invalid conductor punch data was received"
+    },
+    "notification type": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "Plotline Redirect Custom Action Value": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "events": [
+    {
+      "name": "Airship Channel ID Created",
+      "eventString": "airship notification channel id created",
+      "description": "Fired when an Airship notification channel is created (Android)",
+      "source": "Airship SDK",
+      "location": "Airship channel management",
+      "trigger": "New notification channel is created for Airship",
+      "properties": []
+    },
+    {
+      "name": "Airship Channel ID Updated",
+      "eventString": "airship notification channel id updated",
+      "description": "Fired when an Airship notification channel is updated (Android)",
+      "source": "Airship SDK",
+      "location": "Airship channel management",
+      "trigger": "Existing notification channel is updated",
+      "properties": []
+    },
+    {
+      "name": "Airship Notification Action Button Clicked",
+      "eventString": "airship notification action btn clicked",
+      "description": "Fired when user taps an action button on an Airship notification",
+      "source": "Airship SDK",
+      "location": "Airship notification handler",
+      "trigger": "User taps an action button in Airship notification",
+      "properties": [
+        "airshipNotificationId",
+        "airshipNotificationTag",
+        "airshipNotificationBtnId",
+        "airshipNotificationBtnDescription"
+      ]
+    },
+    {
+      "name": "Airship Notification Clicked",
+      "eventString": "airship notification clicked",
+      "description": "Fired when user taps on an Airship notification",
+      "source": "Airship SDK",
+      "location": "Airship notification handler",
+      "trigger": "User taps Airship notification in system tray",
+      "properties": [
+        "airshipNotificationId",
+        "airshipNotificationTag"
+      ]
+    },
+    {
+      "name": "Airship Notification Dismissed",
+      "eventString": "airship notification dismissed",
+      "description": "Fired when user dismisses an Airship notification",
+      "source": "Airship SDK",
+      "location": "Airship notification handler",
+      "trigger": "User swipes away/dismisses Airship notification",
+      "properties": [
+        "airshipNotificationId",
+        "airshipNotificationTag"
+      ]
+    },
+    {
+      "name": "Airship Notification Posted",
+      "eventString": "airship notification posted",
+      "description": "Fired when an Airship notification is posted to system tray",
+      "source": "Airship SDK",
+      "location": "Airship notification handler",
+      "trigger": "Airship notification is displayed in system notification tray",
+      "properties": [
+        "airshipNotificationId",
+        "airshipNotificationTag"
+      ]
+    },
+    {
+      "name": "Chalo Bus Tab Notification Icon Click",
+      "eventString": "chalo bus tab notification icon click",
+      "description": "Fired when user taps notification icon in Chalo Bus tab",
+      "source": "HOME_SCREEN",
+      "location": "Home screen Chalo Bus tab",
+      "trigger": "User taps bell/notification icon in tab",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Chalo Bus Tab Notification Screen Back Button Click",
+      "eventString": "chalo bus tab notification screen back btn click",
+      "description": "Fired when user taps back button on notification list screen",
+      "source": "NOTIFICATION_SCREEN",
+      "location": "Notification list screen",
+      "trigger": "User taps back button to exit notification list",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Chalo Card Transaction Notification Received",
+      "eventString": "chalo card transaction notification received",
+      "description": "Fired when a Chalo Card transaction notification is received",
+      "source": "PRODUCT_NOTIFICATION_HELPER",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:92",
+      "trigger": "Push notification received after Chalo Card tap transaction",
+      "properties": [
+        "cardNumber"
+      ]
+    },
+    {
+      "name": "Chalo Pay Punch Received",
+      "eventString": "chalo pay punch received",
+      "description": "Fired when a Quick Pay (Chalo Pay) punch notification is received",
+      "source": "PRODUCT_NOTIFICATION_HELPER",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:66",
+      "trigger": "Push notification received after Quick Pay validation, triggers wallet sync",
+      "properties": []
+    },
+    {
+      "name": "Custom Notification",
+      "eventString": "custom notification",
+      "description": "Fired for custom notification types that don't fit standard categories",
+      "source": "Various",
+      "location": "Multiple notification handlers",
+      "trigger": "Custom notification is processed",
+      "properties": [
+        "notificationType",
+        "notificationData"
+      ]
+    },
+    {
+      "name": "FCM Notification Received",
+      "eventString": "FCM Notification Received",
+      "description": "Fired when any FCM push notification is received by the app (foreground or background)",
+      "source": "PlotlineNotificationManager",
+      "location": "shared/chalo-base/src/commonMain/kotlin/app/chalo/plotline/PlotlineNotificationManager.kt:28",
+      "trigger": "FCM message received via Firebase Cloud Messaging",
+      "properties": [
+        "notificationTitle",
+        "notificationMessage",
+        "notificationBody",
+        "notificationData",
+        "isPlotlineNotification"
+      ]
+    },
+    {
+      "name": "M-Ticket Notification Read",
+      "eventString": "mticket notification is read",
+      "description": "Fired when user views/opens an M-Ticket notification",
+      "source": "Notification Handler",
+      "location": "Notification interaction tracking",
+      "trigger": "User opens M-Ticket notification from system tray",
+      "properties": [
+        "ticketId"
+      ]
+    },
+    {
+      "name": "M-Ticket Punch Notification Posted",
+      "eventString": "mTicket punch notification posted",
+      "description": "Fired when M-Ticket punch notification is posted to system notification tray",
+      "source": "NotificationDisplayDataManager",
+      "location": "Notification display layer",
+      "trigger": "Notification is displayed in system tray after processing",
+      "properties": [
+        "ticketId",
+        "productType"
+      ]
+    },
+    {
+      "name": "M-Ticket Punch Notification Received",
+      "eventString": "mTicket punch notification received",
+      "description": "Fired when an M-Ticket punch (validation) notification is received",
+      "source": "NOTIFICATION",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:148",
+      "trigger": "Push notification received after M-Ticket is validated by conductor",
+      "properties": [
+        "ticketId",
+        "routeName",
+        "startStopName",
+        "endStopName",
+        "conductorId",
+        "punchTime",
+        "vehicleNo",
+        "punchNotificationDelay"
+      ]
+    },
+    {
+      "name": "Notification Permission BottomSheet Enable Clicked",
+      "eventString": "notification permission bottomsheet enable clicked",
+      "description": "Fired when user clicks 'Enable' button in notification permission bottom sheet",
+      "source": "MY_TICKETS_SCREEN_TAB or HOME",
+      "location": "Bottom sheet CTA handler",
+      "trigger": "User taps Enable button in permission bottom sheet",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission BottomSheet Rendered",
+      "eventString": "notification permission bottomsheet rendered",
+      "description": "Fired when the notification permission request bottom sheet is displayed",
+      "source": "MY_TICKETS_SCREEN_TAB or HOME",
+      "location": "Rendered in MyTickets or Home component",
+      "trigger": "App shows custom bottom sheet to request notification permission",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission BottomSheet Skip Clicked",
+      "eventString": "notification permission bottomsheet skip clicked",
+      "description": "Fired when user clicks 'Skip' button in notification permission bottom sheet",
+      "source": "MY_TICKETS_SCREEN_TAB or HOME",
+      "location": "Bottom sheet CTA handler",
+      "trigger": "User taps Skip button in permission bottom sheet",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission Denied",
+      "eventString": "notification permission denied",
+      "description": "Fired when user denies POST_NOTIFICATIONS permission",
+      "source": "MY_TICKETS_SCREEN_TAB",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:1934",
+      "trigger": "User denies notification permission via system dialog",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission Explainer Enable Clicked",
+      "eventString": "notification permission explainer enable clicked",
+      "description": "Fired when user clicks 'Enable' button on notification permission explainer screen",
+      "source": "MY_TICKETS_SCREEN_TAB",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2011",
+      "trigger": "User taps Enable button on explainer screen, navigates to app settings",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission Explainer Rendered",
+      "eventString": "notification permission explainer rendered",
+      "description": "Fired when the notification permission explainer screen is shown (after permission denial)",
+      "source": "MY_TICKETS_SCREEN_TAB",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:1938",
+      "trigger": "User denies permission, explainer screen is displayed",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission Explainer Skipped",
+      "eventString": "notification permission explainer skipped",
+      "description": "Fired when user skips/closes the notification permission explainer screen",
+      "source": "MY_TICKETS_SCREEN_TAB",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:1957",
+      "trigger": "User dismisses explainer screen without enabling permission",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Notification Permission Granted",
+      "eventString": "notification permission granted",
+      "description": "Fired when user grants POST_NOTIFICATIONS permission",
+      "source": "MY_TICKETS_SCREEN_TAB",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:1949",
+      "trigger": "User grants notification permission via system dialog",
+      "properties": [
+        "source"
+      ]
+    },
+    {
+      "name": "Plotline Notification Clicked",
+      "eventString": "Plotline notification clicked",
+      "description": "Fired when user taps on a Plotline notification in the system tray",
+      "source": "PlotlineNotificationManager",
+      "location": "Platform-specific implementation (Android/iOS)",
+      "trigger": "User taps on Plotline notification",
+      "properties": [
+        "plotlineNotifPayload",
+        "plotlineNotifCustomId"
+      ]
+    },
+    {
+      "name": "Plotline Notification Exception",
+      "eventString": "Plotline Notification Exception",
+      "description": "Fired when an exception occurs while processing a Plotline notification",
+      "source": "PlotlineNotificationManager",
+      "location": "shared/chalo-base/src/commonMain/kotlin/app/chalo/plotline/PlotlineNotificationManager.kt:44",
+      "trigger": "Exception thrown during Plotline notification processing",
+      "properties": []
+    },
+    {
+      "name": "Plotline Notification Received",
+      "eventString": "Plotline Notification Received",
+      "description": "Fired when a Plotline-specific push notification is received",
+      "source": "PlotlineNotificationManager",
+      "location": "shared/chalo-base/src/commonMain/kotlin/app/chalo/plotline/PlotlineNotificationManager.kt:35",
+      "trigger": "FCM notification with Plotline SDK payload is received",
+      "properties": [
+        "notificationTitle",
+        "notificationMessage",
+        "notificationBody",
+        "notificationData",
+        "plotlineNotifPayload",
+        "plotlineNotifCustomId"
+      ]
+    },
+    {
+      "name": "Plotline Redirect Received",
+      "component": "SharedBaseModule",
+      "stage": "Misc",
+      "source": "Source.PLOTLINE",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/di/SharedBaseModule.kt:536",
+      "properties": [
+        {
+          "property": "Plotline Redirect Custom Action Value"
+        }
+      ]
+    },
+    {
+      "name": "Plotline notification clicked",
+      "component": "PlotlineNotificationManager.android",
+      "stage": "Notifications",
+      "source": "Source.PLOTLINE",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/androidMain/kotlin/app/chalo/plotline/PlotlineNotificationManager.android.kt:54",
+      "properties": []
+    },
+    {
+      "name": "Premium Reserve Ticket Punch Received",
+      "eventString": "premium reserve ticket punch received",
+      "description": "Fired when a Premium Bus reserved ticket punch notification is received",
+      "source": "PRODUCT_NOTIFICATION_HELPER",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:86",
+      "trigger": "Push notification received after Premium Bus ticket is validated",
+      "properties": [
+        "productType"
+      ]
+    },
+    {
+      "name": "Super Pass Punch Notification Posted",
+      "eventString": "superPass punch notification posted",
+      "description": "Fired when Super Pass punch notification is posted to system notification tray",
+      "source": "NotificationDisplayDataManager",
+      "location": "Notification display layer",
+      "trigger": "Notification is displayed in system tray after processing",
+      "properties": [
+        "passId",
+        "productType"
+      ]
+    },
+    {
+      "name": "Super Pass Punch Notification Received",
+      "eventString": "superPass punch notification received",
+      "description": "Fired when a Super Pass punch (validation) notification is received",
+      "source": "NOTIFICATION",
+      "location": "shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:141",
+      "trigger": "Push notification received after Super Pass is validated by conductor",
+      "properties": [
+        "passId",
+        "productSubType",
+        "productType",
+        "routeName",
+        "startStopName",
+        "endStopName",
+        "conductorId",
+        "activationTime",
+        "punchTime",
+        "vehicleNo",
+        "isTripReceiptAvailable",
+        "punchNotificationDelay"
+      ]
+    },
+    {
+      "name": "TITO Tap-In Notification Received on Conductor Validation",
+      "eventString": "tito tapIn notif recv on conductor flow",
+      "description": "Fired when TITO tap-in notification is received during conductor validation flow",
+      "source": "Validation SDK",
+      "location": "TITO validation flow during conductor validation",
+      "trigger": "Push notification received for TITO tap-in event",
+      "properties": [
+        "titoTapInAckData",
+        "notificationDeliveryMedium",
+        "wasTitoValidation"
+      ]
+    },
+    {
+      "name": "TITO Tap-In Polling Stopped Due to Notification Received",
+      "eventString": "tito tapin polling stopped due to notification received",
+      "description": "Fired when TITO tap-in polling is stopped because push notification was received",
+      "source": "TITO Validation",
+      "location": "TITO polling mechanism",
+      "trigger": "Push notification arrives while polling for tap-in, polling is stopped",
+      "properties": [
+        "notificationDeliveryMedium"
+      ]
+    },
+    {
+      "name": "custom notification",
+      "component": "GCMReceiverImpl",
+      "stage": "Notifications",
+      "source": "Source.NONE",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/notification/core/GCMReceiverImpl.kt:145",
+      "properties": [
+        {
+          "property": "notification type"
+        }
+      ]
+    },
+    {
+      "name": "mTicket punch notification posted",
+      "component": "NotificationDisplayDataManagerImpl",
+      "stage": "Notifications",
+      "source": "Source.NOTIFICATION",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationDisplayDataManagerImpl.kt:301",
+      "properties": []
+    },
+    {
+      "name": "mTicket punch notification received",
+      "component": "NotificationCentralProcessingManagerImpl",
+      "stage": "Notifications",
+      "source": "Source.NOTIFICATION",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:148",
+      "properties": []
+    },
+    {
+      "name": "premium reserve ticket punch received",
+      "component": "NotificationCentralProcessingManagerImpl",
+      "stage": "Notifications",
+      "source": "Source.PRODUCT_NOTIFICATION_HELPER",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:85",
+      "properties": []
+    },
+    {
+      "name": "superPass punch notification received",
+      "component": "NotificationCentralProcessingManagerImpl",
+      "stage": "Notifications",
+      "source": "Source.NOTIFICATION",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:140",
+      "properties": []
+    }
+  ],
+  "stages": [
+    {
+      "name": "Notifications",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "Plotline notification clicked",
+        "custom notification",
+        "mTicket punch notification posted",
+        "mTicket punch notification received",
+        "premium reserve ticket punch received",
+        "superPass punch notification received"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "Plotline Redirect Received"
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "Plotline notification clicked",
+          "custom notification",
+          "mTicket punch notification posted",
+          "mTicket punch notification received",
+          "premium reserve ticket punch received",
+          "superPass punch notification received"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "Plotline Redirect Received"
+        ]
+      }
+    ]
+  }
+}

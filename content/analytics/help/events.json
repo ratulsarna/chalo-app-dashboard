@@ -1,0 +1,553 @@
+{
+  "flowId": "help",
+  "flowName": "Help & Support",
+  "description": "Complete analytics map for help and support features including booking help, SOS emergency alerts, and issue reporting.",
+  "propertyDefinitions": {
+    "bookingId": {
+      "type": "string",
+      "description": "Unique identifier for the booking associated with the help request."
+    },
+    "bookingHelpFaqCount": {
+      "type": "number",
+      "description": "Number of FAQ items displayed in the booking help screen."
+    },
+    "bookingHelpFaqActionType": {
+      "type": "string",
+      "description": "Type of FAQ action selected by the user (e.g., CANCEL_BOOKING, NONE).",
+      "values": [
+        "CANCEL_BOOKING",
+        "NONE"
+      ]
+    },
+    "bottomSheetType": {
+      "type": "string",
+      "description": "Type of bottom sheet displayed (CancellationSuccess, CancellationFailed, None).",
+      "values": [
+        "CancellationSuccess",
+        "CancellationFailed",
+        "None"
+      ]
+    },
+    "pass status": {
+      "type": "string",
+      "description": "Status of the booking cancellation (Success, Failed, Error)."
+    },
+    "message": {
+      "type": "string",
+      "description": "Response message from the cancellation API."
+    },
+    "attribute error reason": {
+      "type": "string",
+      "description": "Reason for API failure when booking cancellation fails."
+    },
+    "userMobile": {
+      "type": "string",
+      "description": "User's mobile number (from profile)."
+    },
+    "lat": {
+      "type": "number",
+      "description": "User's current latitude coordinate."
+    },
+    "long": {
+      "type": "number",
+      "description": "User's current longitude coordinate."
+    },
+    "timeStamp": {
+      "type": "number",
+      "description": "Timestamp when the event occurred (epoch milliseconds)."
+    },
+    "sosSentSuccessfully": {
+      "type": "boolean",
+      "description": "Indicates whether SOS message was sent successfully to contacts."
+    },
+    "errorType": {
+      "type": "string",
+      "description": "Type of error encountered during SOS raise operation."
+    },
+    "error message": {
+      "type": "string",
+      "description": "Detailed error message when contact picking or SOS operation fails."
+    },
+    "isDeviceAutoLinked": {
+      "type": "boolean",
+      "description": "Indicates whether device was automatically linked during report problem flow."
+    },
+    "ss reclaim type": {
+      "type": "string",
+      "description": "Type of super saver reclaim operation."
+    },
+    "source": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Booking Help",
+      "description": "User accesses booking help, views FAQs, and can perform actions like cancelling bookings.",
+      "events": [
+        "booking help screen opened",
+        "booking help faq action clicked",
+        "booking help bottom sheet positive button clicked",
+        "booking help bottom sheet negative button clicked",
+        "booking cancel api success",
+        "booking cancel api failure"
+      ]
+    },
+    {
+      "name": "SOS Emergency Alert",
+      "description": "User manages emergency contacts and sends SOS alerts with location information.",
+      "events": [
+        "sos screen open",
+        "sos send alert clicked",
+        "sos confirm send alert clicked",
+        "sos contact pick failed",
+        "raise SOS failed",
+        "raise SOS success"
+      ]
+    },
+    {
+      "name": "Report Problem",
+      "description": "User reports issues, initiates customer support, and performs reclaim operations.",
+      "events": [
+        "Report Problem feature event",
+        "Report Problem feature event description ",
+        "Report Problem request sent",
+        "Report Problem store parsing error",
+        "report problem clicked v2",
+        "report problem feature problem clicked",
+        "reclaim pass",
+        "ss reclaim",
+        "auto reclaim for wallet migration",
+        "reclaim card shown",
+        "reclaim card button clicked",
+        "reclaim dialog positive button clicked",
+        "reclaim dialog negative button clicked"
+      ]
+    },
+    {
+      "name": "Context-Specific Help",
+      "description": "Help buttons accessed from various screens throughout the app.",
+      "events": [
+        "BLE validation help btn clicked",
+        "ticket summary screen help button clicked",
+        "qr validation screen help button clicked"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "auto reclaim passes response",
+        "chat screen"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "BLE validation help btn clicked",
+      "component": "ValidationScreens",
+      "stage": "Context-Specific Help",
+      "source": "Various validation screens",
+      "description": "User clicked the help button on BLE validation screen.",
+      "properties": []
+    },
+    {
+      "name": "Report Problem feature event",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Generic report problem feature event.",
+      "properties": []
+    },
+    {
+      "name": "Report Problem feature event description ",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Report problem event with description.",
+      "properties": []
+    },
+    {
+      "name": "Report Problem request sent",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Problem report request sent to backend.",
+      "properties": []
+    },
+    {
+      "name": "Report Problem store parsing error",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Error occurred while parsing report problem store data.",
+      "properties": []
+    },
+    {
+      "name": "auto reclaim for wallet migration",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Automatic reclaim triggered during wallet migration.",
+      "properties": []
+    },
+    {
+      "name": "auto reclaim passes response",
+      "component": "ReportProblemComponent",
+      "stage": "Misc",
+      "source": "\"ReportProblemFeature\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/reportproblem/ReportProblemComponent.kt:238",
+      "properties": [
+        {
+          "property": "isDeviceAutoLinked"
+        }
+      ]
+    },
+    {
+      "name": "booking cancel api failure",
+      "component": "BookingHelpScreenComponent",
+      "stage": "Booking Help",
+      "source": "bookingHelpScreen",
+      "description": "Booking cancellation API call failed.",
+      "properties": [
+        {
+          "property": "attribute error reason",
+          "context": "Reason for the API failure"
+        }
+      ]
+    },
+    {
+      "name": "booking cancel api success",
+      "component": "BookingHelpScreenComponent",
+      "stage": "Booking Help",
+      "source": "bookingHelpScreen",
+      "description": "Booking cancellation API call succeeded.",
+      "properties": [
+        {
+          "property": "bookingId",
+          "context": "ID of the booking being cancelled"
+        },
+        {
+          "property": "pass status",
+          "context": "Status returned by the API (Success, Failed, Error)"
+        },
+        {
+          "property": "message",
+          "context": "Response message from the API"
+        }
+      ]
+    },
+    {
+      "name": "booking help bottom sheet negative button clicked",
+      "component": "BookingHelpScreenComponent",
+      "stage": "Booking Help",
+      "source": "bookingHelpScreen",
+      "description": "User clicks the negative button on a booking help bottom sheet (e.g., cancel or dismiss).",
+      "properties": [
+        {
+          "property": "bottomSheetType",
+          "context": "Type of bottom sheet displayed"
+        }
+      ]
+    },
+    {
+      "name": "booking help bottom sheet positive button clicked",
+      "component": "BookingHelpScreenComponent",
+      "stage": "Booking Help",
+      "source": "bookingHelpScreen",
+      "description": "User clicks the positive button on a booking help bottom sheet (e.g., retry or confirm).",
+      "properties": [
+        {
+          "property": "bottomSheetType",
+          "context": "Type of bottom sheet displayed"
+        }
+      ]
+    },
+    {
+      "name": "booking help faq action clicked",
+      "component": "BookingHelpScreenComponent",
+      "stage": "Booking Help",
+      "source": "bookingHelpScreen",
+      "description": "User clicks on an action within an FAQ (e.g., cancel booking).",
+      "properties": [
+        {
+          "property": "bookingHelpFaqActionType",
+          "context": "Type of action selected (CANCEL_BOOKING, NONE)"
+        }
+      ]
+    },
+    {
+      "name": "booking help screen opened",
+      "component": "BookingHelpScreenComponent",
+      "stage": "Booking Help",
+      "source": "bookingHelpScreen",
+      "description": "User opens the booking help screen to view FAQs and get assistance with their booking.",
+      "properties": [
+        {
+          "property": "bookingHelpFaqCount",
+          "context": "Number of FAQ items displayed"
+        },
+        {
+          "property": "bookingId",
+          "context": "ID of the booking being referenced"
+        }
+      ]
+    },
+    {
+      "name": "chat screen",
+      "component": "FreshchatSupportLauncher",
+      "stage": "Misc",
+      "source": "Source.DEEPLINK_HELPER.sourceName",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/features/freshchat/FreshchatSupportLauncher.kt:38",
+      "properties": [
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "qr validation screen help button clicked",
+      "component": "QRValidationScreen",
+      "stage": "Context-Specific Help",
+      "source": "QR validation screen",
+      "description": "User clicked the help button on QR validation screen.",
+      "properties": []
+    },
+    {
+      "name": "raise SOS failed",
+      "component": "SosScreenComponent",
+      "stage": "SOS Emergency Alert",
+      "source": "sosScreen",
+      "description": "Backend SOS raise operation failed.",
+      "properties": [
+        {
+          "property": "errorType",
+          "context": "Type of error that occurred"
+        }
+      ]
+    },
+    {
+      "name": "raise SOS success",
+      "component": "SosScreenComponent",
+      "stage": "SOS Emergency Alert",
+      "source": "sosScreen",
+      "description": "Backend SOS raise operation succeeded.",
+      "properties": []
+    },
+    {
+      "name": "reclaim card button clicked",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "User clicked the button on the reclaim card.",
+      "properties": []
+    },
+    {
+      "name": "reclaim card shown",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Reclaim card displayed to the user.",
+      "properties": []
+    },
+    {
+      "name": "reclaim dialog negative button clicked",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "User clicked the negative button on reclaim confirmation dialog.",
+      "properties": []
+    },
+    {
+      "name": "reclaim dialog positive button clicked",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "User clicked the positive button on reclaim confirmation dialog.",
+      "properties": []
+    },
+    {
+      "name": "reclaim pass",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "my tickets screen tab",
+      "description": "User initiated pass reclaim operation.",
+      "properties": []
+    },
+    {
+      "name": "report problem clicked v2",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "User clicked the report problem option (version 2 of the event).",
+      "properties": []
+    },
+    {
+      "name": "report problem feature problem clicked",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "User clicked to report a specific problem within the feature.",
+      "properties": []
+    },
+    {
+      "name": "sos confirm send alert clicked",
+      "component": "SosScreenComponent",
+      "stage": "SOS Emergency Alert",
+      "source": "sosScreen",
+      "description": "User confirms sending the SOS alert after the confirmation dialog.",
+      "properties": [
+        {
+          "property": "userMobile",
+          "context": "User's mobile number"
+        },
+        {
+          "property": "lat",
+          "context": "User's current latitude"
+        },
+        {
+          "property": "long",
+          "context": "User's current longitude"
+        },
+        {
+          "property": "timeStamp",
+          "context": "Timestamp of the event"
+        },
+        {
+          "property": "sosSentSuccessfully",
+          "context": "Whether the SOS message was sent to contacts successfully"
+        }
+      ]
+    },
+    {
+      "name": "sos contact pick failed",
+      "component": "SosScreenComponent",
+      "stage": "SOS Emergency Alert",
+      "source": "sosScreen",
+      "description": "Contact picker failed when user tried to add emergency contact.",
+      "properties": [
+        {
+          "property": "error message",
+          "context": "Error description from contact picker"
+        }
+      ]
+    },
+    {
+      "name": "sos screen open",
+      "component": "SosScreenComponent",
+      "stage": "SOS Emergency Alert",
+      "source": "sosScreen",
+      "description": "User opens the SOS emergency alert screen.",
+      "properties": []
+    },
+    {
+      "name": "sos send alert clicked",
+      "component": "SosScreenComponent",
+      "stage": "SOS Emergency Alert",
+      "source": "sosScreen",
+      "description": "User clicks the send alert button to initiate SOS.",
+      "properties": [
+        {
+          "property": "userMobile",
+          "context": "User's mobile number"
+        },
+        {
+          "property": "lat",
+          "context": "User's current latitude"
+        },
+        {
+          "property": "long",
+          "context": "User's current longitude"
+        },
+        {
+          "property": "timeStamp",
+          "context": "Timestamp of the event"
+        }
+      ]
+    },
+    {
+      "name": "ss reclaim",
+      "component": "ReportProblemComponent",
+      "stage": "Report Problem",
+      "source": "ReportProblemFeature",
+      "description": "Super saver pass reclaim operation.",
+      "properties": [
+        {
+          "property": "ss reclaim type",
+          "context": "Type of super saver reclaim"
+        }
+      ]
+    },
+    {
+      "name": "ticket summary screen help button clicked",
+      "component": "TicketSummaryScreen",
+      "stage": "Context-Specific Help",
+      "source": "Ticket summary screen",
+      "description": "User clicked the help button on ticket summary screen.",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Booking Help Entry",
+        "events": [
+          "booking help screen opened",
+          "booking help faq action clicked"
+        ],
+        "next": "Cancellation Flow"
+      },
+      {
+        "label": "Cancellation Flow",
+        "events": [
+          "booking cancel api success",
+          "booking cancel api failure",
+          "booking help bottom sheet positive button clicked",
+          "booking help bottom sheet negative button clicked"
+        ]
+      },
+      {
+        "label": "SOS Entry & Setup",
+        "events": [
+          "sos screen open",
+          "sos contact pick failed"
+        ],
+        "next": "SOS Alert Sending"
+      },
+      {
+        "label": "SOS Alert Sending",
+        "events": [
+          "sos send alert clicked",
+          "sos confirm send alert clicked",
+          "raise SOS success",
+          "raise SOS failed"
+        ]
+      },
+      {
+        "label": "Report Problem & Reclaim",
+        "events": [
+          "report problem clicked v2",
+          "reclaim pass",
+          "reclaim card shown",
+          "reclaim card button clicked",
+          "reclaim dialog positive button clicked"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "auto reclaim passes response"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "chat screen"
+        ]
+      }
+    ],
+    "notes": "Help flow consists of three main branches: Booking Help (for booking-specific assistance and cancellation), SOS (emergency alert system), and Report Problem (general issue reporting and reclaim operations). Context-specific help buttons are scattered across various screens and lead to appropriate help resources."
+  }
+}

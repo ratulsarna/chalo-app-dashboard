@@ -1,0 +1,412 @@
+{
+  "flowId": "bills",
+  "flowName": "Bills payment",
+  "description": "Complete analytics map for electricity bill payment flow including consumer number fetch, amount entry, payment confirmation, payment history, and invoice viewing.",
+  "propertyDefinitions": {
+    "consumerNumber": {
+      "type": "string",
+      "description": "Electricity bill consumer number entered by user (9 digits)."
+    },
+    "consumerName": {
+      "type": "string",
+      "description": "Name of the consumer associated with the bill."
+    },
+    "billDate": {
+      "type": "string",
+      "description": "Date when the bill was generated (formatted date from epoch)."
+    },
+    "dueDate": {
+      "type": "string",
+      "description": "Due date for bill payment (formatted date from epoch)."
+    },
+    "dueAmount": {
+      "type": "number",
+      "description": "Original due amount on the bill (in currency)."
+    },
+    "userEnteredAmount": {
+      "type": "number",
+      "description": "Amount entered by user for payment (in currency)."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Payment gateway order ID (Razorpay/Juspay)."
+    },
+    "chaloOrderId": {
+      "type": "string",
+      "description": "Chalo internal order ID for the payment."
+    },
+    "eBill transactionId": {
+      "type": "string",
+      "description": "Transaction ID for electricity bill payment history."
+    }
+  },
+  "events": [
+    {
+      "name": "eBill payment homescreen drawer clicked",
+      "description": "User taps the electricity bill payment option from home screen navigation drawer.",
+      "trigger": "User interaction - drawer menu item click",
+      "properties": [],
+      "fires": "on_click",
+      "component": "HomeComponent (drawer)",
+      "nextEvents": [
+        "eBill fetch screen opened"
+      ]
+    },
+    {
+      "name": "eBill fetch screen opened",
+      "description": "Consumer number fetch screen is displayed to user.",
+      "trigger": "Screen navigation - fetch screen opened",
+      "properties": [],
+      "fires": "on_screen_load",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill fetch screen next btn clicked",
+        "eBill fetch screen show history btn clicked",
+        "eBill payment already done dialog shown"
+      ]
+    },
+    {
+      "name": "eBill fetch screen login flow started",
+      "description": "User is not logged in and login flow is initiated from fetch screen.",
+      "trigger": "Authentication required",
+      "properties": [],
+      "fires": "on_login_required",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill fetch screen user login successful"
+      ],
+      "notes": "Event constant defined but not currently raised in code"
+    },
+    {
+      "name": "eBill fetch screen user login successful",
+      "description": "User successfully completes login flow from fetch screen.",
+      "trigger": "Authentication success",
+      "properties": [],
+      "fires": "on_login_success",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill fetch screen opened"
+      ],
+      "notes": "Event constant defined but not currently raised in code"
+    },
+    {
+      "name": "eBill fetch screen next btn clicked",
+      "description": "User enters consumer number and taps Next to proceed.",
+      "trigger": "User interaction - Next button click after consumer number entry",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill amount screen opend"
+      ]
+    },
+    {
+      "name": "eBill fetch screen show history btn clicked",
+      "description": "User taps 'View Payment History' link on fetch screen.",
+      "trigger": "User interaction - View history link click",
+      "properties": [],
+      "fires": "on_click",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill payment history screen opened"
+      ]
+    },
+    {
+      "name": "eBill payment already done dialog shown",
+      "description": "System detects bill already paid for this consumer and shows confirmation dialog.",
+      "trigger": "API response - bill already paid",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_api_response",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill payment already done dialog ok clicked",
+        "eBill payment already done dialog cancel clicked"
+      ]
+    },
+    {
+      "name": "eBill payment already done dialog ok clicked",
+      "description": "User confirms to proceed with payment despite bill already paid status.",
+      "trigger": "User interaction - Dialog OK button",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EBillFetchComponent",
+      "nextEvents": [
+        "eBill amount screen opend"
+      ]
+    },
+    {
+      "name": "eBill payment already done dialog cancel clicked",
+      "description": "User cancels proceeding with payment when bill already paid.",
+      "trigger": "User interaction - Dialog Cancel button",
+      "properties": [],
+      "fires": "on_click",
+      "component": "EBillFetchComponent",
+      "nextEvents": []
+    },
+    {
+      "name": "eBill amount screen opend",
+      "description": "Amount entry and bill details screen is displayed.",
+      "trigger": "Screen navigation - amount screen opened",
+      "properties": [],
+      "fires": "on_screen_load",
+      "component": "EbillAmountComponent",
+      "nextEvents": [
+        "eBill amount screen next btn clicked"
+      ],
+      "notes": "Note the typo 'opend' in the actual event string"
+    },
+    {
+      "name": "eBill amount screen next btn clicked",
+      "description": "User confirms the payment amount and taps Next.",
+      "trigger": "User interaction - Next button click",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EbillAmountComponent",
+      "nextEvents": [
+        "eBill payment confirmation screen opened"
+      ]
+    },
+    {
+      "name": "eBill payment confirmation screen opened",
+      "description": "Payment confirmation screen with bill summary is displayed.",
+      "trigger": "Screen navigation - confirmation screen opened",
+      "properties": [],
+      "fires": "on_screen_load",
+      "component": "EBillPaymentConfirmationComponent",
+      "nextEvents": [
+        "eBill payment confirmation screen payment btn clicked"
+      ]
+    },
+    {
+      "name": "eBill payment confirmation screen payment btn clicked",
+      "description": "User taps Pay button on confirmation screen to initiate payment.",
+      "trigger": "User interaction - Pay button click",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EBillPaymentConfirmationComponent",
+      "nextEvents": [
+        "eBill payment tnc dialog shown"
+      ]
+    },
+    {
+      "name": "eBill payment tnc dialog shown",
+      "description": "Terms and conditions acceptance dialog is displayed before payment.",
+      "trigger": "Pre-payment validation - T&C dialog shown",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_dialog_show",
+      "component": "EBillPaymentConfirmationComponent",
+      "nextEvents": [
+        "eBill payment tnc accept clicked",
+        "eBill payment tnc reject clicked"
+      ]
+    },
+    {
+      "name": "eBill payment tnc accept clicked",
+      "description": "User accepts terms and conditions to proceed with payment.",
+      "trigger": "User interaction - T&C accept button",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EBillPaymentConfirmationComponent",
+      "nextEvents": [
+        "eBill payment order created"
+      ]
+    },
+    {
+      "name": "eBill payment tnc reject clicked",
+      "description": "User rejects terms and conditions, payment flow cancelled.",
+      "trigger": "User interaction - T&C reject button",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EBillPaymentConfirmationComponent",
+      "nextEvents": []
+    },
+    {
+      "name": "eBill payment order created",
+      "description": "Payment order successfully created with payment gateway.",
+      "trigger": "API response - order creation success",
+      "properties": [
+        "orderId",
+        "chaloOrderId"
+      ],
+      "fires": "on_api_response",
+      "component": "EBillPaymentConfirmationComponent",
+      "nextEvents": [
+        "Checkout flow",
+        "eBill payment success screen opened"
+      ],
+      "notes": "After order creation, user enters checkout payment flow (instrumented in payment module)"
+    },
+    {
+      "name": "eBill payment success screen opened",
+      "description": "Payment success screen is displayed after successful payment completion.",
+      "trigger": "Screen navigation - success screen opened",
+      "properties": [],
+      "fires": "on_screen_load",
+      "component": "EBillPaymentSuccessComponent",
+      "nextEvents": [
+        "eBill payment success screen view invoice clicked",
+        "eBill payment success screen ok clicked"
+      ]
+    },
+    {
+      "name": "eBill payment success screen view invoice clicked",
+      "description": "User taps 'View Invoice' button on success screen.",
+      "trigger": "User interaction - View Invoice button",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount",
+        "eBill transactionId"
+      ],
+      "fires": "on_click",
+      "component": "EBillPaymentSuccessComponent",
+      "nextEvents": [
+        "eBill payment invoice screen opened"
+      ]
+    },
+    {
+      "name": "eBill payment success screen ok clicked",
+      "description": "User taps OK button on success screen to return to home.",
+      "trigger": "User interaction - OK button",
+      "properties": [
+        "consumerNumber",
+        "consumerName",
+        "billDate",
+        "dueDate",
+        "dueAmount",
+        "userEnteredAmount"
+      ],
+      "fires": "on_click",
+      "component": "EBillPaymentSuccessComponent",
+      "nextEvents": []
+    },
+    {
+      "name": "eBill payment history screen opened",
+      "description": "Payment history screen displaying past bill payments is opened.",
+      "trigger": "Screen navigation - history screen opened",
+      "properties": [],
+      "fires": "on_screen_load",
+      "component": "ElectricityBillPaymentHistoryComponent",
+      "nextEvents": [
+        "eBill payment history load success",
+        "eBill payment history load error",
+        "eBill payment history retry load"
+      ]
+    },
+    {
+      "name": "eBill payment history load success",
+      "description": "Payment history data successfully loaded from backend.",
+      "trigger": "API response - history fetch success",
+      "properties": [],
+      "fires": "on_api_response",
+      "component": "ElectricityBillPaymentHistoryComponent",
+      "nextEvents": [
+        "eBill payment history clicked"
+      ]
+    },
+    {
+      "name": "eBill payment history load error",
+      "description": "Payment history data fetch failed.",
+      "trigger": "API response - history fetch error",
+      "properties": [],
+      "fires": "on_api_response",
+      "component": "ElectricityBillPaymentHistoryComponent",
+      "nextEvents": [
+        "eBill payment history retry load"
+      ]
+    },
+    {
+      "name": "eBill payment history retry load",
+      "description": "User taps retry button to reload payment history after error.",
+      "trigger": "User interaction - Retry button",
+      "properties": [],
+      "fires": "on_click",
+      "component": "ElectricityBillPaymentHistoryComponent",
+      "nextEvents": [
+        "eBill payment history load success",
+        "eBill payment history load error"
+      ]
+    },
+    {
+      "name": "eBill payment history clicked",
+      "description": "User taps on a payment history item to view invoice details.",
+      "trigger": "User interaction - History item click",
+      "properties": [
+        "eBill transactionId"
+      ],
+      "fires": "on_click",
+      "component": "ElectricityBillPaymentHistoryComponent",
+      "nextEvents": [
+        "eBill payment invoice screen opened"
+      ]
+    },
+    {
+      "name": "eBill payment invoice screen opened",
+      "description": "Invoice details screen is displayed showing payment transaction details.",
+      "trigger": "Screen navigation - invoice screen opened",
+      "properties": [],
+      "fires": "on_screen_load",
+      "component": "EBillPaymentInvoiceComponent",
+      "nextEvents": []
+    }
+  ]
+}

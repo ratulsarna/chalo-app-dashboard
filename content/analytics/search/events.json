@@ -1,0 +1,1147 @@
+{
+  "flowId": "search",
+  "flowName": "Search",
+  "description": "Complete analytics map for the search journey - from search bar click through universal search, stop-based trip planner search, to result selection.",
+  "propertyDefinitions": {
+    "searchSessionId": {
+      "type": "string",
+      "description": "Unique session ID for tracking a complete search session from open to close. Generated as timestamp at search screen open."
+    },
+    "searchScreenType": {
+      "type": "string",
+      "description": "Type of search screen that was opened (universal search, route-specific, stop-specific, trip planner)."
+    },
+    "searchScreenInputScreen": {
+      "type": "string",
+      "description": "The screen/source from which search was initiated (e.g., home, route details, trip planner)."
+    },
+    "no of recent trips available": {
+      "type": "number",
+      "description": "Count of recent trips shown in search suggestions when screen opens."
+    },
+    "queryString": {
+      "type": "string",
+      "description": "The search query text entered by user."
+    },
+    "queryLength": {
+      "type": "number",
+      "description": "Character count of the search query (as string)."
+    },
+    "loadingTime": {
+      "type": "string",
+      "description": "Time taken to load and display search results, in milliseconds (as string)."
+    },
+    "user lat long": {
+      "type": "string",
+      "description": "User's GPS coordinates formatted as 'lat: {latitude}, long: {longitude}'."
+    },
+    "total results": {
+      "type": "string",
+      "description": "Total count of all search results returned (routes + stops + places)."
+    },
+    "route": {
+      "type": "string",
+      "description": "Count of route results in search (as string)."
+    },
+    "trips locations": {
+      "type": "string",
+      "description": "Count of location/place results in search (as string)."
+    },
+    "trips stops": {
+      "type": "string",
+      "description": "Count of stop results in search (as string)."
+    },
+    "error message": {
+      "type": "string",
+      "description": "Error message when search results fail to load."
+    },
+    "searchResultId": {
+      "type": "string",
+      "description": "Backend ID of the selected search result."
+    },
+    "searchPartner": {
+      "type": "string",
+      "description": "Search provider/partner (Chalo, Google, etc.)."
+    },
+    "searchResultPosition": {
+      "type": "string",
+      "description": "Position/rank of selected result in search list (1-based index, as string)."
+    },
+    "searchResultName": {
+      "type": "string",
+      "description": "Display name of the selected search result."
+    },
+    "searchResultType": {
+      "type": "string",
+      "description": "Type of search result selected.",
+      "values": [
+        "LOCATION",
+        "STOP",
+        "ROUTE",
+        "TRIP_STOP",
+        "TRIP_LOCATION"
+      ]
+    },
+    "total stops and places": {
+      "type": "number",
+      "description": "Combined count of stops and places in search results."
+    },
+    "total routes": {
+      "type": "number",
+      "description": "Count of routes in search results."
+    },
+    "result lat long": {
+      "type": "string",
+      "description": "GPS coordinates of the selected result formatted as 'lat: {latitude}, long: {longitude}'."
+    },
+    "is recent item": {
+      "type": "string",
+      "description": "Whether the selected item is from recent searches (boolean as string)."
+    },
+    "is device back clicked": {
+      "type": "string",
+      "description": "Whether device back button was used to exit search (boolean as string)."
+    },
+    "time from result shown": {
+      "type": "string",
+      "description": "Time elapsed from when results were shown to when back/clear was clicked, in milliseconds (as string)."
+    },
+    "searchResult1Type": {
+      "type": "string",
+      "description": "Type of the 1st search result in the list (STOP, LOCATION, etc.)."
+    },
+    "searchResult1Name": {
+      "type": "string",
+      "description": "Name of the 1st search result in the list."
+    },
+    "searchResult2Type": {
+      "type": "string",
+      "description": "Type of the 2nd search result in the list."
+    },
+    "searchResult2Name": {
+      "type": "string",
+      "description": "Name of the 2nd search result in the list."
+    },
+    "searchResult3Type": {
+      "type": "string",
+      "description": "Type of the 3rd search result in the list."
+    },
+    "searchResult3Name": {
+      "type": "string",
+      "description": "Name of the 3rd search result in the list."
+    },
+    "location": {
+      "type": "string",
+      "description": "Location/place name for legacy universal item clicked events."
+    },
+    "stop": {
+      "type": "string",
+      "description": "Stop name for legacy universal item clicked events."
+    },
+    "stopid": {
+      "type": "string",
+      "description": "Stop ID for legacy universal item clicked events."
+    },
+    "route name": {
+      "type": "string",
+      "description": "Route name for legacy universal item clicked events."
+    },
+    "routeid": {
+      "type": "string",
+      "description": "Route ID for legacy universal item clicked events."
+    },
+    "agency name": {
+      "type": "string",
+      "description": "Agency name for route items."
+    },
+    "start stop": {
+      "type": "string",
+      "description": "Start stop name for route items."
+    },
+    "is free ride": {
+      "type": "string",
+      "description": "Whether the route offers free rides (boolean as string)."
+    },
+    "length": {
+      "type": "string",
+      "description": "Query length for legacy universal item clicked events (as string)."
+    },
+    "universal item clicked": {
+      "type": "string",
+      "description": "Type of item clicked in universal search (LOCATION, STOP, ROUTE, TRIP_STOP, TRIP_LOCATION)."
+    },
+    "from recent list": {
+      "type": "string",
+      "description": "Whether item is from recent list (boolean as string)."
+    },
+    "is popular route": {
+      "type": "string",
+      "description": "Whether route is a popular route (boolean as string)."
+    },
+    "searchString": {
+      "type": "string",
+      "description": "Search query string (only included if not recent/popular item)."
+    },
+    "hour of event": {
+      "type": "string",
+      "description": "Hour of day when event occurred (0-23)."
+    },
+    "network status": {
+      "type": "string",
+      "description": "Network connectivity status (boolean as string)."
+    },
+    "origin": {
+      "type": "string",
+      "description": "Origin location name for recent trip results."
+    },
+    "destination": {
+      "type": "string",
+      "description": "Destination location name for recent trip results."
+    },
+    "search bar title": {
+      "type": "string",
+      "description": "Placeholder text shown in the search bar when clicked."
+    },
+    "card position": {
+      "type": "string",
+      "description": "Position index of the recent search card clicked (as string)."
+    },
+    "searchTarget": {
+      "type": "string",
+      "description": "Which field is being searched (FROM or TO) in stop-based trip planner.",
+      "values": [
+        "FROM",
+        "TO"
+      ]
+    },
+    "from_type": {
+      "type": "string",
+      "description": "Type of FROM selection (STOP or PLACE)."
+    },
+    "from_stop_name": {
+      "type": "string",
+      "description": "Name of FROM stop."
+    },
+    "from_stop_id": {
+      "type": "string",
+      "description": "ID of FROM stop."
+    },
+    "from_place_name": {
+      "type": "string",
+      "description": "Name of FROM place."
+    },
+    "from_place_id": {
+      "type": "string",
+      "description": "ID of FROM place."
+    },
+    "to_type": {
+      "type": "string",
+      "description": "Type of TO selection (STOP or PLACE)."
+    },
+    "to_stop_name": {
+      "type": "string",
+      "description": "Name of TO stop."
+    },
+    "to_stop_id": {
+      "type": "string",
+      "description": "ID of TO stop."
+    },
+    "to_place_name": {
+      "type": "string",
+      "description": "Name of TO place."
+    },
+    "to_place_id": {
+      "type": "string",
+      "description": "ID of TO place."
+    },
+    "stop name": {
+      "type": "string",
+      "description": "Name of selected stop."
+    },
+    "stop id": {
+      "type": "string",
+      "description": "ID of selected stop."
+    },
+    "location name": {
+      "type": "string",
+      "description": "Name of selected location/place."
+    },
+    "place id": {
+      "type": "string",
+      "description": "ID of selected place."
+    },
+    "count": {
+      "type": "number",
+      "description": "Count of nearby stops found for a place."
+    },
+    "error type": {
+      "type": "string",
+      "description": "Type of error when nearest stop fetch fails."
+    },
+    "distance": {
+      "type": "string",
+      "description": "Distance to selected nearest stop."
+    },
+    "previous screen": {
+      "type": "string",
+      "description": "Previous screen before opening stop-based trip planner search."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "timedOut": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Entry",
+      "description": "User initiates search from various entry points in the app",
+      "events": [
+        "chalo search bar clicked",
+        "home screen bottom nav search tab clicked",
+        "regular bus page recent search card clicked"
+      ]
+    },
+    {
+      "name": "Universal Search",
+      "description": "Main search experience - screen open, typing, viewing results, selecting items",
+      "events": [
+        "search screen opened",
+        "first character type after search open",
+        "Search results shown",
+        "search result clicked",
+        "universal item clicked",
+        "recent trip result clicked",
+        "search clear query clicked",
+        "search screen back clicked"
+      ]
+    },
+    {
+      "name": "Stop-Based Trip Planner Search",
+      "description": "Dedicated search flow for trip planning with from/to location selection",
+      "events": [
+        "stop trip planner search screen opened",
+        "stop trip planner search from clicked",
+        "stop trip planner search to clicked",
+        "swap button clicked",
+        "stop trip planner search recent clicked",
+        "stop search result selected",
+        "place search result selected",
+        "nearest stop fetch success",
+        "nearest stop fetch failure",
+        "nearest stop selected",
+        "show all nearby stops clicked",
+        "no nearby stops found for place",
+        "retry nearest stop fetch clicked",
+        "bottom sheet closed button clicked"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pb adjust campaign card clicked",
+        "pb adjust campaign card shown",
+        "universal search api error",
+        "universal search city fetch from location failed",
+        "use_current_location_clicked"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Search results shown",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "Search results are fetched and displayed to user. Includes result counts, loading time, and error details if failed.",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "loadingTime",
+          "context": "Time taken to fetch and display results (ms)"
+        },
+        {
+          "property": "queryString"
+        },
+        {
+          "property": "queryLength"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "user lat long"
+        },
+        {
+          "property": "total results",
+          "context": "Present on success"
+        },
+        {
+          "property": "route",
+          "context": "Present on success"
+        },
+        {
+          "property": "trips locations",
+          "context": "Present on success"
+        },
+        {
+          "property": "trips stops",
+          "context": "Present on success"
+        },
+        {
+          "property": "error message",
+          "context": "Present on failure only"
+        }
+      ]
+    },
+    {
+      "name": "bottom sheet closed button clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User closes the bottom sheet showing nearby stops.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        }
+      ]
+    },
+    {
+      "name": "chalo search bar clicked",
+      "component": "HomeScreenAnalyticsHelperImpl",
+      "stage": "Entry",
+      "source": "Source.HOME_SCREEN_TAB or Source.REGULAR_BUS_SCREEN_TAB",
+      "description": "User clicks the search bar on home screen or regular bus tab to initiate search.",
+      "properties": [
+        {
+          "property": "search bar title",
+          "context": "Placeholder text shown in search bar"
+        }
+      ]
+    },
+    {
+      "name": "first character type after search open",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "Tracks when user types the first character after opening search screen. Helps measure search engagement.",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "queryString",
+          "context": "The first character typed"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        }
+      ]
+    },
+    {
+      "name": "home screen bottom nav search tab clicked",
+      "component": "HomeScreenAnalyticsHelperImpl",
+      "stage": "Entry",
+      "source": "Source.REGULAR_BUS_SCREEN_TAB",
+      "description": "User taps the search tab in bottom navigation to open search screen.",
+      "properties": []
+    },
+    {
+      "name": "nearest stop fetch failure",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "Failed to fetch nearby stops for a selected place.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        },
+        {
+          "property": "place id"
+        },
+        {
+          "property": "location name"
+        },
+        {
+          "property": "error type"
+        }
+      ]
+    },
+    {
+      "name": "nearest stop fetch success",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "Successfully fetched nearby stops for a selected place.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        },
+        {
+          "property": "place id"
+        },
+        {
+          "property": "location name"
+        },
+        {
+          "property": "count",
+          "context": "Number of nearby stops found"
+        }
+      ]
+    },
+    {
+      "name": "nearest stop selected",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User selects one of the nearby stops shown after place selection.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        },
+        {
+          "property": "place id"
+        },
+        {
+          "property": "location name"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "distance"
+        }
+      ]
+    },
+    {
+      "name": "no nearby stops found for place",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "No nearby stops were found for the selected place.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        },
+        {
+          "property": "place id"
+        },
+        {
+          "property": "location name"
+        }
+      ]
+    },
+    {
+      "name": "pb adjust campaign card clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/analytics/UniversalSearchAnalyticsEventHelperImpl.kt:369",
+      "properties": []
+    },
+    {
+      "name": "pb adjust campaign card shown",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/analytics/UniversalSearchAnalyticsEventHelperImpl.kt:362",
+      "properties": []
+    },
+    {
+      "name": "place search result selected",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User selects a place/location from search results in trip planner. Triggers nearest stop fetch.",
+      "properties": [
+        {
+          "property": "searchTarget",
+          "context": "FROM or TO"
+        },
+        {
+          "property": "location name"
+        },
+        {
+          "property": "place id"
+        }
+      ]
+    },
+    {
+      "name": "recent trip result clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "User clicks a recent trip item from search suggestions. Combines universal item clicked properties with trip-specific origin/destination.",
+      "properties": [
+        {
+          "property": "origin"
+        },
+        {
+          "property": "destination"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "length"
+        },
+        {
+          "property": "universal item clicked"
+        },
+        {
+          "property": "from recent list"
+        },
+        {
+          "property": "is popular route"
+        },
+        {
+          "property": "searchString",
+          "context": "Only if not recent or popular"
+        },
+        {
+          "property": "hour of event"
+        },
+        {
+          "property": "network status"
+        }
+      ]
+    },
+    {
+      "name": "regular bus page recent search card clicked",
+      "component": "HomeScreenAnalyticsHelperImpl",
+      "stage": "Entry",
+      "source": "Source.REGULAR_BUS_SCREEN_TAB",
+      "description": "User clicks a recent search card shown on the regular bus page.",
+      "properties": [
+        {
+          "property": "card position",
+          "context": "Position index of the card clicked"
+        }
+      ]
+    },
+    {
+      "name": "retry nearest stop fetch clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User clicks retry after nearest stop fetch fails.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        },
+        {
+          "property": "place id"
+        },
+        {
+          "property": "location name"
+        }
+      ]
+    },
+    {
+      "name": "search clear query clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "User clicks the clear button to reset search query. Includes top 3 results and time spent viewing results.",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "queryString"
+        },
+        {
+          "property": "queryLength"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "time from result shown"
+        },
+        {
+          "property": "searchResult1Type",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult1Name",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult2Type",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult2Name",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult3Type",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult3Name",
+          "context": "If results present"
+        }
+      ]
+    },
+    {
+      "name": "search result clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "User selects a search result from the list. Tracks result details, position, and context.",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "queryString"
+        },
+        {
+          "property": "queryLength"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "searchResultId"
+        },
+        {
+          "property": "searchPartner"
+        },
+        {
+          "property": "searchResultPosition"
+        },
+        {
+          "property": "searchResultName"
+        },
+        {
+          "property": "searchResultType"
+        },
+        {
+          "property": "total stops and places"
+        },
+        {
+          "property": "total routes"
+        },
+        {
+          "property": "result lat long"
+        },
+        {
+          "property": "user lat long"
+        },
+        {
+          "property": "is recent item"
+        }
+      ]
+    },
+    {
+      "name": "search screen back clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "User exits search screen via back button (toolbar or device). Tracks abandonment and includes top results.",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "queryString"
+        },
+        {
+          "property": "queryLength"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "is device back clicked"
+        },
+        {
+          "property": "time from result shown"
+        },
+        {
+          "property": "searchResult1Type",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult1Name",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult2Type",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult2Name",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult3Type",
+          "context": "If results present"
+        },
+        {
+          "property": "searchResult3Name",
+          "context": "If results present"
+        }
+      ]
+    },
+    {
+      "name": "search screen opened",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "Universal search screen is opened. Session tracking begins with a unique searchSessionId.",
+      "properties": [
+        {
+          "property": "searchSessionId",
+          "context": "Generated as timestamp at screen open"
+        },
+        {
+          "property": "searchScreenType",
+          "context": "Type of search screen (universal, route, stop)"
+        },
+        {
+          "property": "searchScreenInputScreen",
+          "context": "Screen from which search was initiated"
+        },
+        {
+          "property": "no of recent trips available",
+          "context": "Count of recent trips shown"
+        }
+      ]
+    },
+    {
+      "name": "show all nearby stops clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User clicks to view all nearby stops for a selected place.",
+      "properties": [
+        {
+          "property": "searchTarget"
+        },
+        {
+          "property": "place id"
+        },
+        {
+          "property": "location name"
+        }
+      ]
+    },
+    {
+      "name": "stop search result selected",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User selects a stop from search results in trip planner.",
+      "properties": [
+        {
+          "property": "searchTarget",
+          "context": "FROM or TO"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stop id"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner search from clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User clicks the FROM location field to select origin.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner search recent clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User selects a recent trip from suggestions in trip planner.",
+      "properties": [
+        {
+          "property": "from_type"
+        },
+        {
+          "property": "from_stop_name",
+          "context": "If from is a stop"
+        },
+        {
+          "property": "from_stop_id",
+          "context": "If from is a stop"
+        },
+        {
+          "property": "from_place_name",
+          "context": "If from is a place"
+        },
+        {
+          "property": "from_place_id",
+          "context": "If from is a place"
+        },
+        {
+          "property": "to_type"
+        },
+        {
+          "property": "to_stop_name",
+          "context": "If to is a stop"
+        },
+        {
+          "property": "to_stop_id",
+          "context": "If to is a stop"
+        },
+        {
+          "property": "to_place_name",
+          "context": "If to is a place"
+        },
+        {
+          "property": "to_place_id",
+          "context": "If to is a place"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner search screen opened",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "Stop-based trip planner search screen is opened for selecting from/to locations.",
+      "properties": [
+        {
+          "property": "previous screen",
+          "context": "Optional - screen before opening trip planner search"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner search to clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User clicks the TO location field to select destination.",
+      "properties": []
+    },
+    {
+      "name": "swap button clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Stop-Based Trip Planner Search",
+      "source": "Source.STOP_BASED_TRIP_PLANNER_SEARCH_SCREEN",
+      "description": "User clicks swap button to interchange from/to locations.",
+      "properties": [
+        {
+          "property": "from_type"
+        },
+        {
+          "property": "from_stop_name",
+          "context": "If from is a stop"
+        },
+        {
+          "property": "from_stop_id",
+          "context": "If from is a stop"
+        },
+        {
+          "property": "from_place_name",
+          "context": "If from is a place"
+        },
+        {
+          "property": "from_place_id",
+          "context": "If from is a place"
+        },
+        {
+          "property": "to_type"
+        },
+        {
+          "property": "to_stop_name",
+          "context": "If to is a stop"
+        },
+        {
+          "property": "to_stop_id",
+          "context": "If to is a stop"
+        },
+        {
+          "property": "to_place_name",
+          "context": "If to is a place"
+        },
+        {
+          "property": "to_place_id",
+          "context": "If to is a place"
+        }
+      ]
+    },
+    {
+      "name": "universal item clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Universal Search",
+      "source": "Various (passed as parameter)",
+      "description": "Legacy event for tracking clicks on universal search items. Triggered when route, stop, or place is clicked. Properties vary by item type.",
+      "properties": [
+        {
+          "property": "location",
+          "context": "For LOCATION type items"
+        },
+        {
+          "property": "stop",
+          "context": "For STOP type items"
+        },
+        {
+          "property": "stopid",
+          "context": "For STOP type items"
+        },
+        {
+          "property": "route name",
+          "context": "For ROUTE type items"
+        },
+        {
+          "property": "agency name",
+          "context": "For ROUTE type items"
+        },
+        {
+          "property": "start stop",
+          "context": "For ROUTE type items"
+        },
+        {
+          "property": "is free ride",
+          "context": "For ROUTE type items"
+        },
+        {
+          "property": "length"
+        },
+        {
+          "property": "universal item clicked",
+          "context": "Item type: LOCATION, STOP, ROUTE, TRIP_STOP, TRIP_LOCATION"
+        },
+        {
+          "property": "from recent list"
+        },
+        {
+          "property": "is popular route"
+        },
+        {
+          "property": "searchString",
+          "context": "Only if not recent or popular item"
+        },
+        {
+          "property": "hour of event"
+        },
+        {
+          "property": "network status"
+        }
+      ],
+      "notes": "This is a legacy event. New code should use 'search result clicked' instead."
+    },
+    {
+      "name": "universal search api error",
+      "component": "FetchRemoteSearchResultUseCase",
+      "stage": "Misc",
+      "source": "Source.FETCH_REMOTE_SEARCH_RESULT_USE_CASE",
+      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/domain/FetchRemoteSearchResultUseCase.kt:108",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "timedOut"
+        }
+      ]
+    },
+    {
+      "name": "universal search city fetch from location failed",
+      "component": "UniversalPickerComponent",
+      "stage": "Misc",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/ui/UniversalPickerComponent.kt:1572",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "use_current_location_clicked",
+      "component": "UniversalPickerComponent",
+      "stage": "Misc",
+      "source": "Source.UNIVERSAL_SEARCH",
+      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/ui/UniversalPickerComponent.kt:1420",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Entry",
+        "events": [
+          "chalo search bar clicked",
+          "home screen bottom nav search tab clicked",
+          "regular bus page recent search card clicked"
+        ],
+        "next": "Universal Search or Trip Planner Search"
+      },
+      {
+        "label": "Universal Search Flow",
+        "events": [
+          "search screen opened",
+          "first character type after search open",
+          "Search results shown",
+          "search result clicked / universal item clicked",
+          "search clear query clicked",
+          "search screen back clicked"
+        ],
+        "next": "Route Details / Stop Details / Trip Planner"
+      },
+      {
+        "label": "Stop-Based Trip Planner Search",
+        "events": [
+          "stop trip planner search screen opened",
+          "stop trip planner search from clicked / to clicked",
+          "stop search result selected / place search result selected",
+          "nearest stop fetch success / failure",
+          "nearest stop selected"
+        ],
+        "next": "Trip Planner Results"
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "pb adjust campaign card clicked",
+          "pb adjust campaign card shown",
+          "universal search api error",
+          "universal search city fetch from location failed",
+          "use_current_location_clicked"
+        ]
+      }
+    ],
+    "notes": "Search flow has two main paths: Universal Search (for general route/stop/place search) and Stop-Based Trip Planner Search (for from/to trip planning). Both share similar search mechanics but have different UI and result handling."
+  }
+}

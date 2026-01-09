@@ -1,0 +1,125 @@
+{
+  "_comment": "LLM-maintained flow definitions. No matching rules - categorization is semantic.",
+  "_version": "2.0",
+  "flows": {
+    "mticket": {
+      "name": "M-Ticket",
+      "description": "Mobile ticket booking for city buses - ticket selection, fare details, activation, QR display. Single-ride tickets purchased via app.",
+      "lastAudited": "2026-01-09"
+    },
+    "trip-planner": {
+      "name": "Trip Planner",
+      "description": "Trip planning (both location-based and stop-based entry) - pick from/to, swap, time/date edits, fetch itineraries (including HOP), quick filters/tabs, select itinerary, proceed to trip details/route details.",
+      "lastAudited": "2026-01-09"
+    },
+    "super-pass": {
+      "name": "Super Pass",
+      "description": "Monthly/weekly passes for city buses - pass selection, passenger details, proof submission, verification, activation. Multi-ride passes.",
+      "lastAudited": "2026-01-08"
+    },
+    "premium-bus": {
+      "name": "Premium Bus",
+      "description": "Reserved premium bus booking - route selection, seat selection, slot booking, pre-booking, cancellation. AC/premium bus services.",
+      "lastAudited": "2026-01-09"
+    },
+    "metro": {
+      "name": "Metro",
+      "description": "Metro tickets - metro route discovery, fare fetching, booking, payment, validation, receipts. Includes ONDC metro tickets."
+    },
+    "ondc-bus": {
+      "name": "ONDC Bus",
+      "description": "ONDC bus tickets - booking, payment, validation, receipts for bus tickets purchased via ONDC protocol. Separate from mticket.",
+      "lastAudited": "2026-01-09"
+    },
+    "instant-ticket": {
+      "name": "Instant Ticket",
+      "description": "Instant ticket purchase - quick ticket buying flow with fare details and summary.",
+      "lastAudited": "2026-01-09"
+    },
+    "quick-pay": {
+      "name": "Quick Pay",
+      "description": "Wallet-based fare payment on bus - enter amount, wallet deduction, on-bus validation. Pay-as-you-go for regular buses.",
+      "lastAudited": "2026-01-09"
+    },
+    "card": {
+      "name": "Card",
+      "description": "Physical card operations - Chalo Card linking/recharge, NCMC balance/recharge, card transactions, OCR scanning, tap operations.",
+      "lastAudited": "2026-01-09"
+    },
+    "bills": {
+      "name": "Bills",
+      "description": "Bill payments - electricity bills, BEST bills, and other utility payments through the app.",
+      "lastAudited": "2026-01-09"
+    },
+    "lifecycle": {
+      "name": "App Lifecycle",
+      "description": "App-level events - app launch, splash screen, force updates, app ratings, app sharing, terms acceptance. Not product-specific.",
+      "lastAudited": "2026-01-09"
+    },
+    "onboarding": {
+      "name": "Onboarding",
+      "description": "First-time user setup - language selection, city selection, tutorials, location permissions, get started flow.",
+      "lastAudited": "2026-01-09"
+    },
+    "auth": {
+      "name": "Authentication",
+      "description": "User authentication - login screen, OTP verification, Truecaller, logout, session management. Identity and access.",
+      "lastAudited": "2026-01-09"
+    },
+    "home": {
+      "name": "Home",
+      "description": "Home screen interactions - tabs, navigation drawer, nearby stops display, home cards, city change. The main app screen.",
+      "lastAudited": "2026-01-09"
+    },
+    "search": {
+      "name": "Search",
+      "description": "Route and stop search - universal search/picker, route search results, stop selection. Finding routes.",
+      "lastAudited": "2026-01-09"
+    },
+    "tracking": {
+      "name": "Live Tracking",
+      "description": "Route details and live tracking - ETA display, schedules, live bus positions, favorites, seat availability. Real-time info.",
+      "lastAudited": "2026-01-09"
+    },
+    "payment": {
+      "name": "Payment",
+      "description": "Payment processing across all products - checkout screens, UPI, cards, net banking, wallet payment, Razorpay, Juspay, Inai, payment status, success/failure handling.",
+      "lastAudited": "2026-01-09"
+    },
+    "validation": {
+      "name": "Validation",
+      "description": "Ticket/pass validation across all products - BLE scanning, QR codes, tap-in/out, conductor validation, punch notifications.",
+      "lastAudited": "2026-01-09"
+    },
+    "wallet": {
+      "name": "Wallet",
+      "description": "Chalo Wallet operations - balance viewing, load money/recharge, transaction history, Quick Pay ticket purchase (ChaloPayV2 & V3), wallet access/KYC, minimum KYC flow, wallet migration. Includes background wallet sync.",
+      "lastAudited": "2026-01-09"
+    },
+    "history": {
+      "name": "History",
+      "description": "Booking and transaction history - past bookings, receipts, ride feedback, booking cancellation. Historical records. Ticket summary.",
+      "lastAudited": "2026-01-09"
+    },
+    "help": {
+      "name": "Help",
+      "description": "Help and support - help screens, issue reporting, chat support, SOS functionality.",
+      "lastAudited": "2026-01-09"
+    },
+    "notifications": {
+      "name": "Notifications",
+      "description": "Notifications - push notifications, in-app notifications, FCM, notification interactions, permission management, punch notifications, TITO notifications, Plotline notifications, Airship notifications.",
+      "lastAudited": "2026-01-09"
+    },
+    "network": {
+      "name": "Network",
+      "description": "Network and connectivity - connection state, socket management, SSL, encryption/decryption, key sync.",
+      "lastAudited": "2026-01-09"
+    },
+    "ads": {
+      "name": "Ads",
+      "description": "In-app advertising - native ads, banner ads, ad impressions, clicks, revenue tracking.",
+      "lastAudited": "2026-01-09"
+    }
+  }
+}

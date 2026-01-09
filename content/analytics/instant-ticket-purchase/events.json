@@ -1,0 +1,1687 @@
+{
+  "flowId": "instant_ticket_purchase",
+  "flowName": "Instant Ticket purchase & validation",
+  "description": "Complete analytics map for the instant ticket purchase journey from route selection to ticket validation and receipt viewing.",
+  "propertyDefinitions": {
+    "isInstantTicket": {
+      "type": "boolean",
+      "description": "Hard-coded `true` for every event in this flow to allow dashboards to filter the instant ticket event family.",
+      "constant": true
+    },
+    "productType": {
+      "type": "string",
+      "description": "Product type; these events always log `mobileTicket`.",
+      "values": [
+        "mobileTicket"
+      ]
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type; these events always log `instantTicket`.",
+      "values": [
+        "instantTicket"
+      ]
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Backend order identifier returned after successful order creation."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount in subcurrency (paisa) - the payable fare for the ticket."
+    },
+    "routeId": {
+      "type": "string",
+      "description": "Unique identifier for the selected route."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Display name of the selected route."
+    },
+    "stopId": {
+      "type": "string",
+      "description": "Unique identifier for a stop (either from or to)."
+    },
+    "stopName": {
+      "type": "string",
+      "description": "Display name of a stop (either from or to)."
+    },
+    "fromStopId": {
+      "type": "string",
+      "description": "Unique identifier for the boarding/start stop."
+    },
+    "fromStopName": {
+      "type": "string",
+      "description": "Display name of the boarding/start stop."
+    },
+    "toStopId": {
+      "type": "string",
+      "description": "Unique identifier for the alighting/end stop."
+    },
+    "toStopName": {
+      "type": "string",
+      "description": "Display name of the alighting/end stop."
+    },
+    "stopType": {
+      "type": "string",
+      "description": "Type of stop being selected: FROM or TO.",
+      "values": [
+        "FROM",
+        "TO"
+      ]
+    },
+    "flowType": {
+      "type": "string",
+      "description": "Flow type identifier for tracking different instant ticket entry points.",
+      "values": [
+        "Instant Ticket"
+      ]
+    },
+    "previousValue": {
+      "type": "number",
+      "description": "Previous passenger count before the change."
+    },
+    "currentValue": {
+      "type": "number",
+      "description": "New passenger count after the change."
+    },
+    "selectedSeatCount": {
+      "type": "number",
+      "description": "Total number of seats/passengers selected for the ticket."
+    },
+    "selectedSeatNumbers": {
+      "type": "string",
+      "description": "Comma-separated list of seat numbers (if applicable)."
+    },
+    "fullName": {
+      "type": "string",
+      "description": "Full name of the passenger/ticket holder."
+    },
+    "time": {
+      "type": "string",
+      "description": "Time string extracted from current true time."
+    },
+    "date": {
+      "type": "string",
+      "description": "Date string extracted from current true time."
+    },
+    "activationTimeStamp": {
+      "type": "number",
+      "description": "Activation timestamp in milliseconds for the ticket."
+    },
+    "productId": {
+      "type": "string",
+      "description": "Product identifier tied to receipt data."
+    },
+    "punchTime": {
+      "type": "string",
+      "description": "Time when the ticket was punched/validated by conductor."
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Vehicle number where the ticket was validated."
+    },
+    "startStop": {
+      "type": "string",
+      "description": "Start stop name from receipt."
+    },
+    "endStop": {
+      "type": "string",
+      "description": "End stop name from receipt."
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Conductor identifier who validated the ticket."
+    },
+    "endStopId": {
+      "type": "string",
+      "description": "End stop identifier from receipt."
+    },
+    "isChalowWalletActivated": {
+      "type": "boolean",
+      "description": "Whether Chalo wallet is activated for the user."
+    },
+    "isRechargeDoneOnce": {
+      "type": "boolean",
+      "description": "Whether the user has recharged wallet at least once."
+    },
+    "balanceAmount": {
+      "type": "number",
+      "description": "Current wallet balance amount in subcurrency."
+    },
+    "isQuickPayBoughtOnce": {
+      "type": "boolean",
+      "description": "Whether the user has used QuickPay at least once."
+    },
+    "paymentMethod": {
+      "type": "string",
+      "description": "Payment method selected by the user.",
+      "values": [
+        "chalo wallet",
+        "online"
+      ]
+    },
+    "validationFlowType": {
+      "type": "string",
+      "description": "Type of validation flow (CONDUCTOR_VALIDATION, TITO, etc.)."
+    },
+    "isBlePermissionGranted": {
+      "type": "boolean",
+      "description": "Whether BLE permission is granted."
+    },
+    "wasTitoValidation": {
+      "type": "boolean",
+      "description": "Whether the validation was TITO (Tap-In Tap-Out) based."
+    },
+    "notificationDeliveryMedium": {
+      "type": "string",
+      "description": "Medium through which validation notification was delivered.",
+      "values": [
+        "INTERNET",
+        "BLE"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for failures or invalid data."
+    },
+    "rawData": {
+      "type": "string",
+      "description": "Raw data received in case of invalid BLE validation ack."
+    },
+    "validationAckDataType": {
+      "type": "string",
+      "description": "Type of validation acknowledgment data received."
+    },
+    "balance amount": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "is chalo wallet activated": {
+      "type": "boolean",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "is quick pay bought once": {
+      "type": "boolean",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "is recharge done once": {
+      "type": "boolean",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "searchQuery": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "isActive": {
+      "type": "boolean",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "from stop id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "route id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "to stop id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "events": [
+    {
+      "name": "ble permission check on initialization",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:158",
+      "description": "BLE permission status checked when validation screen initializes.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "isBlePermissionGranted",
+          "required": true,
+          "description": "Whether BLE permission is granted."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "ble permission denied",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:178",
+      "description": "BLE permission was denied by the user.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order identifier."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": true
+    },
+    {
+      "name": "ble permission granted",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:176",
+      "description": "BLE permission was granted by the user.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order identifier."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": true
+    },
+    {
+      "name": "ble screen open",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:95",
+      "description": "BLE validation screen opened for ticket validation via Bluetooth.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order identifier."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "validationFlowType",
+          "required": true,
+          "description": "Type of validation flow being used."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "ble validation ack data consumed",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:382",
+      "description": "BLE validation acknowledgment data was consumed/processed.",
+      "properties": [
+        {
+          "name": "notificationDeliveryMedium",
+          "required": true,
+          "description": "How data was delivered."
+        },
+        {
+          "name": "validationAckDataType",
+          "required": true,
+          "description": "Type of ack data."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "confirmation on back press no clicked",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:124",
+      "description": "User cancelled exit on back press dialog.",
+      "properties": [],
+      "funnelPosition": "validation",
+      "userAction": true
+    },
+    {
+      "name": "confirmation on back press shown",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:112",
+      "description": "Confirmation dialog shown when user pressed back during validation.",
+      "properties": [],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "confirmation on back press yes clicked",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:118",
+      "description": "User confirmed exit on back press dialog.",
+      "properties": [],
+      "funnelPosition": "validation",
+      "userAction": true
+    },
+    {
+      "name": "exit post validation clicked",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:365",
+      "description": "User clicked exit/back button from post-validation screen.",
+      "properties": [
+        {
+          "name": "wasTitoValidation",
+          "required": true,
+          "description": "Whether validation was TITO-based."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "post_validation",
+      "userAction": true
+    },
+    {
+      "name": "find my ticket fare auto fare update with seat selection",
+      "component": "FareDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.INSTANT_TICKET_FARE_DETAILS_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/faredetails/FareDetailsComponent.kt:795",
+      "properties": [
+        {
+          "property": "selectedSeatCount"
+        },
+        {
+          "property": "selectedSeatNumbers"
+        }
+      ]
+    },
+    {
+      "name": "find my ticket fare fare details passenger count changed",
+      "source": "instant ticket fare details fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/faredetails/FareDetailsComponent.kt:945",
+      "description": "User changed the passenger count (either increased or decreased).",
+      "properties": [
+        {
+          "name": "previousValue",
+          "required": true,
+          "description": "Previous passenger count."
+        },
+        {
+          "name": "currentValue",
+          "required": true,
+          "description": "New passenger count."
+        },
+        {
+          "name": "flowType",
+          "required": true,
+          "description": "Flow type identifier."
+        }
+      ],
+      "funnelPosition": "fare_details",
+      "userAction": true
+    },
+    {
+      "name": "find my ticket fare fare details pay button clicked",
+      "source": "instant ticket fare details fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/faredetails/FareDetailsComponent.kt:1053",
+      "description": "User clicked the pay button to proceed with payment. This triggers fare validation and order creation.",
+      "properties": [
+        {
+          "name": "amount",
+          "required": true,
+          "description": "Final payable fare amount."
+        },
+        {
+          "name": "flowType",
+          "required": true,
+          "description": "Flow type identifier."
+        }
+      ],
+      "additionalProperties": "passengerCountMap entries are merged into properties",
+      "funnelPosition": "payment_initiation",
+      "userAction": true
+    },
+    {
+      "name": "find my ticket fare fare details screen opened",
+      "source": "instant ticket fare details fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/faredetails/FareDetailsComponent.kt:701",
+      "description": "Fare details screen opened with calculated fare information after successful fare fetch.",
+      "properties": [
+        {
+          "name": "amount",
+          "required": true,
+          "description": "Initial payable amount in subcurrency."
+        },
+        {
+          "name": "flowType",
+          "required": true,
+          "description": "Always \"instantTicket\" for this flow."
+        },
+        {
+          "name": "selectedSeatCount",
+          "required": true,
+          "description": "Number of seats/passengers selected."
+        },
+        {
+          "name": "selectedSeatNumbers",
+          "required": true,
+          "description": "Comma-separated seat numbers."
+        }
+      ],
+      "funnelPosition": "fare_details",
+      "userAction": false
+    },
+    {
+      "name": "find my ticket fare route details next clicked",
+      "source": "route selection fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/routeselection/RouteBasedStopSearchForProductPurchaseComponent.kt:183",
+      "description": "User clicked next after selecting route and stops to proceed to fare details.",
+      "properties": [
+        {
+          "name": "routeId",
+          "required": true,
+          "description": "Selected route identifier."
+        },
+        {
+          "name": "routeName",
+          "required": true,
+          "description": "Selected route name."
+        },
+        {
+          "name": "fromStopId",
+          "required": true,
+          "description": "Boarding stop identifier."
+        },
+        {
+          "name": "fromStopName",
+          "required": true,
+          "description": "Boarding stop name."
+        },
+        {
+          "name": "toStopId",
+          "required": true,
+          "description": "Alighting stop identifier."
+        },
+        {
+          "name": "toStopName",
+          "required": true,
+          "description": "Alighting stop name."
+        }
+      ],
+      "funnelPosition": "route_selection_complete",
+      "userAction": true
+    },
+    {
+      "name": "find my ticket fare route number entered",
+      "source": "route selection fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/routeselection/RouteBasedStopSearchForProductPurchaseComponent.kt:91",
+      "description": "User selected a route for their instant ticket journey.",
+      "properties": [
+        {
+          "name": "routeId",
+          "required": true,
+          "description": "Selected route identifier."
+        },
+        {
+          "name": "routeName",
+          "required": true,
+          "description": "Selected route display name."
+        }
+      ],
+      "funnelPosition": "route_selection",
+      "userAction": true
+    },
+    {
+      "name": "find my ticket fare stop clicked",
+      "source": "route selection fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/routeselection/RouteBasedStopSearchForProductPurchaseComponent.kt:117",
+      "description": "User clicked to select a stop (either boarding or alighting).",
+      "properties": [
+        {
+          "name": "stopType",
+          "required": true,
+          "description": "Type of stop being selected: FROM or TO."
+        }
+      ],
+      "funnelPosition": "stop_selection",
+      "userAction": true
+    },
+    {
+      "name": "find my ticket fare stop entered",
+      "source": "route selection fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/routeselection/RouteBasedStopSearchForProductPurchaseComponent.kt:150",
+      "description": "User selected a specific stop after clicking stop selection.",
+      "properties": [
+        {
+          "name": "stopId",
+          "required": true,
+          "description": "Selected stop identifier."
+        },
+        {
+          "name": "stopName",
+          "required": true,
+          "description": "Selected stop display name."
+        }
+      ],
+      "funnelPosition": "stop_selection",
+      "userAction": true
+    },
+    {
+      "name": "instant ticket bottmsheet opened",
+      "component": "InstantTicketWalletAccessComponent",
+      "stage": "Misc",
+      "source": "SOURCE",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/instantticketscreen/InstantTicketWalletAccessComponent.kt:589",
+      "properties": [
+        {
+          "property": "balance amount"
+        },
+        {
+          "property": "is chalo wallet activated"
+        },
+        {
+          "property": "is quick pay bought once"
+        },
+        {
+          "property": "is recharge done once"
+        }
+      ]
+    },
+    {
+      "name": "instant ticket bottom sheet recharge button clicked",
+      "source": "new pay for ticket bottom sheet",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/instantticketscreen/InstantTicketWalletAccessComponent.kt:472",
+      "description": "User clicked recharge button from wallet payment option due to insufficient balance.",
+      "properties": [],
+      "funnelPosition": "payment_method_selection",
+      "userAction": true
+    },
+    {
+      "name": "instant ticket fetched",
+      "source": "varies",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:75",
+      "description": "Instant ticket data successfully fetched from backend after payment completion.",
+      "properties": [
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Ticket holder full name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time string."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date string."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Always mobileTicket."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Always instantTicket."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order identifier."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp in milliseconds."
+        },
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        }
+      ],
+      "funnelPosition": "ticket_fetch",
+      "userAction": false
+    },
+    {
+      "name": "instant ticket trip punched",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:136",
+      "description": "Ticket was successfully punched/validated by conductor.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "productId",
+          "required": true,
+          "description": "Product identifier."
+        },
+        {
+          "name": "punchTime",
+          "required": true,
+          "description": "Time of punch."
+        },
+        {
+          "name": "amount",
+          "required": false,
+          "description": "Amount if available."
+        },
+        {
+          "name": "vehicleNo",
+          "required": true,
+          "description": "Vehicle number."
+        },
+        {
+          "name": "routeName",
+          "required": true,
+          "description": "Route name."
+        },
+        {
+          "name": "startStop",
+          "required": true,
+          "description": "Start stop name."
+        },
+        {
+          "name": "endStop",
+          "required": true,
+          "description": "End stop name."
+        },
+        {
+          "name": "conductorId",
+          "required": true,
+          "description": "Conductor identifier."
+        },
+        {
+          "name": "endStopId",
+          "required": true,
+          "description": "End stop ID."
+        }
+      ],
+      "funnelPosition": "validation_success",
+      "userAction": false
+    },
+    {
+      "name": "instant ticket view receipt clicked",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:147",
+      "description": "User clicked to view receipt after ticket validation.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "productId",
+          "required": true,
+          "description": "Product identifier."
+        },
+        {
+          "name": "punchTime",
+          "required": true,
+          "description": "Time of punch."
+        },
+        {
+          "name": "amount",
+          "required": false,
+          "description": "Amount if available."
+        },
+        {
+          "name": "vehicleNo",
+          "required": true,
+          "description": "Vehicle number."
+        },
+        {
+          "name": "routeName",
+          "required": true,
+          "description": "Route name."
+        },
+        {
+          "name": "startStop",
+          "required": true,
+          "description": "Start stop name."
+        },
+        {
+          "name": "endStop",
+          "required": true,
+          "description": "End stop name."
+        },
+        {
+          "name": "conductorId",
+          "required": true,
+          "description": "Conductor identifier."
+        },
+        {
+          "name": "endStopId",
+          "required": true,
+          "description": "End stop ID."
+        }
+      ],
+      "funnelPosition": "post_validation",
+      "userAction": true
+    },
+    {
+      "name": "instantTicket receipt payload",
+      "component": "InstantTicketProductValidationConfig",
+      "stage": "Misc",
+      "source": "this::class.simpleName ?: \"InstantTicketProductValidationConfig\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/validation/instantticket/InstantTicketProductValidationConfig.kt:147",
+      "properties": [
+        {
+          "property": "payload"
+        }
+      ]
+    },
+    {
+      "name": "paymentMethod",
+      "component": "InstantTicketWalletAccessComponent",
+      "stage": "Misc",
+      "source": "new pay for ticket bottom sheet",
+      "description": "Emitted when the user taps 'Pay using wallet' in the new pay-for-ticket bottom sheet (event name is the literal string \"paymentMethod\").",
+      "properties": [
+        {
+          "property": "paymentMethod"
+        }
+      ]
+    },
+    {
+      "name": "invalid ble validation ack data received",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:329",
+      "description": "Invalid BLE validation acknowledgment data received.",
+      "properties": [
+        {
+          "name": "reason",
+          "required": true,
+          "description": "Reason for invalid data."
+        },
+        {
+          "name": "rawData",
+          "required": true,
+          "description": "Raw invalid data received."
+        },
+        {
+          "name": "notificationDeliveryMedium",
+          "required": true,
+          "description": "How data was delivered."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "invalid tito tap in data received in polling",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:274",
+      "description": "Invalid TITO tap-in data received via polling mechanism.",
+      "properties": [
+        {
+          "name": "reason",
+          "required": true,
+          "description": "Reason why data was invalid."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "pick route screen opened",
+      "component": "PickRouteLocationComponent",
+      "stage": "Route/Stop Selection",
+      "source": "args.source ?: Source.UNKNOWN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/productbooking/pickroutelocation/PickRouteLocationComponent.kt:103",
+      "properties": []
+    },
+    {
+      "name": "pick stop screen opened",
+      "component": "PickStopComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Source.PRODUCT_BOOKING_SRC",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/productbooking/pickstop/PickStopComponent.kt:71",
+      "properties": []
+    },
+    {
+      "name": "post validation screen opened",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:226",
+      "description": "Post-validation screen opened after successful ticket validation.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order identifier."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        }
+      ],
+      "funnelPosition": "post_validation",
+      "userAction": false
+    },
+    {
+      "name": "qr screen open",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:83",
+      "description": "QR code validation screen opened for ticket validation.",
+      "properties": [
+        {
+          "name": "isInstantTicket",
+          "required": true,
+          "description": "Always true."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order identifier."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "report problem clicked v2",
+      "source": "",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:63",
+      "description": "User clicked report problem from validation screen.",
+      "properties": [
+        {
+          "name": "problemType",
+          "required": true,
+          "description": "Always activationScreenTicketingProblems."
+        },
+        {
+          "name": "problemSource",
+          "required": true,
+          "description": "Always validationScreen."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": true
+    },
+    {
+      "name": "route based stop selection screen opened",
+      "source": "route selection fragment",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/routeselection/RouteBasedStopSearchForProductPurchaseComponent.kt:57",
+      "description": "Screen opened for route-based stop selection flow. This is the entry point for instant ticket purchase via route selection.",
+      "properties": [
+        {
+          "name": "flowType",
+          "required": true,
+          "description": "Always \"Instant Ticket\" for this flow."
+        }
+      ],
+      "funnelPosition": "entry",
+      "userAction": false
+    },
+    {
+      "name": "stop based route selection screen clear search click",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Source.STOP_BASED_ROUTE_SEARCH_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:898",
+      "properties": [
+        {
+          "property": "flowType"
+        },
+        {
+          "property": "searchQuery"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen instant ticket config fetch failed",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Unknown",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:366",
+      "properties": []
+    },
+    {
+      "name": "stop based stop selection screen instant ticket config fetch success",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Unknown",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:338",
+      "properties": [
+        {
+          "property": "isActive"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen opened",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:160",
+      "properties": [
+        {
+          "property": "flowType"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen proceed button click",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:277",
+      "properties": []
+    },
+    {
+      "name": "stop based stop selection screen route result item click",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Unknown",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:884",
+      "properties": [
+        {
+          "property": "flowType"
+        },
+        {
+          "property": "from stop id"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "to stop id"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen from stop",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "stopBasedRouteSelectionFragment",
+      "description": "User selected the FROM stop on stop-based selection screen.",
+      "properties": [
+        {
+          "property": "flowType"
+        },
+        {
+          "property": "stopId"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen to stop",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "stopBasedRouteSelectionFragment",
+      "description": "User selected the TO stop on stop-based selection screen.",
+      "properties": [
+        {
+          "property": "flowType"
+        },
+        {
+          "property": "stopId"
+        }
+      ]
+    },
+    {
+      "name": "syncing post ble validation failed",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:398",
+      "description": "Syncing failed after BLE validation.",
+      "properties": [
+        {
+          "name": "reason",
+          "required": true,
+          "description": "Failure reason."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "tito tap in notification received on conductor validation",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:241",
+      "description": "TITO tap-in notification received during conductor validation flow.",
+      "properties": [
+        {
+          "name": "notificationDeliveryMedium",
+          "required": true,
+          "description": "How notification was delivered: INTERNET or BLE."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "additionalProperties": "TITO notification properties merged",
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "tito tap in polling stopped due to notification received",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:290",
+      "description": "TITO tap-in polling was stopped because notification was received.",
+      "properties": [
+        {
+          "name": "notificationDeliveryMedium",
+          "required": true,
+          "description": "How notification was delivered."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "valid tito tap in data received in polling",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:258",
+      "description": "Valid TITO tap-in data received via polling mechanism.",
+      "properties": [
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "additionalProperties": "TITO notification properties merged",
+      "funnelPosition": "validation",
+      "userAction": false
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:349",
+      "description": "User clicked view receipt from post-validation screen.",
+      "properties": [
+        {
+          "name": "wasTitoValidation",
+          "required": true,
+          "description": "Whether validation was TITO-based."
+        },
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "post_validation",
+      "userAction": true
+    },
+    {
+      "name": "view trip receipt from menu clicked",
+      "source": "validation screen",
+      "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:52",
+      "description": "User clicked view trip receipt from menu during validation.",
+      "properties": [
+        {
+          "name": "fullName",
+          "required": true,
+          "description": "Passenger name."
+        },
+        {
+          "name": "time",
+          "required": true,
+          "description": "Current time."
+        },
+        {
+          "name": "date",
+          "required": true,
+          "description": "Current date."
+        },
+        {
+          "name": "productType",
+          "required": true,
+          "description": "Product type."
+        },
+        {
+          "name": "productSubType",
+          "required": true,
+          "description": "Product sub-type."
+        },
+        {
+          "name": "orderId",
+          "required": true,
+          "description": "Order ID."
+        },
+        {
+          "name": "activationTimeStamp",
+          "required": true,
+          "description": "Activation timestamp."
+        }
+      ],
+      "funnelPosition": "validation",
+      "userAction": true
+    }
+  ],
+  "stages": [
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "find my ticket fare auto fare update with seat selection",
+        "instant ticket bottmsheet opened",
+        "instantTicket receipt payload",
+        "paymentMethod"
+      ]
+    },
+    {
+      "name": "Route/Stop Selection",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pick route screen opened",
+        "pick stop screen opened",
+        "stop based route selection screen clear search click",
+        "stop based stop selection screen instant ticket config fetch failed",
+        "stop based stop selection screen instant ticket config fetch success",
+        "stop based stop selection screen opened",
+        "stop based stop selection screen proceed button click",
+        "stop based stop selection screen route result item click",
+        "stop based stop selection screen from stop",
+        "stop based stop selection screen to stop"
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "find my ticket fare auto fare update with seat selection",
+          "instant ticket bottmsheet opened",
+          "instantTicket receipt payload",
+          "paymentMethod"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "pick route screen opened"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "pick stop screen opened"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based route selection screen clear search click"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen instant ticket config fetch failed"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen instant ticket config fetch success"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen opened"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen proceed button click"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen route result item click"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen from stop"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen to stop"
+        ]
+      }
+    ]
+  }
+}

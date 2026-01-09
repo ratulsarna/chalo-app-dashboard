@@ -1,0 +1,2118 @@
+{
+  "flowId": "live_tracking",
+  "flowName": "Live Tracking & Route Details",
+  "description": "Complete analytics map for the live tracking journey - from route search to real-time bus tracking, ETA display, stop selection, and user interactions.",
+  "propertyDefinitions": {
+    "source": {
+      "type": "string",
+      "description": "Entry point or origin screen that triggered the route details flow",
+      "values": [
+        "route details screen",
+        "route details map",
+        "route details list",
+        "route options menu",
+        "all live vehicles"
+      ]
+    },
+    "route name": {
+      "type": "string",
+      "description": "Human-readable route name/number displayed to users"
+    },
+    "route id": {
+      "type": "string",
+      "description": "Backend route identifier"
+    },
+    "isShortTripAvailable": {
+      "type": "boolean",
+      "description": "Whether short trip functionality is available for this route"
+    },
+    "stop index": {
+      "type": "number",
+      "description": "Zero-based index of the initially selected stop in the route's stop list"
+    },
+    "isBusVisibleOnMap": {
+      "type": "boolean",
+      "description": "Whether at least one live bus is visible on the map when screen opens"
+    },
+    "totalActiveBuses": {
+      "type": "number",
+      "description": "Count of active buses on the route at screen open time"
+    },
+    "noOfHaltedBuses": {
+      "type": "number",
+      "description": "Count of buses currently halted (not moving)"
+    },
+    "noOfDelayedBuses": {
+      "type": "number",
+      "description": "Count of buses running behind schedule"
+    },
+    "stop name": {
+      "type": "string",
+      "description": "Human-readable stop name"
+    },
+    "stop id": {
+      "type": "string",
+      "description": "Backend stop identifier"
+    },
+    "stops position": {
+      "type": "number",
+      "description": "Index of the selected stop in the route's stop sequence"
+    },
+    "previousStopsId": {
+      "type": "string",
+      "description": "Stop ID of the previously selected stop before change"
+    },
+    "previousStopsName": {
+      "type": "string",
+      "description": "Stop name of the previously selected stop before change"
+    },
+    "previousStopsPosition": {
+      "type": "number",
+      "description": "Index of the previously selected stop"
+    },
+    "userDistanceFromStop": {
+      "type": "number",
+      "description": "Distance in meters from user's current location to the selected stop (if location permission granted)"
+    },
+    "totalStops": {
+      "type": "string",
+      "description": "Total number of stops on the route, serialized to string"
+    },
+    "isSuccessful": {
+      "type": "boolean",
+      "description": "Whether the live route details fetch was successful"
+    },
+    "response time": {
+      "type": "number",
+      "description": "API response time in milliseconds for ETA fetch"
+    },
+    "vehicle no": {
+      "type": "string",
+      "description": "Vehicle registration number or bus number"
+    },
+    "seat status": {
+      "type": "string",
+      "description": "Seat availability status (SEATS_AVAILABLE, ALMOST_FULL, FULL, STANDING_ONLY, etc.)"
+    },
+    "seat occupancy api mode": {
+      "type": "number",
+      "description": "API mode used for seat occupancy data (0 = live, 1 = historical, etc.)"
+    },
+    "time": {
+      "type": "number",
+      "description": "Epoch timestamp in milliseconds when event occurred"
+    },
+    "isTimetableAvailable": {
+      "type": "boolean",
+      "description": "Whether offline timetable/schedule is available for this route"
+    },
+    "mode": {
+      "type": "string",
+      "description": "Transit mode, always 'BUS' for live tracking events"
+    },
+    "from": {
+      "type": "string",
+      "description": "Origin stop name for favorites"
+    },
+    "to": {
+      "type": "string",
+      "description": "Destination stop name for favorites"
+    },
+    "type": {
+      "type": "string",
+      "description": "Problem/issue type category for reporting"
+    },
+    "problemSource": {
+      "type": "string",
+      "description": "Source identifier for problem reporting (BusRouteFragment)"
+    },
+    "city": {
+      "type": "string",
+      "description": "City slug where the route operates"
+    },
+    "tagIds": {
+      "type": "string",
+      "description": "Comma-separated list of problem tag IDs submitted"
+    },
+    "tagNames": {
+      "type": "string",
+      "description": "Period-separated list of problem tag names submitted"
+    },
+    "comment": {
+      "type": "string",
+      "description": "User-provided comment text for problem report"
+    },
+    "isEtaShown": {
+      "type": "boolean",
+      "description": "Whether ETA was displayed when problem was reported"
+    },
+    "eta status": {
+      "type": "string",
+      "description": "Status of ETA display (LIVE_ETA, SCHEDULED_TIME, NO_ETA, etc.)"
+    },
+    "eta value": {
+      "type": "string",
+      "description": "Actual ETA value shown to user (e.g., '5 min', '10:30 AM')"
+    },
+    "isTimeTableShown": {
+      "type": "boolean",
+      "description": "Whether timetable was displayed when event occurred"
+    },
+    "isSpecificScheduledTimeShown": {
+      "type": "boolean",
+      "description": "Whether a specific scheduled time was shown instead of generic schedule"
+    },
+    "stop eta model": {
+      "type": "string",
+      "description": "JSON representation of the ETA model for debugging"
+    },
+    "isUserLoggedIn": {
+      "type": "boolean",
+      "description": "Whether user is authenticated at the time of event"
+    },
+    "agency": {
+      "type": "string",
+      "description": "Transit agency operating the route"
+    },
+    "upTripRouteId": {
+      "type": "string",
+      "description": "Route ID for the up/forward direction trip"
+    },
+    "isFreeRide": {
+      "type": "boolean",
+      "description": "Whether this is a free ride promotion route"
+    },
+    "date": {
+      "type": "string",
+      "description": "Date of travel/event in readable format"
+    },
+    "isAirportRoute": {
+      "type": "boolean",
+      "description": "Whether this is an airport shuttle route"
+    },
+    "isChaloBusRoute": {
+      "type": "boolean",
+      "description": "Whether this is a premium/Chalo bus route"
+    },
+    "route": {
+      "type": "number",
+      "description": "Count of route results in search"
+    },
+    "availability priority": {
+      "type": "string",
+      "description": "Bus availability banner priority/type identifier"
+    },
+    "availability banner sticky": {
+      "type": "boolean",
+      "description": "Whether the availability banner is sticky (always true)"
+    },
+    "availability status": {
+      "type": "string",
+      "description": "Service availability status (AVAILABLE, LIMITED, UNAVAILABLE)"
+    },
+    "offduty": {
+      "type": "boolean",
+      "description": "Whether buses are off-duty on this route"
+    },
+    "searchSessionId": {
+      "type": "string",
+      "description": "Unique session ID for tracking search flow"
+    },
+    "searchScreenType": {
+      "type": "string",
+      "description": "Type of search screen (universal, route-specific, stop-specific)"
+    },
+    "searchScreenInputScreen": {
+      "type": "string",
+      "description": "Screen from which search was initiated"
+    },
+    "no of recent trips available": {
+      "type": "number",
+      "description": "Count of recent trips shown in search suggestions"
+    },
+    "searchQuery": {
+      "type": "string",
+      "description": "Search query string entered by user"
+    },
+    "query length": {
+      "type": "number",
+      "description": "Character count of the search query"
+    },
+    "loading time": {
+      "type": "string",
+      "description": "Time taken to load search results, in milliseconds"
+    },
+    "user lat long": {
+      "type": "string",
+      "description": "User's current GPS coordinates (lat,long)"
+    },
+    "total results": {
+      "type": "number",
+      "description": "Total count of search results returned"
+    },
+    "trips locations": {
+      "type": "number",
+      "description": "Count of location/place results in search"
+    },
+    "trips stops": {
+      "type": "number",
+      "description": "Count of stop results in search"
+    },
+    "searchResultId": {
+      "type": "string",
+      "description": "Backend ID of the selected search result"
+    },
+    "searchPartner": {
+      "type": "string",
+      "description": "Search provider/partner (Chalo, Google, etc.)"
+    },
+    "searchResultPosition": {
+      "type": "number",
+      "description": "Position/rank of selected result in search list (1-based)"
+    },
+    "searchResultName": {
+      "type": "string",
+      "description": "Display name of the selected search result"
+    },
+    "searchResultType": {
+      "type": "string",
+      "description": "Type of search result (ROUTE, STOP, LOCATION, RECENT_TRIP)"
+    },
+    "total stops and places": {
+      "type": "number",
+      "description": "Combined count of stops and places in search results"
+    },
+    "total routes": {
+      "type": "number",
+      "description": "Count of routes in search results"
+    },
+    "result lat long": {
+      "type": "string",
+      "description": "GPS coordinates of the selected search result"
+    },
+    "is recent item": {
+      "type": "string",
+      "description": "Whether the selected item is from recent searches (true/false as string)"
+    },
+    "is device back clicked": {
+      "type": "string",
+      "description": "Whether device back button was used to exit search (true/false as string)"
+    },
+    "time from result shown": {
+      "type": "string",
+      "description": "Time elapsed from when results were shown to when user exited, in milliseconds"
+    },
+    "network type": {
+      "type": "string",
+      "description": "Type of network connection (WIFI, MOBILE, 4G, 5G, etc.)"
+    },
+    "network": {
+      "type": "boolean",
+      "description": "Whether network is currently available"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for socket disconnect/error"
+    },
+    "exception message": {
+      "type": "string",
+      "description": "Exception message for socket errors"
+    },
+    "etaCount": {
+      "type": "number",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stopId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stopName": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "screen": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "tag": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "tap id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stopMode": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "error message": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "errorCode": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "titoRideExpiryTimeInMillis": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "hourOfEvent": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "ob tutorial seen": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "screen type": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "drop off stop id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "isFirstTimeUser": {
+      "type": "boolean",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Route name in debug event payload (not normalized to ATTRIBUTE_ROUTE_NAME)."
+    },
+    "validBusTrip": {
+      "type": "boolean",
+      "description": "Debug: whether the vehicle trip is considered valid."
+    },
+    "busCoversUserDestination": {
+      "type": "boolean",
+      "description": "Debug: whether the current vehicle trip covers the user's selected destination stop."
+    },
+    "etaDetails": {
+      "type": "string",
+      "description": "Debug: raw ETA RTS payload serialized via toString()."
+    },
+    "vehicleDetails": {
+      "type": "string",
+      "description": "Debug: raw vehicle RTS payload serialized via toString()."
+    },
+    "busNextStop": {
+      "type": "string",
+      "description": "Debug: stop name for vehicle nextStopId."
+    },
+    "busLastStop": {
+      "type": "string",
+      "description": "Debug: stop name for vehicle lastStopId."
+    },
+    "lastStop": {
+      "type": "string",
+      "description": "Debug: stop name resolved from etaDetails.lastStopId."
+    },
+    "userDestinationStop": {
+      "type": "string",
+      "description": "Debug: user's destination stop name as evaluated in the debug snapshot."
+    },
+    "dataTimestamp": {
+      "type": "number",
+      "description": "Debug: timestamp used for the snapshot/event gating."
+    }
+  },
+  "stages": [
+    {
+      "name": "Search & Discovery",
+      "description": "User searches for routes, stops, or locations to find their desired bus route",
+      "events": [
+        "search screen opened",
+        "first character type after search open",
+        "Search results shown",
+        "search result clicked",
+        "search screen back clicked"
+      ]
+    },
+    {
+      "name": "Route Details Entry",
+      "description": "User enters route details screen from various sources (search, home, nearby stops)",
+      "events": [
+        "route details activity open",
+        "mticket hook route details rendered",
+        "premium bus hook route details rendered",
+        "availability route banner"
+      ]
+    },
+    {
+      "name": "Live Data Connection",
+      "description": "WebSocket establishes connection to stream real-time vehicle locations and ETAs",
+      "events": [
+        "crts connect",
+        "crts connect error",
+        "crts connect timeout",
+        "crts disconnect",
+        "crts reconnect",
+        "crts reconnect attempt",
+        "crts reconnect error",
+        "crts reconnect failed"
+      ]
+    },
+    {
+      "name": "Live Tracking Display",
+      "description": "Real-time data fetched and displayed - vehicle positions, ETAs, seat availability",
+      "events": [
+        "Live route details fetched",
+        "live eta fetch",
+        "eta screen open",
+        "seat status",
+        "seat occupancy bottomsheet rendered on demand busRouteFragment"
+      ]
+    },
+    {
+      "name": "Stop Selection & Navigation",
+      "description": "User selects or changes stops to view ETAs and plan their trip",
+      "events": [
+        "Route stop selected",
+        "Route map stop selected",
+        "Search stop selected",
+        "Search stop clicked",
+        "Disabled stop selected",
+        "Route details change destination click",
+        "Route destination stop screen open",
+        "Route destination stop changed",
+        "Route destination screen closed"
+      ]
+    },
+    {
+      "name": "User Actions",
+      "description": "User interacts with route features - favorites, schedule, bookings, problem reporting",
+      "events": [
+        "favorite added",
+        "favorite deleted",
+        "view schedule clicked",
+        "route details pay for ticket clicked",
+        "route details pass booked clicked",
+        "route details reserve seat btn clicked",
+        "checkin initiated",
+        "report problem clicked",
+        "Report issue hook clicked",
+        "report problem submitted",
+        "seat occupancy bottomsheet learn more clicked",
+        "seat occupancy bottomsheet got it clicked"
+      ]
+    },
+    {
+      "name": "Service Status",
+      "description": "Service availability and disruption information displayed to user",
+      "events": [
+        "availability issue"
+      ]
+    },
+    {
+      "name": "Diagnostics",
+      "description": "Debug/diagnostic events emitted only when debug analytics is enabled.",
+      "events": [
+        "LIVE VEHICLE DETAILS",
+        "LIVE ETA DETAILS"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "Eta Seen",
+        "inbound traffic",
+        "missed tap out btn click",
+        "missed tap out done bottom sheet exit btn click",
+        "missed tap out done bottom sheet opened",
+        "missed tap out done bottom sheet view receipt btn click",
+        "missed tito tapout feedback submit",
+        "nearby station notification clicked",
+        "route details native ad load failed",
+        "slide to tap out submit",
+        "stop details screen opened",
+        "stop eta seen - multiple routes",
+        "tito map stop marker click",
+        "tito ob got it btn click",
+        "tito ob replay btn click",
+        "tito ob tutorial finished",
+        "tito ob tutorial started",
+        "tito ride detail back press",
+        "tito ride detail route result failure",
+        "tito ride detail route result success",
+        "tito ride detail screen opened",
+        "tito ride detail vehicle no unavailable",
+        "tito view retry btn click"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Disabled stop selected",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User attempted to select a disabled/inactive stop",
+      "properties": [
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stops position"
+        },
+        {
+          "property": "previousStopsId"
+        },
+        {
+          "property": "previousStopsName"
+        },
+        {
+          "property": "previousStopsPosition"
+        }
+      ]
+    },
+    {
+      "name": "Eta Seen",
+      "component": "StopTripDetailsAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/stoptripdetails/analytics/StopTripDetailsAnalyticsEventHelperImpl.kt:25",
+      "properties": [
+        {
+          "property": "etaCount"
+        },
+        {
+          "property": "stopId"
+        },
+        {
+          "property": "stopName"
+        }
+      ]
+    },
+    {
+      "name": "Live route details fetched",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Live Tracking Display",
+      "source": "route details screen",
+      "description": "Live route data fetched from backend (success or failure)",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "isSuccessful"
+        },
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "Report issue hook clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked report issue hook/button, includes detailed ETA context",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "eta status"
+        },
+        {
+          "property": "eta value"
+        },
+        {
+          "property": "isTimeTableShown"
+        },
+        {
+          "property": "isSpecificScheduledTimeShown"
+        },
+        {
+          "property": "stop eta model",
+          "context": "JSON debug info"
+        }
+      ]
+    },
+    {
+      "name": "Route destination screen closed",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User exited destination selection screen without making a change"
+    },
+    {
+      "name": "Route destination stop changed",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User confirmed a new destination stop selection",
+      "properties": [
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stops position"
+        },
+        {
+          "property": "previousStopsId"
+        },
+        {
+          "property": "previousStopsName"
+        },
+        {
+          "property": "previousStopsPosition"
+        }
+      ]
+    },
+    {
+      "name": "Route destination stop screen open",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User opened the destination stop selection screen",
+      "properties": [
+        {
+          "property": "route name"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "totalStops",
+          "context": "Total stops on route"
+        },
+        {
+          "property": "source"
+        }
+      ]
+    },
+    {
+      "name": "Route details change destination click",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User clicked change destination CTA"
+    },
+    {
+      "name": "Route map stop selected",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details map",
+      "description": "User tapped a stop marker on the route map",
+      "properties": [
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stops position"
+        },
+        {
+          "property": "previousStopsId"
+        },
+        {
+          "property": "previousStopsName"
+        },
+        {
+          "property": "previousStopsPosition"
+        },
+        {
+          "property": "userDistanceFromStop"
+        }
+      ]
+    },
+    {
+      "name": "Route stop selected",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details list",
+      "description": "User selected a stop from the stop list to view its ETAs",
+      "properties": [
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stops position",
+          "context": "Index in stop sequence"
+        },
+        {
+          "property": "previousStopsId"
+        },
+        {
+          "property": "previousStopsName"
+        },
+        {
+          "property": "previousStopsPosition"
+        },
+        {
+          "property": "userDistanceFromStop",
+          "context": "Optional, if location available"
+        }
+      ]
+    },
+    {
+      "name": "Search results shown",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Search & Discovery",
+      "source": "UniversalSearchAnalyticsEventHelperImpl",
+      "description": "Search results fetched and displayed to user, includes result counts and timing",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "loading time",
+          "context": "Time taken to fetch results in ms"
+        },
+        {
+          "property": "searchQuery"
+        },
+        {
+          "property": "query length"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "user lat long",
+          "context": "User location if available"
+        },
+        {
+          "property": "total results"
+        },
+        {
+          "property": "route",
+          "context": "Route result count"
+        },
+        {
+          "property": "trips locations",
+          "context": "Location result count"
+        },
+        {
+          "property": "trips stops",
+          "context": "Stop result count"
+        }
+      ],
+      "notes": "On failure, includes 'error message' property instead of result counts"
+    },
+    {
+      "name": "Search stop clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User clicked the search stop button to open stop search"
+    },
+    {
+      "name": "Search stop selected",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Stop Selection & Navigation",
+      "source": "route details screen",
+      "description": "User selected a stop from the search results within route details",
+      "properties": [
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stops position"
+        },
+        {
+          "property": "previousStopsId"
+        },
+        {
+          "property": "previousStopsName"
+        },
+        {
+          "property": "previousStopsPosition"
+        },
+        {
+          "property": "userDistanceFromStop"
+        }
+      ]
+    },
+    {
+      "name": "availability issue",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Service Status",
+      "source": "route details screen",
+      "description": "Service availability issue detected (limited service, off-duty, etc.)",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "availability status"
+        },
+        {
+          "property": "offduty"
+        }
+      ]
+    },
+    {
+      "name": "availability route banner",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Service Status",
+      "source": "route details screen",
+      "description": "Service availability banner displayed on route details",
+      "properties": [
+        {
+          "property": "availability priority",
+          "context": "Banner type/priority ID"
+        },
+        {
+          "property": "availability banner sticky",
+          "context": "Always true"
+        }
+      ]
+    },
+    {
+      "name": "checkin initiated",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User initiated check-in for this route",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Always 'route details screen'"
+        },
+        {
+          "property": "mode",
+          "context": "Always 'BUS'"
+        },
+        {
+          "property": "route",
+          "context": "Route name"
+        }
+      ]
+    },
+    {
+      "name": "crts connect",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket connection established successfully for real-time tracking",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Connection reason/trigger"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts connect error",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket connection failed to establish",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "exception message",
+          "context": "Optional, if exception occurred"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts connect timeout",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket connection attempt timed out",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "exception message"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts disconnect",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket connection disconnected",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts error",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket error occurred during connection",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "exception message"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts reconnect",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket reconnection successful",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts reconnect attempt",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket attempting to reconnect",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts reconnect error",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket reconnection attempt failed",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "exception message"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts reconnect failed",
+      "component": "ChaloSocketClient",
+      "stage": "Live Data Connection",
+      "source": "ChaloSocketClient",
+      "description": "WebSocket reconnection permanently failed after retries",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "network type"
+        },
+        {
+          "property": "network"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "eta screen open",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Live Tracking Display",
+      "source": "all live vehicles",
+      "description": "User opened the All Live Vehicles screen showing detailed ETAs for all buses",
+      "properties": [
+        {
+          "property": "route name"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "route id"
+        }
+      ]
+    },
+    {
+      "name": "favorite added",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User added this route to favorites",
+      "properties": [
+        {
+          "property": "mode",
+          "context": "Always 'BUS'"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "from",
+          "context": "Origin stop name"
+        },
+        {
+          "property": "to",
+          "context": "Destination stop name"
+        },
+        {
+          "property": "source",
+          "context": "Always 'route details screen'"
+        }
+      ]
+    },
+    {
+      "name": "favorite deleted",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User removed this route from favorites",
+      "properties": [
+        {
+          "property": "mode",
+          "context": "Always 'BUS'"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "from",
+          "context": "Origin stop name"
+        },
+        {
+          "property": "to",
+          "context": "Destination stop name"
+        },
+        {
+          "property": "source",
+          "context": "Always 'route details screen'"
+        }
+      ]
+    },
+    {
+      "name": "first character type after search open",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Search & Discovery",
+      "source": "UniversalSearchAnalyticsEventHelperImpl",
+      "description": "User typed the first character in search box after opening search screen",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "searchQuery",
+          "context": "First character typed"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        }
+      ]
+    },
+    {
+      "name": "inbound traffic",
+      "component": "StopTripDetailsAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/stoptripdetails/analytics/StopTripDetailsAnalyticsEventHelperImpl.kt:59",
+      "properties": [
+        {
+          "property": "screen"
+        },
+        {
+          "property": "tag"
+        }
+      ]
+    },
+    {
+      "name": "live eta fetch",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Live Tracking Display",
+      "source": "route details screen",
+      "description": "Live ETA fetched for selected stop, tracks response time for performance monitoring",
+      "properties": [
+        {
+          "property": "response time",
+          "context": "API response time in ms"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "route id"
+        }
+      ]
+    },
+    {
+      "name": "missed tap out btn click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:889",
+      "properties": [
+        {
+          "property": "tap id"
+        }
+      ]
+    },
+    {
+      "name": "missed tap out done bottom sheet exit btn click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:968",
+      "properties": []
+    },
+    {
+      "name": "missed tap out done bottom sheet opened",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:915",
+      "properties": []
+    },
+    {
+      "name": "missed tap out done bottom sheet view receipt btn click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:945",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "missed tito tapout feedback submit",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:936",
+      "properties": []
+    },
+    {
+      "name": "mticket hook route details rendered",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Route Details Entry",
+      "source": "route details screen",
+      "description": "M-ticket/pass booking hook rendered on route details for eligible routes",
+      "properties": [
+        {
+          "property": "isUserLoggedIn"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "isFreeRide"
+        },
+        {
+          "property": "time",
+          "context": "GMT seconds from midnight"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "isAirportRoute"
+        },
+        {
+          "property": "isChaloBusRoute"
+        }
+      ]
+    },
+    {
+      "name": "nearby station notification clicked",
+      "component": "StopTripDetailsAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/stoptripdetails/analytics/StopTripDetailsAnalyticsEventHelperImpl.kt:75",
+      "properties": [
+        {
+          "property": "stopId"
+        },
+        {
+          "property": "stopMode"
+        },
+        {
+          "property": "stopName"
+        }
+      ]
+    },
+    {
+      "name": "premium bus hook route details rendered",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Route Details Entry",
+      "source": "route details screen",
+      "description": "Premium bus booking hook rendered on route details for premium routes",
+      "properties": [
+        {
+          "property": "isUserLoggedIn"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "isFreeRide"
+        },
+        {
+          "property": "time",
+          "context": "GMT seconds from midnight"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "isAirportRoute"
+        },
+        {
+          "property": "isChaloBusRoute"
+        }
+      ]
+    },
+    {
+      "name": "report problem clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "BusRouteFragment",
+      "description": "User clicked report problem to submit feedback",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "problemSource",
+          "context": "Always 'BusRouteFragment'"
+        },
+        {
+          "property": "type"
+        }
+      ]
+    },
+    {
+      "name": "report problem submitted",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User submitted problem report with tags and comments",
+      "properties": [
+        {
+          "property": "tagIds",
+          "context": "Comma-separated tag IDs"
+        },
+        {
+          "property": "tagNames",
+          "context": "Period-separated tag names"
+        },
+        {
+          "property": "comment"
+        },
+        {
+          "property": "type"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "stop id",
+          "context": "Optional"
+        },
+        {
+          "property": "stop name",
+          "context": "Optional"
+        },
+        {
+          "property": "isEtaShown",
+          "context": "Optional"
+        }
+      ]
+    },
+    {
+      "name": "route details activity open",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Route Details Entry",
+      "source": "route details screen",
+      "description": "Route details screen opened, captures initial state including bus visibility and counts",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Entry point (search, home, nearby)"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "isShortTripAvailable"
+        },
+        {
+          "property": "stop index",
+          "context": "Initially selected stop index"
+        },
+        {
+          "property": "isBusVisibleOnMap"
+        },
+        {
+          "property": "totalActiveBuses"
+        },
+        {
+          "property": "noOfHaltedBuses"
+        },
+        {
+          "property": "noOfDelayedBuses"
+        }
+      ],
+      "notes": "Sent to Plotline for user engagement tracking"
+    },
+    {
+      "name": "route details native ad load failed",
+      "component": "RouteDetailsComponent",
+      "stage": "Misc",
+      "source": "eventProperties = mutableMapOf(\n                        ATTRIBUTE_STOP_ID to stopId,\n                        AnalyticsEventConstants.ATTRIBUTE_ERROR_CODE to errorCode,\n                        AnalyticsEventConstants.ERROR_MESSAGE to (failedResult?.reason ?: \"null\")\n                    ).apply {\n                        if (failedResult is BindNativeAdResult.Failed.UnsupportedAspectRatio) {\n                            put(\n                                AnalyticsEventConstants.ATTRIBUTE_NATIVE_AD_ASPECT_RATIO,\n                                failedResult.adAspectRatio.toString()\n                            )\n                        }\n                    }",
+      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/ui/routedetailsscreen/RouteDetailsComponent.kt:2713",
+      "properties": [
+        {
+          "property": "error message"
+        },
+        {
+          "property": "errorCode"
+        },
+        {
+          "property": "stop id"
+        }
+      ]
+    },
+    {
+      "name": "route details pass booked clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked on existing pass booking from route details",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "route name"
+        }
+      ]
+    },
+    {
+      "name": "route details pay for ticket clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked CTA to purchase ticket/pass from route details",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "type",
+          "context": "Flow type identifier"
+        }
+      ]
+    },
+    {
+      "name": "route details reserve seat btn clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked reserve seat button for premium bus",
+      "properties": [
+        {
+          "property": "isUserLoggedIn"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "isAirportRoute"
+        },
+        {
+          "property": "isChaloBusRoute"
+        }
+      ]
+    },
+    {
+      "name": "search result clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Search & Discovery",
+      "source": "UniversalSearchAnalyticsEventHelperImpl",
+      "description": "User selected a search result to navigate to route details or stop details",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "searchQuery"
+        },
+        {
+          "property": "query length"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "searchResultId"
+        },
+        {
+          "property": "searchPartner"
+        },
+        {
+          "property": "searchResultPosition",
+          "context": "1-based rank in results"
+        },
+        {
+          "property": "searchResultName"
+        },
+        {
+          "property": "searchResultType"
+        },
+        {
+          "property": "total stops and places"
+        },
+        {
+          "property": "total routes"
+        },
+        {
+          "property": "result lat long"
+        },
+        {
+          "property": "user lat long"
+        },
+        {
+          "property": "is recent item"
+        }
+      ]
+    },
+    {
+      "name": "search screen back clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Search & Discovery",
+      "source": "UniversalSearchAnalyticsEventHelperImpl",
+      "description": "User exited search screen via back button, includes time spent and top results",
+      "properties": [
+        {
+          "property": "searchSessionId"
+        },
+        {
+          "property": "searchQuery"
+        },
+        {
+          "property": "query length"
+        },
+        {
+          "property": "searchScreenType"
+        },
+        {
+          "property": "searchScreenInputScreen"
+        },
+        {
+          "property": "is device back clicked"
+        },
+        {
+          "property": "time from result shown"
+        }
+      ],
+      "notes": "Also includes top 3 search results details for funnel analysis"
+    },
+    {
+      "name": "search screen opened",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Search & Discovery",
+      "source": "UniversalSearchAnalyticsEventHelperImpl",
+      "description": "Universal search screen opened from route details or home screen",
+      "properties": [
+        {
+          "property": "searchSessionId",
+          "context": "Generated UUID for this search session"
+        },
+        {
+          "property": "searchScreenType",
+          "context": "Type of search (universal, route, stop)"
+        },
+        {
+          "property": "searchScreenInputScreen",
+          "context": "Screen that initiated search"
+        },
+        {
+          "property": "no of recent trips available",
+          "context": "Count of recent search items shown"
+        }
+      ]
+    },
+    {
+      "name": "seat occupancy bottomsheet got it clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked 'Got It' on seat occupancy info bottom sheet"
+    },
+    {
+      "name": "seat occupancy bottomsheet learn more clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked 'Learn More' on seat occupancy info bottom sheet"
+    },
+    {
+      "name": "seat occupancy bottomsheet rendered on demand busRouteFragment",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Live Tracking Display",
+      "source": "route details screen",
+      "description": "Seat occupancy information bottom sheet displayed to user",
+      "properties": [
+        {
+          "property": "seat occupancy api mode"
+        }
+      ]
+    },
+    {
+      "name": "seat status",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Live Tracking Display",
+      "source": "route details screen",
+      "description": "Seat availability status for a specific vehicle, one event per vehicle in availability list",
+      "properties": [
+        {
+          "property": "vehicle no"
+        },
+        {
+          "property": "seat status",
+          "context": "Enum name (SEATS_AVAILABLE, ALMOST_FULL, FULL, etc.)"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "seat occupancy api mode"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "slide to tap out submit",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:876",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "tap id"
+        },
+        {
+          "property": "titoRideExpiryTimeInMillis"
+        }
+      ]
+    },
+    {
+      "name": "stop details screen opened",
+      "component": "StopTripDetailsAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/stoptripdetails/analytics/StopTripDetailsAnalyticsEventHelperImpl.kt:88",
+      "properties": []
+    },
+    {
+      "name": "stop eta seen - multiple routes",
+      "component": "StopTripDetailsAnalyticsEventHelperImpl",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/stoptripdetails/analytics/StopTripDetailsAnalyticsEventHelperImpl.kt:99",
+      "properties": [
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "stopName"
+        }
+      ]
+    },
+    {
+      "name": "tito map stop marker click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:903",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "stop id"
+        }
+      ]
+    },
+    {
+      "name": "tito ob got it btn click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:493",
+      "properties": []
+    },
+    {
+      "name": "tito ob replay btn click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:476",
+      "properties": []
+    },
+    {
+      "name": "tito ob tutorial finished",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:516",
+      "properties": []
+    },
+    {
+      "name": "tito ob tutorial started",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:531",
+      "properties": []
+    },
+    {
+      "name": "tito ride detail back press",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:861",
+      "properties": [
+        {
+          "property": "ob tutorial seen"
+        },
+        {
+          "property": "screen type"
+        }
+      ]
+    },
+    {
+      "name": "tito ride detail route result failure",
+      "component": "TitoRideDataManagerImpl",
+      "stage": "Misc",
+      "source": "source.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/manager/TitoRideDataManagerImpl.kt:461",
+      "properties": [
+        {
+          "property": "drop off stop id"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "tap id"
+        },
+        {
+          "property": "vehicleNo"
+        }
+      ]
+    },
+    {
+      "name": "tito ride detail route result success",
+      "component": "TitoRideDataManagerImpl",
+      "stage": "Misc",
+      "source": "source.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/manager/TitoRideDataManagerImpl.kt:480",
+      "properties": [
+        {
+          "property": "drop off stop id"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "tap id"
+        },
+        {
+          "property": "vehicleNo"
+        }
+      ]
+    },
+    {
+      "name": "tito ride detail screen opened",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:849",
+      "properties": [
+        {
+          "property": "isFirstTimeUser"
+        },
+        {
+          "property": "tap id"
+        }
+      ]
+    },
+    {
+      "name": "tito ride detail vehicle no unavailable",
+      "component": "TitoRideDataManagerImpl",
+      "stage": "Misc",
+      "source": "source.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/manager/TitoRideDataManagerImpl.kt:497",
+      "properties": []
+    },
+    {
+      "name": "tito view retry btn click",
+      "component": "TitoRideDetailComponent",
+      "stage": "Misc",
+      "source": "Source.TITO_RIDE_DETAIL_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/titoridedetail/ui/TitoRideDetailComponent.kt:957",
+      "properties": [
+        {
+          "property": "tap id"
+        }
+      ]
+    },
+    {
+      "name": "view schedule clicked",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "User Actions",
+      "source": "route details screen",
+      "description": "User clicked to view offline timetable/schedule",
+      "properties": [
+        {
+          "property": "source"
+        },
+        {
+          "property": "isTimetableAvailable",
+          "context": "Optional, whether timetable exists"
+        }
+      ]
+    },
+    {
+      "name": "LIVE VEHICLE DETAILS",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Diagnostics",
+      "source": "route details screen",
+      "description": "Debug snapshot of a live vehicle's details and routing assumptions. Fired only when debug analytics is enabled.",
+      "properties": [
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "validBusTrip"
+        },
+        {
+          "property": "busCoversUserDestination"
+        },
+        {
+          "property": "vehicleDetails"
+        },
+        {
+          "property": "busNextStop"
+        },
+        {
+          "property": "busLastStop"
+        },
+        {
+          "property": "userDestinationStop"
+        },
+        {
+          "property": "dataTimestamp"
+        }
+      ]
+    },
+    {
+      "name": "LIVE ETA DETAILS",
+      "component": "RouteDetailsAnalyticsHelperImpl",
+      "stage": "Diagnostics",
+      "source": "route details screen",
+      "description": "Debug snapshot of ETA decisioning and route stop resolution. Fired only when debug analytics is enabled.",
+      "properties": [
+        {
+          "property": "validBusTrip"
+        },
+        {
+          "property": "busCoversUserDestination"
+        },
+        {
+          "property": "etaDetails"
+        },
+        {
+          "property": "lastStop"
+        },
+        {
+          "property": "userDestinationStop"
+        },
+        {
+          "property": "dataTimestamp"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Search & Discovery",
+        "events": [
+          "search screen opened",
+          "first character type after search open",
+          "Search results shown",
+          "search result clicked"
+        ],
+        "next": "Route Details Entry"
+      },
+      {
+        "label": "Route Details Entry",
+        "events": [
+          "route details activity open",
+          "mticket hook route details rendered OR premium bus hook route details rendered",
+          "availability route banner"
+        ],
+        "next": "Live Data Connection"
+      },
+      {
+        "label": "WebSocket Connection",
+        "events": [
+          "crts connect OR crts connect error",
+          "crts reconnect attempt (if connection drops)"
+        ],
+        "next": "Live Tracking Display"
+      },
+      {
+        "label": "Live Tracking Display",
+        "events": [
+          "Live route details fetched",
+          "live eta fetch",
+          "seat status (per vehicle, premium only)",
+          "eta screen open (when user views all vehicles)"
+        ],
+        "next": "User Interactions"
+      },
+      {
+        "label": "Stop Selection",
+        "events": [
+          "Route stop selected OR Route map stop selected OR Search stop selected",
+          "Route details change destination click → Route destination stop screen open → Route destination stop changed"
+        ],
+        "next": "User Actions"
+      },
+      {
+        "label": "User Actions",
+        "events": [
+          "favorite added OR favorite deleted",
+          "view schedule clicked",
+          "route details pay for ticket clicked",
+          "route details reserve seat btn clicked",
+          "checkin initiated",
+          "report problem clicked → report problem submitted"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "Eta Seen",
+          "LIVE ETA DETAILS",
+          "LIVE VEHICLE DETAILS",
+          "inbound traffic",
+          "missed tap out btn click",
+          "missed tap out done bottom sheet exit btn click",
+          "missed tap out done bottom sheet opened",
+          "missed tap out done bottom sheet view receipt btn click",
+          "missed tito tapout feedback submit",
+          "nearby station notification clicked",
+          "route details native ad load failed",
+          "slide to tap out submit",
+          "stop details screen opened",
+          "stop eta seen - multiple routes",
+          "tito map stop marker click",
+          "tito ob got it btn click",
+          "tito ob replay btn click",
+          "tito ob tutorial finished",
+          "tito ob tutorial started",
+          "tito ride detail back press",
+          "tito ride detail route result failure",
+          "tito ride detail route result success",
+          "tito ride detail screen opened",
+          "tito ride detail vehicle no unavailable",
+          "tito view retry btn click"
+        ]
+      }
+    ],
+    "notes": "Socket events (crts_*) run continuously in background throughout the session. Seat availability events only fire for premium/airport routes. Search events are optional if user enters route details directly from home/nearby stops."
+  }
+}

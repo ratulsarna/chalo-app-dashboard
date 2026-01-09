@@ -1,0 +1,481 @@
+{
+  "flowId": "network",
+  "flowName": "Network & real-time socket monitoring",
+  "description": "Instrumentation that captures the RTS socket configuration fetch, connection lifecycle, reconnections, and the first data payload so PMs can track network stability and recovery across cities.",
+  "propertyDefinitions": {
+    "reason": {
+      "type": "string",
+      "description": "Concatenated reason text derived from socket arguments or config failures (often empty for successful connect events)."
+    },
+    "exception message": {
+      "type": "string",
+      "description": "`Exception.cause?.message` captured when the socket API surfaces a throwable; only present for failure paths."
+    },
+    "network": {
+      "type": "boolean",
+      "description": "True when `NetworkStateManager` reports `CONNECTED`, false otherwise."
+    },
+    "network type": {
+      "type": "string",
+      "description": "`NetworkType` enum returned by `NetworkStateManager.resolveNetworkType()` (CELLULAR_2G, CELLULAR_3G, CELLULAR_4G, CELLULAR, WIFI, UNKNOWN)."
+    },
+    "time": {
+      "type": "number",
+      "description": "TrueTime epoch milliseconds fetched from `BasicInfoContract` at the moment the analytics event fires."
+    },
+    "reference type": {
+      "type": "string",
+      "description": "RealTimeSocketRequest reference string such as `etas:stopId:routeId`, `routes:routeId`, or `etasList` used to correlate the response to the subscription."
+    },
+    "url": {
+      "type": "string",
+      "description": "The base socket URL used when cookie-based connections are requested (`socketConnectionData.baseUrl`)."
+    },
+    "timeTaken": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "turnBluetoothOnResult": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "syncedRouteIds": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "error": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "logMsg": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Configuration & handshake",
+      "description": "Fetch the Chalo socket config, report success/failure, and emit the cookie-handshake hint before the connection is initialized.",
+      "events": [
+        "crts config success",
+        "crts config failed",
+        "starting crts connection with cookies"
+      ]
+    },
+    {
+      "name": "Socket connection lifecycle",
+      "description": "The RTS socket reports connect/disconnect/reconnect status along with network metadata so dashboards can track drops and recoveries.",
+      "events": [
+        "crts connect",
+        "crts connect error",
+        "crts connect timeout",
+        "crts disconnect",
+        "crts error",
+        "crts reconnect attempt",
+        "crts reconnect",
+        "crts reconnect error",
+        "crts reconnect failed"
+      ]
+    },
+    {
+      "name": "Data response",
+      "description": "The first payload after a successful subscription is recorded so analysts know which request the socket fulfilled.",
+      "events": [
+        "crts response"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "BLE system bluetooth turned on",
+        "City data remote config fetch error",
+        "City data routes sync failed",
+        "City data routes sync success",
+        "Nearby routes fetch failed",
+        "decryption failed",
+        "encryption failed",
+        "encryption key sync failed",
+        "encryption key sync success",
+        "key sync worker started"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "BLE system bluetooth turned on",
+      "component": "BluetoothHardwareOperationsFeature.android",
+      "stage": "Misc",
+      "source": "Source.BLE_COMMUNICATION_FEATURE.sourceName",
+      "description": "Auto-documented from code callsite: shared/ble-communication/src/androidMain/kotlin/app/chalo/ble_communication/feature/BluetoothHardwareOperationsFeature.android.kt:252",
+      "properties": [
+        {
+          "property": "timeTaken"
+        },
+        {
+          "property": "turnBluetoothOnResult"
+        }
+      ]
+    },
+    {
+      "name": "City data remote config fetch error",
+      "component": "GetCityDataRemoteConfigUseCase",
+      "stage": "Misc",
+      "source": "Source.FETCH_CITY_DATA_CONFIG_USE_CASE.sourceName",
+      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/GetCityDataRemoteConfigUseCase.kt:78",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "City data routes sync failed",
+      "component": "SyncRoutesDataUseCase",
+      "stage": "Misc",
+      "source": "Source.SYNC_CITY_DATA_USECASE.sourceName",
+      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/SyncRoutesDataUseCase.kt:175",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "City data routes sync success",
+      "component": "SyncRoutesDataUseCase",
+      "stage": "Misc",
+      "source": "Source.SYNC_CITY_DATA_USECASE.sourceName",
+      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/SyncRoutesDataUseCase.kt:154",
+      "properties": [
+        {
+          "property": "syncedRouteIds"
+        }
+      ]
+    },
+    {
+      "name": "Nearby routes fetch failed",
+      "component": "FetchNearbyRoutesToLocationUseCase",
+      "stage": "Misc",
+      "source": "Source.FETCH_NEARBY_ROUTES_USECASE.sourceName",
+      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/FetchNearbyRoutesToLocationUseCase.kt:102",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "crts config failed",
+      "component": "RealTimeSocketManagerImpl",
+      "stage": "Configuration & handshake",
+      "source": "liveTrackingFramework",
+      "description": "The RTS config fetch failed; inspectors should use the `reason` string to understand the error.",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "network type"
+        }
+      ]
+    },
+    {
+      "name": "crts config success",
+      "component": "RealTimeSocketManagerImpl",
+      "stage": "Configuration & handshake",
+      "source": "liveTrackingFramework",
+      "description": "The RTS config fetch succeeded and the socket manager continues to initialize the connection.",
+      "properties": [
+        {
+          "property": "network type"
+        }
+      ]
+    },
+    {
+      "name": "crts connect",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "WebSocket connection succeeded; shared metadata lets dashboards gauge the network context at the moment of connect.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": []
+    },
+    {
+      "name": "crts connect error",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "Socket could not establish a connection; inspect `reason` and the optional `exception message` for failure details.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": [
+        {
+          "property": "exception message"
+        }
+      ]
+    },
+    {
+      "name": "crts connect timeout",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "The socket connection attempt timed out while waiting for the server response; `reason` captures the timeout detail.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": [
+        {
+          "property": "exception message"
+        }
+      ]
+    },
+    {
+      "name": "crts disconnect",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "The RTS socket dropped after being connected, so dashboards can count drops with the current network metadata.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": []
+    },
+    {
+      "name": "crts error",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "A socket error occurred while connected; use `exception message` for the throwable cause when present.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": [
+        {
+          "property": "exception message"
+        }
+      ]
+    },
+    {
+      "name": "crts reconnect",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "Reconnection succeeded and the socket is once again streaming data, so dashboards can treat this as a recovery point.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": []
+    },
+    {
+      "name": "crts reconnect attempt",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "The socket is retrying after a drop; the same network metadata lets you correlate retries with network health.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": []
+    },
+    {
+      "name": "crts reconnect error",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "A reconnection attempt failed; `exception message` is present when the underlying socket throws.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": [
+        {
+          "property": "exception message"
+        }
+      ]
+    },
+    {
+      "name": "crts reconnect failed",
+      "component": "ChaloSocketClient",
+      "stage": "Socket connection lifecycle",
+      "source": "liveTrackingFramework",
+      "description": "The socket exhausted all retry attempts; dashboards should combine this with `crts connect error` to track outage duration.",
+      "autoProperties": [
+        "reason",
+        "network",
+        "network type",
+        "time"
+      ],
+      "properties": []
+    },
+    {
+      "name": "crts response",
+      "component": "LiveTrackingDataManagerImpl",
+      "stage": "Data response",
+      "source": "liveTrackingFramework",
+      "description": "Raised when the first RTS payload arrives for a subscription, so analysts know which request succeeded.",
+      "properties": [
+        {
+          "property": "reference type"
+        },
+        {
+          "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "decryption failed",
+      "component": "EncryptionFeatureImpl",
+      "stage": "Misc",
+      "source": "\"decryptionAction\"",
+      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/EncryptionFeatureImpl.kt:58",
+      "properties": [
+        {
+          "property": "error"
+        },
+        {
+          "property": "logMsg"
+        }
+      ]
+    },
+    {
+      "name": "encryption failed",
+      "component": "EncryptionFeatureImpl",
+      "stage": "Misc",
+      "source": "\"encryptionAction\"",
+      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/EncryptionFeatureImpl.kt:83",
+      "properties": [
+        {
+          "property": "error"
+        },
+        {
+          "property": "logMsg"
+        }
+      ]
+    },
+    {
+      "name": "encryption key sync failed",
+      "component": "KeySyncManager",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/sync/KeySyncManager.kt:89",
+      "properties": [
+        {
+          "property": "error"
+        },
+        {
+          "property": "logMsg"
+        }
+      ]
+    },
+    {
+      "name": "encryption key sync success",
+      "component": "KeySyncManager",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/sync/KeySyncManager.kt:101",
+      "properties": [
+        {
+          "property": "logMsg"
+        }
+      ]
+    },
+    {
+      "name": "key sync worker started",
+      "component": "KeySyncBackgroundWorkerTaskDelegate",
+      "stage": "Misc",
+      "source": "this::class.simpleName ?: \"KeySyncWorker\"",
+      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/sync/KeySyncBackgroundWorkerTaskDelegate.kt:17",
+      "properties": []
+    },
+    {
+      "name": "starting crts connection with cookies",
+      "component": "RealTimeSocketManagerImpl",
+      "stage": "Configuration & handshake",
+      "source": "realtimeSocketManager",
+      "description": "Triggered when the configuration demands cookie-based sockets; logs the URL that the RTS client will open.",
+      "properties": [
+        {
+          "property": "url"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Config & handshake",
+        "events": [
+          "crts config success",
+          "crts config failed",
+          "starting crts connection with cookies"
+        ],
+        "next": "Socket connection lifecycle"
+      },
+      {
+        "label": "Socket connection lifecycle",
+        "events": [
+          "crts connect",
+          "crts connect error",
+          "crts connect timeout",
+          "crts disconnect",
+          "crts error",
+          "crts reconnect attempt",
+          "crts reconnect",
+          "crts reconnect error",
+          "crts reconnect failed"
+        ],
+        "next": "Data response"
+      },
+      {
+        "label": "Data response",
+        "events": [
+          "crts response"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "BLE system bluetooth turned on",
+          "City data remote config fetch error",
+          "City data routes sync failed",
+          "City data routes sync success",
+          "Nearby routes fetch failed",
+          "decryption failed",
+          "encryption failed",
+          "encryption key sync failed",
+          "encryption key sync success",
+          "key sync worker started"
+        ]
+      }
+    ],
+    "notes": "Socket and reconnection events (`crts_*`) run continuously in the background while RTS subscriptions are active; `crts response` is emitted once per subscription when the first payload populates the view model."
+  }
+}

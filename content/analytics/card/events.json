@@ -1,0 +1,1182 @@
+{
+  "flowId": "card",
+  "flowName": "Card operations & recharge",
+  "description": "Complete analytics map for card management operations including Chalo Card linking/recharge, NCMC balance/recharge, card transactions, and tap operations.",
+  "propertyDefinitions": {
+    "cardNumber": {
+      "type": "string",
+      "description": "Full card number (Chalo Card or NCMC card)."
+    },
+    "maskedCardNumber": {
+      "type": "string",
+      "description": "Masked version of card number for display."
+    },
+    "cardNo": {
+      "type": "string",
+      "description": "Card number attribute (alternate naming in some contexts)."
+    },
+    "kitNo": {
+      "type": "string",
+      "description": "Kit number for NCMC cards."
+    },
+    "cardType": {
+      "type": "string",
+      "description": "Type of card (e.g., Chalo Card, NCMC)."
+    },
+    "cardIssuedOn": {
+      "type": "string",
+      "description": "Issue date of the card."
+    },
+    "cardBalance": {
+      "type": "number",
+      "description": "Current balance on the card."
+    },
+    "isCardRechargeEnabled": {
+      "type": "boolean",
+      "description": "Whether recharge is enabled for this card."
+    },
+    "isCardBlocked": {
+      "type": "boolean",
+      "description": "Whether the card is currently blocked."
+    },
+    "rechargeLimit": {
+      "type": "number",
+      "description": "Maximum recharge limit for the card."
+    },
+    "cardCity": {
+      "type": "string",
+      "description": "City where the card is valid."
+    },
+    "cardAgency": {
+      "type": "string",
+      "description": "Transit agency associated with the card."
+    },
+    "chaloCardPassName": {
+      "type": "string",
+      "description": "Name of active pass on Chalo Card."
+    },
+    "expiryTime": {
+      "type": "number",
+      "description": "Pass expiry timestamp in milliseconds."
+    },
+    "remainingTrips": {
+      "type": "number",
+      "description": "Number of trips remaining on the active pass."
+    },
+    "maxPricePerTrip": {
+      "type": "number",
+      "description": "Maximum price allowed per trip on the pass."
+    },
+    "maxTripsPerDay": {
+      "type": "number",
+      "description": "Maximum number of trips allowed per day."
+    },
+    "activationCode": {
+      "type": "string",
+      "description": "Card activation/linking code entered by user."
+    },
+    "cardLinkingErrorReason": {
+      "type": "string",
+      "description": "Reason for card linking failure."
+    },
+    "chaloCardInfoFetchFailedReason": {
+      "type": "string",
+      "description": "Reason enum when fetching card info fails."
+    },
+    "refreshChaloCardInfoSource": {
+      "type": "string",
+      "description": "Source that triggered card info refresh."
+    },
+    "rechargeAmount": {
+      "type": "number",
+      "description": "Amount selected for recharge."
+    },
+    "rechargeStatus": {
+      "type": "string",
+      "description": "Status of the recharge operation."
+    },
+    "cardTransactionId": {
+      "type": "string",
+      "description": "Transaction ID for card operations."
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "Generic transaction identifier."
+    },
+    "transactionType": {
+      "type": "string",
+      "description": "Type of transaction (RECHARGE, PASS_PURCHASE, TICKET, MERCHANT, UNKNOWN)."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Backend order ID for recharge."
+    },
+    "chaloOrderId": {
+      "type": "string",
+      "description": "Chalo-specific order ID."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Generic failure reason message."
+    },
+    "rechargeOrderFailureReason": {
+      "type": "string",
+      "description": "Specific reason for recharge order creation failure."
+    },
+    "errorCode": {
+      "type": "string",
+      "description": "Error code returned from API or validation."
+    },
+    "errorType": {
+      "type": "string",
+      "description": "Type of error (below min, not in multiples, limit exceeded)."
+    },
+    "isSuccessful": {
+      "type": "boolean",
+      "description": "Whether the operation completed successfully."
+    },
+    "paymentTime": {
+      "type": "string",
+      "description": "Timestamp of payment completion."
+    },
+    "paymentStatus": {
+      "type": "string",
+      "description": "Status of payment (success, failed, pending)."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Generic amount field."
+    },
+    "ocr recharge delay copy": {
+      "type": "string",
+      "description": "Copy text shown about recharge delay after payment."
+    },
+    "isRefreshResult": {
+      "type": "boolean",
+      "description": "Whether this result came from a refresh action."
+    },
+    "errorMessage": {
+      "type": "string",
+      "description": "Error message text."
+    },
+    "card option": {
+      "type": "string",
+      "description": "Which card option was clicked on home screen."
+    },
+    "chaloCardRechargeConfigFetchFailedReason": {
+      "type": "string",
+      "description": "Reason for recharge configuration fetch failure."
+    },
+    "online recharge balance": {
+      "type": "number",
+      "description": "Online recharge balance for NCMC card."
+    },
+    "ncmc recharge mode": {
+      "type": "string",
+      "description": "Mode of NCMC recharge (online/offline)."
+    },
+    "offlineBalance": {
+      "type": "number",
+      "description": "Offline balance on NCMC card."
+    },
+    "topUpAmount": {
+      "type": "number",
+      "description": "Amount topped up in tap operation."
+    },
+    "rrn": {
+      "type": "string",
+      "description": "Retrieval Reference Number for tap transactions."
+    },
+    "status": {
+      "type": "string",
+      "description": "Verification status in tap operations (Terminated, Declined, Failed, SelectNext, Unknown)."
+    },
+    "resultCode": {
+      "type": "string",
+      "description": "Result code from tap operation."
+    },
+    "message": {
+      "type": "string",
+      "description": "Result message from tap operation."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for failure or unavailability."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Configuration ID for card product."
+    },
+    "productName": {
+      "type": "string",
+      "description": "Name of the card product."
+    },
+    "isActive": {
+      "type": "boolean",
+      "description": "Whether the product/config is active."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Type of product."
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Sub-type of product."
+    }
+  },
+  "stages": [
+    {
+      "name": "Home & Navigation",
+      "description": "Entry points from home screen and navigation drawer.",
+      "events": [
+        "home screen chalo card option clicked",
+        "ocr card payments homescreen drawer clicked",
+        "ocr homescreen card recharge card"
+      ]
+    },
+    {
+      "name": "Chalo Card Info",
+      "description": "Card information screen showing balance, passes, and transaction history.",
+      "events": [
+        "chalo card info screen opened",
+        "chalo card info fetch success",
+        "chalo card info fetch failed",
+        "no linked chalo card found",
+        "refresh chalo card info clicked",
+        "chalo card info add money clicked",
+        "chalo card buy new card btn clicked",
+        "chalo card info show transaction history btn clicked",
+        "chalo card info link card tut link btn clicked",
+        "chalo card info active pass card clicked"
+      ]
+    },
+    {
+      "name": "Chalo Card Linking",
+      "description": "Flow for linking a new Chalo Card using activation code.",
+      "events": [
+        "chalo card linking screen opened",
+        "chalocard link code proceed btn clicked",
+        "chalo card linking failed",
+        "chalocard linking success"
+      ]
+    },
+    {
+      "name": "Enter Card Details",
+      "description": "Screen for entering card details before recharge.",
+      "events": [
+        "ocr cardDetails next clicked",
+        "ocr card validity checked"
+      ]
+    },
+    {
+      "name": "Chalo Card Recharge Amount",
+      "description": "Enter recharge amount, validate, and create order for Chalo Card recharge.",
+      "events": [
+        "chalo card enter recharge amount screen opened",
+        "chalo card info fetch success",
+        "chalo card info fetch failed",
+        "chalo card recharge config fetch failed",
+        "chalo card recharge proceed btn clicked",
+        "ocr recharge amount error",
+        "terms dialog open",
+        "accept terms",
+        "cancel terms",
+        "ocr order created",
+        "ocr order creation failed",
+        "chalo card recharge error action btn clicked",
+        "chalo card info link card tut link btn clicked"
+      ]
+    },
+    {
+      "name": "Chalo Card Post-Payment",
+      "description": "Payment success and summary screens after Chalo Card recharge.",
+      "events": [
+        "ocr payment success activity open",
+        "ocr payment success ok clicked",
+        "ocr payment success recharge details clicked",
+        "ocr payment summary activity open"
+      ]
+    },
+    {
+      "name": "Card Transactions History",
+      "description": "View and interact with card transaction history.",
+      "events": [
+        "chalo card transactions opened",
+        "chalo card transactions fetch result",
+        "chalo card transactions retry clicked",
+        "chalo card transactions refresh clicked",
+        "chalo card transaction clicked",
+        "chalo card transactions email all clicked"
+      ]
+    },
+    {
+      "name": "NCMC Online Recharge",
+      "description": "NCMC card online balance recharge flow.",
+      "events": [
+        "ncmc load balance view created",
+        "ncmc load balance next clicked",
+        "ncmc tnc accepted loading",
+        "ncmc online recharge order created",
+        "ncmc recharge api error",
+        "ncmc online recharge completed"
+      ]
+    },
+    {
+      "name": "NCMC Offline Recharge",
+      "description": "NCMC card offline balance recharge flow.",
+      "events": [
+        "ncmc load balance view created",
+        "ncmc load balance next clicked",
+        "ncmc tnc accepted loading",
+        "ncmc offline recharge success",
+        "ncmc recharge api error",
+        "ncmc add online from offline flow"
+      ]
+    },
+    {
+      "name": "NCMC Tap Operations",
+      "description": "NFC tap operations for NCMC card validation and top-up.",
+      "events": [
+        "uvik intent hash creation failed",
+        "ncmc tap operation success",
+        "ncmc tap operation failure",
+        "ncmc tap operation result unavailable",
+        "ncmc tap transaction failed"
+      ]
+    },
+    {
+      "name": "Checkout Payment (Card)",
+      "description": "Payment processing events specific to card recharge.",
+      "events": [
+        "card screen opened",
+        "card details submitted",
+        "save card details",
+        "online card recharge payment successful",
+        "online card recharge payment failed",
+        "ncmc recharge payment successful",
+        "ncmc recharge payment failed"
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "Card-related push notifications.",
+      "events": [
+        "chalo card transaction notification received"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "terms and conditions open"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "accept terms",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User accepts terms and conditions."
+    },
+    {
+      "name": "cancel terms",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User cancels terms and conditions dialog."
+    },
+    {
+      "name": "card details submitted",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "cardDetailsScreen",
+      "description": "User submits card details for payment."
+    },
+    {
+      "name": "card screen opened",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "cardDetailsScreen",
+      "description": "Card details screen opened in checkout flow."
+    },
+    {
+      "name": "chalo card buy new card btn clicked",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User taps the buy new card button."
+    },
+    {
+      "name": "chalo card enter recharge amount screen opened",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "Various (passed from caller)",
+      "description": "Recharge amount entry screen opens.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "rechargeLimit"
+        }
+      ],
+      "notes": "Includes all card details properties."
+    },
+    {
+      "name": "chalo card info active pass card clicked",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User taps on the active pass card to view details."
+    },
+    {
+      "name": "chalo card info add money clicked",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User taps the add money button to start recharge flow."
+    },
+    {
+      "name": "chalo card info fetch failed",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "Failed to fetch card information.",
+      "properties": [
+        {
+          "property": "chaloCardInfoFetchFailedReason",
+          "context": "Failure reason enum."
+        }
+      ]
+    },
+    {
+      "name": "chalo card info fetch failed",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Card info fetch failed on recharge amount screen.",
+      "properties": [
+        {
+          "property": "chaloCardInfoFetchFailedReason",
+          "context": "Failure reason enum."
+        }
+      ]
+    },
+    {
+      "name": "chalo card info fetch success",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "Successfully fetched card information from backend.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "cardType"
+        }
+      ],
+      "notes": "Includes all card details properties plus active pass properties if applicable."
+    },
+    {
+      "name": "chalo card info fetch success",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Card info fetched successfully on recharge amount screen."
+    },
+    {
+      "name": "chalo card info link card tut link btn clicked",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User taps the link card tutorial link."
+    },
+    {
+      "name": "chalo card info link card tut link btn clicked",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User taps link card tutorial link from recharge screen."
+    },
+    {
+      "name": "chalo card info screen opened",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "Various (tracked in component initialization)",
+      "description": "Card information screen opens with card details.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "isCardRechargeEnabled"
+        },
+        {
+          "property": "rechargeLimit"
+        },
+        {
+          "property": "cardType"
+        },
+        {
+          "property": "cardIssuedOn"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "isCardBlocked"
+        },
+        {
+          "property": "chaloCardPassName",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "expiryTime",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "remainingTrips",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "maxPricePerTrip",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "maxTripsPerDay",
+          "context": "If active pass exists."
+        }
+      ]
+    },
+    {
+      "name": "chalo card info show transaction history btn clicked",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User taps to view transaction history."
+    },
+    {
+      "name": "chalo card linking failed",
+      "component": "ChaloCardLinkCardComponent",
+      "stage": "Chalo Card Linking",
+      "source": "chalo card linking screen",
+      "description": "Card linking operation failed.",
+      "properties": [
+        {
+          "property": "cardLinkingErrorReason",
+          "context": "Error reason from DataFetchOperationErrorReason or LinkChaloCardFailureReason."
+        },
+        {
+          "property": "errorCode",
+          "context": "Error code if available."
+        }
+      ]
+    },
+    {
+      "name": "chalo card linking screen opened",
+      "component": "ChaloCardLinkCardComponent",
+      "stage": "Chalo Card Linking",
+      "source": "Various (passed from caller)",
+      "description": "Card linking screen opens for user to enter activation code."
+    },
+    {
+      "name": "chalo card recharge config fetch failed",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Failed to fetch recharge configuration.",
+      "properties": [
+        {
+          "property": "chaloCardRechargeConfigFetchFailedReason",
+          "context": "Configuration fetch failure reason."
+        }
+      ]
+    },
+    {
+      "name": "chalo card recharge error action btn clicked",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User taps error action button.",
+      "properties": [
+        {
+          "property": "errorReason",
+          "context": "Error reason that triggered the action."
+        }
+      ]
+    },
+    {
+      "name": "chalo card recharge proceed btn clicked",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User taps proceed button with entered recharge amount."
+    },
+    {
+      "name": "chalo card transaction clicked",
+      "component": "CardTransactionHistoryComponent",
+      "stage": "Card Transactions History",
+      "source": "CardTransactionsViewModel",
+      "description": "User taps on a specific transaction to view details.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "transactionType",
+          "context": "Type: RECHARGE, PASS_PURCHASE, TICKET, MERCHANT, UNKNOWN."
+        },
+        {
+          "property": "transactionId"
+        }
+      ]
+    },
+    {
+      "name": "chalo card transaction notification received",
+      "component": "NotificationService",
+      "stage": "Notifications",
+      "source": "pushNotification",
+      "description": "Push notification received for card transaction."
+    },
+    {
+      "name": "chalo card transactions email all clicked",
+      "component": "CardTransactionHistoryComponent",
+      "stage": "Card Transactions History",
+      "source": "CardTransactionsViewModel",
+      "description": "User taps to email all transactions."
+    },
+    {
+      "name": "chalo card transactions fetch result",
+      "component": "CardTransactionHistoryComponent",
+      "stage": "Card Transactions History",
+      "source": "CardTransactionsViewModel",
+      "description": "Result of fetching card transactions.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "isSuccessful",
+          "context": "Whether fetch succeeded."
+        },
+        {
+          "property": "errorMessage",
+          "context": "Error message if failed."
+        },
+        {
+          "property": "isRefreshResult",
+          "context": "Whether this was a refresh operation."
+        }
+      ]
+    },
+    {
+      "name": "chalo card transactions opened",
+      "component": "CardTransactionHistoryComponent",
+      "stage": "Card Transactions History",
+      "source": "Various (passed from caller)",
+      "description": "Card transactions history screen opens.",
+      "properties": [
+        {
+          "property": "cardNumber",
+          "context": "Card number for which transactions are shown."
+        }
+      ]
+    },
+    {
+      "name": "chalo card transactions refresh clicked",
+      "component": "CardTransactionHistoryComponent",
+      "stage": "Card Transactions History",
+      "source": "CardTransactionsViewModel",
+      "description": "User pulls to refresh transactions list."
+    },
+    {
+      "name": "chalo card transactions retry clicked",
+      "component": "CardTransactionHistoryComponent",
+      "stage": "Card Transactions History",
+      "source": "CardTransactionsViewModel",
+      "description": "User taps retry button after fetch failure."
+    },
+    {
+      "name": "chalocard link code proceed btn clicked",
+      "component": "ChaloCardLinkCardComponent",
+      "stage": "Chalo Card Linking",
+      "source": "chalo card linking screen",
+      "description": "User submits the card activation code to link card."
+    },
+    {
+      "name": "chalocard linking success",
+      "component": "ChaloCardLinkCardComponent",
+      "stage": "Chalo Card Linking",
+      "source": "chalo card linking screen",
+      "description": "Card linked successfully."
+    },
+    {
+      "name": "home screen chalo card option clicked",
+      "component": "HomeScreen",
+      "stage": "Home & Navigation",
+      "source": "homeScreen",
+      "description": "User taps a card option on the home screen.",
+      "properties": [
+        {
+          "property": "card option",
+          "context": "Which card option was clicked."
+        }
+      ]
+    },
+    {
+      "name": "ncmc add online from offline flow",
+      "component": "OfflineCardRechargeComponent",
+      "stage": "NCMC Offline Recharge",
+      "source": "ncmc offline balance recharge screen",
+      "description": "User navigates to add online money from offline recharge flow."
+    },
+    {
+      "name": "ncmc load balance next clicked",
+      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
+      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
+      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "description": "User taps next after entering recharge amount.",
+      "properties": [
+        {
+          "property": "rechargeAmount",
+          "context": "Amount to recharge."
+        },
+        {
+          "property": "cardNo"
+        },
+        {
+          "property": "kitNo"
+        },
+        {
+          "property": "ncmc recharge mode"
+        }
+      ]
+    },
+    {
+      "name": "ncmc load balance view created",
+      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
+      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
+      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "description": "NCMC load balance screen view created.",
+      "properties": [
+        {
+          "property": "online recharge balance",
+          "context": "Online recharge balance (for online flow)."
+        },
+        {
+          "property": "cardNo",
+          "context": "NCMC card number."
+        },
+        {
+          "property": "kitNo",
+          "context": "Kit number."
+        },
+        {
+          "property": "ncmc recharge mode",
+          "context": "Mode: 'online' or 'offline'."
+        }
+      ]
+    },
+    {
+      "name": "ncmc offline recharge success",
+      "component": "OfflineCardRechargeComponent",
+      "stage": "NCMC Offline Recharge",
+      "source": "ncmc offline balance recharge screen",
+      "description": "NCMC offline recharge successful."
+    },
+    {
+      "name": "ncmc online recharge completed",
+      "component": "NCMCOnlineRechargeComponent",
+      "stage": "NCMC Online Recharge",
+      "source": "ncmc online recharge screen",
+      "description": "NCMC online recharge flow completed."
+    },
+    {
+      "name": "ncmc online recharge order created",
+      "component": "NCMCOnlineRechargeComponent",
+      "stage": "NCMC Online Recharge",
+      "source": "ncmc online recharge screen",
+      "description": "NCMC online recharge order created successfully.",
+      "properties": [
+        {
+          "property": "orderId",
+          "context": "Backend order ID."
+        }
+      ]
+    },
+    {
+      "name": "ncmc recharge api error",
+      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
+      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
+      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "description": "NCMC recharge API call failed.",
+      "properties": [
+        {
+          "property": "failureReason",
+          "context": "Error message from API."
+        }
+      ]
+    },
+    {
+      "name": "ncmc recharge payment failed",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "postPaymentScreen",
+      "description": "NCMC recharge payment failed."
+    },
+    {
+      "name": "ncmc recharge payment successful",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "postPaymentScreen",
+      "description": "NCMC recharge payment completed successfully."
+    },
+    {
+      "name": "ncmc tap operation failure",
+      "component": "ProcessUvikResultUseCase",
+      "stage": "NCMC Tap Operations",
+      "source": "ncmc tap screen",
+      "description": "NCMC tap operation failed.",
+      "properties": [
+        {
+          "property": "errorCode",
+          "context": "Error code from tap operation."
+        },
+        {
+          "property": "reason",
+          "context": "Failure message."
+        }
+      ]
+    },
+    {
+      "name": "ncmc tap operation result unavailable",
+      "component": "ProcessUvikResultUseCase",
+      "stage": "NCMC Tap Operations",
+      "source": "ncmc tap screen",
+      "description": "NCMC tap operation result is unavailable.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Unavailable reason."
+        }
+      ]
+    },
+    {
+      "name": "ncmc tap operation success",
+      "component": "ProcessUvikResultUseCase",
+      "stage": "NCMC Tap Operations",
+      "source": "ncmc tap screen",
+      "description": "NCMC tap operation completed successfully.",
+      "properties": [
+        {
+          "property": "transactionId",
+          "context": "Uvik transaction ID."
+        },
+        {
+          "property": "rrn",
+          "context": "Retrieval Reference Number."
+        },
+        {
+          "property": "offlineBalance",
+          "context": "Offline balance after tap."
+        },
+        {
+          "property": "topUpAmount",
+          "context": "Amount topped up."
+        },
+        {
+          "property": "status",
+          "context": "Verification status."
+        },
+        {
+          "property": "resultCode",
+          "context": "Result code."
+        },
+        {
+          "property": "message",
+          "context": "Result message."
+        }
+      ]
+    },
+    {
+      "name": "ncmc tap transaction failed",
+      "component": "ProcessUvikResultUseCase",
+      "stage": "NCMC Tap Operations",
+      "source": "ncmc tap screen",
+      "description": "NCMC tap transaction failed during processing.",
+      "properties": [
+        {
+          "property": "status",
+          "context": "Transaction status: Terminated, Declined, Failed, SelectNext, Unknown."
+        }
+      ]
+    },
+    {
+      "name": "ncmc tnc accepted loading",
+      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
+      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
+      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "description": "User accepts terms and conditions, proceeding to order creation."
+    },
+    {
+      "name": "no linked chalo card found",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User has no linked Chalo Card."
+    },
+    {
+      "name": "ocr card payments homescreen drawer clicked",
+      "component": "NavigationDrawer",
+      "stage": "Home & Navigation",
+      "source": "navigationDrawer",
+      "description": "User taps the card recharge option in the home screen drawer."
+    },
+    {
+      "name": "ocr card validity checked",
+      "component": "EnterCardDetailsComponent",
+      "stage": "Enter Card Details",
+      "source": "chalo enter card details screen",
+      "description": "Card validity check result after entering card details.",
+      "properties": [
+        {
+          "property": "isSuccessful",
+          "context": "Whether validation succeeded."
+        },
+        {
+          "property": "cardNo",
+          "context": "Card number validated."
+        },
+        {
+          "property": "rechargeLimit",
+          "context": "Recharge limit returned if valid."
+        }
+      ]
+    },
+    {
+      "name": "ocr cardDetails next clicked",
+      "component": "EnterCardDetailsComponent",
+      "stage": "Enter Card Details",
+      "source": "chalo enter card details screen",
+      "description": "User submits card number for validation before recharge.",
+      "properties": [
+        {
+          "property": "cardNo",
+          "context": "Card number entered."
+        }
+      ]
+    },
+    {
+      "name": "ocr homescreen card recharge card",
+      "component": "HomeScreen",
+      "stage": "Home & Navigation",
+      "source": "homeScreen",
+      "description": "User taps the card recharge card on home screen."
+    },
+    {
+      "name": "ocr order created",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Recharge order created successfully.",
+      "properties": [
+        {
+          "property": "orderId",
+          "context": "Backend order ID."
+        },
+        {
+          "property": "chaloOrderId",
+          "context": "Chalo order ID."
+        }
+      ]
+    },
+    {
+      "name": "ocr order creation failed",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Order creation failed.",
+      "properties": [
+        {
+          "property": "failureReason",
+          "context": "Failure message from backend."
+        }
+      ]
+    },
+    {
+      "name": "ocr payment success activity open",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Post-Payment",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Payment success screen opens after successful recharge payment.",
+      "properties": [
+        {
+          "property": "cardTransactionId",
+          "context": "Transaction ID for the recharge."
+        },
+        {
+          "property": "ocr recharge delay copy",
+          "context": "Copy text about recharge delay."
+        }
+      ]
+    },
+    {
+      "name": "ocr payment success ok clicked",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Post-Payment",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User taps OK on payment success screen.",
+      "properties": [
+        {
+          "property": "cardTransactionId"
+        }
+      ]
+    },
+    {
+      "name": "ocr payment success recharge details clicked",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Post-Payment",
+      "source": "chalo card recharge enter amount screen",
+      "description": "User taps to view recharge details from payment success screen.",
+      "properties": [
+        {
+          "property": "cardTransactionId"
+        }
+      ]
+    },
+    {
+      "name": "ocr payment summary activity open",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Post-Payment",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Payment summary screen opens with transaction details.",
+      "properties": [
+        {
+          "property": "cardTransactionId"
+        },
+        {
+          "property": "paymentTime",
+          "context": "Timestamp of payment."
+        },
+        {
+          "property": "paymentStatus",
+          "context": "Payment status."
+        },
+        {
+          "property": "rechargeStatus",
+          "context": "Recharge status."
+        },
+        {
+          "property": "amount",
+          "context": "Recharge amount."
+        }
+      ]
+    },
+    {
+      "name": "ocr recharge amount error",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Validation error with entered recharge amount.",
+      "properties": [
+        {
+          "property": "errorType",
+          "context": "Type of error: below min, not in multiples, or limit exceeded."
+        }
+      ]
+    },
+    {
+      "name": "online card recharge payment failed",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "postPaymentScreen",
+      "description": "Online card recharge payment failed."
+    },
+    {
+      "name": "online card recharge payment successful",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "postPaymentScreen",
+      "description": "Online card recharge payment completed successfully."
+    },
+    {
+      "name": "refresh chalo card info clicked",
+      "component": "ChaloCardInfoComponent",
+      "stage": "Chalo Card Info",
+      "source": "chalo card info screen",
+      "description": "User taps refresh to reload card information.",
+      "properties": [
+        {
+          "property": "refreshChaloCardInfoSource",
+          "context": "Source that triggered the refresh."
+        }
+      ]
+    },
+    {
+      "name": "save card details",
+      "component": "CheckoutComponent",
+      "stage": "Checkout Payment (Card)",
+      "source": "cardDetailsScreen",
+      "description": "User opts to save card details for future use."
+    },
+    {
+      "name": "terms and conditions open",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Misc",
+      "source": "Source.CHALO_CARD_RECHARGE_ENTER_AMOUNT_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/ncmc/ui/cardrechargeamount/ChaloCardRechargeAmountComponent.kt:286",
+      "properties": [
+        {
+          "property": "rechargeAmount"
+        }
+      ]
+    },
+    {
+      "name": "terms dialog open",
+      "component": "ChaloCardRechargeAmountComponent",
+      "stage": "Chalo Card Recharge Amount",
+      "source": "chalo card recharge enter amount screen",
+      "description": "Terms and conditions dialog shown before order creation.",
+      "properties": [
+        {
+          "property": "rechargeAmount",
+          "context": "Amount user wants to recharge."
+        }
+      ]
+    },
+    {
+      "name": "uvik intent hash creation failed",
+      "component": "GenerateUvikIntentHashUseCase",
+      "stage": "NCMC Tap Operations",
+      "source": "ncmc tap screen",
+      "description": "Failed to create intent hash for UVIK tap operation.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Exception message."
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "multi-path",
+    "notes": "Card flow has multiple independent paths: Chalo Card management (link/recharge/transactions), NCMC online/offline recharge, and NCMC tap operations. Users can enter from home screen or drawer and follow different paths based on card type.",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "terms and conditions open"
+        ]
+      }
+    ]
+  }
+}

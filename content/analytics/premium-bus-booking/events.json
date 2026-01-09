@@ -1,0 +1,3507 @@
+{
+  "flowId": "premium_bus_booking",
+  "flowName": "Premium Bus Booking & Activation",
+  "description": "Complete analytics map for the premium bus booking journey from landing to ticket activation, including pass-based and bulk booking flows.",
+  "propertyDefinitions": {
+    "bookingId": {
+      "type": "string",
+      "description": "Unique booking identifier assigned after successful booking creation."
+    },
+    "passId": {
+      "type": "string",
+      "description": "Pass/subscription identifier for pass-based bookings."
+    },
+    "tripId": {
+      "type": "string",
+      "description": "Specific trip identifier for the selected slot."
+    },
+    "routeId": {
+      "type": "string",
+      "description": "Route identifier for the premium bus service."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Product configuration identifier."
+    },
+    "fromStopId": {
+      "type": "string",
+      "description": "Pickup stop identifier."
+    },
+    "fromStopName": {
+      "type": "string",
+      "description": "Pickup stop name."
+    },
+    "toStopId": {
+      "type": "string",
+      "description": "Drop stop identifier."
+    },
+    "toStopName": {
+      "type": "string",
+      "description": "Drop stop name."
+    },
+    "pickupStopId": {
+      "type": "string",
+      "description": "Alias for fromStopId used in some contexts."
+    },
+    "pickupStopName": {
+      "type": "string",
+      "description": "Alias for fromStopName used in some contexts."
+    },
+    "dropStopId": {
+      "type": "string",
+      "description": "Alias for toStopId used in some contexts."
+    },
+    "dropStopName": {
+      "type": "string",
+      "description": "Alias for toStopName used in some contexts."
+    },
+    "pickUpId": {
+      "type": "string",
+      "description": "OD pair pickup stop ID (used in stop selection)."
+    },
+    "pickUpName": {
+      "type": "string",
+      "description": "OD pair pickup stop name."
+    },
+    "dropId": {
+      "type": "string",
+      "description": "OD pair drop stop ID (used in stop selection)."
+    },
+    "dropName": {
+      "type": "string",
+      "description": "OD pair drop stop name."
+    },
+    "sourceName": {
+      "type": "string",
+      "description": "Source location name entered by user."
+    },
+    "sourceType": {
+      "type": "string",
+      "description": "Type of source location (e.g., place, address)."
+    },
+    "sourceLat": {
+      "type": "number",
+      "description": "Source location latitude."
+    },
+    "sourceLong": {
+      "type": "number",
+      "description": "Source location longitude."
+    },
+    "destinationName": {
+      "type": "string",
+      "description": "Destination location name entered by user."
+    },
+    "destinationType": {
+      "type": "string",
+      "description": "Type of destination location."
+    },
+    "destinationLat": {
+      "type": "number",
+      "description": "Destination location latitude."
+    },
+    "destinationLong": {
+      "type": "number",
+      "description": "Destination location longitude."
+    },
+    "flowType": {
+      "type": "string",
+      "description": "Type of booking flow.",
+      "values": [
+        "fresh booking",
+        "user reschedule",
+        "pass-based",
+        "bulk booking"
+      ]
+    },
+    "flow": {
+      "type": "string",
+      "description": "Flow token used in some contexts to identify the journey type."
+    },
+    "attributionType": {
+      "type": "string",
+      "description": "Attribution type for deeplinks (if applicable)."
+    },
+    "selectedSlotTripId": {
+      "type": "string",
+      "description": "Trip ID of the selected slot."
+    },
+    "selectedSlotTime": {
+      "type": "string",
+      "description": "Departure time of the selected slot."
+    },
+    "selectedSlotArrivalTime": {
+      "type": "string",
+      "description": "Arrival time of the selected slot."
+    },
+    "selectedSlotSeatAvailable": {
+      "type": "number",
+      "description": "Number of seats available in the selected slot."
+    },
+    "selectedSlotRouteId": {
+      "type": "string",
+      "description": "Route ID of the selected slot."
+    },
+    "slotTime": {
+      "type": "string",
+      "description": "Slot departure time."
+    },
+    "slotFromStopTime": {
+      "type": "string",
+      "description": "Time at which the slot departs from the pickup stop."
+    },
+    "slotTripStartTime": {
+      "type": "string",
+      "description": "Trip start time for the slot."
+    },
+    "nextAvailableTimeSlot": {
+      "type": "string",
+      "description": "Next available time slot if current selection is full."
+    },
+    "numberOfActiveSlots": {
+      "type": "number",
+      "description": "Total number of active slots across all days."
+    },
+    "numberOfSoldOutSlots": {
+      "type": "number",
+      "description": "Total number of sold out slots across all days."
+    },
+    "currentDayActiveSlotCount": {
+      "type": "number",
+      "description": "Number of active slots for the currently selected day."
+    },
+    "currentDaySoldOutSlotCount": {
+      "type": "number",
+      "description": "Number of sold out slots for the currently selected day."
+    },
+    "selectedSection": {
+      "type": "string",
+      "description": "Selected date section/tab in slot selection screen."
+    },
+    "isAnySlotAvailable": {
+      "type": "boolean",
+      "description": "Whether any slot is available for booking."
+    },
+    "routesForSelectedOD": {
+      "type": "number",
+      "description": "Number of routes available for the selected OD pair."
+    },
+    "selectedSeatIds": {
+      "type": "array",
+      "description": "List of selected seat IDs."
+    },
+    "selectedSeatNumbers": {
+      "type": "array",
+      "description": "List of selected seat numbers."
+    },
+    "selectedSeatNums": {
+      "type": "array",
+      "description": "Alias for selectedSeatNumbers."
+    },
+    "selectedSeatId": {
+      "type": "string",
+      "description": "Individual selected seat ID."
+    },
+    "selectedSeatNum": {
+      "type": "string",
+      "description": "Individual selected seat number."
+    },
+    "selectedSeatType": {
+      "type": "string",
+      "description": "Type of selected seat (regular, reserved, etc.)."
+    },
+    "selectedSeatStatus": {
+      "type": "string",
+      "description": "Status of selected seat (available, unavailable, selected)."
+    },
+    "selectedSeatReservationType": {
+      "type": "string",
+      "description": "Reservation type for the seat (e.g., female-reserved)."
+    },
+    "selectedSeatX": {
+      "type": "number",
+      "description": "X coordinate of selected seat in layout."
+    },
+    "selectedSeatY": {
+      "type": "number",
+      "description": "Y coordinate of selected seat in layout."
+    },
+    "noOfSeatsSelected": {
+      "type": "number",
+      "description": "Count of seats selected by user."
+    },
+    "selectedSeatCount": {
+      "type": "number",
+      "description": "Alias for noOfSeatsSelected."
+    },
+    "totalSeats": {
+      "type": "number",
+      "description": "Total number of seats in the bus layout."
+    },
+    "availableSeats": {
+      "type": "number",
+      "description": "Number of available seats."
+    },
+    "unavailableSeats": {
+      "type": "number",
+      "description": "Number of unavailable seats."
+    },
+    "pbSeatSelectionFlowType": {
+      "type": "string",
+      "description": "Type of seat selection flow.",
+      "values": [
+        "fresh_booking",
+        "seat_change",
+        "bulk_booking"
+      ]
+    },
+    "numberOfCombinationsShown": {
+      "type": "number",
+      "description": "Number of OD combinations shown to user."
+    },
+    "firstMileWalkingTime": {
+      "type": "number",
+      "description": "Walking time from source to pickup stop (in minutes)."
+    },
+    "lastMileWalkingTime": {
+      "type": "number",
+      "description": "Walking time from drop stop to destination (in minutes)."
+    },
+    "combinedWalkingTime": {
+      "type": "number",
+      "description": "Total walking time for first and last mile."
+    },
+    "firstCombinationWalkingTime": {
+      "type": "number",
+      "description": "Walking time for the first suggested OD combination."
+    },
+    "firstCombinationPickUpId": {
+      "type": "string",
+      "description": "Pickup stop ID of first suggested combination."
+    },
+    "firstCombinationPickUpName": {
+      "type": "string",
+      "description": "Pickup stop name of first suggested combination."
+    },
+    "firstCombinationDropId": {
+      "type": "string",
+      "description": "Drop stop ID of first suggested combination."
+    },
+    "firstCombinationDropName": {
+      "type": "string",
+      "description": "Drop stop name of first suggested combination."
+    },
+    "searchSource": {
+      "type": "string",
+      "description": "Source of the search (e.g., home screen, deeplink)."
+    },
+    "rebookCardCount": {
+      "type": "number",
+      "description": "Number of rebook cards shown."
+    },
+    "errorMsg": {
+      "type": "string",
+      "description": "Error message text."
+    },
+    "errorCode": {
+      "type": "string",
+      "description": "Error code identifier."
+    },
+    "errorTitle": {
+      "type": "string",
+      "description": "Error title shown to user."
+    },
+    "previousScreen": {
+      "type": "string",
+      "description": "Previous screen identifier."
+    },
+    "isNewLandingScreen": {
+      "type": "boolean",
+      "description": "Whether the new landing screen design is shown."
+    },
+    "totalPassesCount": {
+      "type": "number",
+      "description": "Total number of passes available."
+    },
+    "supportedPassesCount": {
+      "type": "number",
+      "description": "Number of passes supported for current OD pair."
+    },
+    "selectedPurchaseOption": {
+      "type": "string",
+      "description": "Selected purchase option (ticket vs pass)."
+    },
+    "totalODPairs": {
+      "type": "number",
+      "description": "Total number of OD pairs available."
+    },
+    "selectedODPairPosition": {
+      "type": "number",
+      "description": "Position/index of selected OD pair."
+    },
+    "pbODPairListSize": {
+      "type": "number",
+      "description": "Size of OD pair list."
+    },
+    "isRescheduledODFound": {
+      "type": "boolean",
+      "description": "Whether the rescheduled booking's OD pair was found."
+    },
+    "activeAndVisibleProductSize": {
+      "type": "number",
+      "description": "Number of active and visible products."
+    },
+    "isSubcategoryAvailable": {
+      "type": "boolean",
+      "description": "Whether product subcategories are available."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Product type.",
+      "values": [
+        "ticket",
+        "pass"
+      ]
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type (e.g., valuePass, bulkBooking)."
+    },
+    "couponName": {
+      "type": "string",
+      "description": "Applied coupon name."
+    },
+    "effectiveFare": {
+      "type": "number",
+      "description": "Final effective fare after discounts."
+    },
+    "appliedRulesId": {
+      "type": "array",
+      "description": "List of applied discount/fare rule IDs."
+    },
+    "ticketStatus": {
+      "type": "string",
+      "description": "Status of the ticket/booking.",
+      "values": [
+        "active",
+        "expired",
+        "cancelled",
+        "upcoming"
+      ]
+    },
+    "pbAckCtaType": {
+      "type": "string",
+      "description": "Type of CTA clicked on acknowledgment screen.",
+      "values": [
+        "Details",
+        "Okay"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Verification/validation status."
+    },
+    "isPostBoardingFlow": {
+      "type": "boolean",
+      "description": "Whether tracking started after boarding."
+    },
+    "timeWhenScreenOpened": {
+      "type": "number",
+      "description": "Timestamp when activation screen opened (millis)."
+    },
+    "delayInFetchingEta": {
+      "type": "number",
+      "description": "Delay in fetching ETA after screen open (millis)."
+    },
+    "timeWhenEtaRenderedFirstTime": {
+      "type": "number",
+      "description": "Timestamp when ETA was first rendered (millis)."
+    },
+    "isFirstTimeEtaCame": {
+      "type": "boolean",
+      "description": "Whether this is the first time ETA was received."
+    },
+    "lastPacketReceivedTimeInMillis": {
+      "type": "number",
+      "description": "Timestamp of last tracking packet received."
+    },
+    "currentPacketReceivedTimeInMillis": {
+      "type": "number",
+      "description": "Timestamp of current tracking packet."
+    },
+    "timeDifferenceBetweenPacketsInMillis": {
+      "type": "number",
+      "description": "Time difference between consecutive tracking packets."
+    },
+    "isToggledOn": {
+      "type": "boolean",
+      "description": "Toggle state (for traffic view)."
+    },
+    "activeBookingActionType": {
+      "type": "string",
+      "description": "Type of action on active booking."
+    },
+    "activeBookingActionSubText": {
+      "type": "string",
+      "description": "Sub-text for active booking action."
+    },
+    "isActionAllowed": {
+      "type": "boolean",
+      "description": "Whether the action is allowed."
+    },
+    "premiumBusStackType": {
+      "type": "string",
+      "description": "Type of premium bus booking stack."
+    },
+    "cancellationReason": {
+      "type": "string",
+      "description": "Reason text for cancellation."
+    },
+    "cancellationReasonId": {
+      "type": "string",
+      "description": "Reason ID for cancellation."
+    },
+    "cancellationEligibilityCopy": {
+      "type": "string",
+      "description": "Eligibility copy shown on cancellation dialog."
+    },
+    "numberOfTrips": {
+      "type": "number",
+      "description": "Number of trips in bulk booking."
+    },
+    "numberOfTripsPerDay": {
+      "type": "number",
+      "description": "Number of trips per day in bulk booking."
+    },
+    "numberOfDaysInRange": {
+      "type": "number",
+      "description": "Number of days in date range for bulk booking."
+    },
+    "selectedWeekdays": {
+      "type": "array",
+      "description": "List of selected weekdays for bulk booking."
+    },
+    "numberOfSelectedWeekdays": {
+      "type": "number",
+      "description": "Count of selected weekdays."
+    },
+    "selectedStartDate": {
+      "type": "string",
+      "description": "Selected start date for bulk booking."
+    },
+    "selectedEndDate": {
+      "type": "string",
+      "description": "Selected end date for bulk booking."
+    },
+    "previousStartDate": {
+      "type": "string",
+      "description": "Previous start date before edit."
+    },
+    "previousEndDate": {
+      "type": "string",
+      "description": "Previous end date before edit."
+    },
+    "newStartDate": {
+      "type": "string",
+      "description": "New start date after edit."
+    },
+    "newEndDate": {
+      "type": "string",
+      "description": "New end date after edit."
+    },
+    "rideNumber": {
+      "type": "number",
+      "description": "Ride number in bulk booking sequence."
+    },
+    "typeOfSlot": {
+      "type": "string",
+      "description": "Type of slot (e.g., morning, evening)."
+    },
+    "numberOfSlotsShown": {
+      "type": "number",
+      "description": "Number of slots shown to user."
+    },
+    "numberOfSlotsWithLimitedAvailabilityShown": {
+      "type": "number",
+      "description": "Number of slots with limited availability."
+    },
+    "remainingTrips": {
+      "type": "number",
+      "description": "Remaining trips in pass."
+    },
+    "ridesLeft": {
+      "type": "number",
+      "description": "Remaining rides in pass."
+    },
+    "activeRides": {
+      "type": "number",
+      "description": "Number of active rides in pass."
+    },
+    "bookingCancelledRides": {
+      "type": "number",
+      "description": "Number of cancelled rides in pass."
+    },
+    "bookingUnderProcessRides": {
+      "type": "number",
+      "description": "Number of rides under processing."
+    },
+    "pastBookings": {
+      "type": "number",
+      "description": "Number of past bookings."
+    },
+    "isTicketAvailable": {
+      "type": "boolean",
+      "description": "Whether ticket is available for re-booking."
+    },
+    "dialogType": {
+      "type": "string",
+      "description": "Type of dialog shown."
+    },
+    "isBulkBookingPass": {
+      "type": "boolean",
+      "description": "Whether this is a bulk booking pass."
+    },
+    "newPurchaseFlow": {
+      "type": "boolean",
+      "description": "Whether new purchase flow is being used."
+    },
+    "passInfo": {
+      "type": "string",
+      "description": "Pass information summary."
+    },
+    "rollOverEligible": {
+      "type": "boolean",
+      "description": "Whether pass is eligible for rollover."
+    },
+    "daysLeftToExpiry": {
+      "type": "number",
+      "description": "Days remaining until pass expiry."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Name of the route."
+    },
+    "tripDate": {
+      "type": "string",
+      "description": "Date of the trip."
+    },
+    "days": {
+      "type": "array",
+      "description": "List of days (for bulk booking)."
+    },
+    "startTimeInMillis": {
+      "type": "number",
+      "description": "Start time in milliseconds."
+    },
+    "endTimeInMillis": {
+      "type": "number",
+      "description": "End time in milliseconds."
+    },
+    "imageUrl": {
+      "type": "string",
+      "description": "URL of pass/product image."
+    },
+    "newPassSavings": {
+      "type": "number",
+      "description": "New pass savings amount."
+    },
+    "oldPassSavings": {
+      "type": "number",
+      "description": "Old pass savings amount."
+    },
+    "isUpdated": {
+      "type": "boolean",
+      "description": "Whether savings were updated."
+    },
+    "faqsSize": {
+      "type": "number",
+      "description": "Number of FAQs available."
+    },
+    "advanceBookingDays": {
+      "type": "number",
+      "description": "Number of days in advance booking is allowed."
+    },
+    "defaultTimeDate": {
+      "type": "string",
+      "description": "Default time/date shown."
+    },
+    "inputTimeDate": {
+      "type": "string",
+      "description": "Time/date input by user."
+    },
+    "lastAssignedVehicleNumber": {
+      "type": "string",
+      "description": "Last assigned vehicle number."
+    },
+    "newAssignedVehicleNumber": {
+      "type": "string",
+      "description": "New assigned vehicle number."
+    },
+    "lastAssignedStopId": {
+      "type": "string",
+      "description": "Last assigned stop ID."
+    },
+    "newAssignedStopId": {
+      "type": "string",
+      "description": "New assigned stop ID."
+    },
+    "lastAssignedRouteId": {
+      "type": "string",
+      "description": "Last assigned route ID."
+    },
+    "newAssignedRouteID": {
+      "type": "string",
+      "description": "New assigned route ID."
+    },
+    "bookingMode": {
+      "type": "string",
+      "description": "Mode of booking (single, bulk)."
+    },
+    "tripDetails": {
+      "type": "string",
+      "description": "Trip details summary."
+    },
+    "route id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Entry & Landing",
+      "description": "Pass purchase landing and initial route/stop exploration.",
+      "events": [
+        "pb pass purchase landing screen opened",
+        "pass image url from config fetch success",
+        "pass image url from config fetch failure",
+        "pb pass landing swap btn clicked",
+        "pb pass landing buy pass btn clicked",
+        "pb pass landing screen od pair clicked",
+        "pb pass purchase landing proceed btn clicked intent",
+        "pb pass purchase retry btn clicked intent",
+        "pb event product config fetch success",
+        "pb event product config fetch failure"
+      ]
+    },
+    {
+      "name": "Stop Selection",
+      "description": "User selects origin-destination pair and pickup/drop stops.",
+      "events": [
+        "pb event trip details screen shown",
+        "pb event landing route clicked",
+        "pb event landing screen route view all clicked",
+        "pb event explore available routes button clicked",
+        "pb event rebook card clicked",
+        "pb event pickup drop options fetched",
+        "pb event pickup drop options fetched result failed",
+        "pb event pickup drop selected",
+        "pb event complete product config by id fetched result success",
+        "pb event complete product config by id fetched result failed",
+        "pb event new stop suggestion",
+        "pb event no route error displayed",
+        "premium bus preferred time submitted"
+      ]
+    },
+    {
+      "name": "Slot Selection",
+      "description": "User selects trip slot/time and optionally explores passes.",
+      "events": [
+        "pb event slot selection screen opened",
+        "pb event slot fetch success",
+        "pb event slot fetch failure",
+        "pb event slot selected by user",
+        "pb event available purchase options success",
+        "pb event available purchase options failed",
+        "pb purchase option bottom sheet item clicked",
+        "pb event pass purchased card clicked by user",
+        "premium bus explore available routes clicked",
+        "premium bus view all slots clicked",
+        "pb directions to stop clicked",
+        "pb od pair fetch success",
+        "pb od pair fetch failed",
+        "pb pass savings fetch success",
+        "pb pass savings fetch failure",
+        "pb pass savings info btn clicked",
+        "bulk booking no slots available bottomsheet shown",
+        "bulk booking slot edit clicked",
+        "bulk booking slot list opened",
+        "bulk booking slot selected",
+        "bulk booking slots fetch error bottomsheet shown",
+        "bulk booking stop edit clicked",
+        "bulk booking stop selected",
+        "bulk booking stop slot selection screen no stops available opened",
+        "bulk booking stop slot selection screen opened",
+        "pb available purchase options failed",
+        "pb available purchase options success",
+        "pb pass purchased card clicked by user",
+        "pb slot fetch failure",
+        "pb slot fetch success",
+        "pb slot selection screen opened",
+        "pb slot suggestion submitted",
+        "pb suggested stops",
+        "pb value pass bottomsheet booking blocked",
+        "pb value pass bottomsheet upgrade CTA clicked",
+        "pb view all slots clicked"
+      ]
+    },
+    {
+      "name": "Seat Selection",
+      "description": "User selects seats from the bus layout.",
+      "events": [
+        "pb seat selection screen opened",
+        "pb seat layout fetch success",
+        "pb seat layout fetch failure",
+        "pb aggregated seat layout fetch success",
+        "pb aggregated seat layout fetch failure",
+        "premium bus seat selection seat icon clicked",
+        "premium bus seat selection select seats clicked",
+        "pb seat selection gender confirmation positive btn clicked",
+        "pb seat selection gender confirmation bottom sheet dismissed",
+        "premium bus seat selection seat change request success",
+        "premium bus seat selection seat change request failure",
+        "premium bus seat selection change success screen okay btn click"
+      ]
+    },
+    {
+      "name": "Payment & Confirmation",
+      "description": "User confirms booking and completes payment (or uses pass).",
+      "events": [
+        "pb booking confirmed",
+        "pb coupon applied",
+        "pb coupon booking confirmed",
+        "premium bus order creation success",
+        "premium bus order creation failed"
+      ]
+    },
+    {
+      "name": "Bulk Booking Confirmation",
+      "description": "Bulk booking specific confirmation and multi-ride booking.",
+      "events": [
+        "bulk booking confirm rides page shown",
+        "bulk booking confirm details clicked",
+        "bulk booking confirmation successful",
+        "bulk booking confirmation failed",
+        "bulk booking confirmation view rides clicked",
+        "bulk booking confirmation retry clicked",
+        "bulk booking confirmation navigate to homepage clicked",
+        "bulk booking confirmation navigate to pass details page"
+      ]
+    },
+    {
+      "name": "Ticket Activation",
+      "description": "Post-booking ticket activation with live tracking.",
+      "events": [
+        "pb activation screen opened",
+        "pb first time eta rendered on activation screen",
+        "pb trip tracking started for user",
+        "pb trip tracking ended for user",
+        "pb navigate directions clicked",
+        "pb activation screen traffic view toggled",
+        "pb poor network or dead zone detected"
+      ]
+    },
+    {
+      "name": "Ticket Management",
+      "description": "Verification, cancellation, and other ticket actions.",
+      "events": [
+        "pb verify ticket clicked",
+        "pb active booking options clicked",
+        "pb active booking option item clicked",
+        "pb trip cancellation go back cta clicked",
+        "pb trip cancellation okay cta clicked",
+        "pb trip cancellation book another ride cta clicked",
+        "pb trip cancel conf bottom sheet opened",
+        "pb booking cancellation successful",
+        "premium reserve ticket ack shown",
+        "premium reserve ticket ack cta clicked"
+      ]
+    },
+    {
+      "name": "Pass & Bulk Booking Management",
+      "description": "Managing pass-based bookings and bulk rides.",
+      "events": [
+        "pb bulk booking manage rides screen opened",
+        "pb bulk booking pass data fetched",
+        "pb bulk booking pass ticket success",
+        "pb bulk booking pass ticket failure",
+        "pb bulk booking book single ride click",
+        "pb bulk booking book multiple rides click",
+        "pb bulk booking book again cta click",
+        "pb bulk booking fetch ticket config success",
+        "pb bulk booking fetch ticket config failed",
+        "pb bulk booking view trip receipt button clicked",
+        "pb bulk booking dismiss dialog",
+        "pb bulk booking fetch linked booking retry btn click",
+        "pb unknown super pass sub type event",
+        "homescreen premium bus active pass info",
+        "homescreen premium bus active pass cache empty",
+        "homescreen premium bus active pass cache failed"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "booking duration edit changed",
+        "booking duration edit clicked",
+        "bulk book preferences selected",
+        "bulk booking rides insufficient balance closed",
+        "bulk booking rides insufficient balance dialog shown",
+        "bulk booking rides insufficient balance okay clicked",
+        "bulk booking rides invalid date range dialog closed",
+        "bulk booking rides invalid date range dialog shown",
+        "bulk booking rides zero ride balance dialog closed",
+        "bulk booking rides zero ride balance dialog shown",
+        "number of rides option selected",
+        "pb all routes route clicked",
+        "pb explore available routes clicked",
+        "pb fetch complete product config failed",
+        "pb fetch complete product config success",
+        "pb landing screen route view all clicked",
+        "pb no route error displayed",
+        "pb pickup drop options fetched",
+        "pb pickup drop options fetched result failed",
+        "pb pickup drop selected",
+        "pb product hook product selection screen FAQ clicked",
+        "pb rebook card clicked",
+        "pb slot selected by user",
+        "pb stop suggestion submitted",
+        "pb trip polling response change",
+        "pb value pass booking cancellation refund blocked",
+        "premium reserve ticket fetched",
+        "premium reserve ticket receipt payload",
+        "premium reserve ticket view receipt clicked",
+        "product hook product selection screen clicked"
+      ]
+    },
+    {
+      "name": "Bulk Booking",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pb bulk booking book new rides click",
+        "pb bulk booking dimsiss dialog"
+      ]
+    },
+    {
+      "name": "Landing",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pb product config fetch failure",
+        "pb product config fetch success"
+      ]
+    },
+    {
+      "name": "Activation",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pb value pass booking cancellation upgrade CTA clicked"
+      ]
+    },
+    {
+      "name": "Booking Success",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pb booking reschedule successful event"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "booking duration edit changed",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:329",
+      "properties": []
+    },
+    {
+      "name": "booking duration edit clicked",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:279",
+      "properties": []
+    },
+    {
+      "name": "bulk book preferences selected",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:700",
+      "properties": []
+    },
+    {
+      "name": "bulk booking confirm details clicked",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Confirm button clicked on bulk booking confirmation.",
+      "properties": [
+        {
+          "property": "numberOfTripsPerDay"
+        },
+        {
+          "property": "selectedStartDate"
+        },
+        {
+          "property": "selectedEndDate"
+        },
+        {
+          "property": "numberOfDaysInRange"
+        },
+        {
+          "property": "selectedWeekdays"
+        },
+        {
+          "property": "numberOfSelectedWeekdays"
+        },
+        {
+          "property": "tripDetails"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirm rides page shown",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Bulk booking confirmation page shown with all ride details.",
+      "properties": [
+        {
+          "property": "numberOfTripsPerDay"
+        },
+        {
+          "property": "selectedStartDate"
+        },
+        {
+          "property": "selectedEndDate"
+        },
+        {
+          "property": "numberOfDaysInRange"
+        },
+        {
+          "property": "selectedWeekdays"
+        },
+        {
+          "property": "numberOfSelectedWeekdays"
+        },
+        {
+          "property": "tripDetails"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirmation failed",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Bulk booking confirmation failed.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirmation navigate to homepage clicked",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Navigate to homepage clicked.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirmation navigate to pass details page",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Navigate to pass details page clicked.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirmation retry clicked",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Retry button clicked after bulk booking failure.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirmation successful",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "Bulk booking confirmed successfully.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking confirmation view rides clicked",
+      "component": "PBPreBookingConfirmationComponent",
+      "stage": "Bulk Booking Confirmation",
+      "source": "Bulk booking confirmation",
+      "description": "View rides button clicked after successful bulk booking.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "bulk booking no slots available bottomsheet shown",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:994",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides insufficient balance closed",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:353",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides insufficient balance dialog shown",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:638",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides insufficient balance okay clicked",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:373",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides invalid date range dialog closed",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:345",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides invalid date range dialog shown",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:441",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides zero ride balance dialog closed",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:398",
+      "properties": []
+    },
+    {
+      "name": "bulk booking rides zero ride balance dialog shown",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:474",
+      "properties": []
+    },
+    {
+      "name": "bulk booking slot edit clicked",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:849",
+      "properties": []
+    },
+    {
+      "name": "bulk booking slot list opened",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:899",
+      "properties": []
+    },
+    {
+      "name": "bulk booking slot selected",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:813",
+      "properties": []
+    },
+    {
+      "name": "bulk booking slots fetch error bottomsheet shown",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:932",
+      "properties": []
+    },
+    {
+      "name": "bulk booking stop edit clicked",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:412",
+      "properties": []
+    },
+    {
+      "name": "bulk booking stop selected",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:608",
+      "properties": []
+    },
+    {
+      "name": "bulk booking stop slot selection screen no stops available opened",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:329",
+      "properties": []
+    },
+    {
+      "name": "bulk booking stop slot selection screen opened",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:307",
+      "properties": []
+    },
+    {
+      "name": "homescreen premium bus active pass cache empty",
+      "component": "Home screen",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Home screen",
+      "description": "Premium bus active pass cache is empty.",
+      "properties": []
+    },
+    {
+      "name": "homescreen premium bus active pass cache failed",
+      "component": "Home screen",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Home screen",
+      "description": "Premium bus active pass cache fetch failed.",
+      "properties": [
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "homescreen premium bus active pass info",
+      "component": "Home screen",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Home screen",
+      "description": "Active premium bus pass info shown on home screen.",
+      "properties": [
+        {
+          "property": "passInfo"
+        },
+        {
+          "property": "ridesLeft"
+        },
+        {
+          "property": "rollOverEligible"
+        },
+        {
+          "property": "daysLeftToExpiry"
+        }
+      ]
+    },
+    {
+      "name": "number of rides option selected",
+      "component": "PBPreBookingDetailsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:220",
+      "properties": []
+    },
+    {
+      "name": "pass image url from config fetch failure",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "Pass image URL fetch failed.",
+      "properties": [
+        {
+          "property": "errorCode"
+        }
+      ]
+    },
+    {
+      "name": "pass image url from config fetch success",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "Pass image URL fetched successfully from config.",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "imageUrl"
+        }
+      ]
+    },
+    {
+      "name": "pb activation screen opened",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Ticket activation screen opened post-booking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb activation screen traffic view toggled",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Traffic view toggled on map.",
+      "properties": [
+        {
+          "property": "isToggledOn"
+        }
+      ]
+    },
+    {
+      "name": "pb active booking option item clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Activation screen",
+      "description": "Option item clicked from more options menu.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "activeBookingActionType"
+        },
+        {
+          "property": "activeBookingActionSubText"
+        },
+        {
+          "property": "isActionAllowed"
+        }
+      ]
+    },
+    {
+      "name": "pb active booking options clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Activation screen",
+      "description": "More options menu clicked on active booking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb aggregated seat layout fetch failure",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Aggregated seat layout fetch failed.",
+      "properties": [
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "startTimeInMillis"
+        },
+        {
+          "property": "endTimeInMillis"
+        },
+        {
+          "property": "days"
+        },
+        {
+          "property": "slotFromStopTime"
+        },
+        {
+          "property": "slotTripStartTime"
+        },
+        {
+          "property": "errorCode"
+        }
+      ]
+    },
+    {
+      "name": "pb aggregated seat layout fetch success",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Aggregated seat layout fetched for bulk booking.",
+      "properties": [
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "startTimeInMillis"
+        },
+        {
+          "property": "endTimeInMillis"
+        },
+        {
+          "property": "days"
+        },
+        {
+          "property": "slotFromStopTime"
+        },
+        {
+          "property": "slotTripStartTime"
+        },
+        {
+          "property": "totalSeats"
+        },
+        {
+          "property": "availableSeats"
+        },
+        {
+          "property": "unavailableSeats"
+        }
+      ]
+    },
+    {
+      "name": "pb all routes route clicked",
+      "component": "PremiumBusAllRoutesComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_ALL_ROUTES_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/allroutes/PremiumBusAllRoutesComponent.kt:69",
+      "properties": [
+        {
+          "property": "route id"
+        }
+      ]
+    },
+    {
+      "name": "pb available purchase options failed",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2451",
+      "properties": []
+    },
+    {
+      "name": "pb available purchase options success",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2438",
+      "properties": []
+    },
+    {
+      "name": "pb booking cancellation successful",
+      "component": "Cancellation flow",
+      "stage": "Ticket Management",
+      "source": "Cancellation flow",
+      "description": "Booking cancelled successfully.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cancellationReason"
+        }
+      ]
+    },
+    {
+      "name": "pb booking confirmed",
+      "component": "PBPreBookingConfirmationComponent / Checkout flow",
+      "stage": "Payment & Confirmation",
+      "source": "Booking confirmation",
+      "description": "Booking confirmed successfully after payment.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "tripDate"
+        }
+      ]
+    },
+    {
+      "name": "pb booking reschedule successful event",
+      "component": "ProductBookingSuccessComponent",
+      "stage": "Booking Success",
+      "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/success/ProductBookingSuccessComponent.kt:482",
+      "properties": []
+    },
+    {
+      "name": "pb bulk booking book again cta click",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Book again CTA clicked for past ride.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking book multiple rides click",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Book multiple rides clicked.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "remainingTrips"
+        },
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "fromStopName"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "toStopName"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking book new rides click",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Bulk Booking",
+      "source": "Source.PB_BULK_BOOKING_RIDE_DETAILS_SCREEN.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/bulkbookingridedetails/ui/PbBulkBookingRideDetailsComponent.kt:1451",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "remainingTrips"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking book single ride click",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Book single ride clicked.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "remainingTrips"
+        },
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "fromStopName"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "toStopName"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking dimsiss dialog",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Bulk Booking",
+      "source": "Source.PB_BULK_BOOKING_RIDE_DETAILS_SCREEN.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/bulkbookingridedetails/ui/PbBulkBookingRideDetailsComponent.kt:1510",
+      "properties": [
+        {
+          "property": "dialogType"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking dismiss dialog",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Dialog dismissed.",
+      "properties": [
+        {
+          "property": "dialogType"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking fetch linked booking retry btn click",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Retry button clicked for linked bookings fetch.",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking fetch ticket config failed",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Ticket config fetch failed.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking fetch ticket config success",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Ticket config fetched successfully for re-booking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "isTicketAvailable"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking manage rides screen opened",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Bulk booking manage rides screen opened.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "newPurchaseFlow"
+        },
+        {
+          "property": "isBulkBookingPass"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking pass data fetched",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Pass data fetched from database.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "fromStopName"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "toStopName"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking pass ticket failure",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Linked bookings fetch failed.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking pass ticket success",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Linked bookings fetched successfully.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "activeRides"
+        },
+        {
+          "property": "bookingUnderProcessRides"
+        },
+        {
+          "property": "bookingCancelledRides"
+        },
+        {
+          "property": "remainingTrips"
+        },
+        {
+          "property": "pastBookings"
+        }
+      ]
+    },
+    {
+      "name": "pb bulk booking view trip receipt button clicked",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "View trip receipt button clicked.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "pb coupon applied",
+      "component": "Checkout flow",
+      "stage": "Payment & Confirmation",
+      "source": "Checkout",
+      "description": "Coupon applied to booking.",
+      "properties": [
+        {
+          "property": "couponName"
+        }
+      ]
+    },
+    {
+      "name": "pb coupon booking confirmed",
+      "component": "Checkout flow",
+      "stage": "Payment & Confirmation",
+      "source": "Checkout",
+      "description": "Booking confirmed with coupon applied.",
+      "properties": [
+        {
+          "property": "couponName"
+        }
+      ]
+    },
+    {
+      "name": "pb directions to stop clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Directions to stop clicked.",
+      "properties": [
+        {
+          "property": "pickupStopId"
+        },
+        {
+          "property": "pickupStopName"
+        }
+      ]
+    },
+    {
+      "name": "pb event available purchase options failed",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Purchase options fetch failed.",
+      "properties": [
+        {
+          "property": "errorCode"
+        }
+      ]
+    },
+    {
+      "name": "pb event available purchase options success",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Available purchase options (passes) fetched successfully.",
+      "properties": [
+        {
+          "property": "totalPassesCount"
+        },
+        {
+          "property": "supportedPassesCount"
+        }
+      ]
+    },
+    {
+      "name": "pb event complete product config by id fetched result failed",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "Complete product configuration fetch failed.",
+      "properties": [
+        {
+          "property": "pickUpName"
+        },
+        {
+          "property": "pickUpId"
+        },
+        {
+          "property": "dropName"
+        },
+        {
+          "property": "dropId"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb event complete product config by id fetched result success",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "Complete product configuration fetched for selected OD pair.",
+      "properties": [
+        {
+          "property": "pickUpName"
+        },
+        {
+          "property": "pickUpId"
+        },
+        {
+          "property": "dropName"
+        },
+        {
+          "property": "dropId"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "pb event explore available routes button clicked",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "Explore available routes button clicked.",
+      "properties": []
+    },
+    {
+      "name": "pb event landing route clicked",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "Route card clicked on landing screen.",
+      "properties": [
+        {
+          "property": "routeId"
+        }
+      ]
+    },
+    {
+      "name": "pb event landing screen route view all clicked",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "View all routes clicked.",
+      "properties": []
+    },
+    {
+      "name": "pb event new stop suggestion",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "User suggests a new stop.",
+      "properties": [
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "destinationName"
+        }
+      ]
+    },
+    {
+      "name": "pb event no route error displayed",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "No routes available error displayed.",
+      "properties": [
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "destinationName"
+        }
+      ]
+    },
+    {
+      "name": "pb event pass purchased card clicked by user",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "User clicks pass purchase nudge card.",
+      "properties": [
+        {
+          "property": "selectedSlotTripId"
+        },
+        {
+          "property": "selectedSlotTime"
+        }
+      ]
+    },
+    {
+      "name": "pb event pickup drop options fetched",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "OD pairs fetched successfully for source/destination.",
+      "properties": [
+        {
+          "property": "numberOfCombinationsShown"
+        },
+        {
+          "property": "firstMileWalkingTime"
+        },
+        {
+          "property": "lastMileWalkingTime"
+        },
+        {
+          "property": "combinedWalkingTime"
+        },
+        {
+          "property": "firstCombinationWalkingTime"
+        },
+        {
+          "property": "firstCombinationPickUpId"
+        },
+        {
+          "property": "firstCombinationPickUpName"
+        },
+        {
+          "property": "firstCombinationDropId"
+        },
+        {
+          "property": "firstCombinationDropName"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        }
+      ]
+    },
+    {
+      "name": "pb event pickup drop options fetched result failed",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "OD pairs fetch failed.",
+      "properties": [
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb event pickup drop selected",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "User selects pickup and drop stops.",
+      "properties": [
+        {
+          "property": "pickUpName"
+        },
+        {
+          "property": "pickUpId"
+        },
+        {
+          "property": "dropName"
+        },
+        {
+          "property": "dropId"
+        },
+        {
+          "property": "firstMileWalkingTime"
+        },
+        {
+          "property": "lastMileWalkingTime"
+        },
+        {
+          "property": "combinedWalkingTime"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        }
+      ]
+    },
+    {
+      "name": "pb event product config fetch failure",
+      "component": "PbPassPurchaseLandingScreenComponent / PremiumBusStopSelectionComponent",
+      "stage": "Entry & Landing / Stop Selection",
+      "source": "Product config fetch",
+      "description": "Product configuration fetch failed.",
+      "properties": [
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb event product config fetch success",
+      "component": "PbPassPurchaseLandingScreenComponent / PremiumBusStopSelectionComponent",
+      "stage": "Entry & Landing / Stop Selection",
+      "source": "Product config fetch",
+      "description": "Product configuration fetched successfully.",
+      "properties": [
+        {
+          "property": "isSubcategoryAvailable"
+        },
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "pb event rebook card clicked",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "Rebook card clicked to repeat previous booking.",
+      "properties": [
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        }
+      ]
+    },
+    {
+      "name": "pb event slot fetch failure",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Slot fetch failed.",
+      "properties": [
+        {
+          "property": "selectedSection"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb event slot fetch success",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Slots fetched successfully for selected section/date.",
+      "properties": [
+        {
+          "property": "selectedSection"
+        },
+        {
+          "property": "isAnySlotAvailable"
+        },
+        {
+          "property": "routesForSelectedOD"
+        },
+        {
+          "property": "currentDayActiveSlotCount"
+        }
+      ]
+    },
+    {
+      "name": "pb event slot selected by user",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "User selects a trip slot.",
+      "properties": [
+        {
+          "property": "selectedSlotTripId"
+        },
+        {
+          "property": "selectedSlotSeatAvailable"
+        },
+        {
+          "property": "selectedSlotTime"
+        },
+        {
+          "property": "selectedSlotArrivalTime"
+        },
+        {
+          "property": "selectedSlotRouteId"
+        }
+      ]
+    },
+    {
+      "name": "pb event slot selection screen opened",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Slot selection screen opened.",
+      "properties": [
+        {
+          "property": "flow"
+        },
+        {
+          "property": "attributionType",
+          "context": "Present if deeplink"
+        }
+      ]
+    },
+    {
+      "name": "pb event trip details screen shown",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "Stop selection screen shown with rebook cards and OD options.",
+      "properties": [
+        {
+          "property": "rebookCardCount"
+        },
+        {
+          "property": "isNewLandingScreen"
+        },
+        {
+          "property": "attributionType",
+          "context": "Present if deeplink"
+        }
+      ]
+    },
+    {
+      "name": "pb explore available routes clicked",
+      "component": "PremiumBusProductModificationReasonsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/productmodification/PremiumBusProductModificationReasonsComponent.kt:200",
+      "properties": []
+    },
+    {
+      "name": "pb fetch complete product config failed",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1990",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "dropId"
+        },
+        {
+          "property": "dropName"
+        },
+        {
+          "property": "errorMsg"
+        },
+        {
+          "property": "pickUpId"
+        },
+        {
+          "property": "pickUpName"
+        }
+      ]
+    },
+    {
+      "name": "pb fetch complete product config success",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1972",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "dropId"
+        },
+        {
+          "property": "dropName"
+        },
+        {
+          "property": "pickUpId"
+        },
+        {
+          "property": "pickUpName"
+        }
+      ]
+    },
+    {
+      "name": "pb first time eta rendered on activation screen",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "First time ETA rendered on activation screen.",
+      "properties": [
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "delayInFetchingEta"
+        },
+        {
+          "property": "timeWhenScreenOpened"
+        },
+        {
+          "property": "timeWhenEtaRenderedFirstTime"
+        }
+      ]
+    },
+    {
+      "name": "pb landing screen route view all clicked",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:310",
+      "properties": []
+    },
+    {
+      "name": "pb navigate directions clicked",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Navigate/directions button clicked.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb no route error displayed",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1837",
+      "properties": [
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "searchSource"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        }
+      ]
+    },
+    {
+      "name": "pb od pair fetch failed",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "OD pair fetch failed.",
+      "properties": [
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb od pair fetch success",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "OD pairs fetched successfully.",
+      "properties": [
+        {
+          "property": "totalODPairs"
+        },
+        {
+          "property": "selectedODPairPosition"
+        }
+      ]
+    },
+    {
+      "name": "pb pass landing buy pass btn clicked",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "Buy pass button clicked to initiate pass purchase.",
+      "properties": []
+    },
+    {
+      "name": "pb pass landing screen od pair clicked",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "User selects an OD pair from the list.",
+      "properties": [
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "routeId"
+        }
+      ]
+    },
+    {
+      "name": "pb pass landing swap btn clicked",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "User swaps from/to stops on pass landing screen.",
+      "properties": [
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "fromStopName"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "toStopName"
+        }
+      ]
+    },
+    {
+      "name": "pb pass purchase landing proceed btn clicked intent",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "Proceed button clicked after stop selection.",
+      "properties": [
+        {
+          "property": "fromStopName"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopName"
+        },
+        {
+          "property": "toStopId"
+        }
+      ]
+    },
+    {
+      "name": "pb pass purchase landing screen opened",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "Pass purchase landing screen initialized and shown to user.",
+      "properties": [
+        {
+          "property": "flowType"
+        },
+        {
+          "property": "attributionType",
+          "context": "Present if deeplink"
+        }
+      ]
+    },
+    {
+      "name": "pb pass purchase retry btn clicked intent",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Entry & Landing",
+      "source": "Pass purchase landing screen",
+      "description": "Retry button clicked on error screen.",
+      "properties": [
+        {
+          "property": "flowType"
+        }
+      ]
+    },
+    {
+      "name": "pb pass purchased card clicked by user",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2415",
+      "properties": []
+    },
+    {
+      "name": "pb pass savings fetch failure",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Pass savings fetch failed.",
+      "properties": [
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb pass savings fetch success",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Pass savings information fetched successfully.",
+      "properties": [
+        {
+          "property": "newPassSavings"
+        },
+        {
+          "property": "oldPassSavings"
+        },
+        {
+          "property": "isUpdated"
+        }
+      ]
+    },
+    {
+      "name": "pb pass savings info btn clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Pass savings info button clicked.",
+      "properties": [
+        {
+          "property": "faqsSize"
+        }
+      ]
+    },
+    {
+      "name": "pb pickup drop options fetched",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1818",
+      "properties": [
+        {
+          "property": "firstCombinationDropId"
+        },
+        {
+          "property": "firstCombinationDropName"
+        },
+        {
+          "property": "firstCombinationPickUpId"
+        },
+        {
+          "property": "firstCombinationPickUpName"
+        },
+        {
+          "property": "firstCombinationWalkingTime"
+        },
+        {
+          "property": "numberOfCombinationsShown"
+        }
+      ]
+    },
+    {
+      "name": "pb pickup drop options fetched result failed",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1955",
+      "properties": [
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "errorMsg"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        }
+      ]
+    },
+    {
+      "name": "pb pickup drop selected",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1869",
+      "properties": [
+        {
+          "property": "combinedWalkingTime"
+        },
+        {
+          "property": "dropId"
+        },
+        {
+          "property": "dropName"
+        },
+        {
+          "property": "firstMileWalkingTime"
+        },
+        {
+          "property": "lastMileWalkingTime"
+        },
+        {
+          "property": "pickUpId"
+        },
+        {
+          "property": "pickUpName"
+        },
+        {
+          "property": "searchSource"
+        }
+      ]
+    },
+    {
+      "name": "pb poor network or dead zone detected",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Poor network or dead zone detected during live tracking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "isFirstTimeEtaCame"
+        },
+        {
+          "property": "lastPacketReceivedTimeInMillis"
+        },
+        {
+          "property": "currentPacketReceivedTimeInMillis"
+        },
+        {
+          "property": "timeDifferenceBetweenPacketsInMillis"
+        }
+      ]
+    },
+    {
+      "name": "pb product config fetch failure",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.PB_PASS_PURCHASE_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/passpurchaselanding/PbPassPurchaseLandingScreenComponent.kt:1623",
+      "properties": [
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "pb product config fetch success",
+      "component": "PbPassPurchaseLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.PB_PASS_PURCHASE_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/passpurchaselanding/PbPassPurchaseLandingScreenComponent.kt:1612",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "isSubcategoryAvailable"
+        }
+      ]
+    },
+    {
+      "name": "pb product hook product selection screen FAQ clicked",
+      "component": "PremiumBusProductSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRODUCT_SELECTION_SCREEN.sourceName",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/productselection/PremiumBusProductSelectionComponent.kt:669",
+      "properties": []
+    },
+    {
+      "name": "pb purchase option bottom sheet item clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "User clicks a purchase option in bottom sheet.",
+      "properties": [
+        {
+          "property": "selectedPurchaseOption"
+        }
+      ]
+    },
+    {
+      "name": "pb rebook card clicked",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1913",
+      "properties": [
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        }
+      ]
+    },
+    {
+      "name": "pb seat layout fetch failure",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Seat layout fetch failed.",
+      "properties": [
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "errorCode"
+        }
+      ]
+    },
+    {
+      "name": "pb seat layout fetch success",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Seat layout fetched successfully.",
+      "properties": [
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "totalSeats"
+        },
+        {
+          "property": "availableSeats"
+        },
+        {
+          "property": "unavailableSeats"
+        }
+      ]
+    },
+    {
+      "name": "pb seat selection gender confirmation bottom sheet dismissed",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Gender confirmation bottom sheet dismissed.",
+      "properties": [
+        {
+          "property": "selectedSeatId"
+        }
+      ]
+    },
+    {
+      "name": "pb seat selection gender confirmation positive btn clicked",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "User confirms gender for female-reserved seat.",
+      "properties": [
+        {
+          "property": "selectedSeatId"
+        }
+      ]
+    },
+    {
+      "name": "pb seat selection screen opened",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Seat selection screen opened.",
+      "properties": [
+        {
+          "property": "pbSeatSelectionFlowType"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "attributionType",
+          "context": "Present if deeplink"
+        }
+      ]
+    },
+    {
+      "name": "pb slot fetch failure",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2400",
+      "properties": []
+    },
+    {
+      "name": "pb slot fetch success",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2384",
+      "properties": []
+    },
+    {
+      "name": "pb slot selected by user",
+      "component": "PremiumBusProductModificationReasonsComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/productmodification/PremiumBusProductModificationReasonsComponent.kt:1011",
+      "properties": []
+    },
+    {
+      "name": "pb slot selection screen opened",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2344",
+      "properties": []
+    },
+    {
+      "name": "pb slot suggestion submitted",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:1239",
+      "properties": []
+    },
+    {
+      "name": "pb stop suggestion submitted",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:2046",
+      "properties": []
+    },
+    {
+      "name": "pb suggested stops",
+      "component": "PBPreBookingSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:775",
+      "properties": []
+    },
+    {
+      "name": "pb trip cancel conf bottom sheet opened",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Cancellation flow",
+      "description": "Trip cancellation confirmation bottom sheet opened.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cancellationReason"
+        },
+        {
+          "property": "cancellationReasonId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation book another ride cta clicked",
+      "component": "Cancellation flow",
+      "stage": "Ticket Management",
+      "source": "Cancellation dialog",
+      "description": "Book another ride CTA clicked after cancellation.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation go back cta clicked",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Management",
+      "source": "Cancellation dialog",
+      "description": "Go back CTA clicked on cancellation confirmation.",
+      "properties": [
+        {
+          "property": "cancellationEligibilityCopy"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation okay cta clicked",
+      "component": "Cancellation flow",
+      "stage": "Ticket Management",
+      "source": "Cancellation dialog",
+      "description": "Okay CTA clicked to proceed with cancellation.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cancellationReason"
+        },
+        {
+          "property": "cancellationReasonId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip polling response change",
+      "component": "FetchPremiumBusTripDetailsAndLiveEtaUseCase",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/domains/FetchPremiumBusTripDetailsAndLiveEtaUseCase.kt:85",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "lastAssignedRouteId"
+        },
+        {
+          "property": "lastAssignedStopId"
+        },
+        {
+          "property": "lastAssignedVehicleNumber"
+        },
+        {
+          "property": "newAssignedRouteID"
+        },
+        {
+          "property": "newAssignedStopId"
+        },
+        {
+          "property": "newAssignedVehicleNumber"
+        }
+      ]
+    },
+    {
+      "name": "pb trip tracking ended for user",
+      "component": "NewPremiumBusReserveTicketActivationComponent / PremiumBusAnalyticsHelper",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Live trip tracking ended for user.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip tracking started for user",
+      "component": "NewPremiumBusReserveTicketActivationComponent / PremiumBusAnalyticsHelper",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Live trip tracking started for user.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "isPostBoardingFlow"
+        }
+      ]
+    },
+    {
+      "name": "pb unknown super pass sub type event",
+      "component": "PbBulkBookingRideDetailsComponent",
+      "stage": "Pass & Bulk Booking Management",
+      "source": "Bulk booking ride details",
+      "description": "Unknown super pass sub type encountered.",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "pb value pass booking cancellation refund blocked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/PremiumBusAnalyticsHelper.kt:141",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "pb value pass booking cancellation upgrade CTA clicked",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Activation",
+      "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/ui/newactivation/NewPremiumBusReserveTicketActivationComponent.kt:604",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "pb value pass bottomsheet booking blocked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2688",
+      "properties": []
+    },
+    {
+      "name": "pb value pass bottomsheet upgrade CTA clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:457",
+      "properties": [
+        {
+          "property": "advanceBookingDays"
+        },
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "pb verify ticket clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Activation screen",
+      "description": "Verify ticket button clicked.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "status"
+        }
+      ]
+    },
+    {
+      "name": "pb view all slots clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:830",
+      "properties": []
+    },
+    {
+      "name": "premium bus explore available routes clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "Explore available routes clicked.",
+      "properties": []
+    },
+    {
+      "name": "premium bus order creation failed",
+      "component": "Checkout flow",
+      "stage": "Payment & Confirmation",
+      "source": "Order creation",
+      "description": "Premium bus order creation failed.",
+      "properties": [
+        {
+          "property": "errorMsg"
+        },
+        {
+          "property": "errorTitle"
+        }
+      ]
+    },
+    {
+      "name": "premium bus order creation success",
+      "component": "Checkout flow",
+      "stage": "Payment & Confirmation",
+      "source": "Order creation",
+      "description": "Premium bus order created successfully.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "effectiveFare"
+        },
+        {
+          "property": "appliedRulesId"
+        }
+      ]
+    },
+    {
+      "name": "premium bus preferred time submitted",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Trip details screen",
+      "description": "User submits preferred time for booking.",
+      "properties": [
+        {
+          "property": "defaultTimeDate"
+        },
+        {
+          "property": "inputTimeDate"
+        }
+      ]
+    },
+    {
+      "name": "premium bus seat selection change success screen okay btn click",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Okay button clicked on seat change success screen.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "premium bus seat selection seat change request failure",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Seat change request failed.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "selectedSeatIds"
+        },
+        {
+          "property": "errorCode"
+        }
+      ]
+    },
+    {
+      "name": "premium bus seat selection seat change request success",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "Seat change request succeeded.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "selectedSeatId"
+        }
+      ]
+    },
+    {
+      "name": "premium bus seat selection seat icon clicked",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "User clicks on a seat icon in the layout.",
+      "properties": [
+        {
+          "property": "selectedSeatId"
+        },
+        {
+          "property": "selectedSeatNum"
+        },
+        {
+          "property": "selectedSeatType"
+        },
+        {
+          "property": "selectedSeatStatus"
+        },
+        {
+          "property": "selectedSeatReservationType"
+        },
+        {
+          "property": "selectedSeatX"
+        },
+        {
+          "property": "selectedSeatY"
+        }
+      ]
+    },
+    {
+      "name": "premium bus seat selection select seats clicked",
+      "component": "PremiumBusSeatSelectionComponent",
+      "stage": "Seat Selection",
+      "source": "Seat selection screen",
+      "description": "User clicks proceed button after selecting seats.",
+      "properties": [
+        {
+          "property": "noOfSeatsSelected"
+        },
+        {
+          "property": "pbSeatSelectionFlowType"
+        },
+        {
+          "property": "selectedSeatNumbers"
+        },
+        {
+          "property": "selectedSeatIds"
+        }
+      ]
+    },
+    {
+      "name": "premium bus view all slots clicked",
+      "component": "PremiumBusSlotSelectionComponent",
+      "stage": "Slot Selection",
+      "source": "Slot selection screen",
+      "description": "View all slots clicked.",
+      "properties": []
+    },
+    {
+      "name": "premium reserve ticket ack cta clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Home screen",
+      "description": "CTA clicked on premium bus acknowledgment card.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "pbAckCtaType"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket ack shown",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Home screen",
+      "description": "Premium bus ticket acknowledgment card shown on home screen.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "ticketStatus"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket fetched",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/validation/PremiumReserveTicketValidationAnalyticsManager.kt:70",
+      "properties": []
+    },
+    {
+      "name": "premium reserve ticket receipt payload",
+      "component": "PremiumReserveTicketValidationConfig",
+      "stage": "Misc",
+      "source": "this::class.simpleName.toString(",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/validation/PremiumReserveTicketValidationConfig.kt:226",
+      "properties": [
+        {
+          "property": "payload"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket view receipt clicked",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/validation/PremiumReserveTicketValidationAnalyticsManager.kt:151",
+      "properties": []
+    },
+    {
+      "name": "product hook product selection screen clicked",
+      "component": "PremiumBusProductSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_BUS_PRODUCT_SELECTION_SCREEN.sourceName",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/productselection/PremiumBusProductSelectionComponent.kt:713",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "flow",
+    "description": "Premium bus booking flow splits into multiple paths based on whether user has a pass, is doing fresh booking, or bulk booking. All paths converge at ticket activation.",
+    "paths": [
+      {
+        "name": "Fresh Booking (No Pass)",
+        "steps": [
+          "pb event trip details screen shown",
+          "pb event pickup drop selected",
+          "pb event slot selection screen opened",
+          "pb event slot selected by user",
+          "pb seat selection screen opened",
+          "premium bus seat selection select seats clicked",
+          "pb booking confirmed",
+          "pb activation screen opened"
+        ]
+      },
+      {
+        "name": "Pass Purchase & Booking",
+        "steps": [
+          "pb pass purchase landing screen opened",
+          "pb pass landing screen od pair clicked",
+          "pb event slot selection screen opened",
+          "pb event pass purchased card clicked by user",
+          "Navigate to pass purchase flow"
+        ]
+      },
+      {
+        "name": "Bulk Booking (Pass-Based)",
+        "steps": [
+          "pb bulk booking manage rides screen opened",
+          "pb bulk booking book multiple rides click",
+          "pb event slot selection screen opened (for each day)",
+          "pb seat selection screen opened (aggregated)",
+          "bulk booking confirm rides page shown",
+          "bulk booking confirm details clicked",
+          "bulk booking confirmation successful"
+        ]
+      },
+      {
+        "name": "Single Ride via Pass",
+        "steps": [
+          "pb bulk booking manage rides screen opened",
+          "pb bulk booking book single ride click",
+          "pb event slot selection screen opened",
+          "pb seat selection screen opened",
+          "Booking created (uses pass)",
+          "pb activation screen opened"
+        ]
+      }
+    ],
+    "notes": "All successful bookings converge at the activation screen where users can track their trip live. Pass-based bookings skip payment, while fresh bookings go through the checkout module.",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "booking duration edit changed",
+          "booking duration edit clicked",
+          "bulk book preferences selected",
+          "bulk booking no slots available bottomsheet shown",
+          "bulk booking rides insufficient balance closed",
+          "bulk booking rides insufficient balance dialog shown",
+          "bulk booking rides insufficient balance okay clicked",
+          "bulk booking rides invalid date range dialog closed",
+          "bulk booking rides invalid date range dialog shown",
+          "bulk booking rides zero ride balance dialog closed",
+          "bulk booking rides zero ride balance dialog shown",
+          "bulk booking slot edit clicked",
+          "bulk booking slot list opened",
+          "bulk booking slot selected",
+          "bulk booking slots fetch error bottomsheet shown",
+          "bulk booking stop edit clicked",
+          "bulk booking stop selected",
+          "bulk booking stop slot selection screen no stops available opened",
+          "bulk booking stop slot selection screen opened",
+          "number of rides option selected",
+          "pb all routes route clicked",
+          "pb available purchase options failed",
+          "pb available purchase options success",
+          "pb bulk booking book new rides click",
+          "pb bulk booking dimsiss dialog",
+          "pb explore available routes clicked",
+          "pb fetch complete product config failed",
+          "pb fetch complete product config success",
+          "pb landing screen route view all clicked",
+          "pb no route error displayed",
+          "pb pass purchased card clicked by user",
+          "pb pickup drop options fetched",
+          "pb pickup drop options fetched result failed",
+          "pb pickup drop selected",
+          "pb product config fetch failure",
+          "pb product config fetch success",
+          "pb product hook product selection screen FAQ clicked",
+          "pb rebook card clicked",
+          "pb slot fetch failure",
+          "pb slot fetch success",
+          "pb slot selected by user",
+          "pb slot selection screen opened",
+          "pb slot suggestion submitted",
+          "pb stop suggestion submitted",
+          "pb suggested stops",
+          "pb trip polling response change",
+          "pb value pass booking cancellation refund blocked",
+          "pb value pass booking cancellation upgrade CTA clicked",
+          "pb value pass bottomsheet booking blocked",
+          "pb value pass bottomsheet upgrade CTA clicked",
+          "pb view all slots clicked",
+          "premium reserve ticket fetched",
+          "premium reserve ticket receipt payload",
+          "premium reserve ticket view receipt clicked",
+          "product hook product selection screen clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Booking Success",
+        "events": [
+          "pb booking reschedule successful event"
+        ]
+      }
+    ]
+  }
+}

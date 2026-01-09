@@ -1,0 +1,325 @@
+{
+  "flowId": "metro",
+  "flowName": "Metro",
+  "description": "Metro ticketing flow analytics events.",
+  "propertyDefinitions": {
+    "error": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "count": {
+      "type": "number",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "isActive": {
+      "type": "boolean",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stop id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stop name": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stop type": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "from stop id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "from stop name": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "to stop id": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "to stop name": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "invalidResponse": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "type": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Landing",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "booking mode proceed button clicked",
+        "booking mode search button clicked",
+        "from station clicked",
+        "metro all stations fetch failed",
+        "metro all stations fetch success",
+        "metro config fetch failed",
+        "metro config fetch success",
+        "metro fare fetch failed",
+        "metro fare fetch success",
+        "metro stop selected",
+        "recent stop based trip clicked",
+        "stop based metro landing screen opened",
+        "to station clicked"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "ticket fare fetch failure"
+      ]
+    },
+    {
+      "name": "Booking Success",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "metro booking confirmed",
+        "ondc metro booking confirmed"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "booking mode proceed button clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:132",
+      "properties": []
+    },
+    {
+      "name": "booking mode search button clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:145",
+      "properties": []
+    },
+    {
+      "name": "from station clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:584",
+      "properties": []
+    },
+    {
+      "name": "metro all stations fetch failed",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:641",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "metro all stations fetch success",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:657",
+      "properties": [
+        {
+          "property": "count"
+        }
+      ]
+    },
+    {
+      "name": "metro booking confirmed",
+      "component": "ProductBookingSuccessComponent",
+      "stage": "Booking Success",
+      "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/success/ProductBookingSuccessComponent.kt:449",
+      "properties": []
+    },
+    {
+      "name": "metro config fetch failed",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:477",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "metro config fetch success",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:492",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "isActive"
+        }
+      ]
+    },
+    {
+      "name": "metro fare fetch failed",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:285",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "metro fare fetch success",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:301",
+      "properties": [
+        {
+          "property": "count"
+        }
+      ]
+    },
+    {
+      "name": "metro stop selected",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:215",
+      "properties": [
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stop type"
+        }
+      ]
+    },
+    {
+      "name": "ondc metro booking confirmed",
+      "component": "ProductBookingSuccessComponent",
+      "stage": "Booking Success",
+      "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/success/ProductBookingSuccessComponent.kt:418",
+      "properties": []
+    },
+    {
+      "name": "recent stop based trip clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:197",
+      "properties": [
+        {
+          "property": "from stop id"
+        },
+        {
+          "property": "from stop name"
+        },
+        {
+          "property": "to stop id"
+        },
+        {
+          "property": "to stop name"
+        }
+      ]
+    },
+    {
+      "name": "stop based metro landing screen opened",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:539",
+      "properties": []
+    },
+    {
+      "name": "ticket fare fetch failure",
+      "component": "FetchTicketBookingsFareUseCase",
+      "stage": "Misc",
+      "source": "Source.FARE_DETAILS_FETCH_USECASE",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/domain/FetchTicketBookingsFareUseCase.kt:86",
+      "properties": [
+        {
+          "property": "invalidResponse"
+        },
+        {
+          "property": "reason"
+        },
+        {
+          "property": "type"
+        }
+      ]
+    },
+    {
+      "name": "to station clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:606",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "booking mode proceed button clicked",
+          "booking mode search button clicked",
+          "from station clicked",
+          "metro all stations fetch failed",
+          "metro all stations fetch success",
+          "metro config fetch failed",
+          "metro config fetch success",
+          "metro fare fetch failed",
+          "metro fare fetch success",
+          "metro stop selected",
+          "recent stop based trip clicked",
+          "stop based metro landing screen opened",
+          "ticket fare fetch failure",
+          "to station clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Booking Success",
+        "events": [
+          "metro booking confirmed"
+        ]
+      },
+      {
+        "label": "Additional events: Booking Success",
+        "events": [
+          "ondc metro booking confirmed"
+        ]
+      }
+    ]
+  }
+}

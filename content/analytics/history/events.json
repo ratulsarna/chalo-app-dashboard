@@ -1,0 +1,1521 @@
+{
+  "flowId": "history",
+  "flowName": "History & Bookings Management",
+  "description": "Complete analytics map for viewing, managing, and interacting with booking history - both active and expired tickets/passes.",
+  "propertyDefinitions": {
+    "productType": {
+      "type": "string",
+      "description": "Type of product (superPass, ticket, quickPay, etc.)"
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type (magicPass, ridePass, mobileTicket, instantTicket, premiumBus, etc.)"
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "Unique identifier for the booking"
+    },
+    "ticketRequestType": {
+      "type": "string",
+      "description": "Bookings request type used to load Ticket Summary, serialized from `BookingsRequestType.toString()` (includes booking type + booking id)."
+    },
+    "passRequestType": {
+      "type": "string",
+      "description": "Pass request type used by repurchase/book-again flows. Note: in Ticket Summary this property currently carries the booking id string even though the key name suggests a request type."
+    },
+    "bannerCtaType": {
+      "type": "string",
+      "description": "CTA type emitted for a ticket summary banner interaction (enum name from `ProductSummaryBannerCtaType`, e.g. TRY_BOOKING_AGAIN, USE_PRODUCT_NOW, NONE)."
+    },
+    "errorMessage": {
+      "type": "string",
+      "description": "Failure reason/error identifier for the operation (e.g. invoice download failure reason)."
+    },
+    "productId": {
+      "type": "string",
+      "description": "Product configuration ID"
+    },
+    "productName": {
+      "type": "string",
+      "description": "Human-readable product name"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the card/hook/section being displayed or interacted with"
+    },
+    "type": {
+      "type": "string",
+      "description": "Hook type or feature type identifier"
+    },
+    "position": {
+      "type": "string",
+      "description": "Position/index of the item in the list (zero-indexed, serialized to string)"
+    },
+    "desc list": {
+      "type": "array",
+      "description": "List of description strings for hooks/cards"
+    },
+    "tag list": {
+      "type": "array",
+      "description": "List of tag strings for hooks/cards"
+    },
+    "image url": {
+      "type": "string",
+      "description": "URL of the image displayed in hooks/cards"
+    },
+    "ride based pass booking count": {
+      "type": "string",
+      "description": "Count of ride-based pass bookings (serialized to string)"
+    },
+    "magic pass booking count": {
+      "type": "string",
+      "description": "Count of magic pass bookings (serialized to string)"
+    },
+    "super pass application booking count": {
+      "type": "string",
+      "description": "Count of super pass applications (serialized to string)"
+    },
+    "pending super pass application booking count": {
+      "type": "string",
+      "description": "Count of pending super pass applications (serialized to string)"
+    },
+    "quick pay booking count": {
+      "type": "string",
+      "description": "Count of quick pay bookings (serialized to string)"
+    },
+    "mobile ticket booking count": {
+      "type": "string",
+      "description": "Count of mobile ticket bookings (serialized to string)"
+    },
+    "instant ticket booking count": {
+      "type": "string",
+      "description": "Count of instant ticket bookings (serialized to string)"
+    },
+    "premium bus booking count": {
+      "type": "string",
+      "description": "Count of premium bus bookings (serialized to string)"
+    },
+    "bottomsheet title": {
+      "type": "string",
+      "description": "Title displayed on error bottom sheets"
+    },
+    "bottomsheet reason": {
+      "type": "string",
+      "description": "Reason/message displayed on error bottom sheets"
+    },
+    "isRenewFromProductStatusCard": {
+      "type": "boolean",
+      "description": "True if renew action was triggered from product status card banner"
+    },
+    "isSuperPass": {
+      "type": "boolean",
+      "description": "Hard-coded true for super pass bookings to allow filtering"
+    },
+    "passId": {
+      "type": "string",
+      "description": "Super pass identifier"
+    },
+    "categoryId": {
+      "type": "string",
+      "description": "Category identifier from pass configuration"
+    },
+    "fareMappingId": {
+      "type": "string",
+      "description": "Fare mapping identifier from pass configuration"
+    },
+    "status": {
+      "type": "string",
+      "description": "Pass/ticket status (ACTIVE, EXPIRED, etc.)"
+    },
+    "verificationFlag": {
+      "type": "string",
+      "description": "Verification requirement flag for pass"
+    },
+    "verificationExpiryTime": {
+      "type": "string",
+      "description": "Formatted verification expiry date"
+    },
+    "expiryTime": {
+      "type": "string",
+      "description": "Formatted pass/ticket expiry date"
+    },
+    "paymentMode": {
+      "type": "string",
+      "description": "Payment method used for purchase"
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "Transaction identifier"
+    },
+    "startDate": {
+      "type": "string",
+      "description": "Formatted pass/ticket start date"
+    },
+    "rideCount": {
+      "type": "number",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "renew disabled product source": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "ctaType": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "amount paid": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "expiry time": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Tab Selection & Page Rendering",
+      "description": "User switches between Active and History tabs, and corresponding page content renders",
+      "events": [
+        "active tickets tab selected",
+        "expired tickets tab selected",
+        "empty tickets page rendered",
+        "active tickets page rendered",
+        "empty active tickets page rendered",
+        "expired tickets page rendered",
+        "empty expired tickets page rendered"
+      ]
+    },
+    {
+      "name": "Product Card Interactions",
+      "description": "User interacts with individual ticket/pass cards",
+      "events": [
+        "tickets page card item rendered",
+        "tickets page card item clicked",
+        "product use now button clicked",
+        "product menu view summary clicked",
+        "renew btn clicked"
+      ]
+    },
+    {
+      "name": "Ticket Summary",
+      "description": "Ticket Summary screen events after opening a booking from History (data fetch, actions, and activation entrypoints).",
+      "events": [
+        "ticket summary screen opened",
+        "product data fetch success",
+        "product data fetch failure",
+        "receipt data fetch success",
+        "receipt data fetch failure",
+        "ticket summary screen help button clicked",
+        "invoice download success",
+        "invoice download failure",
+        "product summary banner cta click",
+        "full image cancel btn click",
+        "summary book again clicked",
+        "start product validation",
+        "start premium product validation",
+        "product activation failed"
+      ]
+    },
+    {
+      "name": "Promotional Hooks",
+      "description": "Promotional cards/hooks rendered and clicked",
+      "events": [
+        "tickets page hook rendered",
+        "tickets page hook clicked"
+      ]
+    },
+    {
+      "name": "Purchase Flow",
+      "description": "User initiates new product purchase from history screen",
+      "events": [
+        "buy ticket passes button clicked",
+        "product purchase bottomsheet opened"
+      ]
+    },
+    {
+      "name": "Product Reclaim",
+      "description": "User reclaims products from another device",
+      "events": [
+        "reclaim card shown",
+        "reclaim card button clicked",
+        "reclaim dialog positive button clicked",
+        "reclaim dialog negative button clicked"
+      ]
+    },
+    {
+      "name": "Product Activation",
+      "description": "User activates tickets/passes for immediate use",
+      "events": [
+        "product activation bottomsheet positive cta clicked",
+        "product activation failed bottomsheet shown",
+        "product activation failed bottomsheet positive cta clicked",
+        "activate merged flow screen opened",
+        "activation button clicked",
+        "super pass menu view summary clicked",
+        "super pass updated",
+        "view trip receipt button clicked"
+      ]
+    },
+    {
+      "name": "Renewal Flow",
+      "description": "User attempts to renew expired or expiring passes",
+      "events": [
+        "renew error bottomsheet shown",
+        "renew error bottomsheet positive cta clicked",
+        "renew error bottomsheet negative cta clicked"
+      ]
+    },
+    {
+      "name": "Notification Permission",
+      "description": "Notification permission handling when activating products",
+      "events": [
+        "notification permission granted",
+        "notification permission denied",
+        "notification permission explainer rendered",
+        "notification permission explainer enable clicked",
+        "notification permission explainer skipped"
+      ]
+    },
+    {
+      "name": "Support",
+      "description": "User reports problems or seeks help",
+      "events": [
+        "report problem clicked v2"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pass ride history data fetch",
+        "product selection activity launched",
+        "product status button clicked",
+        "renew disabled product error dialog rendered",
+        "ride card cta click",
+        "ride receipt screen opened",
+        "view trip history btn clicked",
+        "pass activated"
+      ]
+    },
+    {
+      "name": "Ride Feedback",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "ride feedback rating selected",
+        "ride feedback submitted"
+      ]
+    },
+    {
+      "name": "History Sync",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "History sync failed",
+        "History sync section status"
+      ]
+    },
+    {
+      "name": "Pass Summary",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "pass summary screen opened"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "History sync failed",
+      "component": "InitiateProductHistorySyncCallUseCase",
+      "stage": "History Sync",
+      "source": "source.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/usecase/InitiateProductHistorySyncCallUseCase.kt:350",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "History sync section status",
+      "component": "InitiateProductHistorySyncCallUseCase",
+      "stage": "History Sync",
+      "source": "source.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/usecase/InitiateProductHistorySyncCallUseCase.kt:398",
+      "properties": []
+    },
+    {
+      "name": "activate merged flow screen opened",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "Source.ACTIVATE_MERGE_FLOW_FRAGMENT.sourceName",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:829",
+      "properties": [
+        {
+          "property": "amount paid"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "expiry time"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "activation button clicked",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "PASS_ACTIVATION_SOURCE_NAME",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:762",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "active tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Page Rendering",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Active tab content rendered with one or more active bookings. Includes counts of each booking type.",
+      "properties": [
+        {
+          "property": "ride based pass booking count"
+        },
+        {
+          "property": "magic pass booking count"
+        },
+        {
+          "property": "super pass application booking count"
+        },
+        {
+          "property": "pending super pass application booking count"
+        },
+        {
+          "property": "quick pay booking count"
+        },
+        {
+          "property": "mobile ticket booking count"
+        },
+        {
+          "property": "instant ticket booking count"
+        },
+        {
+          "property": "premium bus booking count"
+        }
+      ]
+    },
+    {
+      "name": "active tickets tab selected",
+      "component": "MyTicketsComponent",
+      "stage": "Tab Selection",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps the Active tab to view currently valid tickets and passes",
+      "properties": []
+    },
+    {
+      "name": "buy ticket passes button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Purchase Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps the 'Buy Tickets/Passes' button (usually shown when no active bookings exist).",
+      "properties": []
+    },
+    {
+      "name": "empty active tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Page Rendering",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Active tab is empty (no active bookings). May show promotional hooks to purchase products.",
+      "properties": []
+    },
+    {
+      "name": "empty expired tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Page Rendering",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "History/Expired tab is empty (no expired bookings).",
+      "properties": []
+    },
+    {
+      "name": "empty tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Page Rendering",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Rendered when user has no bookings at all (neither active nor expired). May show promotional purchase hooks.",
+      "properties": []
+    },
+    {
+      "name": "expired tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Page Rendering",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "History/Expired tab content rendered with one or more expired bookings. Includes counts of each booking type.",
+      "properties": [
+        {
+          "property": "ride based pass booking count"
+        },
+        {
+          "property": "magic pass booking count"
+        },
+        {
+          "property": "super pass application booking count"
+        },
+        {
+          "property": "pending super pass application booking count"
+        },
+        {
+          "property": "quick pay booking count"
+        },
+        {
+          "property": "mobile ticket booking count"
+        },
+        {
+          "property": "instant ticket booking count"
+        },
+        {
+          "property": "premium bus booking count"
+        }
+      ]
+    },
+    {
+      "name": "expired tickets tab selected",
+      "component": "MyTicketsComponent",
+      "stage": "Tab Selection",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps the History/Expired tab to view past bookings",
+      "properties": []
+    },
+    {
+      "name": "full image cancel btn click",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "User closes a full-screen image view (receipt/media) within Ticket Summary.",
+      "properties": []
+    },
+    {
+      "name": "invoice download failure",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Invoice download fails for the booking from Ticket Summary.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "errorMessage"
+        }
+      ]
+    },
+    {
+      "name": "invoice download success",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Invoice download succeeds for the booking from Ticket Summary.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "notification permission denied",
+      "component": "MyTicketsComponent",
+      "stage": "Notification Permission",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User denied notification permission when activating a product. Triggers explainer screen to encourage enabling.",
+      "properties": []
+    },
+    {
+      "name": "notification permission explainer enable clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Notification Permission",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps 'Enable Notifications' button on explainer screen, which opens system settings.",
+      "properties": []
+    },
+    {
+      "name": "notification permission explainer rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Notification Permission",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Notification permission explainer screen is displayed to educate user on why notifications are needed.",
+      "properties": []
+    },
+    {
+      "name": "notification permission explainer skipped",
+      "component": "MyTicketsComponent",
+      "stage": "Notification Permission",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User skips the notification permission explainer and proceeds without enabling notifications.",
+      "properties": []
+    },
+    {
+      "name": "notification permission granted",
+      "component": "MyTicketsComponent",
+      "stage": "Notification Permission",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User granted notification permission (either from system dialog or settings). Logged when permission state updates after activation flow.",
+      "properties": []
+    },
+    {
+      "name": "pass activated",
+      "component": "ActivateProductIfRequiredUseCase",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/ActivateProductIfRequiredUseCase.kt:226",
+      "properties": []
+    },
+    {
+      "name": "pass ride history data fetch",
+      "component": "RideReceiptComponent",
+      "stage": "Misc",
+      "source": "Source.RIDE_RECEIPT_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/tripreceipt/tripreceiptnew/RideReceiptComponent.kt:716",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "rideCount"
+        }
+      ]
+    },
+    {
+      "name": "pass summary screen opened",
+      "component": "PassSummaryComponent",
+      "stage": "Pass Summary",
+      "source": "intent.source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productsummary/ui/pass/PassSummaryComponent.kt:194",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "passRequestType"
+        }
+      ]
+    },
+    {
+      "name": "product activation bottomsheet positive cta clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Activation",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User confirms product activation in the activation bottom sheet, proceeding with activation flow.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "product activation failed",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Activation attempt from Ticket Summary fails (used for some activation entrypoints).",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "product activation failed bottomsheet positive cta clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Activation",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User dismisses the activation failure bottom sheet by tapping OK/Close button.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "product activation failed bottomsheet shown",
+      "component": "MyTicketsComponent",
+      "stage": "Product Activation",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Product activation failed and error bottom sheet is displayed with failure reason.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "bottomsheet title"
+        },
+        {
+          "property": "bottomsheet reason"
+        }
+      ]
+    },
+    {
+      "name": "product data fetch failure",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Product data for the requested booking is not available (booking type unresolved). Emitted while loading Ticket Summary.",
+      "properties": [
+        {
+          "property": "ticketRequestType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "product data fetch success",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Product data for the requested booking is available (booking type resolved). Emitted while loading Ticket Summary.",
+      "properties": [
+        {
+          "property": "ticketRequestType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "product menu view summary clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Card",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps 'View Summary' from the dropdown menu on a product card, navigating to detailed summary screen.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "product purchase bottomsheet opened",
+      "component": "MyTicketsComponent",
+      "stage": "Purchase Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Purchase product selection bottom sheet appears after clicking buy button. Shows available product options.",
+      "properties": []
+    },
+    {
+      "name": "product selection activity launched",
+      "component": "MyTicketsComponent",
+      "stage": "Misc",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2789",
+      "properties": []
+    },
+    {
+      "name": "product status button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Misc",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2358",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "product summary banner cta click",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "User taps a CTA shown on Ticket Summary (e.g. Try Booking Again / Use Product Now).",
+      "properties": [
+        {
+          "property": "bannerCtaType"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "product use now button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Activation",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps 'Use Now' button on a ticket/pass card to activate it for immediate use. May trigger notification permission check.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "receipt data fetch failure",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Receipt payload for the requested booking fails to fetch. Ticket Summary may show an error state and/or fallback UI.",
+      "properties": [
+        {
+          "property": "ticketRequestType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "receipt data fetch success",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "Receipt payload for the requested booking is successfully fetched/renderable on Ticket Summary.",
+      "properties": [
+        {
+          "property": "ticketRequestType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "reclaim card button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Reclaim",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps the reclaim button to retrieve products from another device. Opens confirmation dialog.",
+      "properties": []
+    },
+    {
+      "name": "reclaim card shown",
+      "component": "MyTicketsComponent",
+      "stage": "Product Reclaim",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Reclaim card displayed when user has products on multiple devices. Includes booking counts for each type.",
+      "properties": [
+        {
+          "property": "ride based pass booking count"
+        },
+        {
+          "property": "magic pass booking count"
+        },
+        {
+          "property": "super pass application booking count"
+        },
+        {
+          "property": "pending super pass application booking count"
+        },
+        {
+          "property": "quick pay booking count"
+        },
+        {
+          "property": "mobile ticket booking count"
+        },
+        {
+          "property": "instant ticket booking count"
+        },
+        {
+          "property": "premium bus booking count"
+        }
+      ]
+    },
+    {
+      "name": "reclaim dialog negative button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Reclaim",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User cancels reclaim action and closes the dialog.",
+      "properties": []
+    },
+    {
+      "name": "reclaim dialog positive button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Reclaim",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User confirms reclaim action in the dialog, triggering device linking process.",
+      "properties": []
+    },
+    {
+      "name": "renew btn clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Renewal Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps renew button for a super pass (from either card action or status banner). Includes full pass metadata.",
+      "properties": [
+        {
+          "property": "isSuperPass",
+          "context": "Always true for super pass renewals"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "categoryId"
+        },
+        {
+          "property": "fareMappingId"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "status"
+        },
+        {
+          "property": "verificationFlag"
+        },
+        {
+          "property": "verificationExpiryTime"
+        },
+        {
+          "property": "expiryTime"
+        },
+        {
+          "property": "paymentMode"
+        },
+        {
+          "property": "transactionId"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "isRenewFromProductStatusCard",
+          "context": "True if triggered from product status card banner"
+        }
+      ]
+    },
+    {
+      "name": "renew disabled product error dialog rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Misc",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2748",
+      "properties": [
+        {
+          "property": "renew disabled product source"
+        }
+      ]
+    },
+    {
+      "name": "renew error bottomsheet negative cta clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Renewal Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User dismisses the renewal error bottom sheet using the negative CTA (e.g., 'Cancel', 'Close').",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "renew error bottomsheet positive cta clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Renewal Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps the positive CTA (e.g., 'Explore Plans', 'OK') on the renewal error bottom sheet.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "renew error bottomsheet shown",
+      "component": "MyTicketsComponent",
+      "stage": "Renewal Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Renewal failed or blocked, and error bottom sheet is displayed with reason. Includes full pass metadata.",
+      "properties": [
+        {
+          "property": "isSuperPass",
+          "context": "Always true"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "categoryId"
+        },
+        {
+          "property": "fareMappingId"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "status"
+        },
+        {
+          "property": "verificationFlag"
+        },
+        {
+          "property": "verificationExpiryTime"
+        },
+        {
+          "property": "expiryTime"
+        },
+        {
+          "property": "paymentMode"
+        },
+        {
+          "property": "transactionId"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "bottomsheet title"
+        },
+        {
+          "property": "bottomsheet reason"
+        }
+      ]
+    },
+    {
+      "name": "report problem clicked v2",
+      "component": "MyTicketsComponent",
+      "stage": "Support",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps the 'Report a Problem' option from the tickets/history screen to report issues.",
+      "properties": [
+        {
+          "property": "type",
+          "context": "Always 'ticketing_problems' for this flow"
+        },
+        {
+          "property": "problemSource",
+          "context": "Always 'src_product_history_screen' for this flow"
+        }
+      ],
+      "notes": "Constant values: type='ticketing_problems', problemSource='src_product_history_screen'"
+    },
+    {
+      "name": "ride card cta click",
+      "component": "RideReceiptComponent",
+      "stage": "Misc",
+      "source": "Source.RIDE_RECEIPT_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/tripreceipt/tripreceiptnew/RideReceiptComponent.kt:150",
+      "properties": [
+        {
+          "property": "ctaType"
+        },
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "ride feedback rating selected",
+      "component": "ChaloRideFeedbackCollectionHelper",
+      "stage": "Ride Feedback",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/ridefeedbacktracker/ChaloRideFeedbackCollectionHelper.kt:47",
+      "properties": []
+    },
+    {
+      "name": "ride feedback submitted",
+      "component": "ChaloRideFeedbackCollectionHelper",
+      "stage": "Ride Feedback",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/ridefeedbacktracker/ChaloRideFeedbackCollectionHelper.kt:24",
+      "properties": []
+    },
+    {
+      "name": "ride receipt screen opened",
+      "component": "RideReceiptComponent",
+      "stage": "Misc",
+      "source": "intent.source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/tripreceipt/tripreceiptnew/RideReceiptComponent.kt:197",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "start premium product validation",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "User starts premium bus activation/validation from Ticket Summary (premium bus activation flow entry).",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "start product validation",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "User starts validation from Ticket Summary for a ticket-type booking (BLE/QR validation entry).",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "summary book again clicked",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "User taps Book Again/Repurchase CTA from Ticket Summary. This usually navigates into the relevant purchase flow for that product type.",
+      "properties": [
+        {
+          "property": "passRequestType",
+          "context": "Currently carries booking id string"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "super pass menu view summary clicked",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "PASS_ACTIVATION_SOURCE_NAME",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:711",
+      "properties": []
+    },
+    {
+      "name": "super pass updated",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "Source.ACTIVATE_SUPER_PASS_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:844",
+      "properties": []
+    },
+    {
+      "name": "ticket summary screen help button clicked",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "Source.TICKET_SUMMARY_SCREEN",
+      "description": "User taps the help/support button from Ticket Summary to view booking FAQs or support options.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "ticket summary screen opened",
+      "component": "TicketSummaryComponent",
+      "stage": "Ticket Summary",
+      "source": "TripSummaryArgs.source (varies by entrypoint)",
+      "description": "Ticket Summary screen is opened for a specific booking. Captures the request type and the booking id being summarized.",
+      "properties": [
+        {
+          "property": "ticketRequestType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "tickets page card item clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Product Card",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps on a purchase promotion card, which navigates to the Regular Bus tab to buy products.",
+      "properties": [
+        {
+          "property": "title",
+          "context": "Title of the clicked card"
+        }
+      ]
+    },
+    {
+      "name": "tickets page card item rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Product Card",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Individual ticket/pass card or purchase promotion card is rendered in the list.",
+      "properties": [
+        {
+          "property": "title",
+          "context": "Title of the card (product name or purchase section title)"
+        }
+      ]
+    },
+    {
+      "name": "tickets page hook clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Promotional Hooks",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User taps on a promotional hook/card, triggering navigation or action based on hook type.",
+      "properties": [
+        {
+          "property": "type",
+          "context": "Hook feature type identifier"
+        },
+        {
+          "property": "position",
+          "context": "Position in the hooks list (zero-indexed)"
+        },
+        {
+          "property": "title",
+          "context": "Hook title text"
+        },
+        {
+          "property": "desc list",
+          "context": "Array of description strings"
+        },
+        {
+          "property": "tag list",
+          "context": "Array of tag strings"
+        },
+        {
+          "property": "image url",
+          "context": "URL of the hook image"
+        }
+      ]
+    },
+    {
+      "name": "tickets page hook rendered",
+      "component": "MyTicketsComponent",
+      "stage": "Promotional Hooks",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Promotional hook/card rendered within the tickets page (e.g., featured product, special offer).",
+      "properties": [
+        {
+          "property": "type",
+          "context": "Hook feature type identifier"
+        },
+        {
+          "property": "position",
+          "context": "Position in the hooks list (zero-indexed)"
+        },
+        {
+          "property": "title",
+          "context": "Hook title text"
+        },
+        {
+          "property": "desc list",
+          "context": "Array of description strings"
+        },
+        {
+          "property": "tag list",
+          "context": "Array of tag strings"
+        },
+        {
+          "property": "image url",
+          "context": "URL of the hook image"
+        }
+      ]
+    },
+    {
+      "name": "view trip history btn clicked",
+      "component": "MyTicketsComponent",
+      "stage": "Misc",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2769",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "view trip receipt button clicked",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "PASS_ACTIVATION_SOURCE_NAME",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:741",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Screen Entry & Tab Selection",
+        "events": [
+          "active tickets tab selected",
+          "expired tickets tab selected"
+        ],
+        "next": "Page Rendering"
+      },
+      {
+        "label": "Page Rendering",
+        "events": [
+          "empty tickets page rendered",
+          "active tickets page rendered",
+          "empty active tickets page rendered",
+          "expired tickets page rendered",
+          "empty expired tickets page rendered",
+          "tickets page card item rendered",
+          "tickets page hook rendered",
+          "reclaim card shown"
+        ],
+        "next": "User Interactions"
+      },
+      {
+        "label": "Product Interactions",
+        "events": [
+          "tickets page card item clicked",
+          "tickets page hook clicked",
+          "product use now button clicked",
+          "product menu view summary clicked",
+          "renew btn clicked",
+          "buy ticket passes button clicked"
+        ],
+        "next": "Ticket Summary"
+      },
+      {
+        "label": "Ticket Summary",
+        "events": [
+          "ticket summary screen opened",
+          "product data fetch success",
+          "product data fetch failure",
+          "receipt data fetch success",
+          "receipt data fetch failure",
+          "ticket summary screen help button clicked",
+          "invoice download success",
+          "invoice download failure",
+          "product summary banner cta click",
+          "summary book again clicked",
+          "start product validation",
+          "start premium product validation",
+          "product activation failed",
+          "full image cancel btn click"
+        ],
+        "next": "Activation/Renewal/Purchase"
+      },
+      {
+        "label": "Activation Flow",
+        "events": [
+          "notification permission denied",
+          "notification permission explainer rendered",
+          "notification permission explainer enable clicked",
+          "notification permission explainer skipped",
+          "notification permission granted",
+          "product activation bottomsheet positive cta clicked",
+          "product activation failed bottomsheet shown",
+          "product activation failed bottomsheet positive cta clicked"
+        ]
+      },
+      {
+        "label": "Renewal Flow",
+        "events": [
+          "renew error bottomsheet shown",
+          "renew error bottomsheet positive cta clicked",
+          "renew error bottomsheet negative cta clicked"
+        ]
+      },
+      {
+        "label": "Purchase Flow",
+        "events": [
+          "product purchase bottomsheet opened"
+        ]
+      },
+      {
+        "label": "Reclaim Flow",
+        "events": [
+          "reclaim card button clicked",
+          "reclaim dialog positive button clicked",
+          "reclaim dialog negative button clicked"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "pass ride history data fetch",
+          "product selection activity launched",
+          "product status button clicked",
+          "renew disabled product error dialog rendered",
+          "ride card cta click",
+          "ride receipt screen opened",
+          "view trip history btn clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Product Activation",
+        "events": [
+          "activate merged flow screen opened"
+        ]
+      },
+      {
+        "label": "Additional events: Product Activation",
+        "events": [
+          "activation button clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "pass activated"
+        ]
+      },
+      {
+        "label": "Additional events: Ride Feedback",
+        "events": [
+          "ride feedback rating selected"
+        ]
+      },
+      {
+        "label": "Additional events: Ride Feedback",
+        "events": [
+          "ride feedback submitted"
+        ]
+      },
+      {
+        "label": "Additional events: Product Activation",
+        "events": [
+          "super pass menu view summary clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Product Activation",
+        "events": [
+          "super pass updated"
+        ]
+      },
+      {
+        "label": "Additional events: Product Activation",
+        "events": [
+          "view trip receipt button clicked"
+        ]
+      },
+      {
+        "label": "Additional events: History Sync",
+        "events": [
+          "History sync failed"
+        ]
+      },
+      {
+        "label": "Additional events: History Sync",
+        "events": [
+          "History sync section status"
+        ]
+      },
+      {
+        "label": "Additional events: Pass Summary",
+        "events": [
+          "pass summary screen opened"
+        ]
+      }
+    ],
+    "notes": "report problem clicked v2 can fire from any screen state; Full tab switching and product interaction flows captured with detailed counts and metadata."
+  }
+}

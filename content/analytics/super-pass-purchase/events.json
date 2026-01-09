@@ -1,0 +1,1692 @@
+{
+  "flowId": "super_pass_purchase",
+  "flowName": "Super Pass purchase & verification",
+  "description": "Complete analytics map for the super pass purchase journey.",
+  "propertyDefinitions": {
+    "flow": {
+      "type": "string",
+      "description": "Purchase flow token emitted by `SuperPassPurchaseNavigationConstants`: `flowFreshPurchase`, `flowFreshPurchaseWithoutProofRequirement`, `flowPaymentPostVerification`, `flowReapplication`, `flowRenewPass`, or `flowPaymentModeChangedNoVerification`. Helps segment events by the branch that triggered them.",
+      "values": [
+        "flowFreshPurchase",
+        "flowFreshPurchaseWithoutProofRequirement",
+        "flowPaymentPostVerification",
+        "flowReapplication",
+        "flowRenewPass",
+        "flowPaymentModeChangedNoVerification"
+      ]
+    },
+    "isSuperPass": {
+      "type": "boolean",
+      "description": "Hard-coded `true` for every event in this flow to allow dashboards to filter the super pass event family."
+    },
+    "productId": {
+      "type": "string",
+      "description": "`configId` of the Super Pass configuration that the user is interacting with."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Product type; these events always log `superPass`."
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type (magicPass, ridePass, etc.) pulled from the configuration metadata."
+    },
+    "passengerType": {
+      "type": "string",
+      "description": "Passenger category identifier chosen in the fare configuration (e.g. Adult, Student)."
+    },
+    "noOfDays": {
+      "type": "string",
+      "description": "Number of days covered by the selected product, serialized to string."
+    },
+    "passFare": {
+      "type": "number",
+      "description": "Actual fare before discounts (double)."
+    },
+    "payable fare": {
+      "type": "number",
+      "description": "Payable amount after discounts (double)."
+    },
+    "startDate": {
+      "type": "string",
+      "description": "Formatted pass start date used by payment/proof events."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Backend order identifier returned by CreateSuperPassOrderUseCase."
+    },
+    "chaloOrderId": {
+      "type": "string",
+      "description": "Chalo-specific order id mirroring the backend order."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Human-readable failure description when order creation or cash selection fails."
+    },
+    "referenceId": {
+      "type": "string",
+      "description": "Cash payment reference provided when MPASS_CASH_PAYMENT_OPTION_SELECTED succeeds or when the cash web page launches."
+    },
+    "pendingFare": {
+      "type": "number",
+      "description": "Pending fare that remains on cash payment flows."
+    },
+    "productCity": {
+      "type": "string",
+      "description": "City slug extracted from the BookableSuperPassConfiguration for cash payments."
+    },
+    "productAgency": {
+      "type": "string",
+      "description": "Agency name backing the selected pass configuration."
+    },
+    "revisedPassStartDate": {
+      "type": "string",
+      "description": "New start date chosen via the pass start date dialog."
+    },
+    "oldPassStartDate": {
+      "type": "string",
+      "description": "The previous start date before the change."
+    },
+    "postponedByDays": {
+      "type": "number",
+      "description": "Number of days the start date moved by."
+    },
+    "agency": {
+      "type": "string",
+      "description": "Agency name that failed to fulfil the purchase, emitted before navigating back home."
+    },
+    "start destination": {
+      "type": "string",
+      "description": "Label describing the first screen (confirmation, basic user details, smart passenger selection, user proofs overview, or not available).",
+      "values": [
+        "confirmation screen",
+        "basicUserDetails screen",
+        "smartPassengerSelection screen",
+        "userProofsOverview screen",
+        "start destination not available"
+      ]
+    },
+    "smartPassengerList size": {
+      "type": "number",
+      "description": "Count of passengers returned by the smart selection API."
+    },
+    "isConvertedToRenewFlow": {
+      "type": "boolean",
+      "description": "True when smart passenger selection triggers the renew conversion path."
+    },
+    "fullName": {
+      "type": "string",
+      "description": "Passenger full name."
+    },
+    "dateOfBirth": {
+      "type": "string",
+      "description": "Date of birth formatted in medium form."
+    },
+    "gender": {
+      "type": "string",
+      "description": "Gender enum name from the user input."
+    },
+    "mobileNumber": {
+      "type": "string",
+      "description": "Mobile number tied to the selected passenger."
+    },
+    "userId": {
+      "type": "string",
+      "description": "Chalo user id carried with the passenger/proof metadata."
+    },
+    "dobInMillis": {
+      "type": "number",
+      "description": "Epoch millis representation of the date of birth."
+    },
+    "emailId": {
+      "type": "string",
+      "description": "User email if available."
+    },
+    "isRejectedProofImage": {
+      "type": "boolean",
+      "description": "Flag to differentiate rejected proof zoom states."
+    },
+    "proofId": {
+      "type": "string",
+      "description": "Proof identifier (e.g., aadhaar_front)."
+    },
+    "url": {
+      "type": "string",
+      "description": "URLs for sample forms or tutorial videos."
+    },
+    "isDismissed": {
+      "type": "boolean",
+      "description": "True if the camera permission dialog was dismissed."
+    },
+    "passStartDate": {
+      "type": "string",
+      "description": "Start date reported from the user details screen."
+    },
+    "coming from source": {
+      "type": "string",
+      "description": "Source tag passed when the name-only screen is triggered (usually sourceSuperPassPurchaseFragment)."
+    },
+    "canActivate": {
+      "type": "boolean",
+      "description": "True when activation is possible from the booking success screen."
+    },
+    "source": {
+      "type": "string",
+      "description": "Label for booking success events; always booking success screen.",
+      "values": [
+        "booking success screen"
+      ]
+    },
+    "productName": {
+      "type": "string",
+      "description": "Human-friendly pass name surfaced to verification screens."
+    },
+    "fareMappingId": {
+      "type": "number",
+      "description": "Fare mapping identifier from the configuration."
+    },
+    "type": {
+      "type": "string",
+      "description": "Report problem category (pass_verification_problems)."
+    },
+    "problemSource": {
+      "type": "string",
+      "description": "Source tag for report problem events (src_mPassPurchaseActivity)."
+    },
+    "durationId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "durationName": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "fare": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "position": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "bookingDate": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "categoryId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "numDays": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "previousScreen": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "error message": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "selected subCategory": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "response": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "recent product mticket clicked": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "passId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Entry",
+      "description": "Shared component onboarding, actor verification, and initial routing.",
+      "events": [
+        "superPassPurchaseActivity open",
+        "superPassPurchase startDestination assigned",
+        "agency not available for purchase"
+      ]
+    },
+    {
+      "name": "Confirm & payment",
+      "description": "User interacts with the confirmation screen, tweaks start date, hits pay, and the backend creates an order or returns cash instructions.",
+      "events": [
+        "confirm payment screen open",
+        "change pass start date clicked",
+        "pass start date change CTA clicked",
+        "mPass proof submit button clicked",
+        "mPass confirm purchase pay btn clicked",
+        "make payment clicked",
+        "mPass order created",
+        "mPass order creation failed",
+        "mPass cash payment option selected",
+        "open super pass cash payment web page",
+        "offer availed bottom sheet shown",
+        "explore available plans clicked"
+      ]
+    },
+    {
+      "name": "User details & passenger selection",
+      "description": "Flows that collect personal data and passenger picks before proof upload.",
+      "events": [
+        "basic user details screen open",
+        "superPass enter user name screen open",
+        "basic user details next clicked",
+        "superPass enter user name next clicked",
+        "smart passenger selection screen open",
+        "smartPassengerSelection screen new passenger selected",
+        "smartPassengerSelection screen passenger selected"
+      ]
+    },
+    {
+      "name": "Proof overview & upload",
+      "description": "Proof documentation reachability, sample downloads, uploads, and permission handling.",
+      "events": [
+        "proofs overview screen open",
+        "download sample form clicked",
+        "add photo btn clicked",
+        "uploaded proof zoomed",
+        "cancel proof image upload clicked",
+        "edit uploaded proof image clicked",
+        "proof guidelines btn clicked",
+        "userProofsOverview reapply clicked",
+        "userProofsOverview next clicked",
+        "camera permission denied dialog displayed",
+        "sample proof image zoomed",
+        "upload proof button clicked",
+        "camera permission requested",
+        "photo chooser launched",
+        "watch tutorial video clicked",
+        "application submit success",
+        "application submit failure"
+      ]
+    },
+    {
+      "name": "Verification status",
+      "description": "Bookings waiting for manual verification post proof upload.",
+      "events": [
+        "mPass verification status activity open",
+        "mPass verification status view details clicked",
+        "mPass verification status ok clicked",
+        "superPass verification status back btn clicked"
+      ]
+    },
+    {
+      "name": "Booking success",
+      "description": "Post-checkout confirmation where activation decisions are logged.",
+      "events": [
+        "booking success screen open",
+        "booking success view booking details clicked",
+        "booking success use now clicked",
+        "booking success use later clicked",
+        "booking success back btn clicked"
+      ]
+    },
+    {
+      "name": "Global",
+      "description": "Events that can fire from multiple places, such as report problem.",
+      "events": [
+        "report problem clicked v2"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "book pass screen opened",
+        "duration selection",
+        "page selected",
+        "pass details selected",
+        "pass selection screen opened",
+        "product activation pass punch sync failed",
+        "product activation sync exception occurred",
+        "product activation sync failed",
+        "subCategory selected",
+        "subCategory selection screen opened",
+        "super pass fetched",
+        "superPass receipt payload",
+        "superPass trip receipt history fetch failed",
+        "superPass trip receipt history fetched",
+        "sync mTicket activation timeStamp with backend",
+        "sync superPass activation timeStamp with backend"
+      ]
+    },
+    {
+      "name": "Product Selection",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "configuration fetched",
+        "product selected",
+        "product selection activity open",
+        "recent product event in product selection activity",
+        "recent product super pass clicked",
+        "renew error dialog shown"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "add photo btn clicked",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Raised when the user taps the Add Photo CTA.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "agency not available for purchase",
+      "component": "SuperPassPurchaseSharedViewModel",
+      "stage": "Fallback",
+      "source": "Source.SUPER_PASS_PURCHASE_SHARED_COMPONENT",
+      "description": "Sent when no agency could fulfil the request, immediately navigating back home.",
+      "properties": [
+        {
+          "property": "agency",
+          "context": "initialState.agency?.agencyName"
+        }
+      ]
+    },
+    {
+      "name": "application submit failure",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Proof submission",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "The proof submission failed; same metadata helps diagnose reasons.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "noOfDays"
+        },
+        {
+          "property": "passFare"
+        },
+        {
+          "property": "payable fare"
+        },
+        {
+          "property": "startDate"
+        }
+      ]
+    },
+    {
+      "name": "application submit success",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Proof submission",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Proof submission succeeded; the helper adds configuration metadata for correlation.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "noOfDays"
+        },
+        {
+          "property": "passFare"
+        },
+        {
+          "property": "payable fare"
+        },
+        {
+          "property": "startDate"
+        }
+      ]
+    },
+    {
+      "name": "basic user details next clicked",
+      "component": "SuperPassEnterUserDetailsViewModel",
+      "stage": "User details",
+      "source": "basicUserDetailsFragment",
+      "description": "User submits the detailed form; logs name, dob, gender, pass start date, flow, and isSuperPass flag.",
+      "properties": [
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "dateOfBirth"
+        },
+        {
+          "property": "gender"
+        },
+        {
+          "property": "passStartDate"
+        },
+        {
+          "property": "flow"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "basic user details screen open",
+      "component": "SuperPassEnterUserDetailsViewModel",
+      "stage": "User details",
+      "source": "superPassUserDetailsManager.state.value.source",
+      "description": "Detailed user details entry is shown for flows requiring a complete profile.",
+      "properties": []
+    },
+    {
+      "name": "book pass screen opened",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:744",
+      "properties": []
+    },
+    {
+      "name": "booking success back btn clicked",
+      "component": "SuperPassBookingSuccessComponent",
+      "stage": "Booking success",
+      "source": "ATTRIBUTE_BOOKING_SUCCESS_SCREEN",
+      "description": "Back navigation from the booking success screen.",
+      "autoProperties": [
+        "source",
+        "isSuperPass",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "booking success screen open",
+      "component": "SuperPassBookingSuccessComponent",
+      "stage": "Booking success",
+      "source": "ATTRIBUTE_BOOKING_SUCCESS_SCREEN",
+      "description": "Booking success screen open with source/event flags.",
+      "autoProperties": [
+        "source",
+        "isSuperPass",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "booking success use later clicked",
+      "component": "SuperPassBookingSuccessComponent",
+      "stage": "Booking success",
+      "source": "ATTRIBUTE_BOOKING_SUCCESS_SCREEN",
+      "description": "User defers activation.",
+      "autoProperties": [
+        "source",
+        "isSuperPass",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "booking success use now clicked",
+      "component": "SuperPassBookingSuccessComponent",
+      "stage": "Booking success",
+      "source": "ATTRIBUTE_BOOKING_SUCCESS_SCREEN",
+      "description": "User chooses to activate now; includes can activate flag.",
+      "autoProperties": [
+        "source",
+        "isSuperPass",
+        "productType",
+        "productSubType"
+      ],
+      "properties": [
+        {
+          "property": "canActivate"
+        }
+      ]
+    },
+    {
+      "name": "booking success view booking details clicked",
+      "component": "SuperPassBookingSuccessComponent",
+      "stage": "Booking success",
+      "source": "ATTRIBUTE_BOOKING_SUCCESS_SCREEN",
+      "description": "Tap to view booking details.",
+      "autoProperties": [
+        "source",
+        "isSuperPass",
+        "productType",
+        "productSubType"
+      ],
+      "properties": []
+    },
+    {
+      "name": "camera permission denied dialog displayed",
+      "component": "SuperPassProofOverviewViewModel & SuperPassUserProofUploadViewModel",
+      "stage": "Proof overview & upload",
+      "source": "Either proof fragment depending on which one triggered the dialog.",
+      "description": "Dialog shown when camera permission is denied; logs whether it was dismissed.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "isDismissed"
+        }
+      ]
+    },
+    {
+      "name": "camera permission requested",
+      "component": "SuperPassUserProofUploadViewModel",
+      "stage": "Proof upload",
+      "source": "userProofUploadFragment",
+      "description": "The fragment requests camera permission after the upload button is clicked.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "cancel proof image upload clicked",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Cancel button tapped for a specific proof id.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "proofId"
+        }
+      ]
+    },
+    {
+      "name": "change pass start date clicked",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Confirm Screen",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Tap on the change start date CTA before the dialog opens.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": []
+    },
+    {
+      "name": "configuration fetched",
+      "component": "ProductSelectionComponent",
+      "stage": "Product Selection",
+      "source": "Source.PRODUCT_SELECTION_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:753",
+      "properties": [
+        {
+          "property": "response"
+        }
+      ]
+    },
+    {
+      "name": "confirm payment screen open",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Confirm Screen",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "The confirm screen becomes visible for fresh, renewal, or post-verification flows.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": []
+    },
+    {
+      "name": "download sample form clicked",
+      "component": "SuperPassProofOverviewViewModel & SuperPassUserProofUploadViewModel",
+      "stage": "Proof overview & upload",
+      "source": "Either userProofOverviewFragment or userProofUploadFragment.",
+      "description": "Sample form link clicked from either proof screen; logs the URL plus the default flags.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "url"
+        }
+      ]
+    },
+    {
+      "name": "duration selection",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:676",
+      "properties": [
+        {
+          "property": "durationId"
+        },
+        {
+          "property": "durationName"
+        },
+        {
+          "property": "fare"
+        }
+      ]
+    },
+    {
+      "name": "edit uploaded proof image clicked",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Edit action re-triggers the picker for the proof id.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "proofId"
+        }
+      ]
+    },
+    {
+      "name": "explore available plans clicked",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "User navigates to the plan selection flow from the offer sheet.",
+      "properties": []
+    },
+    {
+      "name": "mPass cash payment option selected",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Cash payment resolution (success reports reference id, failure reports failure reason).",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "referenceId",
+          "context": "Present on success."
+        },
+        {
+          "property": "failureReason",
+          "context": "Present on failure."
+        }
+      ]
+    },
+    {
+      "name": "mPass confirm purchase pay btn clicked",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Confirm Screen",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Confirm pay tap reuses the configuration metadata for analytics.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "noOfDays"
+        },
+        {
+          "property": "passFare"
+        },
+        {
+          "property": "payable fare"
+        },
+        {
+          "property": "startDate"
+        }
+      ]
+    },
+    {
+      "name": "mPass order created",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "The backend created an order; logs both order IDs and the configuration metadata.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "chaloOrderId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "noOfDays"
+        },
+        {
+          "property": "passFare"
+        },
+        {
+          "property": "payable fare"
+        },
+        {
+          "property": "startDate"
+        }
+      ]
+    },
+    {
+      "name": "mPass order creation failed",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Order creation failure with the reason plus configuration metadata.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "failureReason"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "noOfDays"
+        },
+        {
+          "property": "passFare"
+        },
+        {
+          "property": "payable fare"
+        },
+        {
+          "property": "startDate"
+        }
+      ]
+    },
+    {
+      "name": "mPass proof submit button clicked",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Confirm Screen",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Proof submission CTA captures configuration metadata via addConfigurationAttributesToEvent.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "noOfDays"
+        },
+        {
+          "property": "passFare"
+        },
+        {
+          "property": "payable fare"
+        },
+        {
+          "property": "startDate"
+        }
+      ]
+    },
+    {
+      "name": "mPass verification status activity open",
+      "component": "SuperPassVerificationStatusComponent",
+      "stage": "Verification status",
+      "source": "dataState.value.source",
+      "description": "Verification status screen open event enriched with application metadata.",
+      "properties": [
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "fareMappingId"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "mPass verification status ok clicked",
+      "component": "SuperPassVerificationStatusComponent",
+      "stage": "Verification status",
+      "source": "dataState.value.source",
+      "description": "OK button tap with the same pass metadata.",
+      "properties": [
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "fareMappingId"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "mPass verification status view details clicked",
+      "component": "SuperPassVerificationStatusComponent",
+      "stage": "Verification status",
+      "source": "dataState.value.source",
+      "description": "Tap on View Details with the same metadata set.",
+      "properties": [
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "fareMappingId"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "make payment clicked",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Marks the move into the payment stack with product type/sub type metadata.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "offer availed bottom sheet shown",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "Indicates the offer-already-availed state has been shown to the user.",
+      "properties": []
+    },
+    {
+      "name": "open super pass cash payment web page",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Payment",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "Logs the cash payment web view navigation along with reference and travel metadata.",
+      "properties": [
+        {
+          "property": "referenceId"
+        },
+        {
+          "property": "pendingFare"
+        },
+        {
+          "property": "productCity"
+        },
+        {
+          "property": "productAgency"
+        }
+      ]
+    },
+    {
+      "name": "page selected",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.PASS_SELECTION_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:753",
+      "properties": [
+        {
+          "property": "position"
+        }
+      ]
+    },
+    {
+      "name": "pass details selected",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:691",
+      "properties": [
+        {
+          "property": "bookingDate"
+        },
+        {
+          "property": "categoryId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "numDays"
+        },
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "previousScreen"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "pass selection screen opened",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:778",
+      "properties": [
+        {
+          "property": "configId"
+        }
+      ]
+    },
+    {
+      "name": "pass start date change CTA clicked",
+      "component": "ConfirmSuperPassPurchaseViewModel",
+      "stage": "Confirm Screen",
+      "source": "Source.CONFIRM_SUPER_PASS_PURCHASE_FRAGMENT",
+      "description": "After the user picks a new start date, logs the revised date, old date, and postponement days.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass",
+        "productId"
+      ],
+      "properties": [
+        {
+          "property": "revisedPassStartDate"
+        },
+        {
+          "property": "oldPassStartDate"
+        },
+        {
+          "property": "postponedByDays"
+        }
+      ]
+    },
+    {
+      "name": "photo chooser launched",
+      "component": "SuperPassUserProofUploadViewModel",
+      "stage": "Proof upload",
+      "source": "userProofUploadFragment",
+      "description": "Chooses the photo picker after permission is granted.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "product activation pass punch sync failed",
+      "component": "DigitalTripReceiptRepository",
+      "stage": "Misc",
+      "source": "Source.NONE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:284",
+      "properties": [
+        {
+          "property": "error message"
+        }
+      ]
+    },
+    {
+      "name": "product activation sync exception occurred",
+      "component": "DigitalTripReceiptRepository",
+      "stage": "Misc",
+      "source": "Source.NONE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:274",
+      "properties": [
+        {
+          "property": "reason"
+        }
+      ]
+    },
+    {
+      "name": "product activation sync failed",
+      "component": "DigitalTripReceiptRepository",
+      "stage": "Misc",
+      "source": "Source.NONE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:252",
+      "properties": [
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "product selected",
+      "component": "ProductSelectionComponent",
+      "stage": "Product Selection",
+      "source": "Source.PRODUCT_SELECTION_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:701",
+      "properties": [
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productType"
+        }
+      ]
+    },
+    {
+      "name": "product selection activity open",
+      "component": "ProductSelectionComponent",
+      "stage": "Product Selection",
+      "source": "Source.PRODUCT_SELECTION_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:1454",
+      "properties": []
+    },
+    {
+      "name": "proof guidelines btn clicked",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Guidelines link tapped.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "proofs overview screen open",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Proof overview screen open event that automatically appends flow and isSuperPass.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "recent product event in product selection activity",
+      "component": "ProductSelectionComponent",
+      "stage": "Product Selection",
+      "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:264",
+      "properties": [
+        {
+          "property": "recent product mticket clicked"
+        }
+      ]
+    },
+    {
+      "name": "recent product super pass clicked",
+      "component": "ProductSelectionComponent",
+      "stage": "Product Selection",
+      "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:247",
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productSubType"
+        }
+      ]
+    },
+    {
+      "name": "renew error dialog shown",
+      "component": "ProductSelectionComponent",
+      "stage": "Product Selection",
+      "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:1467",
+      "properties": []
+    },
+    {
+      "name": "report problem clicked v2",
+      "component": "SuperPassPurchaseSharedViewModel",
+      "stage": "Global",
+      "source": "Source.MPASS_PURCHASE_ACTIVITY",
+      "description": "Raised whenever the user taps the report problem hook; includes the flow token.",
+      "properties": [
+        {
+          "property": "type",
+          "context": "pass_verification_problems"
+        },
+        {
+          "property": "problemSource",
+          "context": "src_mPassPurchaseActivity"
+        },
+        {
+          "property": "flow"
+        }
+      ]
+    },
+    {
+      "name": "sample proof image zoomed",
+      "component": "SuperPassUserProofUploadViewModel",
+      "stage": "Proof upload",
+      "source": "userProofUploadFragment",
+      "description": "Zoomed placeholder image with the URL logged.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "url"
+        }
+      ]
+    },
+    {
+      "name": "smart passenger selection screen open",
+      "component": "SuperPassPassengerSelectionViewModel",
+      "stage": "Passenger selection",
+      "source": "",
+      "description": "Smart passenger selection screen fires with the list size.",
+      "properties": [
+        {
+          "property": "smartPassengerList size"
+        }
+      ]
+    },
+    {
+      "name": "smartPassengerSelection screen new passenger selected",
+      "component": "SuperPassPassengerSelectionViewModel",
+      "stage": "Passenger selection",
+      "source": "",
+      "description": "User taps the new passenger card; no additional property is emitted.",
+      "properties": []
+    },
+    {
+      "name": "smartPassengerSelection screen passenger selected",
+      "component": "SuperPassPassengerSelectionViewModel",
+      "stage": "Passenger selection",
+      "source": "",
+      "description": "Existing passenger selection includes renew flow conversion flag and passenger metadata added via addSuperPassUserDetailsToEvent.",
+      "properties": [
+        {
+          "property": "isConvertedToRenewFlow"
+        },
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "dateOfBirth"
+        },
+        {
+          "property": "gender"
+        },
+        {
+          "property": "mobileNumber"
+        },
+        {
+          "property": "userId"
+        },
+        {
+          "property": "dobInMillis"
+        },
+        {
+          "property": "emailId"
+        }
+      ]
+    },
+    {
+      "name": "subCategory selected",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:725",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "selected subCategory"
+        }
+      ]
+    },
+    {
+      "name": "subCategory selection screen opened",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:713",
+      "properties": [
+        {
+          "property": "configId"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "super pass fetched",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/validation/superpass/SuperPassValidationAnalyticsManager.kt:71",
+      "properties": []
+    },
+    {
+      "name": "superPass enter user name next clicked",
+      "component": "SuperPassEnterUserDetailsViewModel",
+      "stage": "User details",
+      "source": "superPassEnterUserNameFragment",
+      "description": "Name-only event includes the full name, the source it came from, and flow metadata.",
+      "properties": [
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "coming from source"
+        },
+        {
+          "property": "flow"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "superPass enter user name screen open",
+      "component": "SuperPassEnterUserDetailsViewModel",
+      "stage": "User details",
+      "source": "superPassUserDetailsManager.state.value.source",
+      "description": "Name-only or edit flow opens when only the name is needed.",
+      "properties": []
+    },
+    {
+      "name": "superPass receipt payload",
+      "component": "SuperPassProductValidationConfig",
+      "stage": "Misc",
+      "source": "this::class.simpleName ?: \"SuperPassProductValidationConfig\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/validation/superpass/SuperPassProductValidationConfig.kt:158",
+      "properties": [
+        {
+          "property": "payload"
+        }
+      ]
+    },
+    {
+      "name": "superPass trip receipt history fetch failed",
+      "component": "DigitalTripReceiptRepository",
+      "stage": "Misc",
+      "source": "Source.NONE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:305",
+      "properties": [
+        {
+          "property": "error message"
+        }
+      ]
+    },
+    {
+      "name": "superPass trip receipt history fetched",
+      "component": "DigitalTripReceiptRepository",
+      "stage": "Misc",
+      "source": "Source.NONE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:292",
+      "properties": []
+    },
+    {
+      "name": "superPass verification status back btn clicked",
+      "component": "SuperPassVerificationStatusComponent",
+      "stage": "Verification status",
+      "source": "dataState.value.source",
+      "description": "Back navigation from the verification status screen with the same property set.",
+      "properties": [
+        {
+          "property": "passengerType"
+        },
+        {
+          "property": "fareMappingId"
+        },
+        {
+          "property": "productId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "superPassPurchase startDestination assigned",
+      "component": "SuperPassPurchaseSharedViewModel",
+      "stage": "Entry",
+      "source": "Source.SUPER_PASS_PURCHASE_SHARED_COMPONENT",
+      "description": "Records which screen the flow started on (confirmation, user details, passenger selection, proof overview, or not available).",
+      "properties": [
+        {
+          "property": "start destination",
+          "context": "Mapped from SuperPassPurchaseArgs."
+        }
+      ]
+    },
+    {
+      "name": "superPassPurchaseActivity open",
+      "component": "SuperPassPurchaseSharedViewModel",
+      "stage": "Entry",
+      "source": "Derived from initialState.source (various Source constants).",
+      "description": "Raised when the shared view model finalizes its initial state and announces the purchase flow.",
+      "properties": [
+        {
+          "property": "flow",
+          "context": "initialState.purchaseFlowType"
+        }
+      ],
+      "notes": "sendToPlotline is true for this event."
+    },
+    {
+      "name": "sync mTicket activation timeStamp with backend",
+      "component": "DigitalTripReceiptFeature",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/features/DigitalTripReceiptFeature.kt:170",
+      "properties": []
+    },
+    {
+      "name": "sync superPass activation timeStamp with backend",
+      "component": "DigitalTripReceiptFeature",
+      "stage": "Misc",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/features/DigitalTripReceiptFeature.kt:148",
+      "properties": []
+    },
+    {
+      "name": "upload proof button clicked",
+      "component": "SuperPassUserProofUploadViewModel",
+      "stage": "Proof upload",
+      "source": "userProofUploadFragment",
+      "description": "Upload button tapped before permission guard.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "uploaded proof zoomed",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Logs proof zoom and whether it was a rejected image.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "isRejectedProofImage"
+        }
+      ]
+    },
+    {
+      "name": "userProofsOverview next clicked",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Next button tapped; helper redundantly adds flow again.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "userProofsOverview reapply clicked",
+      "component": "SuperPassProofOverviewViewModel",
+      "stage": "Proof overview",
+      "source": "userProofOverviewFragment",
+      "description": "Reapply CTA tapped.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": []
+    },
+    {
+      "name": "watch tutorial video clicked",
+      "component": "SuperPassUserProofUploadViewModel",
+      "stage": "Proof upload",
+      "source": "userProofUploadFragment",
+      "description": "Tutorial link clicked with the URL logged.",
+      "autoProperties": [
+        "flow",
+        "isSuperPass"
+      ],
+      "properties": [
+        {
+          "property": "url"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Shared entry",
+        "events": [
+          "superPassPurchaseActivity open",
+          "superPassPurchase startDestination assigned"
+        ],
+        "next": "Confirm screen"
+      },
+      {
+        "label": "Confirm & payment",
+        "events": [
+          "confirm payment screen open",
+          "make payment clicked",
+          "mPass order created",
+          "mPass order creation failed"
+        ],
+        "next": "Proof + verification"
+      },
+      {
+        "label": "Proof / verification branch",
+        "events": [
+          "proofs overview screen open",
+          "userProofsOverview next clicked",
+          "application submit success"
+        ],
+        "next": "Verification status"
+      },
+      {
+        "label": "Verification status",
+        "events": [
+          "mPass verification status activity open"
+        ],
+        "next": "Booking success"
+      },
+      {
+        "label": "Booking success",
+        "events": [
+          "booking success screen open",
+          "booking success use now clicked"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "book pass screen opened",
+          "duration selection",
+          "page selected",
+          "pass details selected",
+          "pass selection screen opened",
+          "product activation pass punch sync failed",
+          "product activation sync exception occurred",
+          "product activation sync failed",
+          "subCategory selected",
+          "subCategory selection screen opened",
+          "super pass fetched",
+          "superPass receipt payload",
+          "superPass trip receipt history fetch failed",
+          "superPass trip receipt history fetched",
+          "sync mTicket activation timeStamp with backend",
+          "sync superPass activation timeStamp with backend"
+        ]
+      },
+      {
+        "label": "Additional events: Product Selection",
+        "events": [
+          "configuration fetched"
+        ]
+      },
+      {
+        "label": "Additional events: Product Selection",
+        "events": [
+          "product selected"
+        ]
+      },
+      {
+        "label": "Additional events: Product Selection",
+        "events": [
+          "product selection activity open"
+        ]
+      },
+      {
+        "label": "Additional events: Product Selection",
+        "events": [
+          "recent product event in product selection activity"
+        ]
+      },
+      {
+        "label": "Additional events: Product Selection",
+        "events": [
+          "recent product super pass clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Product Selection",
+        "events": [
+          "renew error dialog shown"
+        ]
+      }
+    ],
+    "notes": "Cash-specific events (open super pass cash payment web page) and passenger/proof subflows sit inside the main steps; report problem clicked v2 and agency not available for purchase represent global/edge paths."
+  }
+}

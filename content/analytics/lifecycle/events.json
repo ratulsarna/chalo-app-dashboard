@@ -1,0 +1,862 @@
+{
+  "flowId": "lifecycle",
+  "flowName": "App Lifecycle",
+  "description": "App-level lifecycle events - app launch, splash screen, force updates, app ratings, app sharing, and terms acceptance. These are not product-specific.",
+  "propertyDefinitions": {
+    "isChaloConfigMigrated": {
+      "type": "boolean",
+      "description": "Hardcoded `true` indicating that config has been migrated. Legacy property from old config system."
+    },
+    "src": {
+      "type": "string",
+      "description": "Source of the app open event, always `onboarding` for lifecycle flow.",
+      "values": [
+        "onboarding"
+      ]
+    },
+    "current app version": {
+      "type": "string",
+      "description": "Current app version code as a string."
+    },
+    "previous app version": {
+      "type": "string",
+      "description": "Previous app version code before update."
+    },
+    "difference": {
+      "type": "number",
+      "description": "Time difference in milliseconds between ChaloTime server time and system time."
+    },
+    "appSessionCount": {
+      "type": "number",
+      "description": "Cumulative count of app sessions. Incremented on each app open. Used to determine when to show boost ratings."
+    },
+    "source": {
+      "type": "string",
+      "description": "Source screen or context from which the event was triggered. Common values: `splash screen`, `home screen tab`, `force app update`.",
+      "values": [
+        "splash screen",
+        "home screen tab",
+        "force app update"
+      ]
+    },
+    "isForceUpdate": {
+      "type": "boolean",
+      "description": "True if the update is a forced update (blocking), false if it's recommended (dismissible)."
+    },
+    "force app update launch failure reason": {
+      "type": "string",
+      "description": "Error message when launching the Play Store from force update screen fails."
+    },
+    "city": {
+      "type": "string",
+      "description": "City display name for city discontinued flow."
+    },
+    "requireHistoryCall": {
+      "type": "boolean",
+      "description": "Whether history API call is required for app migration flow."
+    },
+    "attempt": {
+      "type": "number",
+      "description": "Retry attempt number for app migration history call."
+    },
+    "error message": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "activationInfo": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "lastRideInfo": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "url": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "experimentId": {
+      "type": "string",
+      "description": "Experiment identifier for AB test exposure events."
+    },
+    "variant": {
+      "type": "string",
+      "description": "Experiment variant for AB test exposure events."
+    }
+  },
+  "eventGroups": {
+    "app_launch": {
+      "name": "App Launch & Session",
+      "description": "Events fired on app launch, session tracking, and initial screen rendering.",
+      "events": [
+        {
+          "name": "app open",
+          "when": "Fired once per session when the app is opened. Triggered in `FireAppOpenEventIfRequiredUseCase` before any navigation.",
+          "source": "Variable (usually empty or `onboarding`)",
+          "properties": [
+            "isChaloConfigMigrated",
+            "src"
+          ],
+          "frequency": "Always (once per session)",
+          "sentToPlotline": true,
+          "files": [
+            "shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:42-51"
+          ],
+          "notes": [
+            "Triggers increment of appSessionCount",
+            "Also triggers chaloTime availability check and app update check"
+          ]
+        },
+        {
+          "name": "first screen open",
+          "when": "Fired once per session when the splash screen component initializes.",
+          "source": "Empty string",
+          "properties": [],
+          "frequency": "Once (per session)",
+          "files": [
+            "shared/onboarding/src/commonMain/kotlin/app/chalo/onboarding/splash/SplashScreenComponent.kt:297-302"
+          ],
+          "notes": [
+            "Fired using AnalyticsFrequency.Once",
+            "Distinct from 'app open' - this is splash-screen specific"
+          ]
+        },
+        {
+          "name": "new home screen rendered",
+          "when": "Fired when navigating to the new home screen from splash (if city is available and not discontinued, and no migration required).",
+          "source": "Empty string",
+          "properties": [],
+          "files": [
+            "shared/onboarding/src/commonMain/kotlin/app/chalo/onboarding/splash/SplashScreenComponent.kt:240-243"
+          ],
+          "notes": [
+            "Fired immediately before navigating to HomeArgs",
+            "Always fired alongside 'tab based homescreen rendered'"
+          ]
+        },
+        {
+          "name": "tab based homescreen rendered",
+          "when": "Fired when navigating to the tab-based home screen from splash (if city is available and not discontinued, and no migration required).",
+          "source": "Empty string",
+          "properties": [],
+          "files": [
+            "shared/onboarding/src/commonMain/kotlin/app/chalo/onboarding/splash/SplashScreenComponent.kt:244-247"
+          ],
+          "notes": [
+            "Fired immediately before navigating to HomeArgs",
+            "Always fired alongside 'new home screen rendered'"
+          ]
+        },
+        {
+          "name": "chalo app updated or installed",
+          "when": "Fired on fresh install when there's no cached app version.",
+          "source": "Variable (usually `splash screen`)",
+          "properties": [
+            "current app version"
+          ],
+          "files": [
+            "shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:98-106"
+          ],
+          "notes": [
+            "Fired only on fresh install (no cachedAppVersion)",
+            "Sets install status to FRESH_INSTALL in data store"
+          ]
+        },
+        {
+          "name": "chalo app updated",
+          "when": "Fired when the current app version differs from the cached version (app was updated).",
+          "source": "`splash screen`",
+          "properties": [
+            "previous app version",
+            "current app version"
+          ],
+          "files": [
+            "shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:111-121"
+          ],
+          "notes": [
+            "Fired after checking if currentAppVersion != cachedAppVersion",
+            "Fired in addition to 'app open' event"
+          ]
+        },
+        {
+          "name": "chaloTime available",
+          "when": "Fired when ChaloTime (server-synced time) is successfully fetched and available.",
+          "source": "Variable (usually empty or from source parameter)",
+          "properties": [
+            "difference"
+          ],
+          "files": [
+            "shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:70-81"
+          ],
+          "notes": [
+            "difference = chaloTime - systemTime (in milliseconds)",
+            "Helps track time synchronization accuracy"
+          ]
+        },
+        {
+          "name": "chaloTime not available",
+          "when": "Fired when ChaloTime is not available or failed to fetch.",
+          "source": "`splash screen`",
+          "properties": [],
+          "files": [
+            "shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:82-87"
+          ]
+        }
+      ]
+    },
+    "force_update": {
+      "name": "Force App Update",
+      "description": "Events related to the force/recommended update dialog when the app version is outdated.",
+      "events": [
+        {
+          "name": "app update screen shown",
+          "when": "Fired when the force/recommended app update screen is displayed.",
+          "source": "`force app update`",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:120-123"
+          ],
+          "notes": [
+            "Fired on component initialization",
+            "Can be either FORCE_UPDATE or RECOMMENDED_UPDATE type"
+          ]
+        },
+        {
+          "name": "app update button clicked",
+          "when": "Fired when the user taps the update button to go to Play Store.",
+          "source": "`force app update`",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:64-67"
+          ],
+          "notes": [
+            "Triggers opening of Play Store via systemHelper.openStoreApp()"
+          ]
+        },
+        {
+          "name": "app update postponed",
+          "when": "Fired when the user taps 'Remind Later' on a recommended update dialog.",
+          "source": "`force app update`",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:92-95"
+          ],
+          "notes": [
+            "Only available for RECOMMENDED_UPDATE type",
+            "Dismisses the update dialog"
+          ]
+        },
+        {
+          "name": "force app update back pressed",
+          "when": "Fired when the back button is pressed on the update screen.",
+          "source": "`force app update`",
+          "properties": [
+            "isForceUpdate"
+          ],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:100-109"
+          ],
+          "notes": [
+            "If isForceUpdate=true, back press is ignored (blocking)",
+            "If isForceUpdate=false, dialog is dismissed"
+          ]
+        },
+        {
+          "name": "force app update failed to launch store app",
+          "when": "Fired when attempting to open the Play Store fails with an error.",
+          "source": "`force app update`",
+          "properties": [
+            "force app update launch failure reason"
+          ],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:75-81"
+          ],
+          "notes": [
+            "Triggered by ChaloUseCaseResult.Failure from systemHelper.openStoreApp()",
+            "Shows error toast to user"
+          ]
+        }
+      ]
+    },
+    "app_ratings": {
+      "name": "App Ratings (Boost Ratings)",
+      "description": "Events for the boost ratings feature that prompts loyal users to rate the app on Play Store.",
+      "events": [
+        {
+          "name": "boost ratings BottomSheet rendered",
+          "when": "Fired when the boost ratings bottom sheet is shown to a loyal user.",
+          "source": "`home screen tab`",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1558-1561"
+          ],
+          "notes": [
+            "Shown only to loyal users (based on session count or transaction count)",
+            "Checks: not asked before, no pending reminders, city not in disabled list",
+            "Session threshold and transaction threshold are configurable via Firebase"
+          ]
+        },
+        {
+          "name": "boost ratings rate button clicked",
+          "when": "Fired when the user taps the positive button ('Rate Now') on the boost ratings bottom sheet.",
+          "source": "`home screen tab`",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1053-1056"
+          ],
+          "notes": [
+            "Marks boost ratings as asked (won't show again)",
+            "Triggers in-app rating flow or redirects to Play Store"
+          ]
+        },
+        {
+          "name": "boost ratings remind later clicked",
+          "when": "Fired when the user taps the negative button ('Remind Later') on the boost ratings bottom sheet.",
+          "source": "`home screen tab`",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1110-1113"
+          ],
+          "notes": [
+            "Sets a reminder timestamp",
+            "Won't show again until reminder duration expires (configurable)"
+          ]
+        },
+        {
+          "name": "in app ratings opened successfully",
+          "when": "Fired when the Google Play In-App Review API successfully opens the rating dialog.",
+          "source": "`home screen tab` (or other sources)",
+          "properties": [],
+          "files": [
+            "shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:52-56"
+          ],
+          "notes": [
+            "Android-only (uses Google Play Core library)",
+            "Triggered by ReviewManager.requestReviewFlow() success"
+          ]
+        },
+        {
+          "name": "in app ratings failed",
+          "when": "Fired when the Google Play In-App Review API fails to open.",
+          "source": "`home screen tab` (or other sources)",
+          "properties": [],
+          "files": [
+            "shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:62-66"
+          ],
+          "notes": [
+            "Falls back to Play Store redirect on failure",
+            "Android-only"
+          ]
+        },
+        {
+          "name": "in app ratings turned off",
+          "when": "Fired when in-app ratings feature is disabled via Firebase config, redirecting to Play Store instead.",
+          "source": "`home screen tab` (or other sources)",
+          "properties": [],
+          "files": [
+            "shared/home/src/commonMain/kotlin/app/chalo/home/manager/AppRatingProcessSkeleton.kt:24-28"
+          ],
+          "notes": [
+            "Controlled by Firebase flag SHOULD_TURN_OFF_IN_APP_RATING",
+            "Common platform code (not Android-specific)"
+          ]
+        },
+        {
+          "name": "redirected to play store",
+          "when": "Fired when the user is redirected to the Play Store for rating/updating the app.",
+          "source": "`home screen tab` (or other sources)",
+          "properties": [],
+          "files": [
+            "shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:87-91"
+          ],
+          "notes": [
+            "Fallback when in-app rating fails or is turned off",
+            "Also used for app update flows"
+          ]
+        }
+      ]
+    },
+    "city_discontinued": {
+      "name": "City Discontinued",
+      "description": "Events when a user's selected city is discontinued and they need to change cities.",
+      "events": [
+        {
+          "name": "city discontinued screen displayed",
+          "when": "Fired when the city discontinued screen is shown (city is marked as discontinued in config).",
+          "source": "Variable",
+          "properties": [
+            "city"
+          ],
+          "notes": [
+            "Triggered from splash screen when isCityDiscontinued=true",
+            "User must change city to continue using the app"
+          ]
+        },
+        {
+          "name": "city discontinued change city clicked",
+          "when": "Fired when the user taps the 'Change City' button on the city discontinued screen.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "Navigates to city selection screen"
+          ]
+        }
+      ]
+    },
+    "app_migration": {
+      "name": "App Migration",
+      "description": "Events for the mandatory first history call flow (app migration preconditions).",
+      "events": [
+        {
+          "name": "app migration screen opened",
+          "when": "Fired when the app migration preconditions screen is displayed (mandatory first history call required).",
+          "source": "Variable",
+          "properties": [
+            "requireHistoryCall"
+          ],
+          "notes": [
+            "Shown before home screen if mandatoryFirstHistoryCallGuard returns true",
+            "Ensures booking history is synced before user can proceed"
+          ]
+        },
+        {
+          "name": "app migration history call failed",
+          "when": "Fired when the history sync API call fails during app migration.",
+          "source": "Variable",
+          "properties": [
+            "attempt"
+          ],
+          "notes": [
+            "User can retry the call",
+            "Attempt number is tracked"
+          ]
+        },
+        {
+          "name": "app migration retry clicked",
+          "when": "Fired when the user taps the retry button after a failed history call.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "Retries the history sync API call"
+          ]
+        },
+        {
+          "name": "app migration history call success",
+          "when": "Fired when the history sync API call succeeds during app migration.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "Allows user to proceed to home screen",
+            "Migration guard is satisfied"
+          ]
+        }
+      ]
+    },
+    "app_sharing": {
+      "name": "App Sharing",
+      "description": "Event for sharing/inviting via the app.",
+      "events": [
+        {
+          "name": "invite",
+          "when": "Fired when the user shares/invites someone to use the Chalo app.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "General app sharing event",
+            "May be triggered from multiple entry points"
+          ]
+        }
+      ]
+    },
+    "terms_acceptance": {
+      "name": "Terms & Conditions",
+      "description": "Events for terms and conditions acceptance dialog.",
+      "events": [
+        {
+          "name": "terms and conditions open",
+          "when": "Fired when the terms and conditions dialog is displayed.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "User must accept terms to proceed",
+            "Different from DPDPA consent flow"
+          ]
+        },
+        {
+          "name": "terms cancel",
+          "when": "Fired when the user cancels/dismisses the terms dialog.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "User rejected terms"
+          ]
+        },
+        {
+          "name": "terms accept",
+          "when": "Fired when the user accepts the terms and conditions.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "User accepted terms"
+          ]
+        },
+        {
+          "name": "terms and conditions clicked",
+          "when": "Fired when the user taps on a 'Terms and Conditions' link/button.",
+          "source": "Variable",
+          "properties": [],
+          "notes": [
+            "Opens terms document or dialog"
+          ]
+        }
+      ]
+    }
+  },
+  "events": [
+    {
+      "name": "AppRatingProcessManager not setup",
+      "component": "AppRatingProcessManager",
+      "stage": "Misc",
+      "source": "\"DefaultManager\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.kt:58",
+      "properties": []
+    },
+    {
+      "name": "app migration history call failed",
+      "component": "AppMigrationPreconditionsComponent",
+      "stage": "Misc",
+      "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:311",
+      "properties": [
+        {
+          "property": "attempt"
+        },
+        {
+          "property": "error message"
+        }
+      ]
+    },
+    {
+      "name": "app migration history call success",
+      "component": "AppMigrationPreconditionsComponent",
+      "stage": "Misc",
+      "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:258",
+      "properties": [
+        {
+          "property": "attempt"
+        },
+        {
+          "property": "requireHistoryCall"
+        }
+      ]
+    },
+    {
+      "name": "app migration kv to db result",
+      "component": "AppMigrationPreconditionsComponent",
+      "stage": "Misc",
+      "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:240",
+      "properties": [
+        {
+          "property": "activationInfo"
+        },
+        {
+          "property": "lastRideInfo"
+        }
+      ]
+    },
+    {
+      "name": "app migration retry clicked",
+      "component": "AppMigrationPreconditionsComponent",
+      "stage": "Misc",
+      "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:216",
+      "properties": []
+    },
+    {
+      "name": "app migration screen opened",
+      "component": "AppMigrationPreconditionsComponent",
+      "stage": "Misc",
+      "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:87",
+      "properties": []
+    },
+    {
+      "name": "app play store open failed",
+      "component": "AppRatingProcessManager.ios",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/iosMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.ios.kt:61",
+      "properties": [
+        {
+          "property": "url"
+        }
+      ]
+    },
+    {
+      "name": "root detected",
+      "component": "MainActivity",
+      "stage": "Security",
+      "source": "Source.SPLASH_SCREEN",
+      "description": "Device root detected during app start; app shows a toast and exits.",
+      "properties": []
+    },
+    {
+      "name": "app update button clicked",
+      "component": "ForceAppUpdateComponent",
+      "stage": "Misc",
+      "source": "Source.FORCE_APP_UPDATE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:64",
+      "properties": []
+    },
+    {
+      "name": "app update postponed",
+      "component": "ForceAppUpdateComponent",
+      "stage": "Misc",
+      "source": "Source.FORCE_APP_UPDATE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:92",
+      "properties": []
+    },
+    {
+      "name": "app update screen shown",
+      "component": "ForceAppUpdateComponent",
+      "stage": "Misc",
+      "source": "Source.FORCE_APP_UPDATE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:120",
+      "properties": []
+    },
+    {
+      "name": "chalo app updated",
+      "component": "FireAppOpenEventIfRequiredUseCase",
+      "stage": "App Open",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:113",
+      "properties": [
+        {
+          "property": "current app version"
+        }
+      ]
+    },
+    {
+      "name": "chalo app updated or installed",
+      "component": "FireAppOpenEventIfRequiredUseCase",
+      "stage": "App Open",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:100",
+      "properties": [
+        {
+          "property": "current app version"
+        }
+      ]
+    },
+    {
+      "name": "chaloTime available",
+      "component": "FireAppOpenEventIfRequiredUseCase",
+      "stage": "App Open",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:75",
+      "properties": [
+        {
+          "property": "difference"
+        }
+      ]
+    },
+    {
+      "name": "chaloTime not available",
+      "component": "FireAppOpenEventIfRequiredUseCase",
+      "stage": "App Open",
+      "source": "Source.SPLASH_SCREEN",
+      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:83",
+      "properties": []
+    },
+    {
+      "name": "force app update back pressed",
+      "component": "ForceAppUpdateComponent",
+      "stage": "Misc",
+      "source": "Source.FORCE_APP_UPDATE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:103",
+      "properties": [
+        {
+          "property": "isForceUpdate"
+        }
+      ]
+    },
+    {
+      "name": "force app update failed to launch store app",
+      "component": "ForceAppUpdateComponent",
+      "stage": "Misc",
+      "source": "Source.FORCE_APP_UPDATE",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:75",
+      "properties": [
+        {
+          "property": "force app update launch failure reason"
+        }
+      ]
+    },
+    {
+      "name": "in app ratings failed",
+      "component": "AppRatingProcessManager.android",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:62",
+      "properties": []
+    },
+    {
+      "name": "in app ratings opened successfully",
+      "component": "AppRatingProcessManager.android",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:52",
+      "properties": []
+    },
+    {
+      "name": "in app ratings turned off",
+      "component": "AppRatingProcessSkeleton",
+      "stage": "Ratings",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/manager/AppRatingProcessSkeleton.kt:24",
+      "properties": []
+    },
+    {
+      "name": "redirected to play store",
+      "component": "AppRatingProcessManager.android",
+      "stage": "Misc",
+      "source": "source",
+      "description": "Auto-documented from code callsite: shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:87",
+      "properties": []
+    },
+    {
+      "name": "Exp: {experimentName}",
+      "namePattern": "Exp: {experimentName}",
+      "component": "ABTestAnalyticsEventHandler / IsLocationMandatoryForUserUseCase",
+      "stage": "Experimentation",
+      "source": "Varies (passed by caller as a string sourceName)",
+      "description": "AB experiment exposure event family. The emitted event name is dynamically composed as `Exp: ` + experimentName (for example: `Exp: locationMandatory`).",
+      "properties": [
+        {
+          "property": "variant"
+        },
+        {
+          "property": "experimentId"
+        }
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "AppRatingProcessManager not setup",
+        "app migration history call failed",
+        "app migration history call success",
+        "app migration kv to db result",
+        "app migration retry clicked",
+        "app migration screen opened",
+        "app play store open failed",
+        "app update button clicked",
+        "app update postponed",
+        "app update screen shown",
+        "force app update back pressed",
+        "force app update failed to launch store app",
+        "in app ratings failed",
+        "in app ratings opened successfully",
+        "redirected to play store"
+      ]
+    },
+    {
+      "name": "App Open",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "chalo app updated",
+        "chalo app updated or installed",
+        "chaloTime available",
+        "chaloTime not available"
+      ]
+    },
+    {
+      "name": "Ratings",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "in app ratings turned off"
+      ]
+    },
+    {
+      "name": "Experimentation",
+      "description": "AB experiment exposure events emitted as a dynamic event-name family.",
+      "events": [
+        "Exp: {experimentName}"
+      ]
+    },
+    {
+      "name": "Security",
+      "description": "Device integrity checks performed during app start.",
+      "events": [
+        "root detected"
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "AppRatingProcessManager not setup",
+          "app migration history call failed",
+          "app migration history call success",
+          "app migration kv to db result",
+          "app migration retry clicked",
+          "app migration screen opened",
+          "app play store open failed",
+          "root detected",
+          "app update button clicked",
+          "app update postponed",
+          "app update screen shown",
+          "force app update back pressed",
+          "force app update failed to launch store app",
+          "in app ratings failed",
+          "in app ratings opened successfully",
+          "redirected to play store"
+        ]
+      },
+      {
+        "label": "Additional events: App Open",
+        "events": [
+          "chalo app updated"
+        ]
+      },
+      {
+        "label": "Additional events: App Open",
+        "events": [
+          "chalo app updated or installed"
+        ]
+      },
+      {
+        "label": "Additional events: App Open",
+        "events": [
+          "chaloTime available"
+        ]
+      },
+      {
+        "label": "Additional events: App Open",
+        "events": [
+          "chaloTime not available"
+        ]
+      },
+      {
+        "label": "Additional events: Ratings",
+        "events": [
+          "in app ratings turned off"
+        ]
+      },
+      {
+        "label": "Additional events: Experimentation",
+        "events": [
+          "Exp: {experimentName}"
+        ]
+      }
+    ]
+  }
+}

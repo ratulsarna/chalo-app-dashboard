@@ -1,0 +1,707 @@
+{
+  "flowId": "onboarding",
+  "flowName": "Onboarding",
+  "description": "Complete analytics map for the user onboarding journey, including splash screen, language selection, city selection (both old and new flows), and city discontinued handling.",
+  "propertyDefinitions": {
+    "source": {
+      "type": "string",
+      "description": "Screen or context where the event occurred. Typically Source enum values like 'Source.SPLASH_SCREEN', 'Source.LANGUAGE_SELECTION', 'Source.CITY_SELECTION_SCREEN', etc."
+    },
+    "previousScreenSource": {
+      "type": "string",
+      "description": "Navigation origin point - the source of the screen that triggered navigation to the current screen."
+    },
+    "locale": {
+      "type": "string",
+      "description": "Selected language locale code (e.g., 'en' for English, 'hi' for Hindi).",
+      "values": [
+        "en",
+        "hi",
+        "kn",
+        "mr",
+        "ta",
+        "te",
+        "bn",
+        "gu"
+      ]
+    },
+    "language": {
+      "type": "string",
+      "description": "Language locale code when language is changed.",
+      "values": [
+        "en",
+        "hi",
+        "kn",
+        "mr",
+        "ta",
+        "te",
+        "bn",
+        "gu"
+      ]
+    },
+    "city": {
+      "type": "string",
+      "description": "City name or city ID selected by the user or fetched from location."
+    },
+    "desc": {
+      "type": "string",
+      "description": "Description text associated with city selection."
+    },
+    "selectedby": {
+      "type": "string",
+      "description": "Indicates how the city was selected.",
+      "values": [
+        "user",
+        "location",
+        "auto"
+      ]
+    },
+    "element": {
+      "type": "string",
+      "description": "Element identifier for permission popup.",
+      "values": [
+        "tutorial_location"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Error reason when city fetch from location fails.",
+      "values": [
+        "CityIdNotAvailable",
+        "CityMetaDataFetchError",
+        "NetworkError",
+        "LocationUnavailable"
+      ]
+    },
+    "deviceId": {
+      "type": "string",
+      "description": "Unique device identifier set as user property."
+    },
+    "isNotifPermGranted": {
+      "type": "boolean",
+      "description": "Whether notification permission is granted - set as user property."
+    },
+    "migrationRequired": {
+      "type": "boolean",
+      "description": "Whether app migration is required - set as user property."
+    },
+    "firstSeen": {
+      "type": "string",
+      "description": "Installation date/time - set as user property on first app open."
+    },
+    "result denied": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Splash Screen",
+      "description": "Initial app launch and initialization events.",
+      "events": [
+        "first screen open",
+        "app open",
+        "new home screen rendered",
+        "tab based homescreen rendered"
+      ]
+    },
+    {
+      "name": "Language Selection",
+      "description": "Language selection during onboarding.",
+      "events": [
+        "language selection screen displayed",
+        "language screen continue clicked",
+        "language changed"
+      ]
+    },
+    {
+      "name": "City Selection (Old Flow)",
+      "description": "Legacy city selection flow events.",
+      "events": [
+        "city selection screen displayed",
+        "city selection search icon clicked",
+        "city selected",
+        "permission_popup"
+      ]
+    },
+    {
+      "name": "City Location Selection (New Flow)",
+      "description": "Modern city selection flow with device location and manual entry options.",
+      "events": [
+        "city location selection screen opened",
+        "enable device location clicked",
+        "enter location manually clicked",
+        "retry city fetch clicked",
+        "change location clicked",
+        "explore chalo cities clicked",
+        "user refused location permission",
+        "user refused location permission via settings",
+        "user refused to turn gps on",
+        "city selected",
+        "city not serviceable screen",
+        "city fetch from location failed"
+      ]
+    },
+    {
+      "name": "City Discontinued",
+      "description": "Handling of discontinued cities.",
+      "events": [
+        "city discontinued screen displayed",
+        "city discontinued change city clicked"
+      ]
+    },
+    {
+      "name": "User Properties",
+      "description": "User properties set during onboarding (not events, but tracked attributes).",
+      "events": []
+    },
+    {
+      "name": "Location Disclaimer",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "go to settings btn clicked",
+        "location denied event",
+        "location disclaimer activity opened",
+        "location permission result event",
+        "location successfully enabled"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "app open",
+      "component": "SplashScreenComponent",
+      "stage": "Splash Screen",
+      "source": "(implicit)",
+      "description": "Increments app open count when splash screen becomes active. Tracked via analyticsContract.incrementAppOpen().",
+      "properties": []
+    },
+    {
+      "name": "change location clicked",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user clicks to change their location after a city has been detected.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "city discontinued change city clicked",
+      "component": "CityDiscontinuedComponent",
+      "stage": "City Discontinued",
+      "source": "Source.CITY_DISCONTINUED_SCREEN",
+      "description": "Raised when user clicks to change city from the discontinued city screen.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_DISCONTINUED_SCREEN"
+        }
+      ]
+    },
+    {
+      "name": "city discontinued screen displayed",
+      "component": "CityDiscontinuedComponent",
+      "stage": "City Discontinued",
+      "source": "Source.CITY_DISCONTINUED_SCREEN",
+      "description": "Raised when the city discontinued screen is displayed to the user.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_DISCONTINUED_SCREEN"
+        },
+        {
+          "property": "city",
+          "context": "Name of the discontinued city"
+        }
+      ]
+    },
+    {
+      "name": "city fetch from location failed",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when fetching city from user's location fails.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        },
+        {
+          "property": "reason",
+          "context": "Error type - CityIdNotAvailable, CityMetaDataFetchError, etc."
+        }
+      ]
+    },
+    {
+      "name": "city location selection screen opened",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when the new city location selection screen is opened.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From navigation args"
+        }
+      ]
+    },
+    {
+      "name": "city not serviceable screen",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when the detected city is not serviceable by Chalo.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "city selected",
+      "component": "CitySelectionComponent / CityLocationSelectionComponent",
+      "stage": "City Selection (Old Flow) / City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_FRAGMENT_SPACED / Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user selects a city. Used in both old and new city selection flows with different source values.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_FRAGMENT_SPACED (old) or Source.CITY_SELECTION_SCREEN (new)"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state (new flow only)"
+        },
+        {
+          "property": "city",
+          "context": "City name or city ID"
+        },
+        {
+          "property": "selectedby",
+          "context": "'user' (old flow) or omitted (new flow)"
+        },
+        {
+          "property": "desc",
+          "context": "City description (new flow only)"
+        }
+      ]
+    },
+    {
+      "name": "city selection screen displayed",
+      "component": "CitySelectionComponent",
+      "stage": "City Selection (Old Flow)",
+      "source": "Source.CITY_SELECTION_FRAGMENT",
+      "description": "Raised when the old city selection screen is displayed.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_FRAGMENT"
+        }
+      ]
+    },
+    {
+      "name": "city selection search icon clicked",
+      "component": "CitySelectionComponent",
+      "stage": "City Selection (Old Flow)",
+      "source": "Source.CITY_SELECTION_FRAGMENT",
+      "description": "Raised when user clicks the search icon in the old city selection screen.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_FRAGMENT"
+        }
+      ]
+    },
+    {
+      "name": "enable device location clicked",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user clicks the enable device location button.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "enter location manually clicked",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user clicks to enter location manually instead of using device location.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "explore chalo cities clicked",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user clicks to explore all available Chalo cities.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "first screen open",
+      "component": "SplashScreenComponent",
+      "stage": "Splash Screen",
+      "source": "(empty)",
+      "description": "Raised once per session when the splash screen is displayed for the first time.",
+      "properties": []
+    },
+    {
+      "name": "go to settings btn clicked",
+      "component": "LocationDisclaimerComponent",
+      "stage": "Location Disclaimer",
+      "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:179",
+      "properties": []
+    },
+    {
+      "name": "language changed",
+      "component": "LanguageSelectionComponent",
+      "stage": "Language Selection",
+      "source": "Source.LANGUAGE_SELECTION",
+      "description": "Raised when user changes the language selection.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.LANGUAGE_SELECTION"
+        },
+        {
+          "property": "language",
+          "context": "Language locale code"
+        }
+      ]
+    },
+    {
+      "name": "language screen continue clicked",
+      "component": "LanguageSelectionComponent",
+      "stage": "Language Selection",
+      "source": "Source.LANGUAGE_SELECTION",
+      "description": "Raised when user clicks continue after selecting a language.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.LANGUAGE_SELECTION"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        },
+        {
+          "property": "locale",
+          "context": "Selected language locale code"
+        }
+      ]
+    },
+    {
+      "name": "language selection screen displayed",
+      "component": "LanguageSelectionComponent",
+      "stage": "Language Selection",
+      "source": "Source.LANGUAGE_SELECTION",
+      "description": "Raised when the language selection screen is displayed to the user.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.LANGUAGE_SELECTION"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From navigation args"
+        }
+      ]
+    },
+    {
+      "name": "location denied event",
+      "component": "LocationDisclaimerComponent",
+      "stage": "Location Disclaimer",
+      "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:249",
+      "properties": [
+        {
+          "property": "result denied"
+        }
+      ]
+    },
+    {
+      "name": "location disclaimer activity opened",
+      "component": "LocationDisclaimerComponent",
+      "stage": "Location Disclaimer",
+      "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:143",
+      "properties": []
+    },
+    {
+      "name": "location permission result event",
+      "component": "LocationDisclaimerComponent",
+      "stage": "Location Disclaimer",
+      "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:299",
+      "properties": []
+    },
+    {
+      "name": "location successfully enabled",
+      "component": "LocationDisclaimerComponent",
+      "stage": "Location Disclaimer",
+      "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:208",
+      "properties": []
+    },
+    {
+      "name": "new home screen rendered",
+      "component": "SplashScreenComponent",
+      "stage": "Splash Screen",
+      "source": "(empty)",
+      "description": "Raised when navigating from splash screen to the new home screen after initialization.",
+      "properties": []
+    },
+    {
+      "name": "permission_popup",
+      "component": "CitySelectionComponent",
+      "stage": "City Selection (Old Flow)",
+      "source": "Source.CITY_SELECTION_FRAGMENT",
+      "description": "Raised when location permission popup is triggered in the old city selection flow.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_FRAGMENT"
+        },
+        {
+          "property": "element",
+          "context": "'tutorial_location'"
+        }
+      ]
+    },
+    {
+      "name": "retry city fetch clicked",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user clicks retry after city fetch fails.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "tab based homescreen rendered",
+      "component": "SplashScreenComponent",
+      "stage": "Splash Screen",
+      "source": "(empty)",
+      "description": "Raised when navigating from splash screen to the tab-based home screen.",
+      "properties": []
+    },
+    {
+      "name": "user refused location permission",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user refuses to grant location permission when requested.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "user refused location permission via settings",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user refuses to grant location permission via settings screen.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    },
+    {
+      "name": "user refused to turn gps on",
+      "component": "CityLocationSelectionComponent",
+      "stage": "City Location Selection (New Flow)",
+      "source": "Source.CITY_SELECTION_SCREEN",
+      "description": "Raised when user refuses to turn on GPS when prompted.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.CITY_SELECTION_SCREEN"
+        },
+        {
+          "property": "previousScreenSource",
+          "context": "From state"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "notes": [
+      "The onboarding flow has multiple entry points depending on user state: splash → language (if not set) → city selection (if not set) → home",
+      "City selection has two implementations: old flow (CitySelectionComponent) and new flow (CityLocationSelectionComponent)",
+      "User properties (deviceId, isNotifPermGranted, migrationRequired, firstSeen) are set during splash screen initialization but are not events"
+    ],
+    "steps": [
+      {
+        "label": "App Launch",
+        "events": [
+          "first screen open",
+          "app open"
+        ],
+        "next": "language_check"
+      },
+      {
+        "label": "Language Selection Check",
+        "events": [],
+        "next": "language_selection_or_login_check"
+      },
+      {
+        "label": "Language Selection Flow",
+        "events": [
+          "language selection screen displayed",
+          "language screen continue clicked",
+          "language changed"
+        ],
+        "next": "login_check"
+      },
+      {
+        "label": "Login Check",
+        "events": [],
+        "next": "city_status_or_selection"
+      },
+      {
+        "label": "City Selection Flow (New)",
+        "events": [
+          "city location selection screen opened",
+          "enable device location clicked",
+          "enter location manually clicked",
+          "user refused location permission",
+          "user refused location permission via settings",
+          "user refused to turn gps on",
+          "city fetch from location failed",
+          "retry city fetch clicked",
+          "change location clicked",
+          "explore chalo cities clicked",
+          "city not serviceable screen",
+          "city selected"
+        ],
+        "next": "home_screen"
+      },
+      {
+        "label": "City Selection Flow (Old)",
+        "events": [
+          "city selection screen displayed",
+          "city selection search icon clicked",
+          "permission_popup",
+          "city selected"
+        ],
+        "next": "home_screen"
+      },
+      {
+        "label": "City Discontinued Flow",
+        "events": [
+          "city discontinued screen displayed",
+          "city discontinued change city clicked"
+        ],
+        "next": "city_selection"
+      },
+      {
+        "label": "Home Screen",
+        "events": [
+          "new home screen rendered",
+          "tab based homescreen rendered"
+        ],
+        "next": "end"
+      },
+      {
+        "label": "Additional events: Location Disclaimer",
+        "events": [
+          "go to settings btn clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Location Disclaimer",
+        "events": [
+          "location denied event"
+        ]
+      },
+      {
+        "label": "Additional events: Location Disclaimer",
+        "events": [
+          "location disclaimer activity opened"
+        ]
+      },
+      {
+        "label": "Additional events: Location Disclaimer",
+        "events": [
+          "location permission result event"
+        ]
+      },
+      {
+        "label": "Additional events: Location Disclaimer",
+        "events": [
+          "location successfully enabled"
+        ]
+      }
+    ]
+  }
+}

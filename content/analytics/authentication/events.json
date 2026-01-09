@@ -1,0 +1,534 @@
+{
+  "flowId": "authentication",
+  "flowName": "Authentication & User Profile Management",
+  "description": "Complete analytics map for user authentication (login/logout) and profile management journey, including Truecaller integration, OTP verification, and profile editing.",
+  "propertyDefinitions": {
+    "countryCallingCode": {
+      "type": "string",
+      "description": "The country calling code selected for phone number-based login (e.g., +91 for India, +1 for US)."
+    },
+    "method": {
+      "type": "string",
+      "description": "Login/authentication method used by the user.",
+      "values": [
+        "otp",
+        "trueCaller"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Human-readable reason for failure events (login failed, Truecaller error, profile edit error, etc.)."
+    },
+    "otpRequestErrorMsg": {
+      "type": "string",
+      "description": "Specific error message when OTP request or resend fails."
+    },
+    "loggedOutSuccessfully": {
+      "type": "boolean",
+      "description": "True if logout completed successfully, false if it failed."
+    },
+    "is user profile deleted url opened": {
+      "type": "boolean",
+      "description": "True when the account deletion URL is successfully opened."
+    },
+    "initiallySelectedDate": {
+      "type": "string",
+      "description": "The date initially selected in the date picker when the user opens the DOB field."
+    },
+    "sessionLogout": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "url": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "userId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Login Screen",
+      "description": "Initial login screen where users can choose between phone number login or Truecaller authentication. Users can also skip login.",
+      "events": [
+        "login screen displayed",
+        "login truecaller uid fetch try",
+        "login truecaller uid fetch failed",
+        "login truecaller uid fetch success",
+        "truecaller bottomsheet rendered for login",
+        "truecaller error callback",
+        "continue with truecaller clicked",
+        "login continue btn clicked",
+        "login skip btn clicked",
+        "otp sent",
+        "login otp request failed",
+        "login successful",
+        "login failed"
+      ]
+    },
+    {
+      "name": "OTP Verification",
+      "description": "OTP entry screen where users enter the verification code sent to their phone. Users can resend OTP if needed.",
+      "events": [
+        "otp entered",
+        "resend otp button clicked",
+        "otp resent",
+        "resend otp request failed",
+        "login successful",
+        "login failed"
+      ]
+    },
+    {
+      "name": "User Profile Display",
+      "description": "User profile screen showing user details with options to edit, logout, or delete account.",
+      "events": [
+        "user profile screen refreshed",
+        "user profile edit clicked",
+        "user profile logout clicked",
+        "user profile logout result",
+        "user profile delete clicked",
+        "user profile delete web url opened"
+      ]
+    },
+    {
+      "name": "User Profile Edit",
+      "description": "Profile editing screen where users can update their name, photo, gender, date of birth, and other personal details.",
+      "events": [
+        "user profile edit screen displayed",
+        "user profile edit photo clicked",
+        "user profile photo changed",
+        "user profile photo uploaded",
+        "user profile edit gender clicked",
+        "user profile gender changed",
+        "user profile edit dob clicked",
+        "user profile dob changed",
+        "user profile edit save clicked",
+        "user profile edit cancel clicked",
+        "user profile edit successful",
+        "user profile edit failed"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "user logged out"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "continue with truecaller clicked",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "User confirms Truecaller login and proceeds with Truecaller authentication.",
+      "properties": []
+    },
+    {
+      "name": "login continue btn clicked",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "User enters phone number and clicks continue button to proceed with OTP login.",
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code of the entered phone number"
+        }
+      ]
+    },
+    {
+      "name": "login failed",
+      "component": "LoginOptionsComponent or LoginOtpEnterComponent",
+      "stage": "Login Screen or OTP Verification",
+      "source": "loginOptionsScreen or loginOtpEnterScreen",
+      "description": "Login verification failed with a specific reason.",
+      "properties": [
+        {
+          "property": "method",
+          "context": "Authentication method attempted: 'otp' or 'trueCaller'"
+        },
+        {
+          "property": "reason",
+          "context": "Failure reason (e.g., 'Invalid otp entered', network error, etc.)"
+        }
+      ]
+    },
+    {
+      "name": "login otp request failed",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "API call to send OTP failed with an error.",
+      "properties": [
+        {
+          "property": "otpRequestErrorMsg",
+          "context": "Error message from the OTP request API"
+        }
+      ]
+    },
+    {
+      "name": "login screen displayed",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "Raised when the login screen initializes and is displayed to the user.",
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Current country calling code (default or user-selected)"
+        }
+      ],
+      "notes": "First event in the authentication flow. Triggered on component initialization."
+    },
+    {
+      "name": "login skip btn clicked",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "User chooses to skip the login flow and continue using the app without authentication.",
+      "properties": []
+    },
+    {
+      "name": "login successful",
+      "component": "LoginOptionsComponent or LoginOtpEnterComponent",
+      "stage": "Login Screen or OTP Verification",
+      "source": "loginOptionsScreen or loginOtpEnterScreen",
+      "description": "User successfully completes authentication and is logged in.",
+      "properties": [
+        {
+          "property": "method",
+          "context": "Authentication method: 'otp' or 'trueCaller'"
+        }
+      ],
+      "notes": "Raised from either Truecaller flow or OTP verification flow depending on the authentication method."
+    },
+    {
+      "name": "login truecaller uid fetch failed",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "Truecaller UID fetch failed or Truecaller is not available on the device.",
+      "properties": []
+    },
+    {
+      "name": "login truecaller uid fetch success",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "Truecaller UID successfully fetched and ready to show Truecaller UI.",
+      "properties": []
+    },
+    {
+      "name": "login truecaller uid fetch try",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "User taps the Truecaller login option and the app attempts to fetch Truecaller UID.",
+      "properties": []
+    },
+    {
+      "name": "otp entered",
+      "component": "LoginOtpEnterComponent",
+      "stage": "OTP Verification",
+      "source": "loginOtpEnterScreen",
+      "description": "User completes entering the OTP code and triggers verification.",
+      "properties": []
+    },
+    {
+      "name": "otp resent",
+      "component": "LoginOtpEnterComponent",
+      "stage": "OTP Verification",
+      "source": "loginOtpEnterScreen",
+      "description": "OTP successfully resent to the user's phone number.",
+      "properties": []
+    },
+    {
+      "name": "otp sent",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "OTP successfully sent to the user's phone number via SMS.",
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code of the phone number"
+        }
+      ],
+      "notes": "Triggers navigation to OTP entry screen."
+    },
+    {
+      "name": "resend otp button clicked",
+      "component": "LoginOtpEnterComponent",
+      "stage": "OTP Verification",
+      "source": "loginOtpEnterScreen",
+      "description": "User clicks the resend OTP button to request a new verification code.",
+      "properties": []
+    },
+    {
+      "name": "resend otp request failed",
+      "component": "LoginOtpEnterComponent",
+      "stage": "OTP Verification",
+      "source": "loginOtpEnterScreen",
+      "description": "Resend OTP API call failed with an error.",
+      "properties": [
+        {
+          "property": "otpRequestErrorMsg",
+          "context": "Error message from the resend OTP API"
+        }
+      ]
+    },
+    {
+      "name": "truecaller bottomsheet rendered for login",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "Truecaller bottom sheet UI is displayed to the user for authentication.",
+      "properties": []
+    },
+    {
+      "name": "truecaller error callback",
+      "component": "LoginOptionsComponent",
+      "stage": "Login Screen",
+      "source": "loginOptionsScreen",
+      "description": "Truecaller authentication resulted in an error callback with failure reason.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Truecaller error reason (e.g., user canceled, network error, etc.)"
+        }
+      ]
+    },
+    {
+      "name": "user logged out",
+      "component": "LogoutUserUseCase",
+      "stage": "Misc",
+      "source": "\"LogoutUserUseCase\"",
+      "description": "Auto-documented from code callsite: shared/login/src/commonMain/kotlin/app/chalo/userprofile/domain/LogoutUserUseCase.kt:62",
+      "properties": [
+        {
+          "property": "sessionLogout"
+        },
+        {
+          "property": "url"
+        },
+        {
+          "property": "userId"
+        }
+      ]
+    },
+    {
+      "name": "user profile delete clicked",
+      "component": "UserProfileDisplayComponent",
+      "stage": "User Profile Display",
+      "source": "userProfileDisplayScreen",
+      "description": "User taps the delete account button to initiate account deletion.",
+      "properties": []
+    },
+    {
+      "name": "user profile delete web url opened",
+      "component": "UserProfileDisplayComponent",
+      "stage": "User Profile Display",
+      "source": "userProfileDisplayScreen",
+      "description": "Account deletion URL is opened in browser or webview.",
+      "properties": [
+        {
+          "property": "is user profile deleted url opened",
+          "context": "Boolean indicating if the URL was successfully opened"
+        }
+      ]
+    },
+    {
+      "name": "user profile dob changed",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User selects a new date of birth from the date picker.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit cancel clicked",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User taps the cancel button to discard profile changes.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit clicked",
+      "component": "UserProfileDisplayComponent",
+      "stage": "User Profile Display",
+      "source": "userProfileDisplayScreen",
+      "description": "User taps the edit profile button to modify their profile details.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit dob clicked",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User taps the date of birth field to open date picker.",
+      "properties": [
+        {
+          "property": "initiallySelectedDate",
+          "context": "The date initially shown in the date picker"
+        }
+      ]
+    },
+    {
+      "name": "user profile edit failed",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "Profile update failed with an error reason.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Error reason for profile update failure"
+        }
+      ]
+    },
+    {
+      "name": "user profile edit gender clicked",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User taps the gender field to open gender selection dialog.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit photo clicked",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User taps the profile photo to change it.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit save clicked",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User taps the save button to submit profile changes.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit screen displayed",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "Profile edit screen initializes and displays current user details for editing.",
+      "properties": []
+    },
+    {
+      "name": "user profile edit successful",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "Profile update API call succeeded and changes are saved.",
+      "properties": []
+    },
+    {
+      "name": "user profile gender changed",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User selects a different gender from the gender picker.",
+      "properties": []
+    },
+    {
+      "name": "user profile logout clicked",
+      "component": "UserProfileDisplayComponent",
+      "stage": "User Profile Display",
+      "source": "userProfileDisplayScreen",
+      "description": "User taps the logout button to sign out of the app.",
+      "properties": []
+    },
+    {
+      "name": "user profile logout result",
+      "component": "UserProfileDisplayComponent",
+      "stage": "User Profile Display",
+      "source": "userProfileDisplayScreen",
+      "description": "Logout operation completes with success or failure status.",
+      "properties": [
+        {
+          "property": "loggedOutSuccessfully",
+          "context": "Boolean indicating logout success (true) or failure (false)"
+        }
+      ]
+    },
+    {
+      "name": "user profile photo changed",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "User selects a new profile photo from the image picker.",
+      "properties": []
+    },
+    {
+      "name": "user profile photo uploaded",
+      "component": "UserProfileEditComponent",
+      "stage": "User Profile Edit",
+      "source": "userProfileEditScreen",
+      "description": "Profile photo successfully uploaded to the server.",
+      "properties": []
+    },
+    {
+      "name": "user profile screen refreshed",
+      "component": "UserProfileDisplayComponent",
+      "stage": "User Profile Display",
+      "source": "userProfileDisplayScreen",
+      "description": "User profile screen loads and displays user details.",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Login Options",
+        "events": [
+          "login screen displayed",
+          "login continue btn clicked OR continue with truecaller clicked",
+          "otp sent OR truecaller bottomsheet rendered for login",
+          "login successful"
+        ],
+        "next": "OTP Verification OR Profile Management"
+      },
+      {
+        "label": "OTP Verification",
+        "events": [
+          "otp entered",
+          "login successful"
+        ],
+        "next": "Profile Management"
+      },
+      {
+        "label": "Profile Display & Logout",
+        "events": [
+          "user profile screen refreshed",
+          "user profile edit clicked OR user profile logout clicked OR user profile delete clicked"
+        ],
+        "next": "Profile Edit OR Logout Complete"
+      },
+      {
+        "label": "Profile Edit",
+        "events": [
+          "user profile edit screen displayed",
+          "user profile edit save clicked",
+          "user profile edit successful"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "user logged out"
+        ]
+      }
+    ],
+    "notes": "Two main authentication paths: OTP-based (phone number) and Truecaller. Profile management is separate but uses the same authentication state. Skip login is a special path that bypasses authentication."
+  }
+}

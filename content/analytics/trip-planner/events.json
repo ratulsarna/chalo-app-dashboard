@@ -1,0 +1,972 @@
+{
+  "flowId": "trip_planner",
+  "flowName": "Trip Planner",
+  "description": "Complete analytics map for the trip planner journey including universal trip planner (location-based) and stop-based trip planner flows.",
+  "propertyDefinitions": {
+    "origin": {
+      "type": "string",
+      "description": "Origin location name or stop name (from location)."
+    },
+    "destination": {
+      "type": "string",
+      "description": "Destination location name or stop name (to location)."
+    },
+    "source_lat": {
+      "type": "number",
+      "description": "Latitude of the origin location."
+    },
+    "source_long": {
+      "type": "number",
+      "description": "Longitude of the origin location."
+    },
+    "destination_lat": {
+      "type": "number",
+      "description": "Latitude of the destination location."
+    },
+    "destination_long": {
+      "type": "number",
+      "description": "Longitude of the destination location."
+    },
+    "selected_tab": {
+      "type": "string",
+      "description": "Currently selected tab type (DIRECT, CONNECTING, HOP, etc.).",
+      "values": ["DIRECT", "CONNECTING", "HOP", "DIRECT_PREMIUM_BUS", "CONNECTING_PREMIUM_BUS"]
+    },
+    "place_type": {
+      "type": "string",
+      "description": "Type of place selected (coordinates, place, stop, recent).",
+      "values": ["coordinates", "place", "stop", "recent"]
+    },
+    "place_name": {
+      "type": "string",
+      "description": "Name of the selected place."
+    },
+    "place_categories": {
+      "type": "array",
+      "description": "Categories associated with the place (e.g., transit_station, restaurant)."
+    },
+    "is_place_recent": {
+      "type": "boolean",
+      "description": "Whether the place was selected from recent searches."
+    },
+    "route_id": {
+      "type": "string",
+      "description": "Bus route identifier."
+    },
+    "route_name": {
+      "type": "string",
+      "description": "Bus route display name."
+    },
+    "vehicle_number": {
+      "type": "string",
+      "description": "Current bus vehicle number for live tracking."
+    },
+    "fare": {
+      "type": "number",
+      "description": "Trip or leg fare amount."
+    },
+    "leg_travel_time": {
+      "type": "number",
+      "description": "Travel duration for a leg in seconds."
+    },
+    "leg_distance": {
+      "type": "number",
+      "description": "Distance for a leg in meters."
+    },
+    "via": {
+      "type": "string",
+      "description": "Via stops or locations for the leg."
+    },
+    "next_arrival_type": {
+      "type": "string",
+      "description": "Type of next arrival information (eta or scheduled).",
+      "values": ["eta", "scheduled"]
+    },
+    "eta_in_seconds": {
+      "type": "number",
+      "description": "ETA time in seconds for next bus arrival."
+    },
+    "is_halted": {
+      "type": "boolean",
+      "description": "Whether the bus is currently stationary."
+    },
+    "is_delayed": {
+      "type": "boolean",
+      "description": "Whether the bus is delayed."
+    },
+    "distance_to_prev_location": {
+      "type": "number",
+      "description": "Distance from previous location in meters."
+    },
+    "prev_location_name": {
+      "type": "string",
+      "description": "Name of the previous location."
+    },
+    "distance_to_next_location": {
+      "type": "number",
+      "description": "Distance to next location in meters."
+    },
+    "next_location_name": {
+      "type": "string",
+      "description": "Name of the next location."
+    },
+    "selected_time": {
+      "type": "string",
+      "description": "Time selected by user for trip planning."
+    },
+    "selected_date": {
+      "type": "string",
+      "description": "Date selected by user for trip planning."
+    },
+    "itinerary_count_with_eta": {
+      "type": "number",
+      "description": "Number of itineraries with ETA information available."
+    },
+    "total_itinerary_count": {
+      "type": "number",
+      "description": "Total number of itineraries returned."
+    },
+    "step_count": {
+      "type": "number",
+      "description": "Number of steps/legs in the itinerary."
+    },
+    "is_collapsed": {
+      "type": "boolean",
+      "description": "Whether a section is collapsed or expanded."
+    },
+    "last_refresh_nudge_timestamp": {
+      "type": "number",
+      "description": "Timestamp when the refresh nudge was last shown."
+    },
+    "previous_screen": {
+      "type": "string",
+      "description": "Screen from which the trip planner was opened."
+    },
+    "itinerary_type": {
+      "type": "string",
+      "description": "Type of itinerary (direct, connecting, hop)."
+    },
+    "total_duration": {
+      "type": "number",
+      "description": "Total trip duration in seconds."
+    },
+    "total_cost": {
+      "type": "number",
+      "description": "Total cost of the trip."
+    },
+    "agency_name": {
+      "type": "string",
+      "description": "Name of the transit agency."
+    },
+    "city": {
+      "type": "string",
+      "description": "City where the trip is being planned."
+    },
+    "is_logged_in": {
+      "type": "boolean",
+      "description": "Whether the user is logged in."
+    },
+    "product_type": {
+      "type": "string",
+      "description": "Type of product available for purchase (mticket, premium_bus, etc.)."
+    },
+    "stop_id": {
+      "type": "string",
+      "description": "Stop identifier."
+    },
+    "stop_name": {
+      "type": "string",
+      "description": "Stop name."
+    }
+  },
+  "stages": [
+    {
+      "name": "Search Entry",
+      "description": "Entry into trip planner from various screens, location/stop selection, swap functionality.",
+      "events": [
+        "trip planner opened",
+        "stop trip planner search screen opened",
+        "trip planner location entered",
+        "stop trip planner search from clicked",
+        "stop trip planner search to clicked",
+        "swap button clicked",
+        "tripPlanner swap button clicked",
+        "stop trip planner search recent clicked"
+      ]
+    },
+    {
+      "name": "Search Location/Stop Selection",
+      "description": "Selecting stops, places, or enabling location services.",
+      "events": [
+        "nearest stop fetch success",
+        "nearest stop fetch failure",
+        "retry nearest stop fetch clicked",
+        "no nearby stops found for place",
+        "nearest stop selected",
+        "show all nearby stops clicked",
+        "stop search result selected",
+        "place search result selected",
+        "bottom sheet closed button clicked"
+      ]
+    },
+    {
+      "name": "Trip Search & Results",
+      "description": "Making trip planner API calls, fetching results, handling errors.",
+      "events": [
+        "get route clicked",
+        "trip planner response received",
+        "trip planner response error",
+        "stop trip planner response success",
+        "stop trip planner response failure",
+        "trip planner result screen eta availability",
+        "stop trip planner result opened",
+        "stop trip planner result try again click"
+      ]
+    },
+    {
+      "name": "Results Interaction",
+      "description": "User interactions with search results - tabs, filters, time/date changes, itinerary selection.",
+      "events": [
+        "trip planner quick tab clicked",
+        "stop trip planner result tab clicked",
+        "trip planner time edit option clicked",
+        "trip planner date edit option clicked",
+        "trip planner route edit option clicked",
+        "trip planner time changed",
+        "trip planner date changed",
+        "trip planner result clicked",
+        "stop trip planner result leg clicked",
+        "stop trip planner more details click",
+        "stop trip planner result to clicked",
+        "stop trip planner result edit clicked",
+        "trip planner recent clicked"
+      ]
+    },
+    {
+      "name": "Trip Details",
+      "description": "Viewing detailed trip information, proceeding to purchase or tracking.",
+      "events": [
+        "trip planner proceed clicked",
+        "trip details activity opened",
+        "trip planner details page opened",
+        "mticket hook trip details rendered",
+        "trip details buy product button clicked",
+        "trip details track bus button clicked",
+        "trip planner map marker clicked"
+      ]
+    },
+    {
+      "name": "Results Management",
+      "description": "Managing results display - nearby stops, refresh nudge, back navigation.",
+      "events": [
+        "stop trip planner nearby stops toggled",
+        "stop trip planner refresh nudge clicked",
+        "stop trip planner results back pressed",
+        "trip planner back button clicked",
+        "tp hop api fetch failed snackbar retry event"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "trip planner opened",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Search Entry",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Raised when the universal trip planner screen is opened with from/to locations.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner search screen opened",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Entry",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Raised when the stop-based trip planner search screen is opened.",
+      "properties": []
+    },
+    {
+      "name": "trip planner location entered",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Search Entry",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Location entered or updated in universal trip planner.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner search from clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Entry",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "From location field clicked in stop-based search.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner search to clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Entry",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "To location field clicked in stop-based search.",
+      "properties": []
+    },
+    {
+      "name": "swap button clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Entry",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Swap button clicked to exchange from/to locations in stop-based search.",
+      "properties": []
+    },
+    {
+      "name": "tripPlanner swap button clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Search Entry",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Swap button clicked in universal trip planner to exchange from/to locations.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner search recent clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Entry",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Recent trip clicked in stop-based search screen.",
+      "properties": []
+    },
+    {
+      "name": "nearest stop fetch success",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Successfully fetched nearest stops for a place.",
+      "properties": []
+    },
+    {
+      "name": "nearest stop fetch failure",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Failed to fetch nearest stops for a place.",
+      "properties": []
+    },
+    {
+      "name": "retry nearest stop fetch clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Retry button clicked after nearest stop fetch failure.",
+      "properties": []
+    },
+    {
+      "name": "no nearby stops found for place",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "No nearby stops found for the selected place.",
+      "properties": []
+    },
+    {
+      "name": "nearest stop selected",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "User selected a nearest stop from the bottom sheet.",
+      "properties": []
+    },
+    {
+      "name": "show all nearby stops clicked",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Show all nearby stops clicked instead of selecting a specific stop.",
+      "properties": []
+    },
+    {
+      "name": "stop search result selected",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Stop selected from search results.",
+      "properties": []
+    },
+    {
+      "name": "place search result selected",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Place selected from search results.",
+      "properties": []
+    },
+    {
+      "name": "bottom sheet closed button clicked",
+      "component": "StopBasedTripPlannerSearchComponent",
+      "stage": "Search Location/Stop Selection",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Bottom sheet close button clicked.",
+      "properties": []
+    },
+    {
+      "name": "get route clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Get route button clicked to initiate trip search.",
+      "properties": []
+    },
+    {
+      "name": "trip planner response received",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Trip planner API response received successfully.",
+      "properties": []
+    },
+    {
+      "name": "trip planner response error",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Trip planner API call failed with error.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner response success",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Stop-based trip planner API response received successfully with full metadata.",
+      "properties": [
+        {
+          "property": "origin",
+          "context": "From location name"
+        },
+        {
+          "property": "destination",
+          "context": "To location name"
+        },
+        {
+          "property": "source_lat",
+          "context": "From location latitude"
+        },
+        {
+          "property": "source_long",
+          "context": "From location longitude"
+        },
+        {
+          "property": "destination_lat",
+          "context": "To location latitude"
+        },
+        {
+          "property": "destination_long",
+          "context": "To location longitude"
+        },
+        {
+          "property": "selected_tab",
+          "context": "Currently selected tab"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner response failure",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Stop-based trip planner API call failed.",
+      "properties": [
+        {
+          "property": "origin"
+        },
+        {
+          "property": "destination"
+        },
+        {
+          "property": "selected_tab"
+        }
+      ]
+    },
+    {
+      "name": "trip planner result screen eta availability",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Tracks ETA availability for itineraries on the results screen.",
+      "properties": [
+        {
+          "property": "itinerary_count_with_eta",
+          "context": "Number of itineraries with ETA"
+        },
+        {
+          "property": "total_itinerary_count",
+          "context": "Total itineraries returned"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner result opened",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Stop-based trip planner results screen opened.",
+      "properties": [
+        {
+          "property": "origin"
+        },
+        {
+          "property": "destination"
+        },
+        {
+          "property": "selected_tab"
+        },
+        {
+          "property": "previous_screen"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner result try again click",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Trip Search & Results",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Try again clicked after API error.",
+      "properties": [
+        {
+          "property": "selected_tab"
+        }
+      ]
+    },
+    {
+      "name": "trip planner quick tab clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Quick filter tab clicked (Direct, Connecting, HOP, etc.).",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner result tab clicked",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Tab clicked in stop-based results (Direct or Connecting).",
+      "properties": [
+        {
+          "property": "selected_tab"
+        }
+      ]
+    },
+    {
+      "name": "trip planner time edit option clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Time edit option clicked to change departure/arrival time.",
+      "properties": []
+    },
+    {
+      "name": "trip planner date edit option clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Date edit option clicked to change travel date.",
+      "properties": []
+    },
+    {
+      "name": "trip planner route edit option clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Route edit option clicked to change search locations.",
+      "properties": []
+    },
+    {
+      "name": "trip planner time changed",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Time successfully changed by user.",
+      "properties": [
+        {
+          "property": "selected_time",
+          "context": "New time selected"
+        }
+      ]
+    },
+    {
+      "name": "trip planner date changed",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Date successfully changed by user.",
+      "properties": [
+        {
+          "property": "selected_date",
+          "context": "New date selected"
+        }
+      ]
+    },
+    {
+      "name": "trip planner result clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Itinerary clicked in universal trip planner results.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner result leg clicked",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Individual leg of an itinerary clicked with comprehensive metadata.",
+      "properties": [
+        {
+          "property": "origin"
+        },
+        {
+          "property": "destination"
+        },
+        {
+          "property": "selected_tab"
+        },
+        {
+          "property": "route_id"
+        },
+        {
+          "property": "route_name"
+        },
+        {
+          "property": "vehicle_number"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "leg_travel_time"
+        },
+        {
+          "property": "leg_distance"
+        },
+        {
+          "property": "via"
+        },
+        {
+          "property": "next_arrival_type"
+        },
+        {
+          "property": "eta_in_seconds",
+          "context": "Present when next_arrival_type is eta"
+        },
+        {
+          "property": "is_halted",
+          "context": "Present when next_arrival_type is eta"
+        },
+        {
+          "property": "is_delayed",
+          "context": "Present when next_arrival_type is eta"
+        },
+        {
+          "property": "distance_to_prev_location"
+        },
+        {
+          "property": "prev_location_name"
+        },
+        {
+          "property": "distance_to_next_location"
+        },
+        {
+          "property": "next_location_name"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner more details click",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "More details clicked for an itinerary.",
+      "properties": [
+        {
+          "property": "origin"
+        },
+        {
+          "property": "destination"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner result to clicked",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "To location clicked in results to view itineraries.",
+      "properties": [
+        {
+          "property": "step_count",
+          "context": "Number of legs in itinerary"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner result edit clicked",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Edit button clicked to modify search locations.",
+      "properties": [
+        {
+          "property": "place_type",
+          "context": "From location type"
+        },
+        {
+          "property": "place_name",
+          "context": "From location name"
+        },
+        {
+          "property": "source_lat"
+        },
+        {
+          "property": "source_long"
+        },
+        {
+          "property": "place_type",
+          "context": "To location type"
+        },
+        {
+          "property": "place_name",
+          "context": "To location name"
+        },
+        {
+          "property": "destination_lat"
+        },
+        {
+          "property": "destination_long"
+        }
+      ]
+    },
+    {
+      "name": "trip planner recent clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Interaction",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Recent trip clicked from universal trip planner.",
+      "properties": []
+    },
+    {
+      "name": "trip planner proceed clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Proceed button clicked to view trip details.",
+      "properties": []
+    },
+    {
+      "name": "trip details activity opened",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER_DETAILS",
+      "description": "Trip details screen opened (legacy event).",
+      "properties": []
+    },
+    {
+      "name": "trip planner details page opened",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER_DETAILS",
+      "description": "Trip planner details page opened with complete itinerary metadata.",
+      "properties": [
+        {
+          "property": "origin"
+        },
+        {
+          "property": "destination"
+        },
+        {
+          "property": "total_duration",
+          "context": "Total trip duration in seconds"
+        },
+        {
+          "property": "total_cost",
+          "context": "Total trip cost"
+        },
+        {
+          "property": "itinerary_type",
+          "context": "Type of itinerary (direct/connecting/hop)"
+        }
+      ]
+    },
+    {
+      "name": "mticket hook trip details rendered",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER_DETAILS",
+      "description": "M-ticket purchase hook rendered on trip details screen.",
+      "properties": [
+        {
+          "property": "product_type",
+          "context": "Type of product available"
+        }
+      ]
+    },
+    {
+      "name": "trip details buy product button clicked",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER_DETAILS",
+      "description": "Buy product button clicked from trip details to purchase ticket.",
+      "properties": [
+        {
+          "property": "route_id"
+        },
+        {
+          "property": "route_name"
+        },
+        {
+          "property": "agency_name"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "is_logged_in"
+        }
+      ]
+    },
+    {
+      "name": "trip details track bus button clicked",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER_DETAILS",
+      "description": "Track bus button clicked to view live tracking.",
+      "properties": [
+        {
+          "property": "route_id"
+        },
+        {
+          "property": "route_name"
+        },
+        {
+          "property": "agency_name"
+        },
+        {
+          "property": "stop_id",
+          "context": "From stop"
+        },
+        {
+          "property": "stop_name",
+          "context": "From stop"
+        }
+      ]
+    },
+    {
+      "name": "trip planner map marker clicked",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Trip Details",
+      "source": "Source.TRIP_PLANNER_DETAILS",
+      "description": "Map marker clicked on trip details map.",
+      "properties": []
+    },
+    {
+      "name": "stop trip planner nearby stops toggled",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Management",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Nearby stops section header clicked to toggle collapse/expand.",
+      "properties": [
+        {
+          "property": "is_collapsed",
+          "context": "New collapsed state"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner refresh nudge clicked",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Management",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Refresh nudge clicked to fetch updated results for other tab.",
+      "properties": [
+        {
+          "property": "selected_tab"
+        },
+        {
+          "property": "last_refresh_nudge_timestamp"
+        }
+      ]
+    },
+    {
+      "name": "stop trip planner results back pressed",
+      "component": "StopTripPlannerResultsComponent",
+      "stage": "Results Management",
+      "source": "Source.STOP_BASED_TRIP_PLANNER",
+      "description": "Back button pressed on stop-based results screen.",
+      "properties": []
+    },
+    {
+      "name": "trip planner back button clicked",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Management",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Back button clicked on universal trip planner.",
+      "properties": []
+    },
+    {
+      "name": "tp hop api fetch failed snackbar retry event",
+      "component": "TripPlannerResultsComponent",
+      "stage": "Results Management",
+      "source": "Source.TRIP_PLANNER",
+      "description": "Retry clicked on HOP API fetch failed snackbar.",
+      "properties": []
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Search Entry",
+        "events": [
+          "trip planner opened",
+          "stop trip planner search screen opened"
+        ],
+        "next": "Location Selection"
+      },
+      {
+        "label": "Location Selection",
+        "events": [
+          "stop trip planner search from clicked",
+          "stop trip planner search to clicked",
+          "stop search result selected",
+          "place search result selected",
+          "nearest stop selected"
+        ],
+        "next": "Trip Search"
+      },
+      {
+        "label": "Trip Search",
+        "events": [
+          "get route clicked",
+          "trip planner response received",
+          "stop trip planner response success"
+        ],
+        "next": "Results Interaction"
+      },
+      {
+        "label": "Results Interaction",
+        "events": [
+          "trip planner quick tab clicked",
+          "stop trip planner result tab clicked",
+          "trip planner result clicked",
+          "stop trip planner result leg clicked"
+        ],
+        "next": "Trip Details"
+      },
+      {
+        "label": "Trip Details",
+        "events": [
+          "trip planner details page opened",
+          "trip details buy product button clicked",
+          "trip details track bus button clicked"
+        ]
+      }
+    ],
+    "notes": "Universal trip planner and stop-based trip planner are two separate flows that share similar event patterns but have different entry points and property structures. Stop-based planner provides more granular location selection with nearby stops functionality."
+  }
+}

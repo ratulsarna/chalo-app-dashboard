@@ -1,0 +1,1539 @@
+{
+  "flowId": "mticket_purchase",
+  "flowName": "mTicket purchase, payment & validation",
+  "description": "Complete analytics map for the mTicket (single journey ticket) purchase journey from route selection to activation and validation.",
+  "propertyDefinitions": {
+    "productType": {
+      "type": "string",
+      "description": "Product type identifier; these events always log `mTicket`.",
+      "values": [
+        "mTicket"
+      ]
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type identifier; typically `mTicket` for single journey tickets."
+    },
+    "isSuperPass": {
+      "type": "boolean",
+      "description": "Always `false` for mTicket events to differentiate from super pass events."
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "The unique mTicket transaction ID used to identify the booking."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Backend order identifier returned by CreateMTicketOrderUseCase."
+    },
+    "chaloOrderId": {
+      "type": "string",
+      "description": "Chalo-specific order id mirroring the backend order."
+    },
+    "response": {
+      "type": "string",
+      "description": "Boolean string indicating success (`true`) or failure (`false`) of an operation."
+    },
+    "paymentMode": {
+      "type": "string",
+      "description": "Payment mode used; currently always `online`.",
+      "values": [
+        "online"
+      ]
+    },
+    "passengerTypes": {
+      "type": "string",
+      "description": "JSON array of passenger types and counts, e.g., `[\"adult\", \"child\"]`."
+    },
+    "fare": {
+      "type": "number",
+      "description": "Total fare amount for the ticket."
+    },
+    "city": {
+      "type": "string",
+      "description": "City name where the ticket is valid."
+    },
+    "agency": {
+      "type": "string",
+      "description": "Transit agency name (lowercase) operating the route."
+    },
+    "upTripRouteId": {
+      "type": "string",
+      "description": "Route ID for the journey."
+    },
+    "upTripStartStopId": {
+      "type": "string",
+      "description": "Starting stop ID for the journey."
+    },
+    "upTripEndStopId": {
+      "type": "string",
+      "description": "Ending stop ID for the journey."
+    },
+    "isFreeRide": {
+      "type": "string",
+      "description": "Boolean string indicating if this is a free ride (`true`/`false`)."
+    },
+    "routeId": {
+      "type": "string",
+      "description": "Selected route identifier."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Route name for validation/punch events."
+    },
+    "stopType": {
+      "type": "string",
+      "description": "Type of stop being selected.",
+      "values": [
+        "FROM",
+        "TO"
+      ]
+    },
+    "stopId": {
+      "type": "string",
+      "description": "Selected stop identifier."
+    },
+    "stopName": {
+      "type": "string",
+      "description": "Human-readable stop name."
+    },
+    "paymentId": {
+      "type": "string",
+      "description": "Payment transaction identifier from payment gateway."
+    },
+    "hourOfEvent": {
+      "type": "string",
+      "description": "Hour of the day when the event occurred."
+    },
+    "startDate": {
+      "type": "string",
+      "description": "Booking start date/time."
+    },
+    "expiryDate": {
+      "type": "string",
+      "description": "Ticket expiration date/time."
+    },
+    "checkoutHistoryCallRetry": {
+      "type": "number",
+      "description": "Number of retry attempts for fetching checkout history."
+    },
+    "dialogPopupType": {
+      "type": "string",
+      "description": "Type of dialog popup shown.",
+      "values": [
+        "PRODUCT_FARE_CHANGED"
+      ]
+    },
+    "passId": {
+      "type": "string",
+      "description": "Product/pass identifier for validation events."
+    },
+    "validationFlowType": {
+      "type": "string",
+      "description": "Type of validation flow being used (BLE, QR, etc.)."
+    },
+    "isBlePermissionGranted": {
+      "type": "boolean",
+      "description": "Whether Bluetooth permission is granted for BLE validation."
+    },
+    "startStop": {
+      "type": "string",
+      "description": "Starting stop name for validation."
+    },
+    "endStop": {
+      "type": "string",
+      "description": "Ending stop name for validation."
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Conductor ID who validated the ticket."
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Vehicle number where validation occurred."
+    },
+    "activationTime": {
+      "type": "string",
+      "description": "Timestamp when the ticket was activated."
+    },
+    "punchTime": {
+      "type": "string",
+      "description": "Timestamp when the ticket was punched/validated."
+    },
+    "punchNotificationDelay": {
+      "type": "number",
+      "description": "Delay in milliseconds between punch time and notification receipt."
+    },
+    "isTripReceiptAvailable": {
+      "type": "boolean",
+      "description": "Whether a trip receipt is available post-validation."
+    },
+    "wasTitoValidation": {
+      "type": "boolean",
+      "description": "Whether this was a TITO (Tap-In/Tap-Out) validation."
+    },
+    "problemType": {
+      "type": "string",
+      "description": "Report problem category type."
+    },
+    "problemSource": {
+      "type": "string",
+      "description": "Source screen from which problem was reported."
+    },
+    "notificationDeliveryMedium": {
+      "type": "string",
+      "description": "Medium through which validation notification was delivered."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Route & Stop Selection",
+      "description": "User selects route and stops for the mTicket journey.",
+      "events": [
+        "book mticket screen opened",
+        "mticket route selected",
+        "mticket stop selected"
+      ]
+    },
+    {
+      "name": "Passenger Selection & Fare",
+      "description": "User selects passenger count and views fare details.",
+      "events": [
+        "mticket selection screen opened",
+        "mticket fare fetched",
+        "recent product error dialog rendered mTicket"
+      ]
+    },
+    {
+      "name": "Order & Payment",
+      "description": "Order creation and payment processing.",
+      "events": [
+        "mticket pay button clicked",
+        "mticket booking response received",
+        "cancel terms",
+        "mticket payment success",
+        "mticket payment failed",
+        "post payment mticket details fetched"
+      ]
+    },
+    {
+      "name": "Activation",
+      "description": "Ticket activation before boarding.",
+      "events": [
+        "mticket activate screen opened",
+        "mticket activated",
+        "mticket fetched"
+      ]
+    },
+    {
+      "name": "BLE Validation",
+      "description": "Bluetooth Low Energy validation flow for conductor validation.",
+      "events": [
+        "ble permission check on initialization",
+        "ble permission granted",
+        "ble permission denied",
+        "ble permissions rationale screen opened",
+        "ble permissions settings opened",
+        "ble permission rationale accepted",
+        "ble screen open",
+        "ble validation help btn clicked",
+        "ble bottom sheet clicked",
+        "ble switch to qr got it clicked",
+        "ble open qr btn clicked",
+        "ble denial qr option shown",
+        "ble denial use qr clicked"
+      ]
+    },
+    {
+      "name": "QR Validation",
+      "description": "QR code based validation flow.",
+      "events": [
+        "mticket qr code zoomed",
+        "simple qr validation zoom clicked"
+      ]
+    },
+    {
+      "name": "Validation Result",
+      "description": "Post-validation events and trip receipt.",
+      "events": [
+        "mTicket trip punch",
+        "post validation screen opened",
+        "view trip receipt from menu clicked",
+        "view receipt post validation clicked",
+        "exit post validation clicked",
+        "mTicket Trip Receipt Screen Opened"
+      ]
+    },
+    {
+      "name": "TITO Validation",
+      "description": "Tap-In/Tap-Out conductor validation events.",
+      "events": [
+        "tito encryption keys available on mticket activation",
+        "tito encryption keys fetch success on mticket activation",
+        "tito encryption keys fetch failed on mticket activation",
+        "tito encryption keys not available on mticket activation",
+        "tito encryption keys fetch retry clicked on mticket activation",
+        "tito encryption keys fetch cancel clicked on mticket activation",
+        "tito tap in notification received on conductor validation",
+        "tito tap in polling stopped due to notification received",
+        "valid tito tap in data received in polling",
+        "invalid tito tap in data received in polling"
+      ]
+    },
+    {
+      "name": "BLE Validation Acknowledgment",
+      "description": "BLE validation acknowledgment data events.",
+      "events": [
+        "ble validation ack data consumed",
+        "invalid ble validation ack data received",
+        "syncing post ble validation failed"
+      ]
+    },
+    {
+      "name": "Back Press Confirmation",
+      "description": "Confirmation dialogs on back press during validation.",
+      "events": [
+        "confirmation on back press shown",
+        "confirmation on back press yes clicked",
+        "confirmation on back press no clicked"
+      ]
+    },
+    {
+      "name": "Global",
+      "description": "Events that can fire from multiple places in the flow.",
+      "events": [
+        "report problem clicked v2",
+        "recent product mticket clicked",
+        "mticket summary details screen opened",
+        "mticket hook route details rendered",
+        "mticket hook trip details rendered"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "MTicketPunchedEvent receipt payload",
+        "free rides info clicked",
+        "invite",
+        "terms cancel"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "MTicketPunchedEvent receipt payload",
+      "component": "MTicketProductValidationConfig",
+      "stage": "Misc",
+      "source": "this::class.simpleName.toString(",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mTicketing/validation/MTicketProductValidationConfig.kt:144",
+      "properties": [
+        {
+          "property": "payload"
+        }
+      ]
+    },
+    {
+      "name": "ble bottom sheet clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User interacted with BLE bottom sheet.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble denial qr option shown",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "QR option shown after BLE permission denial.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble denial use qr clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User chose QR validation after denying BLE permission.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble open qr btn clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User clicked to open QR code from BLE screen.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble permission check on initialization",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "BLE permission check performed during initialization.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass",
+          "context": "Always false"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "isBlePermissionGranted"
+        }
+      ]
+    },
+    {
+      "name": "ble permission denied",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User denied BLE permission.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble permission granted",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User granted BLE permission.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble permission rationale accepted",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User accepted the permission rationale.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble permissions rationale screen opened",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "Permission rationale screen shown to user.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble permissions settings opened",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User navigated to app settings for permissions.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble screen open",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "BLE validation screen opened.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "validationFlowType"
+        }
+      ]
+    },
+    {
+      "name": "ble switch to qr got it clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User acknowledged switch to QR option.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "ble validation ack data consumed",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation Acknowledgment",
+      "source": "Validation screen source",
+      "description": "BLE validation acknowledgment data was consumed.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "validationAckDataType",
+          "context": "Type of ack data"
+        },
+        {
+          "property": "notificationDeliveryMedium"
+        }
+      ]
+    },
+    {
+      "name": "ble validation help btn clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation",
+      "source": "Validation screen source",
+      "description": "User clicked help button on BLE validation screen.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "book mticket screen opened",
+      "component": "MTicketTripInfoComponent",
+      "stage": "Route & Stop Selection",
+      "source": "Source from args or UNKNOWN",
+      "description": "Raised when the route and stop selection screen opens for mTicket booking.",
+      "properties": []
+    },
+    {
+      "name": "cancel terms",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Order & Payment",
+      "source": "Source.MTICKET_SELECTION_ACTIVITY",
+      "description": "User declined the terms and conditions dialog.",
+      "properties": []
+    },
+    {
+      "name": "confirmation on back press no clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Back Press Confirmation",
+      "source": "Validation screen source",
+      "description": "User cancelled exit on back press dialog.",
+      "properties": []
+    },
+    {
+      "name": "confirmation on back press shown",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Back Press Confirmation",
+      "source": "Validation screen source",
+      "description": "Confirmation dialog shown on back press during validation.",
+      "properties": []
+    },
+    {
+      "name": "confirmation on back press yes clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Back Press Confirmation",
+      "source": "Validation screen source",
+      "description": "User confirmed exit on back press dialog.",
+      "properties": []
+    },
+    {
+      "name": "exit post validation clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Validation Result",
+      "source": "Validation screen source",
+      "description": "User clicked exit on post-validation screen.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "wasTitoValidation"
+        }
+      ]
+    },
+    {
+      "name": "free rides info clicked",
+      "component": "MTicketTripInfoComponent",
+      "stage": "Misc",
+      "source": "Source.MTICKET_BOOKING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mticket/ui/tripinfo/MTicketTripInfoComponent.kt:358",
+      "properties": []
+    },
+    {
+      "name": "invalid ble validation ack data received",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation Acknowledgment",
+      "source": "Validation screen source",
+      "description": "Invalid BLE validation acknowledgment data received.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "reason",
+          "context": "Error message"
+        },
+        {
+          "property": "rawData",
+          "context": "Raw data received"
+        },
+        {
+          "property": "notificationDeliveryMedium"
+        }
+      ]
+    },
+    {
+      "name": "invalid tito tap in data received in polling",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "TITO Validation",
+      "source": "Validation screen source",
+      "description": "Invalid TITO tap-in data received via polling.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "reason",
+          "context": "Reason for invalid data"
+        }
+      ]
+    },
+    {
+      "name": "invite",
+      "component": "MTicketTripInfoComponent",
+      "stage": "Misc",
+      "source": "Source.MTICKET_BOOKING_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mticket/ui/tripinfo/MTicketTripInfoComponent.kt:374",
+      "properties": []
+    },
+    {
+      "name": "mTicket trip punch",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Validation Result",
+      "source": "Validation screen source",
+      "description": "Ticket punched/validated by conductor.",
+      "properties": [
+        {
+          "property": "isTripReceiptAvailable"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "startStop"
+        },
+        {
+          "property": "endStop"
+        },
+        {
+          "property": "conductorId"
+        },
+        {
+          "property": "activationTime"
+        },
+        {
+          "property": "punchTime"
+        },
+        {
+          "property": "vehicleNo"
+        },
+        {
+          "property": "endStopId",
+          "context": "End stop ID"
+        },
+        {
+          "property": "punchNotificationDelay",
+          "context": "Delay between punch and notification"
+        }
+      ]
+    },
+    {
+      "name": "mticket activate screen opened",
+      "component": "ProductActivationComponent",
+      "stage": "Activation",
+      "source": "Source from args or ACTIVATE_MTICKET_SCREEN",
+      "description": "mTicket activation screen opened.",
+      "properties": []
+    },
+    {
+      "name": "mticket activated",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Activation",
+      "source": "Validation screen source",
+      "description": "mTicket has been activated and is ready for validation.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass",
+          "context": "Always false"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "mticket booking response received",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Order & Payment",
+      "source": "Source from dataState or MTICKET_SELECTION_ACTIVITY",
+      "description": "Order creation API response received.",
+      "properties": [
+        {
+          "property": "response",
+          "context": "true if order created, false if failed"
+        },
+        {
+          "property": "paymentMode",
+          "context": "Always 'online'"
+        },
+        {
+          "property": "orderId",
+          "context": "Present on success"
+        },
+        {
+          "property": "chaloOrderId",
+          "context": "Present on success"
+        },
+        {
+          "property": "passengerTypes"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "upTripStartStopId"
+        },
+        {
+          "property": "upTripEndStopId"
+        },
+        {
+          "property": "isFreeRide"
+        }
+      ]
+    },
+    {
+      "name": "mticket fare fetched",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Passenger Selection & Fare",
+      "source": "Source.MTICKET_SELECTION_ACTIVITY",
+      "description": "Fare fetch API call completed.",
+      "properties": [
+        {
+          "property": "response",
+          "context": "true if successful, false if failed"
+        }
+      ]
+    },
+    {
+      "name": "mticket fetched",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Activation",
+      "source": "Validation screen source",
+      "description": "mTicket data fetched for validation.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass",
+          "context": "Always false"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "mticket hook route details rendered",
+      "component": "RouteDetailsComponent",
+      "stage": "Global",
+      "source": "Route details screen",
+      "description": "mTicket booking hook rendered on route details screen.",
+      "properties": []
+    },
+    {
+      "name": "mticket hook trip details rendered",
+      "component": "TripPlannerDetailsComponent",
+      "stage": "Global",
+      "source": "Trip planner details screen",
+      "description": "mTicket booking hook rendered on trip planner details.",
+      "properties": []
+    },
+    {
+      "name": "mticket pay button clicked",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Order & Payment",
+      "source": "Source from dataState or MTICKET_SELECTION_ACTIVITY",
+      "description": "User clicks the pay button to proceed with order creation.",
+      "properties": [
+        {
+          "property": "passengerTypes",
+          "context": "JSON array of passenger types and counts"
+        },
+        {
+          "property": "fare",
+          "context": "Total fare amount"
+        },
+        {
+          "property": "city",
+          "context": "City name"
+        },
+        {
+          "property": "agency",
+          "context": "Agency name"
+        },
+        {
+          "property": "upTripRouteId",
+          "context": "Route ID"
+        },
+        {
+          "property": "upTripStartStopId",
+          "context": "From stop ID"
+        },
+        {
+          "property": "upTripEndStopId",
+          "context": "To stop ID"
+        },
+        {
+          "property": "isFreeRide",
+          "context": "Whether this is a free ride"
+        }
+      ]
+    },
+    {
+      "name": "mticket payment failed",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Order & Payment",
+      "source": "CheckoutPaymentMainComponent source screen",
+      "description": "Payment failed or was cancelled.",
+      "properties": [
+        {
+          "property": "hourOfEvent",
+          "context": "Hour of the day"
+        }
+      ],
+      "notes": "Error properties from payment gateway are included."
+    },
+    {
+      "name": "mticket payment success",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Order & Payment",
+      "source": "CheckoutPaymentMainComponent source screen",
+      "description": "Payment completed successfully.",
+      "properties": [
+        {
+          "property": "paymentId",
+          "context": "Payment transaction ID"
+        },
+        {
+          "property": "hourOfEvent",
+          "context": "Hour of the day"
+        },
+        {
+          "property": "agency",
+          "context": "Transit agency"
+        }
+      ],
+      "notes": "Additional product event properties from checkout data resolver are included."
+    },
+    {
+      "name": "mticket qr code zoomed",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "QR Validation",
+      "source": "Validation screen source",
+      "description": "User zoomed the QR code for scanning.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "mticket route selected",
+      "component": "MTicketTripInfoComponent",
+      "stage": "Route & Stop Selection",
+      "source": "Source.MTICKET_BOOKING_SCREEN",
+      "description": "User selects a route for the mTicket journey.",
+      "properties": [
+        {
+          "property": "agency",
+          "context": "Lowercase agency name"
+        },
+        {
+          "property": "routeId",
+          "context": "Selected route ID"
+        },
+        {
+          "property": "routeName",
+          "context": "Human-readable route name"
+        }
+      ]
+    },
+    {
+      "name": "mticket selection screen opened",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Passenger Selection & Fare",
+      "source": "Source from args or MTICKET_SELECTION_ACTIVITY",
+      "description": "Passenger selection and fare confirmation screen opens.",
+      "properties": []
+    },
+    {
+      "name": "mticket stop selected",
+      "component": "MTicketTripInfoComponent",
+      "stage": "Route & Stop Selection",
+      "source": "Source.MTICKET_BOOKING_SCREEN",
+      "description": "User selects a from or to stop for the journey.",
+      "properties": [
+        {
+          "property": "stopType",
+          "context": "FROM or TO"
+        },
+        {
+          "property": "stopId",
+          "context": "Selected stop ID"
+        },
+        {
+          "property": "stopName",
+          "context": "Human-readable stop name"
+        }
+      ]
+    },
+    {
+      "name": "mticket summary details screen opened",
+      "component": "TicketSummaryComponent",
+      "stage": "Global",
+      "source": "Summary screen source",
+      "description": "mTicket summary details screen opened.",
+      "properties": []
+    },
+    {
+      "name": "post payment mticket details fetched",
+      "component": "CheckoutAnalyticsHelper",
+      "stage": "Order & Payment",
+      "source": "CheckoutPostPaymentComponent source screen",
+      "description": "mTicket details fetched after successful payment.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Always true for success"
+        },
+        {
+          "property": "checkoutHistoryCallRetry",
+          "context": "Retry count"
+        },
+        {
+          "property": "bookingId",
+          "context": "mTicket ID"
+        },
+        {
+          "property": "passengerTypes"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "startDate",
+          "context": "Booking datetime"
+        },
+        {
+          "property": "expiryDate",
+          "context": "Expiration datetime"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "upTripStartStopId"
+        },
+        {
+          "property": "upTripEndStopId"
+        },
+        {
+          "property": "isFreeRide"
+        }
+      ]
+    },
+    {
+      "name": "post validation screen opened",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Validation Result",
+      "source": "Validation screen source",
+      "description": "Post-validation success screen opened.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ],
+      "notes": "Extra properties may be included based on validation context."
+    },
+    {
+      "name": "recent product error dialog rendered mTicket",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Passenger Selection & Fare",
+      "source": "Source.MTICKET_SELECTION_ACTIVITY",
+      "description": "Fare changed dialog shown when re-purchasing with different fare.",
+      "properties": [
+        {
+          "property": "dialogPopupType",
+          "context": "PRODUCT_FARE_CHANGED"
+        }
+      ]
+    },
+    {
+      "name": "recent product mticket clicked",
+      "component": "Various",
+      "stage": "Global",
+      "source": "Home/My Tickets screen",
+      "description": "User clicked on a recent mTicket product from home or my tickets.",
+      "properties": []
+    },
+    {
+      "name": "report problem clicked v2",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Global",
+      "source": "SRC_VALIDATION_SCREEN",
+      "description": "User clicked report problem during validation.",
+      "properties": [
+        {
+          "property": "problemType",
+          "context": "activation_screen_ticketing_problems"
+        },
+        {
+          "property": "problemSource",
+          "context": "src_validation_screen"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "simple qr validation zoom clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "QR Validation",
+      "source": "Validation screen source",
+      "description": "User clicked zoom on simple QR validation screen.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "syncing post ble validation failed",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "BLE Validation Acknowledgment",
+      "source": "Validation screen source",
+      "description": "Failed to sync data after BLE validation.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "failureReason"
+        }
+      ]
+    },
+    {
+      "name": "terms cancel",
+      "component": "MTicketPassengerSelectionComponent",
+      "stage": "Misc",
+      "source": "Source.MTICKET_SELECTION_ACTIVITY",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mticket/ui/passengerselection/MTicketPassengerSelectionComponent.kt:268",
+      "properties": []
+    },
+    {
+      "name": "tito encryption keys available on mticket activation",
+      "component": "External",
+      "stage": "TITO Validation",
+      "source": "Activation flow",
+      "description": "TITO encryption keys are already available on mTicket activation.",
+      "properties": []
+    },
+    {
+      "name": "tito encryption keys fetch cancel clicked on mticket activation",
+      "component": "External",
+      "stage": "TITO Validation",
+      "source": "Activation flow",
+      "description": "User cancelled TITO encryption keys fetch.",
+      "properties": []
+    },
+    {
+      "name": "tito encryption keys fetch failed on mticket activation",
+      "component": "External",
+      "stage": "TITO Validation",
+      "source": "Activation flow",
+      "description": "Failed to fetch TITO encryption keys.",
+      "properties": []
+    },
+    {
+      "name": "tito encryption keys fetch retry clicked on mticket activation",
+      "component": "External",
+      "stage": "TITO Validation",
+      "source": "Activation flow",
+      "description": "User clicked retry for TITO encryption keys fetch.",
+      "properties": []
+    },
+    {
+      "name": "tito encryption keys fetch success on mticket activation",
+      "component": "External",
+      "stage": "TITO Validation",
+      "source": "Activation flow",
+      "description": "TITO encryption keys fetched successfully.",
+      "properties": []
+    },
+    {
+      "name": "tito encryption keys not available on mticket activation",
+      "component": "External",
+      "stage": "TITO Validation",
+      "source": "Activation flow",
+      "description": "TITO encryption keys not available.",
+      "properties": []
+    },
+    {
+      "name": "tito tap in notification received on conductor validation",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "TITO Validation",
+      "source": "Validation screen source",
+      "description": "TITO tap-in notification received during conductor validation.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "notificationDeliveryMedium"
+        }
+      ],
+      "notes": "Additional TITO notification event properties are included."
+    },
+    {
+      "name": "tito tap in polling stopped due to notification received",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "TITO Validation",
+      "source": "Validation screen source",
+      "description": "Stopped polling for TITO tap-in because notification was received.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "notificationDeliveryMedium"
+        }
+      ]
+    },
+    {
+      "name": "valid tito tap in data received in polling",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "TITO Validation",
+      "source": "Validation screen source",
+      "description": "Valid TITO tap-in data received via polling.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ],
+      "notes": "Additional TITO notification event properties are included."
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Validation Result",
+      "source": "Validation screen source",
+      "description": "User clicked view receipt after validation.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "wasTitoValidation"
+        }
+      ]
+    },
+    {
+      "name": "view trip receipt from menu clicked",
+      "component": "MTicketValidationAnalyticsManager",
+      "stage": "Validation Result",
+      "source": "SOURCE_VALIDATION_SCREEN",
+      "description": "User clicked view trip receipt from menu.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "bookingId"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Route & Stop Selection",
+        "events": [
+          "book mticket screen opened",
+          "mticket route selected",
+          "mticket stop selected"
+        ],
+        "next": "Passenger Selection"
+      },
+      {
+        "label": "Passenger Selection",
+        "events": [
+          "mticket selection screen opened",
+          "mticket fare fetched"
+        ],
+        "next": "Order Creation"
+      },
+      {
+        "label": "Order Creation",
+        "events": [
+          "mticket pay button clicked",
+          "mticket booking response received"
+        ],
+        "next": "Payment"
+      },
+      {
+        "label": "Payment",
+        "events": [
+          "mticket payment success",
+          "mticket payment failed",
+          "post payment mticket details fetched"
+        ],
+        "next": "Activation"
+      },
+      {
+        "label": "Activation",
+        "events": [
+          "mticket activate screen opened",
+          "mticket activated",
+          "mticket fetched"
+        ],
+        "next": "Validation"
+      },
+      {
+        "label": "Validation",
+        "events": [
+          "ble screen open",
+          "mticket qr code zoomed",
+          "mTicket trip punch"
+        ],
+        "next": "Post Validation"
+      },
+      {
+        "label": "Post Validation",
+        "events": [
+          "post validation screen opened",
+          "view receipt post validation clicked",
+          "exit post validation clicked"
+        ]
+      },
+      {
+        "label": "Additional events",
+        "events": [
+          "MTicketPunchedEvent receipt payload",
+          "free rides info clicked",
+          "invite",
+          "terms cancel"
+        ]
+      }
+    ],
+    "notes": "BLE permission events, TITO validation events, and back press confirmation events are conditional paths that can occur during the validation stage."
+  }
+}

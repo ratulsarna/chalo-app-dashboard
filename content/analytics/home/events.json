@@ -1,0 +1,1714 @@
+{
+  "flowId": "home",
+  "flowName": "Home Screen & Tab Navigation",
+  "description": "Complete analytics map for the home screen across all tabs - includes home landing, regular bus, chalo bus (premium), profile, and tickets/history tabs.",
+  "propertyDefinitions": {
+    "source": {
+      "type": "string",
+      "description": "Source screen identifier",
+      "values": [
+        "home screen tab",
+        "regular bus screen tab",
+        "chalo bus screen tab",
+        "profile screen",
+        "my tickets screen tab"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "description": "Feature type for card/hook interactions"
+    },
+    "position": {
+      "type": "number",
+      "description": "Position index of the card or item in the list"
+    },
+    "title": {
+      "type": "string",
+      "description": "Display title of the card, item, or menu option"
+    },
+    "desc list": {
+      "type": "array",
+      "description": "List of description strings for the card/hook"
+    },
+    "tag list": {
+      "type": "array",
+      "description": "List of tags associated with the card/hook"
+    },
+    "image url": {
+      "type": "string",
+      "description": "URL of the image displayed on the card/hook"
+    },
+    "configId": {
+      "type": "string",
+      "description": "Configuration identifier for passes and products"
+    },
+    "current city": {
+      "type": "string",
+      "description": "Name of the currently selected city"
+    },
+    "search bar title": {
+      "type": "string",
+      "description": "Title/placeholder text displayed in the search bar"
+    },
+    "isResultOk": {
+      "type": "boolean",
+      "description": "Whether GPS request result was successful"
+    },
+    "lat": {
+      "type": "number",
+      "description": "Latitude coordinate of user location"
+    },
+    "long": {
+      "type": "number",
+      "description": "Longitude coordinate of user location"
+    },
+    "locationAccessAction": {
+      "type": "string",
+      "description": "Action taken in location permission dialog",
+      "values": [
+        "settings",
+        "close"
+      ]
+    },
+    "stopid": {
+      "type": "string",
+      "description": "Identifier for a bus stop"
+    },
+    "stopname": {
+      "type": "string",
+      "description": "Name of a bus stop"
+    },
+    "routeid": {
+      "type": "string",
+      "description": "Identifier for a bus route"
+    },
+    "routename": {
+      "type": "string",
+      "description": "Name/number of a bus route"
+    },
+    "toname": {
+      "type": "string",
+      "description": "Destination stop name"
+    },
+    "card position": {
+      "type": "number",
+      "description": "Position of the recent search card"
+    },
+    "count": {
+      "type": "number",
+      "description": "Number of items received (e.g., geospatial data count)"
+    },
+    "inCity": {
+      "type": "string",
+      "description": "City name when city change prompt is shown"
+    },
+    "updateType": {
+      "type": "string",
+      "description": "Type of app update (flexible or immediate)"
+    },
+    "userAction": {
+      "type": "string",
+      "description": "Type of user action for premium bus interactions"
+    },
+    "premiumBusStackType": {
+      "type": "string",
+      "description": "Premium bus UI stack type",
+      "values": [
+        "NATIVE_STACK"
+      ]
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "Booking identifier for premium bus tickets"
+    },
+    "ticketStatus": {
+      "type": "string",
+      "description": "Status of the premium bus ticket"
+    },
+    "pbAckCtaType": {
+      "type": "string",
+      "description": "Type of CTA in premium bus acknowledgment",
+      "values": [
+        "Details",
+        "Okay"
+      ]
+    },
+    "default time date": {
+      "type": "string",
+      "description": "Default time/date shown in preferred time selector"
+    },
+    "input time date": {
+      "type": "string",
+      "description": "User-selected time/date in preferred time selector"
+    },
+    "searchSource": {
+      "type": "string",
+      "description": "Source from which trip details were submitted"
+    },
+    "sourceName": {
+      "type": "string",
+      "description": "Name of the source/pickup location"
+    },
+    "sourceType": {
+      "type": "string",
+      "description": "Type of source location (stop, place, etc.)"
+    },
+    "sourceLat": {
+      "type": "number",
+      "description": "Latitude of source location"
+    },
+    "sourceLong": {
+      "type": "number",
+      "description": "Longitude of source location"
+    },
+    "destinationName": {
+      "type": "string",
+      "description": "Name of the destination/drop location"
+    },
+    "destinationType": {
+      "type": "string",
+      "description": "Type of destination location"
+    },
+    "destinationLat": {
+      "type": "number",
+      "description": "Latitude of destination location"
+    },
+    "destinationLong": {
+      "type": "number",
+      "description": "Longitude of destination location"
+    },
+    "route id": {
+      "type": "string",
+      "description": "Route identifier for premium bus"
+    },
+    "rebookCardCount": {
+      "type": "number",
+      "description": "Number of rebook cards shown to user"
+    },
+    "attribution type": {
+      "type": "string",
+      "description": "Attribution type for deeplink entry"
+    },
+    "faqs_size": {
+      "type": "number",
+      "description": "Number of FAQ items available"
+    },
+    "bottom_sheet_type": {
+      "type": "string",
+      "description": "Type of bottom sheet dismissed"
+    },
+    "displayType": {
+      "type": "string",
+      "description": "Display type for profile menu items"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message for failed operations"
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "preferredDestination": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "Exp:": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "disableSearchBarOnHomeScreen": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "experimentId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "showSearchTabOnBottomNav": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "variant": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "pass status": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "tripId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "versionCode": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "bottomSheetType": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "network type": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "response time": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "firstLoadTimeMillis": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "geoSpatialSrc": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "hourOfEvent": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "agency": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "mode": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "totalMarkers": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "errorCode": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "errorMsg": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "url": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stopId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stopName": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "fromName": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "routeId": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "toName": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    },
+    "stop": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "stages": [
+    {
+      "name": "Home Screen Tab",
+      "description": "Main home screen with premium bus cards, search bar, profile navigation",
+      "events": [
+        "home page rendered",
+        "home page card item clicked",
+        "home page hook clicked",
+        "profile icon clicked",
+        "chalo search bar clicked",
+        "city change card clicked",
+        "location tooltip turn on clicked",
+        "location tooltip cancel clicked",
+        "gps request on",
+        "gps request result received",
+        "location update received",
+        "location settings unavailable",
+        "access location event",
+        "premium service bus interaction",
+        "pb homescreen book trip clicked",
+        "premium reserve ticket ack cta clicked",
+        "app update install clicked",
+        "app update cancel clicked",
+        "ocr homescreen card recharge card",
+        "ocr tutorial bottomsheet displayed",
+        "ocr tutorial bottomsheet next clicked",
+        "pb preferred time bottomsheet opened",
+        "pb preferred time submitted"
+      ]
+    },
+    {
+      "name": "Regular Bus Tab",
+      "description": "Regular bus screen with nearby stops, passes, map, and bus tracking",
+      "events": [
+        "regular bus page rendered",
+        "regular bus page card item clicked",
+        "home screen bottom nav search tab clicked",
+        "profile icon clicked",
+        "location tooltip turn on clicked",
+        "gps request on",
+        "location tooltip cancel clicked",
+        "gps request result received",
+        "access location event",
+        "nearby stops more clicked",
+        "nearby stops card stop name header clicked",
+        "nearby stops card more trips clicked",
+        "nearby stops card route clicked",
+        "regular bus page recent search card clicked",
+        "see all passes clicked",
+        "city change card clicked",
+        "regular bus page map thumbnail clicked",
+        "location update received",
+        "new geo query manager data received",
+        "city not supported prompt open",
+        "city change prompt open",
+        "seat occupancy bottomsheet rendered on homescreen",
+        "seat occupancy bottomsheet dismissed clicked",
+        "seat occupancy bottomsheet got it clicked",
+        "seat occupancy bottomsheet learn more clicked",
+        "regular bus tab, pay for ticket click navigation failed"
+      ]
+    },
+    {
+      "name": "Chalo Bus (Premium) Tab",
+      "description": "Premium bus landing with routes, passes, trip submission",
+      "events": [
+        "chalo bus page rendered",
+        "see all passes clicked",
+        "pb pass savings info btn clicked",
+        "pb explore available routes button clicked",
+        "pb landing route clicked",
+        "pb preferred time bottomsheet opened",
+        "pb trip details submitted",
+        "pb trip details screen shown",
+        "chalo bus tab notification icon click"
+      ]
+    },
+    {
+      "name": "Profile Tab",
+      "description": "User profile screen with menu options",
+      "events": [
+        "profile screen rendered",
+        "profile screen item clicked",
+        "wallet onBoarding bottom sheet positive button clicked"
+      ]
+    },
+    {
+      "name": "My Tickets/History Tab",
+      "description": "User tickets and booking history",
+      "events": [
+        "my tickets screen rendered"
+      ]
+    },
+    {
+      "name": "Bottom Navigation",
+      "description": "Bottom navigation bar interactions",
+      "events": [
+        "bottom nav item clicked"
+      ]
+    },
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "check user bookings in cache failed",
+        "home screen opened via deeplink",
+        "home screen search removal config fetch",
+        "homescreen user bookings in cache logger",
+        "notification permission bottomsheet enable clicked",
+        "notification permission bottomsheet rendered",
+        "notification permission bottomsheet skip clicked",
+        "boost ratings BottomSheet rendered",
+        "boost ratings rate button clicked",
+        "boost ratings remind later clicked",
+        "pass status prompt open",
+        "pb booking card expired",
+        "user bookings in cache empty",
+        "chalo tab bottom sheet dismissed",
+        "home page card item rendered",
+        "home page hook rendered",
+        "profile screen item rendered",
+        "regular bus page card item rendered",
+        "webview url load failed"
+      ]
+    },
+    {
+      "name": "Live Vehicles",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "banner info received",
+        "geo spatial request response time",
+        "home screen live marker shown",
+        "home screen live vehicles click",
+        "home screen live vehicles shown on map",
+        "home screen no live vehicles loaded"
+      ]
+    },
+    {
+      "name": "Nearby Trips",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "nearby stops activity card more trips clicked",
+        "nearby stops activity card route clicked",
+        "nearby stops map screen open",
+        "nearby stops marker click"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "access location event",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen main fragment / regular bus screen tab",
+      "description": "User interacts with location permission dialog.",
+      "properties": [
+        {
+          "property": "locationAccessAction"
+        }
+      ]
+    },
+    {
+      "name": "app update cancel clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User cancels app update.",
+      "properties": [
+        {
+          "property": "updateType"
+        }
+      ]
+    },
+    {
+      "name": "app update install clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks install button in app update prompt.",
+      "properties": [
+        {
+          "property": "updateType"
+        }
+      ]
+    },
+    {
+      "name": "banner info received",
+      "component": "GeoSpatialLiveBusesDataPollingManager",
+      "stage": "Live Vehicles",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/geoquery/domain/GeoSpatialLiveBusesDataPollingManager.kt:168",
+      "properties": [
+        {
+          "property": "versionCode"
+        }
+      ]
+    },
+    {
+      "name": "bottom nav item clicked",
+      "component": "HomeScreenComponent (inferred)",
+      "stage": "Bottom Navigation",
+      "source": "home screen tab",
+      "description": "User clicks bottom navigation item.",
+      "properties": [
+        {
+          "property": "bottom nav item"
+        }
+      ]
+    },
+    {
+      "name": "chalo bus page rendered",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "Chalo bus (premium bus) screen loaded.",
+      "properties": []
+    },
+    {
+      "name": "chalo bus tab notification icon click",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "User clicks notification icon on chalo bus tab.",
+      "properties": []
+    },
+    {
+      "name": "chalo search bar clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks the search bar on home screen.",
+      "properties": [
+        {
+          "property": "search bar title"
+        }
+      ]
+    },
+    {
+      "name": "chalo tab bottom sheet dismissed",
+      "component": "ChaloBusComponent",
+      "stage": "Misc",
+      "source": "Source.CHALO_BUS_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/chalobus/ChaloBusComponent.kt:933",
+      "properties": [
+        {
+          "property": "bottomSheetType"
+        }
+      ]
+    },
+    {
+      "name": "check user bookings in cache failed",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1189",
+      "properties": [
+        {
+          "property": "failureReason"
+        }
+      ]
+    },
+    {
+      "name": "city change card clicked",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "User clicks city change card.",
+      "properties": [
+        {
+          "property": "current city"
+        }
+      ]
+    },
+    {
+      "name": "city change prompt open",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "City change prompt shown when user is in different city.",
+      "properties": [
+        {
+          "property": "inCity"
+        }
+      ]
+    },
+    {
+      "name": "city not supported prompt open",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "City not supported prompt shown to user.",
+      "properties": []
+    },
+    {
+      "name": "geo spatial request response time",
+      "component": "FetchGeoSpatialDataUseCase",
+      "stage": "Live Vehicles",
+      "source": "Source.UNKNOWN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/geoquery/domain/FetchGeoSpatialDataUseCase.kt:81",
+      "properties": [
+        {
+          "property": "network type"
+        },
+        {
+          "property": "response time"
+        }
+      ]
+    },
+    {
+      "name": "gps request on",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "GPS turn-on is requested.",
+      "properties": []
+    },
+    {
+      "name": "gps request result received",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "GPS request callback received with result status.",
+      "properties": [
+        {
+          "property": "isResultOk"
+        }
+      ]
+    },
+    {
+      "name": "home page card item clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks on a home page card item (tickets/passes).",
+      "properties": [
+        {
+          "property": "type"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        }
+      ]
+    },
+    {
+      "name": "home page card item rendered",
+      "component": "GetHomePageItemsUseCase",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetHomePageItemsUseCase.kt:48",
+      "properties": [
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "type"
+        }
+      ]
+    },
+    {
+      "name": "home page hook clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks on a home page hook/card.",
+      "properties": [
+        {
+          "property": "type"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "desc list"
+        },
+        {
+          "property": "tag list"
+        },
+        {
+          "property": "image url"
+        }
+      ]
+    },
+    {
+      "name": "home page hook rendered",
+      "component": "GetHomePageItemsUseCase",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetHomePageItemsUseCase.kt:140",
+      "properties": [
+        {
+          "property": "desc list"
+        },
+        {
+          "property": "image url"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "tag list"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "type"
+        }
+      ]
+    },
+    {
+      "name": "home page rendered",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "Home screen data loaded and displayed to the user.",
+      "properties": []
+    },
+    {
+      "name": "home screen bottom nav search tab clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks search tab in bottom navigation.",
+      "properties": []
+    },
+    {
+      "name": "home screen live marker shown",
+      "component": "BusesAroundYouComponent",
+      "stage": "Live Vehicles",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:640",
+      "properties": [
+        {
+          "property": "firstLoadTimeMillis"
+        },
+        {
+          "property": "geoSpatialSrc"
+        },
+        {
+          "property": "hourOfEvent"
+        }
+      ]
+    },
+    {
+      "name": "home screen live vehicles click",
+      "component": "BusesAroundYouComponent",
+      "stage": "Live Vehicles",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:680",
+      "properties": [
+        {
+          "property": "agency"
+        },
+        {
+          "property": "geoSpatialSrc"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "mode"
+        },
+        {
+          "property": "routeName"
+        }
+      ]
+    },
+    {
+      "name": "home screen live vehicles shown on map",
+      "component": "BusesAroundYouComponent",
+      "stage": "Live Vehicles",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:664",
+      "properties": [
+        {
+          "property": "firstLoadTimeMillis"
+        },
+        {
+          "property": "geoSpatialSrc"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "totalMarkers"
+        }
+      ]
+    },
+    {
+      "name": "home screen no live vehicles loaded",
+      "component": "BusesAroundYouComponent",
+      "stage": "Live Vehicles",
+      "source": "\"\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:655",
+      "properties": [
+        {
+          "property": "geoSpatialSrc"
+        },
+        {
+          "property": "hourOfEvent"
+        }
+      ]
+    },
+    {
+      "name": "home screen opened via deeplink",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:924",
+      "properties": [
+        {
+          "property": "preferredDestination"
+        }
+      ]
+    },
+    {
+      "name": "home screen search removal config fetch",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:605",
+      "properties": [
+        {
+          "property": "Exp:"
+        },
+        {
+          "property": "disableSearchBarOnHomeScreen"
+        },
+        {
+          "property": "experimentId"
+        },
+        {
+          "property": "showSearchTabOnBottomNav"
+        },
+        {
+          "property": "variant"
+        }
+      ]
+    },
+    {
+      "name": "homescreen user bookings in cache logger",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1198",
+      "properties": []
+    },
+    {
+      "name": "location settings unavailable",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "Location settings are unavailable on the device.",
+      "properties": []
+    },
+    {
+      "name": "location tooltip cancel clicked",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "User dismisses location tooltip.",
+      "properties": []
+    },
+    {
+      "name": "location tooltip turn on clicked",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "User clicks 'turn on location' button in tooltip.",
+      "properties": []
+    },
+    {
+      "name": "location update received",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "User geolocation data received.",
+      "properties": [
+        {
+          "property": "lat"
+        },
+        {
+          "property": "long"
+        }
+      ]
+    },
+    {
+      "name": "my tickets screen rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets Tab",
+      "source": "my tickets screen tab",
+      "description": "My tickets screen rendered and displayed.",
+      "properties": []
+    },
+    {
+      "name": "nearby stops activity card more trips clicked",
+      "component": "NearbyStopsMapComponent",
+      "stage": "Nearby Trips",
+      "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:963",
+      "properties": [
+        {
+          "property": "stopId"
+        },
+        {
+          "property": "stopName"
+        }
+      ]
+    },
+    {
+      "name": "nearby stops activity card route clicked",
+      "component": "NearbyStopsMapComponent",
+      "stage": "Nearby Trips",
+      "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:982",
+      "properties": [
+        {
+          "property": "fromName"
+        },
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "stopId"
+        },
+        {
+          "property": "stopName"
+        },
+        {
+          "property": "toName"
+        }
+      ]
+    },
+    {
+      "name": "nearby stops card more trips clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks 'more buses' in nearby stops card.",
+      "properties": [
+        {
+          "property": "stopid"
+        },
+        {
+          "property": "stopname"
+        }
+      ]
+    },
+    {
+      "name": "nearby stops card route clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks route in nearby stops card.",
+      "properties": [
+        {
+          "property": "stopid"
+        },
+        {
+          "property": "routename"
+        },
+        {
+          "property": "routeid"
+        },
+        {
+          "property": "toname"
+        }
+      ]
+    },
+    {
+      "name": "nearby stops card stop name header clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks stop name in nearby stops card.",
+      "properties": [
+        {
+          "property": "stopid"
+        },
+        {
+          "property": "stopname"
+        }
+      ]
+    },
+    {
+      "name": "nearby stops map screen open",
+      "component": "NearbyStopsMapComponent",
+      "stage": "Nearby Trips",
+      "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:998",
+      "properties": []
+    },
+    {
+      "name": "nearby stops marker click",
+      "component": "NearbyStopsMapComponent",
+      "stage": "Nearby Trips",
+      "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:948",
+      "properties": [
+        {
+          "property": "mode"
+        },
+        {
+          "property": "stop"
+        }
+      ]
+    },
+    {
+      "name": "nearby stops more clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks 'see all stops' in nearby stops section.",
+      "properties": []
+    },
+    {
+      "name": "new geo query manager data received",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "New geospatial data received from server.",
+      "properties": [
+        {
+          "property": "count"
+        }
+      ]
+    },
+    {
+      "name": "notification permission bottomsheet enable clicked",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1089",
+      "properties": []
+    },
+    {
+      "name": "notification permission bottomsheet rendered",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1535",
+      "properties": []
+    },
+    {
+      "name": "notification permission bottomsheet skip clicked",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1129",
+      "properties": []
+    },
+    {
+      "name": "boost ratings BottomSheet rendered",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1558",
+      "properties": []
+    },
+    {
+      "name": "boost ratings rate button clicked",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1053",
+      "properties": []
+    },
+    {
+      "name": "boost ratings remind later clicked",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1109",
+      "properties": []
+    },
+    {
+      "name": "ocr homescreen card recharge card",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks card recharge card on home screen.",
+      "properties": []
+    },
+    {
+      "name": "ocr tutorial bottomsheet displayed",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "Card recharge tutorial bottom sheet is shown.",
+      "properties": []
+    },
+    {
+      "name": "ocr tutorial bottomsheet next clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks OK/Next in card recharge tutorial.",
+      "properties": []
+    },
+    {
+      "name": "pass status prompt open",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1579",
+      "properties": [
+        {
+          "property": "pass status"
+        }
+      ]
+    },
+    {
+      "name": "pb booking card expired",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1638",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "route id"
+        },
+        {
+          "property": "tripId"
+        }
+      ]
+    },
+    {
+      "name": "pb explore available routes button clicked",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "User clicks explore available routes button.",
+      "properties": []
+    },
+    {
+      "name": "pb homescreen book trip clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks premium bus booking card on home screen.",
+      "properties": [
+        {
+          "property": "userAction"
+        },
+        {
+          "property": "premiumBusStackType"
+        }
+      ]
+    },
+    {
+      "name": "pb landing route clicked",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "User clicks route in landing screen.",
+      "properties": [
+        {
+          "property": "route id"
+        }
+      ]
+    },
+    {
+      "name": "pb pass savings info btn clicked",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "User clicks pass savings info button.",
+      "properties": [
+        {
+          "property": "faqs_size"
+        }
+      ]
+    },
+    {
+      "name": "pb preferred time bottomsheet opened",
+      "component": "HomeScreenComponent / ChaloBusComponent",
+      "stage": "Home Screen Tab / Chalo Bus Tab",
+      "source": "home screen tab / chalo bus screen tab",
+      "description": "Preferred time bottom sheet opens for premium bus.",
+      "properties": []
+    },
+    {
+      "name": "pb preferred time submitted",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User submits preferred time for premium bus.",
+      "properties": [
+        {
+          "property": "default time date"
+        },
+        {
+          "property": "input time date"
+        }
+      ]
+    },
+    {
+      "name": "pb trip details screen shown",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "Premium bus trip details screen shown to user.",
+      "properties": [
+        {
+          "property": "rebookCardCount"
+        },
+        {
+          "property": "attribution type",
+          "context": "if deeplink"
+        }
+      ]
+    },
+    {
+      "name": "pb trip details submitted",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "User submits trip details (from/to stops) for premium bus.",
+      "properties": [
+        {
+          "property": "searchSource"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket ack cta clicked",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User clicks acknowledgment CTA on premium bus notification.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "pbAckCtaType"
+        }
+      ]
+    },
+    {
+      "name": "premium service bus interaction",
+      "component": "HomeScreenComponent",
+      "stage": "Home Screen Tab",
+      "source": "home screen tab",
+      "description": "User interacts with premium bus booking card.",
+      "properties": [
+        {
+          "property": "userAction"
+        },
+        {
+          "property": "premiumBusStackType"
+        }
+      ]
+    },
+    {
+      "name": "profile icon clicked",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "User clicks profile icon to open navigation drawer.",
+      "properties": []
+    },
+    {
+      "name": "profile screen item clicked",
+      "component": "ProfileScreenComponent",
+      "stage": "Profile Tab",
+      "source": "profile screen",
+      "description": "User clicks profile menu item.",
+      "properties": [
+        {
+          "property": "title"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "type"
+        },
+        {
+          "property": "displayType",
+          "context": "optional"
+        }
+      ]
+    },
+    {
+      "name": "profile screen item rendered",
+      "component": "GetProfilePageItemsUseCase",
+      "stage": "Misc",
+      "source": "Source.PROFILE_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetProfilePageItemsUseCase.kt:30",
+      "properties": [
+        {
+          "property": "displayType"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "type"
+        }
+      ]
+    },
+    {
+      "name": "profile screen rendered",
+      "component": "ProfileScreenComponent",
+      "stage": "Profile Tab",
+      "source": "profile screen",
+      "description": "Profile screen rendered and displayed.",
+      "properties": []
+    },
+    {
+      "name": "regular bus page card item clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks card item on regular bus screen.",
+      "properties": [
+        {
+          "property": "type"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "desc list"
+        },
+        {
+          "property": "tag list"
+        },
+        {
+          "property": "image url"
+        }
+      ]
+    },
+    {
+      "name": "regular bus page card item rendered",
+      "component": "GetRegularBusPageItemsUseCase",
+      "stage": "Misc",
+      "source": "Source.REGULAR_BUS_SCREEN_TAB",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetRegularBusPageItemsUseCase.kt:75",
+      "properties": [
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "type"
+        }
+      ]
+    },
+    {
+      "name": "regular bus page map thumbnail clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks map thumbnail on regular bus screen.",
+      "properties": []
+    },
+    {
+      "name": "regular bus page recent search card clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks recent search card on regular bus tab.",
+      "properties": [
+        {
+          "property": "card position"
+        }
+      ]
+    },
+    {
+      "name": "regular bus page rendered",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Regular bus screen loaded and displayed.",
+      "properties": []
+    },
+    {
+      "name": "regular bus tab, pay for ticket click navigation failed",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Pay for ticket navigation fails with error.",
+      "properties": [
+        {
+          "property": "error"
+        }
+      ]
+    },
+    {
+      "name": "seat occupancy bottomsheet dismissed clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User dismisses seat occupancy info bottom sheet.",
+      "properties": []
+    },
+    {
+      "name": "seat occupancy bottomsheet got it clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks 'Got It' on seat occupancy bottom sheet.",
+      "properties": []
+    },
+    {
+      "name": "seat occupancy bottomsheet learn more clicked",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "User clicks 'Learn More' on seat occupancy bottom sheet.",
+      "properties": []
+    },
+    {
+      "name": "seat occupancy bottomsheet rendered on homescreen",
+      "component": "RegularBusComponent",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Seat occupancy info bottom sheet shown.",
+      "properties": []
+    },
+    {
+      "name": "see all passes clicked",
+      "component": "RegularBusComponent / ChaloBusComponent",
+      "stage": "Regular Bus Tab / Chalo Bus Tab",
+      "source": "regular bus screen tab / chalo bus screen tab",
+      "description": "User clicks see all passes.",
+      "properties": []
+    },
+    {
+      "name": "user bookings in cache empty",
+      "component": "HomeComponent",
+      "stage": "Misc",
+      "source": "Source.HOME_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1204",
+      "properties": []
+    },
+    {
+      "name": "wallet onBoarding bottom sheet positive button clicked",
+      "component": "ProfileScreenComponent",
+      "stage": "Profile Tab",
+      "source": "profile screen",
+      "description": "User clicks wallet onboarding button in profile.",
+      "properties": []
+    },
+    {
+      "name": "webview url load failed",
+      "component": "WebViewScreenComponent",
+      "stage": "Misc",
+      "source": "Source.WEB_VIEW_SCREEN",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/webview/WebViewScreenComponent.kt:123",
+      "properties": [
+        {
+          "property": "errorCode"
+        },
+        {
+          "property": "errorMsg"
+        },
+        {
+          "property": "url"
+        }
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "multi_tab",
+    "tabs": [
+      {
+        "label": "Home Tab",
+        "entry": "home page rendered",
+        "mainEvents": [
+          "home page card item clicked",
+          "home page hook clicked",
+          "profile icon clicked",
+          "chalo search bar clicked",
+          "city change card clicked",
+          "pb homescreen book trip clicked"
+        ]
+      },
+      {
+        "label": "Regular Bus Tab",
+        "entry": "regular bus page rendered",
+        "mainEvents": [
+          "regular bus page card item clicked",
+          "nearby stops card route clicked",
+          "see all passes clicked",
+          "regular bus page map thumbnail clicked"
+        ]
+      },
+      {
+        "label": "Chalo Bus Tab",
+        "entry": "chalo bus page rendered",
+        "mainEvents": [
+          "pb landing route clicked",
+          "pb trip details submitted",
+          "pb trip details screen shown"
+        ]
+      },
+      {
+        "label": "Profile Tab",
+        "entry": "profile screen rendered",
+        "mainEvents": [
+          "profile screen item clicked"
+        ]
+      },
+      {
+        "label": "Tickets Tab",
+        "entry": "my tickets screen rendered",
+        "mainEvents": []
+      }
+    ],
+    "sharedEvents": [
+      "location tooltip turn on clicked",
+      "gps request on",
+      "location update received",
+      "access location event",
+      "profile icon clicked"
+    ],
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "check user bookings in cache failed",
+          "home screen opened via deeplink",
+          "home screen search removal config fetch",
+          "homescreen user bookings in cache logger",
+          "notification permission bottomsheet enable clicked",
+          "notification permission bottomsheet rendered",
+          "notification permission bottomsheet skip clicked",
+          "boost ratings BottomSheet rendered",
+          "boost ratings rate button clicked",
+          "boost ratings remind later clicked",
+          "pass status prompt open",
+          "pb booking card expired",
+          "user bookings in cache empty"
+        ]
+      },
+      {
+        "label": "Additional events: Live Vehicles",
+        "events": [
+          "banner info received"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "chalo tab bottom sheet dismissed"
+        ]
+      },
+      {
+        "label": "Additional events: Live Vehicles",
+        "events": [
+          "geo spatial request response time"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "home page card item rendered"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "home page hook rendered"
+        ]
+      },
+      {
+        "label": "Additional events: Live Vehicles",
+        "events": [
+          "home screen live marker shown"
+        ]
+      },
+      {
+        "label": "Additional events: Live Vehicles",
+        "events": [
+          "home screen live vehicles click"
+        ]
+      },
+      {
+        "label": "Additional events: Live Vehicles",
+        "events": [
+          "home screen live vehicles shown on map"
+        ]
+      },
+      {
+        "label": "Additional events: Live Vehicles",
+        "events": [
+          "home screen no live vehicles loaded"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "profile screen item rendered"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "regular bus page card item rendered"
+        ]
+      },
+      {
+        "label": "Additional events: Misc",
+        "events": [
+          "webview url load failed"
+        ]
+      },
+      {
+        "label": "Additional events: Nearby Trips",
+        "events": [
+          "nearby stops activity card more trips clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Nearby Trips",
+        "events": [
+          "nearby stops activity card route clicked"
+        ]
+      },
+      {
+        "label": "Additional events: Nearby Trips",
+        "events": [
+          "nearby stops map screen open"
+        ]
+      },
+      {
+        "label": "Additional events: Nearby Trips",
+        "events": [
+          "nearby stops marker click"
+        ]
+      }
+    ]
+  }
+}

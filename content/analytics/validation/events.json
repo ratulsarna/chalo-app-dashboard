@@ -1,0 +1,874 @@
+{
+  "flowId": "validation",
+  "flowName": "Validation",
+  "description": "Complete analytics map for ticket/pass validation across all products - BLE validation, QR code validation, conductor validation, tap-in/tap-out (TITO), vehicle-based validation, and punch notifications.",
+  "propertyDefinitions": {
+    "productType": {
+      "type": "string",
+      "description": "Product type being validated",
+      "values": [
+        "superPass",
+        "mTicket",
+        "instantTicket",
+        "premiumReserveTicket",
+        "ondcTicket",
+        "ondcMetroTicket",
+        "metroTicket",
+        "quickPay"
+      ]
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type (e.g., magicPass, ridePass for super pass; specific ticket types for others)"
+    },
+    "isSuperPass": {
+      "type": "boolean",
+      "description": "Whether the product is a super pass"
+    },
+    "passId": {
+      "type": "string",
+      "description": "Pass/booking ID for the product being validated"
+    },
+    "validationFlowType": {
+      "type": "string",
+      "description": "Type of validation flow",
+      "values": [
+        "conductorValidation",
+        "conductorOrUnifiedTapIn",
+        "titoTapOut",
+        "vehicleBasedValidation"
+      ]
+    },
+    "isBlePermissionGranted": {
+      "type": "boolean",
+      "description": "Whether BLE permissions are granted"
+    },
+    "validationAckDataType": {
+      "type": "string",
+      "description": "Type of ACK data received during validation",
+      "values": [
+        "conductorValidationAckData",
+        "titoTapInAckData",
+        "titoTapOutAckData",
+        "invalid_data"
+      ]
+    },
+    "wasTitoValidation": {
+      "type": "boolean",
+      "description": "Whether the validation was TITO (tap-in-tap-out)"
+    },
+    "notificationDeliveryMedium": {
+      "type": "string",
+      "description": "Medium through which validation notification was delivered (GCM, BLE, Polling)",
+      "values": [
+        "GCM",
+        "BLE",
+        "POLLING"
+      ]
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Route name from receipt data"
+    },
+    "startStop": {
+      "type": "string",
+      "description": "Start stop name from receipt"
+    },
+    "endStop": {
+      "type": "string",
+      "description": "End stop name from receipt"
+    },
+    "endStopId": {
+      "type": "string",
+      "description": "End stop ID from receipt"
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Conductor ID from punch/receipt data"
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Vehicle number from receipt"
+    },
+    "activationTime": {
+      "type": "string",
+      "description": "Activation timestamp formatted as time string"
+    },
+    "punchTime": {
+      "type": "string",
+      "description": "Punch timestamp formatted as time string"
+    },
+    "punchTsInMillis": {
+      "type": "number",
+      "description": "Punch timestamp in milliseconds"
+    },
+    "punch notification delay": {
+      "type": "number",
+      "description": "Delay between punch time and notification received (milliseconds)"
+    },
+    "tapId": {
+      "type": "string",
+      "description": "Unique tap identifier for TITO validations"
+    },
+    "titoRideExpiryTimeInMillis": {
+      "type": "number",
+      "description": "TITO ride expiry timestamp in milliseconds"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for failure or invalid data"
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Detailed failure reason for syncing failures"
+    },
+    "rawData": {
+      "type": "string",
+      "description": "Raw data payload for debugging (invalid data scenarios)"
+    },
+    "isTripReceiptAvailable": {
+      "type": "boolean",
+      "description": "Whether trip receipt is available"
+    },
+    "numberOfTrips": {
+      "type": "number",
+      "description": "Number of trips in the itinerary (for trip planner integration)"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message for failures"
+    },
+    "payload": {
+      "type": "string",
+      "description": "Auto-documented from code; validate semantics and expected values."
+    }
+  },
+  "events": [
+    {
+      "name": "BLE denial qr option shown",
+      "description": "QR alternative option shown after BLE permission denial",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "BLE permissions denied, fallback QR option displayed"
+      ]
+    },
+    {
+      "name": "BLE denial use qr clicked",
+      "description": "User chose to use QR after denying BLE permissions",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'Use QR' button after denying BLE"
+      ]
+    },
+    {
+      "name": "BLE permission check on validation initialization",
+      "description": "BLE permission status checked when validation screen initializes",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "isBlePermissionGranted"
+      ],
+      "triggers": [
+        "BLE validation component initializes"
+      ]
+    },
+    {
+      "name": "BLE permission denied",
+      "description": "User denied BLE permissions",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User denies BLE permissions via system dialog"
+      ]
+    },
+    {
+      "name": "BLE permission granted",
+      "description": "User granted BLE permissions",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User grants BLE permissions via system dialog"
+      ]
+    },
+    {
+      "name": "BLE permission rationale accepted",
+      "description": "User accepted BLE permission rationale",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'Allow' or 'Continue' on rationale screen"
+      ]
+    },
+    {
+      "name": "BLE validation help btn clicked",
+      "description": "Help button clicked on BLE validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User taps help/info icon on BLE validation screen"
+      ]
+    },
+    {
+      "name": "BLE validation open qr btn clicked",
+      "description": "User opened QR alternative from BLE screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'Open QR' button on BLE validation screen"
+      ]
+    },
+    {
+      "name": "BLE validation permission rationale screen opened",
+      "description": "Permission rationale/explainer screen shown",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "System shows rationale before requesting BLE permissions"
+      ]
+    },
+    {
+      "name": "BLE validation permission settings screen opened",
+      "description": "Settings screen opened to enable BLE permissions",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User navigates to settings to enable BLE permissions"
+      ]
+    },
+    {
+      "name": "BLE validation switch to qr got it clicked",
+      "description": "User acknowledged switch to QR validation",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'Got it' on switch-to-QR dialog"
+      ]
+    },
+    {
+      "name": "Post validation screen opened",
+      "description": "Post-validation success screen shown",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "Validation successful, post-validation screen displayed"
+      ]
+    },
+    {
+      "name": "activation duration expired dialog ok clicked",
+      "description": "OK clicked on activation duration expired dialog",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'OK' on activation duration expired dialog"
+      ]
+    },
+    {
+      "name": "activation duration expired dialog view summary clicked",
+      "description": "View summary clicked on activation duration expired dialog",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'View Summary' on activation duration expired dialog"
+      ]
+    },
+    {
+      "name": "ble bottom sheet clicked",
+      "description": "BLE validation bottom sheet clicked/expanded",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User interacts with product details bottom sheet on BLE screen"
+      ]
+    },
+    {
+      "name": "ble hardware not available on device",
+      "description": "BLE hardware not available on user's device",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "Device doesn't support BLE hardware"
+      ]
+    },
+    {
+      "name": "ble screen open",
+      "description": "BLE validation screen opened",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "validationFlowType"
+      ],
+      "triggers": [
+        "User navigates to BLE validation screen",
+        "Validation initiated for conductor flow",
+        "Validation initiated for TITO tap-in/tap-out"
+      ]
+    },
+    {
+      "name": "ble validation ack data consumed",
+      "description": "BLE validation ACK data successfully consumed (processed)",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "notificationDeliveryMedium",
+        "validationAckDataType"
+      ],
+      "triggers": [
+        "ACK data from BLE validation processed and consumed"
+      ],
+      "note": "Fired only once per validation to measure ACK success rates and delivery medium distribution"
+    },
+    {
+      "name": "chalo pay ticket punched",
+      "description": "Quick pay ticket punched",
+      "properties": [
+        "passId",
+        "productType",
+        "routeName",
+        "conductorId",
+        "punchTime",
+        "vehicleNo"
+      ],
+      "triggers": [
+        "Conductor punch notification received for quick pay"
+      ]
+    },
+    {
+      "name": "confirmation on backpress no clicked",
+      "description": "User cancelled exit on back press dialog",
+      "properties": [],
+      "triggers": [
+        "User taps 'No' to stay on validation screen"
+      ]
+    },
+    {
+      "name": "confirmation on backpress shown",
+      "description": "Confirmation dialog shown when user presses back during validation",
+      "properties": [],
+      "triggers": [
+        "User presses back button during active validation"
+      ]
+    },
+    {
+      "name": "confirmation on backpress yes clicked",
+      "description": "User confirmed exit on back press dialog",
+      "properties": [],
+      "triggers": [
+        "User taps 'Yes' to exit validation"
+      ]
+    },
+    {
+      "name": "instant ticket trip punched",
+      "description": "Instant ticket trip punched by conductor",
+      "properties": [
+        "passId",
+        "productType",
+        "productSubType",
+        "routeName",
+        "conductorId",
+        "punchTime",
+        "vehicleNo"
+      ],
+      "triggers": [
+        "Conductor punch notification received for instant ticket"
+      ]
+    },
+    {
+      "name": "invalid ble validation ack data received",
+      "description": "Invalid BLE validation ACK data received",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "reason",
+        "rawData",
+        "notificationDeliveryMedium"
+      ],
+      "triggers": [
+        "BLE validation received malformed or invalid ACK data"
+      ]
+    },
+    {
+      "name": "invalid tito tap in data received in polling",
+      "description": "Invalid TITO tap-in data received via polling",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "reason"
+      ],
+      "triggers": [
+        "Polling retrieved invalid/corrupted tap-in data"
+      ]
+    },
+    {
+      "name": "mTicket trip punch",
+      "description": "M-ticket trip punched by conductor",
+      "properties": [
+        "isTripReceiptAvailable",
+        "passId",
+        "productSubType",
+        "productType",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId",
+        "punchTime",
+        "vehicleNo",
+        "punch notification delay"
+      ],
+      "triggers": [
+        "Conductor punch notification received for m-ticket"
+      ]
+    },
+    {
+      "name": "metro ticket trip punched",
+      "description": "Metro ticket trip punched",
+      "properties": [
+        "passId",
+        "productType",
+        "punchTime"
+      ],
+      "triggers": [
+        "Punch notification received for metro ticket"
+      ]
+    },
+    {
+      "name": "mpass activation duration expired dialog shown",
+      "description": "Activation duration expired dialog shown for super pass",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "Super pass activation duration expired during validation"
+      ]
+    },
+    {
+      "name": "mticket qr code zoomed",
+      "description": "M-ticket QR code zoomed in (fullscreen)",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "User taps to zoom mticket QR code"
+      ]
+    },
+    {
+      "name": "ondc metro ticket trip punched",
+      "description": "ONDC metro ticket trip punched",
+      "properties": [
+        "passId",
+        "productType",
+        "routeName",
+        "punchTime"
+      ],
+      "triggers": [
+        "Punch notification received for ONDC metro ticket"
+      ]
+    },
+    {
+      "name": "ondc ticket receipt payload",
+      "component": "OndcTicketProductValidationConfig",
+      "stage": "Misc",
+      "source": "this::class.simpleName ?: \"OndcTicketProductValidationConfig\"",
+      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/ondc/validation/OndcTicketProductValidationConfig.kt:117",
+      "properties": [
+        {
+          "property": "payload"
+        }
+      ]
+    },
+    {
+      "name": "ondc ticket trip punched",
+      "description": "ONDC bus ticket trip punched",
+      "properties": [
+        "passId",
+        "productType",
+        "routeName",
+        "conductorId",
+        "punchTime",
+        "vehicleNo"
+      ],
+      "triggers": [
+        "Conductor punch notification received for ONDC bus ticket"
+      ]
+    },
+    {
+      "name": "premium reserve ticket trip punched",
+      "description": "Premium reserve ticket trip punched by conductor",
+      "properties": [
+        "passId",
+        "productType",
+        "routeName",
+        "conductorId",
+        "punchTime",
+        "vehicleNo"
+      ],
+      "triggers": [
+        "Conductor punch notification received for premium bus ticket"
+      ]
+    },
+    {
+      "name": "qr screen open",
+      "description": "QR validation screen opened (legacy event name)",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User navigates to QR validation screen"
+      ]
+    },
+    {
+      "name": "qr validation screen help button clicked",
+      "description": "Help button clicked on QR validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "User taps help icon on QR validation screen"
+      ]
+    },
+    {
+      "name": "qr validation screen trip planner failed",
+      "description": "Trip planner failed to fetch itinerary from QR screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId",
+        "error"
+      ],
+      "triggers": [
+        "Trip planner API call fails or returns error"
+      ]
+    },
+    {
+      "name": "qr validation screen trip planner success",
+      "description": "Trip planner successfully fetched itinerary from QR screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId",
+        "numberOfTrips"
+      ],
+      "triggers": [
+        "Trip planner API call succeeds, itinerary displayed"
+      ]
+    },
+    {
+      "name": "qr validation screen view journey button clicked",
+      "description": "View journey button clicked on QR validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "User taps 'View Journey' to see trip details from QR screen"
+      ]
+    },
+    {
+      "name": "report problem clicked v2",
+      "description": "Report problem clicked from validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "problemType",
+        "problemSource"
+      ],
+      "triggers": [
+        "User taps report problem/help button on validation screen"
+      ]
+    },
+    {
+      "name": "simple qr validation zoom qr clicked",
+      "description": "Generic QR zoom clicked (for other product types)",
+      "properties": [
+        "productType",
+        "productSubType",
+        "passId"
+      ],
+      "triggers": [
+        "User taps to zoom QR code on validation screen"
+      ]
+    },
+    {
+      "name": "start product validation",
+      "description": "Generic product validation started",
+      "properties": [
+        "productType",
+        "passId"
+      ],
+      "triggers": [
+        "User initiates validation for any product"
+      ]
+    },
+    {
+      "name": "super pass active qr zoomed screen opened",
+      "description": "Super pass QR code zoomed in (fullscreen)",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User taps to zoom super pass QR code"
+      ]
+    },
+    {
+      "name": "superPass trip punch",
+      "description": "Super pass trip punched by conductor",
+      "properties": [
+        "isTripReceiptAvailable",
+        "passId",
+        "productSubType",
+        "productType",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId",
+        "activationTime",
+        "punchTime",
+        "vehicleNo",
+        "punch notification delay"
+      ],
+      "triggers": [
+        "Conductor punch notification received for super pass"
+      ]
+    },
+    {
+      "name": "syncing post ble validation failed",
+      "description": "Post-BLE validation sync with backend failed",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "failureReason"
+      ],
+      "triggers": [
+        "Backend sync failed after BLE validation completed"
+      ]
+    },
+    {
+      "name": "tito tapIn notif recv on conductor flow",
+      "description": "TITO tap-in notification received during conductor validation flow",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "notificationDeliveryMedium",
+        "tapId",
+        "routeName",
+        "vehicleNo",
+        "punchTsInMillis"
+      ],
+      "triggers": [
+        "Tap-in notification received while on conductor validation screen"
+      ]
+    },
+    {
+      "name": "tito tapin polling stopped due to notification received",
+      "description": "TITO tap-in polling stopped because notification was received",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "notificationDeliveryMedium"
+      ],
+      "triggers": [
+        "Polling for tap-in stopped after receiving notification via GCM/BLE"
+      ]
+    },
+    {
+      "name": "valid tito tap in data received in polling",
+      "description": "Valid TITO tap-in data received via polling",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "tapId",
+        "routeName",
+        "vehicleNo",
+        "punchTsInMillis"
+      ],
+      "triggers": [
+        "Polling successfully retrieved valid tap-in data"
+      ]
+    },
+    {
+      "name": "validation product not found",
+      "description": "Product not found when attempting validation",
+      "properties": [
+        "productType",
+        "passId"
+      ],
+      "triggers": [
+        "Product data not available when validation attempted"
+      ]
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "description": "View receipt button clicked on post-validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "wasTitoValidation"
+      ],
+      "triggers": [
+        "User taps 'View Receipt' after successful validation"
+      ]
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "description": "Exit button clicked on post-validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "wasTitoValidation"
+      ],
+      "triggers": [
+        "User taps 'Exit' or 'Done' after successful validation"
+      ],
+      "note": "This event shares the same name as 'view receipt post validation clicked' which is a data issue. The actual constant is EXIT_POST_VALIDATION_CLICKED but maps to the same string."
+    },
+    {
+      "name": "view trip receipt from menu clicked",
+      "description": "View trip receipt clicked from menu on validation screen",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId"
+      ],
+      "triggers": [
+        "User accesses trip receipt from validation screen menu"
+      ]
+    }
+  ],
+  "commonSources": [
+    "validationScreen",
+    "BLE validation",
+    "QR validation",
+    "tito flow"
+  ],
+  "notes": [
+    "Validation flow supports multiple products: Super Pass, M-Ticket, Instant Ticket, Premium Bus, ONDC Bus, ONDC Metro, Metro, Quick Pay",
+    "Three main validation types: BLE validation (conductor/TITO), QR validation (static/dynamic), Vehicle-based validation",
+    "TITO (Ticket-In-Ticket-Out) is a tap-in/tap-out validation system for pay-per-distance fares",
+    "Notification delivery can occur via GCM (push notification), BLE (direct Bluetooth), or Polling (periodic API calls)",
+    "BLE validation requires nearby devices and Bluetooth permissions",
+    "QR validation serves as fallback when BLE is unavailable or denied",
+    "Post-validation screens show success confirmation and allow viewing receipts",
+    "Product-specific analytics managers handle different event properties per product type",
+    "Conductor validation involves conductor punch notifications with receipt details",
+    "Trip planner integration available from QR validation screen for journey details"
+  ],
+  "stages": [
+    {
+      "name": "Misc",
+      "description": "Auto-added stage (validate grouping).",
+      "events": [
+        "ondc ticket receipt payload"
+      ]
+    }
+  ],
+  "diagram": {
+    "type": "sequence",
+    "steps": [
+      {
+        "label": "Additional events",
+        "events": [
+          "ondc ticket receipt payload"
+        ]
+      }
+    ]
+  }
+}
