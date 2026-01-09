@@ -2,6 +2,36 @@ export type AnalyticsFlowSlug = string;
 export type AnalyticsEventName = string;
 export type AnalyticsPropertyKey = string;
 
+export type AnalyticsStage = {
+  name: string;
+  description?: string;
+  events?: string[];
+};
+
+export type AnalyticsDiagramSequenceStep = {
+  label: string;
+  events?: string[];
+  next?: string;
+};
+
+export type AnalyticsDiagramFlowchartBranch = {
+  label: string;
+  events?: string[];
+  next?: string;
+};
+
+export type AnalyticsDiagramFlowchartStep = {
+  label: string;
+  events?: string[];
+  branches?: AnalyticsDiagramFlowchartBranch[];
+  next?: string;
+};
+
+export type AnalyticsDiagram =
+  | { type: "sequence"; steps: AnalyticsDiagramSequenceStep[]; notes?: string }
+  | { type: "flowchart"; steps: AnalyticsDiagramFlowchartStep[]; notes?: string }
+  | Record<string, unknown>;
+
 export type AnalyticsPropertyDefinition = {
   type: string;
   description?: string;
@@ -28,9 +58,9 @@ export type AnalyticsFlowEventsFile = {
   flowName: string;
   description?: string;
   propertyDefinitions?: Record<AnalyticsPropertyKey, AnalyticsPropertyDefinition>;
-  stages?: unknown;
+  stages?: AnalyticsStage[];
   events: AnalyticsEventDefinition[];
-  diagram?: unknown;
+  diagram?: AnalyticsDiagram;
 };
 
 export type AnalyticsFlow = {
@@ -39,9 +69,10 @@ export type AnalyticsFlow = {
   flowName: string;
   description?: string;
   propertyDefinitions: Record<AnalyticsPropertyKey, AnalyticsPropertyDefinition>;
+  stages?: AnalyticsStage[];
   events: AnalyticsEventDefinition[];
   diagramMarkdown?: string;
-  diagramSummary?: unknown;
+  diagramSummary?: AnalyticsDiagram;
 };
 
 export type AnalyticsEventOccurrence = {
@@ -63,4 +94,3 @@ export type AnalyticsSnapshot = {
   occurrences: AnalyticsEventOccurrence[];
   occurrencesByEventName: Record<AnalyticsEventName, AnalyticsEventOccurrence[]>;
 };
-

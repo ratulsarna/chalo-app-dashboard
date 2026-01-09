@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Form from "next/form";
 import { getAnalyticsSnapshot, searchAnalyticsOccurrences, occurrenceAnchorId } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,10 +31,10 @@ export default async function AnalyticsEventsPage({
         <span className="font-medium">component</span>.
       </p>
 
-      <form className="mt-6 flex gap-2" method="GET" action="/analytics/events">
+      <Form className="mt-6 flex gap-2" action="/analytics/events">
         <Input name="q" placeholder="Search..." defaultValue={query} />
         <Button type="submit">Search</Button>
-      </form>
+      </Form>
 
       {query.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">

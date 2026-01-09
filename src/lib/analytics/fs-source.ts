@@ -46,6 +46,9 @@ function toOccurrenceId(
   return [flowSlug, eventName, stage ?? "", component ?? ""].join("::");
 }
 
+/**
+ * Lists flow slugs under `content/analytics/` that contain an `events.json`.
+ */
 export const listAnalyticsFlowSlugs = cache(async (): Promise<AnalyticsFlowSlug[]> => {
   const entries = await fs.readdir(ANALYTICS_ROOT, { withFileTypes: true });
   const slugs = entries
@@ -61,6 +64,9 @@ export const listAnalyticsFlowSlugs = cache(async (): Promise<AnalyticsFlowSlug[
   return usable;
 });
 
+/**
+ * Reads a flow from disk (events + optional diagram markdown).
+ */
 export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Promise<AnalyticsFlow> => {
   const eventsPath = path.join(ANALYTICS_ROOT, flowSlug, "events.json");
   const diagramsPath = path.join(ANALYTICS_ROOT, flowSlug, "flow-diagrams.md");
@@ -82,23 +88,43 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     flowName: file.flowName,
     description: file.description,
     propertyDefinitions: file.propertyDefinitions ?? {},
+    stages: file.stages,
     events: file.events,
     diagramMarkdown,
     diagramSummary: file.diagram,
   };
 });
 
+/**
+ * Builds an in-memory snapshot of all flows + per-flow event occurrences.
+ *
+ * This is cached via React's `cache()` to avoid repeated filesystem reads.
+ */
 export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> => {
   const slugs = await listAnalyticsFlowSlugs();
   const flows = await Promise.all(slugs.map((slug) => readAnalyticsFlow(slug)));
 
   const occurrences: AnalyticsEventOccurrence[] = [];
   const occurrencesByEventName: Record<string, AnalyticsEventOccurrence[]> = {};
+  let skipped = 0;
+  const skippedSamples: string[] = [];
 
   for (const flow of flows) {
-    for (const event of flow.events) {
-      if (!event || typeof event !== "object") continue;
-      if (typeof event.name !== "string" || event.name.trim().length === 0) continue;
+    for (const [index, event] of flow.events.entries()) {
+      if (!event || typeof event !== "object") {
+        skipped += 1;
+        if (skippedSamples.length < 10) {
+          skippedSamples.push(`flow=${flow.slug} index=${index} reason=not-object`);
+        }
+        continue;
+      }
+      if (typeof event.name !== "string" || event.name.trim().length === 0) {
+        skipped += 1;
+        if (skippedSamples.length < 10) {
+          skippedSamples.push(`flow=${flow.slug} index=${index} reason=invalid-name`);
+        }
+        continue;
+      }
 
       const occurrence: AnalyticsEventOccurrence = {
         id: toOccurrenceId(flow.slug, event.name, event.stage, event.component),
@@ -119,10 +145,14 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
     }
   }
 
+  if (process.env.NODE_ENV !== "production" && skipped > 0) {
+    const suffix = skippedSamples.length > 0 ? ` (samples: ${skippedSamples.join(", ")})` : "";
+    console.warn(`[analytics] Skipped ${skipped} invalid event entries while building snapshot${suffix}`);
+  }
+
   return {
     flows: flows.sort((a, b) => a.flowName.localeCompare(b.flowName)),
     occurrences,
     occurrencesByEventName,
   };
 });
-

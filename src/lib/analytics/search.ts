@@ -12,6 +12,12 @@ function includesInsensitive(haystack: string | undefined, needleLower: string) 
   return haystack.toLowerCase().includes(needleLower);
 }
 
+/**
+ * Performs a case-insensitive substring search over event occurrences.
+ *
+ * Matches on: event name, stage, component. Results are sorted by match breadth
+ * (matches across more fields first), then by event name for stability.
+ */
 export function searchAnalyticsOccurrences(
   snapshot: AnalyticsSnapshot,
   query: string,
@@ -40,4 +46,3 @@ export function searchAnalyticsOccurrences(
 
   return hits;
 }
-
