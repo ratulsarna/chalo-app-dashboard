@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 let mermaidInitPromise: Promise<void> | null = null;
 
@@ -13,14 +14,15 @@ async function ensureMermaidInitialized() {
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "strict",
-      theme: "neutral",
+      // This app defaults to dark mode; keep Mermaid consistent/readable.
+      theme: "dark",
     });
   })();
 
   return mermaidInitPromise;
 }
 
-export function MermaidBlock({ code }: { code: string }) {
+export function MermaidBlock({ code, className }: { code: string; className?: string }) {
   const [svg, setSvg] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const renderId = React.useId();
@@ -57,7 +59,7 @@ export function MermaidBlock({ code }: { code: string }) {
 
   if (error) {
     return (
-      <details className="rounded-md border bg-muted/40 p-3">
+      <details className={cn("rounded-md border bg-muted/40 p-3", className)}>
         <summary className="cursor-pointer text-sm text-muted-foreground">
           Failed to render diagram (click to view source)
         </summary>
@@ -68,7 +70,7 @@ export function MermaidBlock({ code }: { code: string }) {
 
   if (!svg) {
     return (
-      <div className="rounded-md border bg-muted/40 p-3 text-sm text-muted-foreground">
+      <div className={cn("rounded-md border bg-muted/40 p-3 text-sm text-muted-foreground", className)}>
         Rendering diagram…
       </div>
     );
@@ -76,7 +78,7 @@ export function MermaidBlock({ code }: { code: string }) {
 
   return (
     <div
-      className="overflow-auto rounded-md border bg-white p-3 dark:bg-black"
+      className={cn("overflow-auto rounded-md border bg-muted/20 p-3", className)}
       // Mermaid renders SVG strings; strict security level reduces risk.
       dangerouslySetInnerHTML={{ __html: svg }}
     />

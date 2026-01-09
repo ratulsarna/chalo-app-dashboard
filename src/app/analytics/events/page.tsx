@@ -3,19 +3,12 @@ import Form from "next/form";
 import {
   encodeEventNameForPath,
   getAnalyticsSnapshot,
-  occurrenceAnchorId,
   searchAnalyticsOccurrences,
 } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function AnalyticsEventsPage({
   searchParams,
@@ -27,17 +20,54 @@ export default async function AnalyticsEventsPage({
   const query = (queryParam ?? "").trim();
   const snapshot = await getAnalyticsSnapshot();
   const allHits = query.length > 0 ? searchAnalyticsOccurrences(snapshot, query) : [];
-  const hits = allHits.slice(0, 200);
-  const truncated = allHits.length > 200;
+
+  const grouped = (() => {
+    const byEventName = new Map<
+      string,
+      {
+        eventName: string;
+        matchCount: number;
+        matchedOn: Set<string>;
+        sampleFlows: Map<string, string>;
+      }
+    >();
+
+    for (const hit of allHits) {
+      const key = hit.occurrence.eventName;
+      const entry =
+        byEventName.get(key) ??
+        {
+          eventName: key,
+          matchCount: 0,
+          matchedOn: new Set<string>(),
+          sampleFlows: new Map<string, string>(),
+        };
+
+      entry.matchCount += 1;
+      hit.matchedOn.forEach((m) => entry.matchedOn.add(m));
+      if (entry.sampleFlows.size < 3) {
+        entry.sampleFlows.set(hit.occurrence.flowSlug, hit.occurrence.flowName);
+      }
+      byEventName.set(key, entry);
+    }
+
+    return Array.from(byEventName.values())
+      .sort((a, b) => b.matchCount - a.matchCount || a.eventName.localeCompare(b.eventName))
+      .slice(0, 60);
+  })();
+
+  const truncated = grouped.length >= 60;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
       <p className="mt-2 text-muted-foreground">
         Global partial search across event <span className="font-medium">name</span>,{" "}
         <span className="font-medium">stage</span>, and{" "}
         <span className="font-medium">component</span>.
       </p>
+      </div>
 
       <Form className="mt-6 flex gap-2" action="/analytics/events">
         <Input name="q" placeholder="Search..." defaultValue={query} />
@@ -45,61 +75,54 @@ export default async function AnalyticsEventsPage({
       </Form>
 
       {query.length === 0 ? (
-        <p className="mt-6 text-sm text-muted-foreground">
-          Enter a query to search across all flows.
-        </p>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">How to use</CardTitle>
+            <CardDescription>
+              Start typing an event name (or part of a stage/component). For faster navigation,
+              press <span className="font-medium">⌘K</span> to open global search.
+            </CardDescription>
+          </CardHeader>
+        </Card>
       ) : (
-        <div className="mt-6 space-y-3">
+        <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Showing {hits.length} result{hits.length === 1 ? "" : "s"}
-            {truncated ? " (first 200; refine your query to narrow results)." : "."}
+            {grouped.length} event{grouped.length === 1 ? "" : "s"} matched
+            {truncated ? " (showing top 60; refine to narrow)." : "."}
           </p>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Event</TableHead>
-                  <TableHead className="w-[200px]">Stage</TableHead>
-                  <TableHead className="w-[260px]">Component</TableHead>
-                  <TableHead className="w-[220px]">Flow</TableHead>
-                  <TableHead className="w-[120px]">Event Page</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {hits.map(({ occurrence }) => (
-                  <TableRow key={occurrence.id}>
-                    <TableCell className="font-medium">{occurrence.eventName}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {occurrence.stage ?? ""}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {occurrence.component ?? ""}
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        className="underline underline-offset-4 hover:text-primary"
-                        href={`/analytics/flows/${encodeURIComponent(
-                          occurrence.flowSlug,
-                        )}#${occurrenceAnchorId(occurrence)}`}
-                      >
-                        {occurrence.flowName}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        className="underline underline-offset-4 hover:text-primary"
-                        href={`/analytics/events/${encodeEventNameForPath(occurrence.eventName)}`}
-                      >
-                        View
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="grid gap-3 md:grid-cols-2">
+            {grouped.map((ev) => (
+              <Link
+                key={ev.eventName}
+                href={`/analytics/events/${encodeEventNameForPath(ev.eventName)}`}
+              >
+                <Card className="h-full transition-colors hover:bg-accent/30">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <CardTitle className="truncate text-base">{ev.eventName}</CardTitle>
+                        <CardDescription className="mt-1">
+                          Matches on: {Array.from(ev.matchedOn.values()).join(", ")}
+                        </CardDescription>
+                      </div>
+                      <Badge variant="secondary" className="shrink-0 tabular-nums">
+                        {ev.matchCount}
+                      </Badge>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {Array.from(ev.sampleFlows.entries()).map(([slug, name]) => (
+                        <Badge key={`${ev.eventName}::${slug}`} variant="outline">
+                          {name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

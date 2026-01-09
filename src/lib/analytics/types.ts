@@ -74,6 +74,12 @@ export type AnalyticsFlow = {
   events: AnalyticsEventDefinition[];
   diagramMarkdown?: string;
   diagramSummary?: AnalyticsDiagram;
+  catalog?: {
+    key: string;
+    name?: string;
+    description?: string;
+    lastAudited?: string;
+  };
 };
 
 export type AnalyticsEventOccurrence = {

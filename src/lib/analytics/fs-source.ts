@@ -15,6 +15,17 @@ const ANALYTICS_ROOT = path.join(process.cwd(), "content", "analytics");
 const ANALYTICS_ROOT_RESOLVED = path.resolve(ANALYTICS_ROOT);
 const FLOW_SLUG_PATTERN = /^[a-z0-9][a-z0-9_-]*$/i;
 
+type AnalyticsFlowCatalogFile = {
+  flows?: Record<
+    string,
+    {
+      name?: string;
+      description?: string;
+      lastAudited?: string;
+    }
+  >;
+};
+
 async function pathExists(filePath: string): Promise<boolean> {
   try {
     await fs.access(filePath);
@@ -57,6 +68,27 @@ function resolveUnderAnalyticsRoot(...segments: string[]) {
   }
   return resolved;
 }
+
+const readFlowSlugMap = cache(async () => {
+  const mapPath = path.join(ANALYTICS_ROOT, "flow-slug-map.json");
+  if (!(await pathExists(mapPath))) return {} as Record<string, string>;
+  const raw = await readJsonFile<Record<string, unknown>>(mapPath);
+  if (!isRecord(raw)) return {} as Record<string, string>;
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (k.startsWith("_")) continue;
+    if (typeof v === "string" && v.trim().length > 0) out[k] = v;
+  }
+  return out;
+});
+
+const readFlowsCatalog = cache(async () => {
+  const catalogPath = path.join(ANALYTICS_ROOT, "flows.json");
+  if (!(await pathExists(catalogPath))) return undefined;
+  const raw = await readJsonFile<AnalyticsFlowCatalogFile>(catalogPath);
+  if (!isRecord(raw) || !isRecord(raw.flows)) return undefined;
+  return raw as AnalyticsFlowCatalogFile;
+});
 
 function toOccurrenceId(
   flowSlug: AnalyticsFlowSlug,
@@ -114,6 +146,10 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     ? await fs.readFile(diagramsPath, "utf8")
     : undefined;
 
+  const [slugMap, catalog] = await Promise.all([readFlowSlugMap(), readFlowsCatalog()]);
+  const catalogKey = slugMap[flowSlug];
+  const catalogEntry = catalogKey ? catalog?.flows?.[catalogKey] : undefined;
+
   return {
     slug: flowSlug,
     flowId: file.flowId,
@@ -124,6 +160,14 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     events: file.events,
     diagramMarkdown,
     diagramSummary: file.diagram,
+    catalog: catalogKey
+      ? {
+          key: catalogKey,
+          name: catalogEntry?.name,
+          description: catalogEntry?.description,
+          lastAudited: catalogEntry?.lastAudited,
+        }
+      : undefined,
   };
 });
 
