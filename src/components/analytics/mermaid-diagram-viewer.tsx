@@ -46,14 +46,17 @@ function isEventNode(node: SVGGElement) {
 }
 
 function svgBBox(svg: SVGSVGElement) {
+  // Prefer viewBox when available: Mermaid sometimes produces elements that sit far outside the
+  // visible viewBox (e.g., markers/paths), which can inflate `getBBox()` and make fit-to-screen
+  // zoom way too far out (tiny diagrams anchored near the top).
+  const vb = svg.viewBox?.baseVal;
+  if (vb && vb.width > 0 && vb.height > 0) {
+    return { x: vb.x, y: vb.y, width: vb.width, height: vb.height } as DOMRect;
+  }
+
   try {
     return svg.getBBox();
   } catch {
-    // getBBox can throw if the element isn't fully rendered; fall back to viewBox if present.
-    const vb = svg.viewBox?.baseVal;
-    if (vb && vb.width > 0 && vb.height > 0) {
-      return { x: vb.x, y: vb.y, width: vb.width, height: vb.height } as DOMRect;
-    }
     return { x: 0, y: 0, width: 1000, height: 800 } as DOMRect;
   }
 }

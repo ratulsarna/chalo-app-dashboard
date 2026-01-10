@@ -167,3 +167,67 @@ test("zoom buttons and drag-pan update transform", async ({ page }) => {
   const afterPan = await host.evaluate((el) => (el as HTMLElement).style.transform);
   expect(afterPan).not.toBe(afterZoom);
 });
+
+test("fit-to-screen does not over-zoom out (authentication flow)", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await page.goto(`${BASE_URL}/analytics/flows/authentication`, { waitUntil: "networkidle" });
+
+  const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
+  await expect(viewer).toBeVisible();
+
+  await page.getByRole("button", { name: "Fit to screen" }).first().click();
+  await page.waitForTimeout(150);
+
+  const metrics = await viewer.evaluate((el) => {
+    const container = el.getBoundingClientRect();
+    const nodes = Array.from(el.querySelectorAll<SVGGraphicsElement>("svg g.node"));
+    if (nodes.length === 0) return null;
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    for (const node of nodes) {
+      const r = node.getBoundingClientRect();
+      minX = Math.min(minX, r.left);
+      minY = Math.min(minY, r.top);
+      maxX = Math.max(maxX, r.right);
+      maxY = Math.max(maxY, r.bottom);
+    }
+
+    const width = Math.max(0, maxX - minX);
+    const height = Math.max(0, maxY - minY);
+    const centerX = minX + width / 2;
+    const centerY = minY + height / 2;
+
+    return {
+      width,
+      height,
+      centerX,
+      centerY,
+      containerLeft: container.left,
+      containerTop: container.top,
+      containerWidth: container.width,
+      containerHeight: container.height,
+      containerCenterX: container.left + container.width / 2,
+      containerCenterY: container.top + container.height / 2,
+    };
+  });
+
+  expect(metrics).not.toBeNull();
+  const ratioW = (metrics?.width ?? 0) / (metrics?.containerWidth ?? 1);
+  const ratioH = (metrics?.height ?? 0) / (metrics?.containerHeight ?? 1);
+
+  // After "fit", the node cluster should not be tiny; either width or height should take up
+  // a meaningful portion of the viewport.
+  expect(Math.max(ratioW, ratioH)).toBeGreaterThan(0.22);
+
+  // The fit should roughly center the node cluster (avoid top-anchored / off-screen fits).
+  expect(Math.abs((metrics?.centerX ?? 0) - (metrics?.containerCenterX ?? 0))).toBeLessThan(
+    (metrics?.containerWidth ?? 0) * 0.35,
+  );
+  expect(Math.abs((metrics?.centerY ?? 0) - (metrics?.containerCenterY ?? 0))).toBeLessThan(
+    (metrics?.containerHeight ?? 0) * 0.4,
+  );
+});
