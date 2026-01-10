@@ -116,11 +116,17 @@ function normalizePropertiesUsed(raw: unknown): AnalyticsEventPropertyRef[] | un
 
     const contextParts: string[] = [];
     if (typeof item.required === "boolean" && item.required) contextParts.push("Required.");
-    const description = toTrimmedNonEmptyString(item.description);
-    if (description) contextParts.push(description);
 
-    const context = contextParts.length ? contextParts.join(" ") : undefined;
-    out.push({ property, context });
+    // Some flows store per-event property context as `context` (already normalized).
+    // Others store richer metadata as `description` + `required`.
+    const explicitContext = toTrimmedNonEmptyString(item.context);
+    if (explicitContext) contextParts.push(explicitContext);
+
+    const description = toTrimmedNonEmptyString(item.description);
+    if (description && description !== explicitContext) contextParts.push(description);
+
+    const combinedContext = contextParts.length ? contextParts.join(" ") : undefined;
+    out.push({ property, context: combinedContext });
   }
 
   return out.length ? out : undefined;
