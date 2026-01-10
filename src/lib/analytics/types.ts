@@ -2,6 +2,16 @@ export type AnalyticsFlowSlug = string;
 export type AnalyticsEventName = string;
 export type AnalyticsPropertyKey = string;
 
+export type AnalyticsDocIssueLevel = "error" | "warning";
+
+export type AnalyticsDocIssue = {
+  level: AnalyticsDocIssueLevel;
+  code: string;
+  message: string;
+  flowSlug?: AnalyticsFlowSlug;
+  filePath?: string;
+};
+
 export type AnalyticsStage = {
   name: string;
   description?: string;
@@ -95,6 +105,7 @@ export type AnalyticsFlow = {
     description?: string;
     lastAudited?: string;
   };
+  issues?: AnalyticsDocIssue[];
 };
 
 export type AnalyticsEventOccurrence = {
@@ -115,4 +126,5 @@ export type AnalyticsSnapshot = {
   flows: AnalyticsFlow[];
   occurrences: AnalyticsEventOccurrence[];
   occurrencesByEventName: Record<AnalyticsEventName, AnalyticsEventOccurrence[]>;
+  issues?: AnalyticsDocIssue[];
 };

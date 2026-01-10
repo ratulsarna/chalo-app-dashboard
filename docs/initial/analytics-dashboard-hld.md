@@ -146,6 +146,19 @@ Scope:
 - Deep-linking consistency (`?tab=events&open=<occurrenceId>` patterns) and dismissible sheets.
 - Accessibility (keyboard navigation, focus management for dialogs/sheets).
 
+Normalization rules (filesystem adapter):
+- Treat event `name` as exact, but trim leading/trailing whitespace if present (record a warning).
+- Stage field fallback: `event.stage` → `event.funnelPosition`.
+- Component field fallback: `event.component` → `event.firingLocation` (when docs store code callsite paths).
+- Properties list normalization:
+  - accepts `["propKey", ...]`
+  - accepts `[{ property, context }, ...]`
+  - accepts `[{ name, required, description }, ...]` and converts to `{ property, context }`.
+- Property definitions normalization:
+  - tolerate extra keys (`constant`, etc.)
+  - if `type` is missing/invalid, set to `"unknown"` and record a warning.
+- Corrupt JSON never breaks the entire dashboard; it yields localized “docs issues” with best-effort fallback data.
+
 Exit criteria:
 - Partial/broken docs do not break the whole app; issues are localized and actionable.
 - Deep links are shareable and predictable.

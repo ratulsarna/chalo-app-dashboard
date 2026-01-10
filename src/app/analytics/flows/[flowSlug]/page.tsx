@@ -54,6 +54,11 @@ export default async function AnalyticsFlowDetailPage({
     a.localeCompare(b),
   );
 
+  const flowIssues = (flow.issues ?? []).slice().sort((a, b) => {
+    if (a.level !== b.level) return a.level === "error" ? -1 : 1;
+    return a.code.localeCompare(b.code);
+  });
+
   const stageCounts = (() => {
     const counts = new Map<string, number>();
     for (const occurrence of flowOccurrences) {
@@ -78,6 +83,41 @@ export default async function AnalyticsFlowDetailPage({
           {flow.catalog?.description ?? flow.description ?? "No description available."}
         </p>
       </div>
+
+      {flowIssues.length > 0 ? (
+        <Card className={flowIssues.some((i) => i.level === "error") ? "border-destructive/50 bg-destructive/5" : ""}>
+          <CardHeader>
+            <CardTitle className="text-base">Docs issues</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Some documentation for this flow failed validation. The dashboard will still load, but some events or definitions may be missing.
+            </p>
+            <ul className="space-y-1 text-sm">
+              {flowIssues.slice(0, 8).map((issue, idx) => (
+                <li key={`${issue.code}::${idx}`} className="flex items-start gap-2">
+                  <Badge variant={issue.level === "error" ? "destructive" : "outline"} className="mt-0.5">
+                    {issue.level}
+                  </Badge>
+                  <span className="min-w-0 break-words">
+                    {issue.message}
+                    {issue.filePath ? (
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        ({issue.filePath.split("/").slice(-2).join("/")})
+                      </span>
+                    ) : null}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {flowIssues.length > 8 ? (
+              <p className="text-xs text-muted-foreground">
+                +{flowIssues.length - 8} more issue{flowIssues.length - 8 === 1 ? "" : "s"} not shown.
+              </p>
+            ) : null}
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Tabs key={defaultTab} defaultValue={defaultTab} className="space-y-4">
         <TabsList className="w-fit justify-start">

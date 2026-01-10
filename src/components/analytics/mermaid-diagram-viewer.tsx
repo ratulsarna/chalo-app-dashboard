@@ -329,6 +329,7 @@ export function MermaidDiagramViewer({
 
     function onWheel(event: WheelEvent) {
       event.preventDefault();
+      event.stopPropagation();
 
       const rect = containerEl.getBoundingClientRect();
       const offsetX = event.clientX - rect.left;
@@ -341,8 +342,9 @@ export function MermaidDiagramViewer({
       zoomBy(factor, offsetX, offsetY);
     }
 
-    containerEl.addEventListener("wheel", onWheel, { passive: false });
-    return () => containerEl.removeEventListener("wheel", onWheel);
+    // Capture phase prevents scroll chaining even if Mermaid internals (or overlays) interfere.
+    containerEl.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    return () => containerEl.removeEventListener("wheel", onWheel, { capture: true } as AddEventListenerOptions);
   }, [zoomBy]);
 
   const draggingRef = React.useRef<{

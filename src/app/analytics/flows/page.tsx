@@ -11,6 +11,7 @@ export default async function AnalyticsFlowsPage() {
     description: flow.catalog?.description ?? flow.description ?? null,
     lastAudited: flow.catalog?.lastAudited ?? null,
     eventCount: flow.events.length,
+    issues: flow.issues ?? null,
   }));
 
   return <FlowsGrid flows={flows} />;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { AnalyticsDocIssue } from "@/lib/analytics/types";
 
 export type FlowCard = {
   slug: string;
@@ -13,6 +14,7 @@ export type FlowCard = {
   description?: string | null;
   lastAudited?: string | null;
   eventCount: number;
+  issues?: AnalyticsDocIssue[] | null;
 };
 
 export function FlowsGrid({ flows }: { flows: FlowCard[] }) {
@@ -53,9 +55,20 @@ export function FlowsGrid({ flows }: { flows: FlowCard[] }) {
                     <CardTitle className="truncate text-base">{flow.name}</CardTitle>
                     <CardDescription className="mt-1 truncate">{flow.slug}</CardDescription>
                   </div>
-                  <Badge variant="secondary" className="shrink-0 tabular-nums">
-                    {flow.eventCount}
-                  </Badge>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {flow.issues && flow.issues.length > 0 ? (
+                      <Badge
+                        variant={flow.issues.some((i) => i.level === "error") ? "destructive" : "outline"}
+                        className="tabular-nums"
+                        title={flow.issues.some((i) => i.level === "error") ? "Docs errors present" : "Docs warnings present"}
+                      >
+                        {flow.issues.length} issue{flow.issues.length === 1 ? "" : "s"}
+                      </Badge>
+                    ) : null}
+                    <Badge variant="secondary" className="tabular-nums">
+                      {flow.eventCount}
+                    </Badge>
+                  </div>
                 </div>
                 <div className="mt-3 space-y-2">
                   <p className="line-clamp-2 text-sm text-muted-foreground">
@@ -80,4 +93,3 @@ export function FlowsGrid({ flows }: { flows: FlowCard[] }) {
     </div>
   );
 }
-

@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { cache } from "react";
 import type {
+  AnalyticsDocIssue,
   AnalyticsEventOccurrence,
   AnalyticsEventPropertyRef,
   AnalyticsFlow,
@@ -25,6 +26,12 @@ type AnalyticsFlowCatalogFile = {
       lastAudited?: string;
     }
   >;
+};
+
+type AnalyticsDocsMeta = {
+  slugMap: Record<string, string>;
+  catalog?: AnalyticsFlowCatalogFile;
+  issues: AnalyticsDocIssue[];
 };
 
 async function pathExists(filePath: string): Promise<boolean> {
@@ -51,10 +58,8 @@ function toTrimmedNonEmptyString(value: unknown): string | undefined {
   return trimmed.length ? trimmed : undefined;
 }
 
-function assertNonEmptyString(value: unknown, label: string): asserts value is string {
-  if (typeof value !== "string" || value.trim().length === 0) {
-    throw new Error(`Invalid ${label}: expected non-empty string`);
-  }
+function formatUnknownError(err: unknown) {
+  return err instanceof Error ? err.message : String(err);
 }
 
 function assertSafeFlowSlug(flowSlug: string): void {
@@ -76,25 +81,65 @@ function resolveUnderAnalyticsRoot(...segments: string[]) {
   return resolved;
 }
 
-const readFlowSlugMap = cache(async () => {
-  const mapPath = path.join(ANALYTICS_ROOT, "flow-slug-map.json");
-  if (!(await pathExists(mapPath))) return {} as Record<string, string>;
-  const raw = await readJsonFile<Record<string, unknown>>(mapPath);
-  if (!isRecord(raw)) return {} as Record<string, string>;
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(raw)) {
-    if (k.startsWith("_")) continue;
-    if (typeof v === "string" && v.trim().length > 0) out[k] = v;
-  }
-  return out;
-});
+const readAnalyticsDocsMeta = cache(async (): Promise<AnalyticsDocsMeta> => {
+  const issues: AnalyticsDocIssue[] = [];
 
-const readFlowsCatalog = cache(async () => {
+  const mapPath = path.join(ANALYTICS_ROOT, "flow-slug-map.json");
+  const out: Record<string, string> = {};
+
+  if (await pathExists(mapPath)) {
+    try {
+      const raw = await readJsonFile<unknown>(mapPath);
+      if (!isRecord(raw)) {
+        issues.push({
+          level: "warning",
+          code: "slug_map_invalid_shape",
+          message: "flow-slug-map.json is not an object; ignoring it.",
+          filePath: mapPath,
+        });
+      } else {
+        for (const [k, v] of Object.entries(raw)) {
+          if (k.startsWith("_")) continue;
+          if (typeof v === "string" && v.trim().length > 0) out[k] = v.trim();
+        }
+      }
+    } catch (err) {
+      issues.push({
+        level: "warning",
+        code: "slug_map_parse_error",
+        message: `Failed to parse flow-slug-map.json; ignoring it. (${formatUnknownError(err)})`,
+        filePath: mapPath,
+      });
+    }
+  }
+
   const catalogPath = path.join(ANALYTICS_ROOT, "flows.json");
-  if (!(await pathExists(catalogPath))) return undefined;
-  const raw = await readJsonFile<AnalyticsFlowCatalogFile>(catalogPath);
-  if (!isRecord(raw) || !isRecord(raw.flows)) return undefined;
-  return raw as AnalyticsFlowCatalogFile;
+  let catalog: AnalyticsFlowCatalogFile | undefined;
+
+  if (await pathExists(catalogPath)) {
+    try {
+      const raw = await readJsonFile<unknown>(catalogPath);
+      if (!isRecord(raw) || (raw.flows !== undefined && !isRecord(raw.flows))) {
+        issues.push({
+          level: "warning",
+          code: "flows_catalog_invalid_shape",
+          message: "flows.json has an unexpected shape; ignoring it.",
+          filePath: catalogPath,
+        });
+      } else {
+        catalog = raw as AnalyticsFlowCatalogFile;
+      }
+    } catch (err) {
+      issues.push({
+        level: "warning",
+        code: "flows_catalog_parse_error",
+        message: `Failed to parse flows.json; ignoring it. (${formatUnknownError(err)})`,
+        filePath: catalogPath,
+      });
+    }
+  }
+
+  return { slugMap: out, catalog, issues };
 });
 
 function normalizePropertiesUsed(raw: unknown): AnalyticsEventPropertyRef[] | undefined {
@@ -177,31 +222,252 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
   resolveUnderAnalyticsRoot(flowSlug, "events.json");
   resolveUnderAnalyticsRoot(flowSlug, "flow-diagrams.md");
 
-  const file = await readJsonFile<AnalyticsFlowEventsFile>(eventsPath);
-  if (!isRecord(file)) throw new Error(`Invalid events.json for flow ${flowSlug}`);
+  const issues: AnalyticsDocIssue[] = [];
 
-  assertNonEmptyString(file.flowId, `flowId in ${flowSlug}/events.json`);
-  assertNonEmptyString(file.flowName, `flowName in ${flowSlug}/events.json`);
-  if (!Array.isArray(file.events)) throw new Error(`Invalid events[] in ${flowSlug}/events.json`);
+  let rawFile: unknown;
+  try {
+    rawFile = await readJsonFile<unknown>(eventsPath);
+  } catch (err) {
+    issues.push({
+      level: "error",
+      code: "events_json_parse_error",
+      message: `Failed to parse events.json (${formatUnknownError(err)})`,
+      flowSlug,
+      filePath: eventsPath,
+    });
+    const diagramMarkdown = (await pathExists(diagramsPath)) ? await fs.readFile(diagramsPath, "utf8") : undefined;
+    return {
+      slug: flowSlug,
+      flowId: flowSlug,
+      flowName: flowSlug,
+      propertyDefinitions: {},
+      events: [],
+      diagramMarkdown,
+      issues,
+    };
+  }
 
-  const diagramMarkdown = (await pathExists(diagramsPath))
-    ? await fs.readFile(diagramsPath, "utf8")
+  if (!isRecord(rawFile)) {
+    issues.push({
+      level: "error",
+      code: "events_json_invalid_shape",
+      message: "events.json must be an object at the top level.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+    const diagramMarkdown = (await pathExists(diagramsPath)) ? await fs.readFile(diagramsPath, "utf8") : undefined;
+    return {
+      slug: flowSlug,
+      flowId: flowSlug,
+      flowName: flowSlug,
+      propertyDefinitions: {},
+      events: [],
+      diagramMarkdown,
+      issues,
+    };
+  }
+
+  const file = rawFile as Partial<AnalyticsFlowEventsFile> & Record<string, unknown>;
+
+  const flowId = toTrimmedNonEmptyString(file.flowId) ?? flowSlug;
+  if (!toTrimmedNonEmptyString(file.flowId)) {
+    issues.push({
+      level: "error",
+      code: "flow_id_missing",
+      message: "Missing or invalid flowId; falling back to flow slug.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+  }
+
+  const flowName = toTrimmedNonEmptyString(file.flowName) ?? flowSlug;
+  if (!toTrimmedNonEmptyString(file.flowName)) {
+    issues.push({
+      level: "error",
+      code: "flow_name_missing",
+      message: "Missing or invalid flowName; falling back to flow slug.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+  }
+
+  const description = toTrimmedNonEmptyString(file.description);
+  if (file.description !== undefined && description === undefined) {
+    issues.push({
+      level: "warning",
+      code: "flow_description_invalid",
+      message: "Flow description is not a non-empty string; ignoring it.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+  }
+
+  const propertyDefinitions: AnalyticsFlow["propertyDefinitions"] = {};
+  if (file.propertyDefinitions !== undefined && !isRecord(file.propertyDefinitions)) {
+    issues.push({
+      level: "warning",
+      code: "property_definitions_invalid_shape",
+      message: "propertyDefinitions must be an object; ignoring it.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+  } else if (isRecord(file.propertyDefinitions)) {
+    for (const [rawKey, rawDef] of Object.entries(file.propertyDefinitions)) {
+      const key = toTrimmedNonEmptyString(rawKey);
+      if (!key) continue;
+      if (!isRecord(rawDef)) {
+        issues.push({
+          level: "warning",
+          code: "property_definition_invalid_shape",
+          message: `Property definition for "${key}" must be an object; ignoring it.`,
+          flowSlug,
+          filePath: eventsPath,
+        });
+        continue;
+      }
+
+      const type = toTrimmedNonEmptyString(rawDef.type) ?? "unknown";
+      if (!toTrimmedNonEmptyString(rawDef.type)) {
+        issues.push({
+          level: "warning",
+          code: "property_definition_missing_type",
+          message: `Property "${key}" is missing a valid type; using "unknown".`,
+          flowSlug,
+          filePath: eventsPath,
+        });
+      }
+
+      const defDescription = toTrimmedNonEmptyString(rawDef.description);
+      const values =
+        Array.isArray(rawDef.values) ? rawDef.values.map(toTrimmedNonEmptyString).filter(Boolean) : undefined;
+
+      propertyDefinitions[key] = {
+        type,
+        description: defDescription,
+        values: values && values.length > 0 ? (values as string[]) : undefined,
+      };
+    }
+  }
+
+  const stages = Array.isArray(file.stages)
+    ? file.stages
+        .filter(isRecord)
+        .map((s) => ({
+          name: toTrimmedNonEmptyString(s.name) ?? "Unnamed stage",
+          description: toTrimmedNonEmptyString(s.description),
+          events: Array.isArray(s.events) ? s.events.map(toTrimmedNonEmptyString).filter(Boolean) as string[] : undefined,
+        }))
     : undefined;
 
-  const [slugMap, catalog] = await Promise.all([readFlowSlugMap(), readFlowsCatalog()]);
-  const catalogKey = slugMap[flowSlug];
-  const catalogEntry = catalogKey ? catalog?.flows?.[catalogKey] : undefined;
+  if (file.stages !== undefined && !Array.isArray(file.stages)) {
+    issues.push({
+      level: "warning",
+      code: "stages_invalid_shape",
+      message: "stages must be an array; ignoring it.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+  }
+
+  const normalizedEvents: AnalyticsFlowEventsFile["events"] = [];
+  if (!Array.isArray(file.events)) {
+    issues.push({
+      level: "error",
+      code: "events_invalid_shape",
+      message: "events must be an array; treating this flow as having 0 events.",
+      flowSlug,
+      filePath: eventsPath,
+    });
+  } else {
+    for (const [idx, rawEvent] of file.events.entries()) {
+      if (!isRecord(rawEvent)) {
+        issues.push({
+          level: "warning",
+          code: "event_invalid_shape",
+          message: `Event at index ${idx} is not an object; skipping it.`,
+          flowSlug,
+          filePath: eventsPath,
+        });
+        continue;
+      }
+
+      const rawName = rawEvent.name;
+      if (typeof rawName !== "string") {
+        issues.push({
+          level: "warning",
+          code: "event_name_missing",
+          message: `Event at index ${idx} is missing a string 'name'; skipping it.`,
+          flowSlug,
+          filePath: eventsPath,
+        });
+        continue;
+      }
+
+      const name = rawName.trim();
+      if (name.length === 0) {
+        issues.push({
+          level: "warning",
+          code: "event_name_empty",
+          message: `Event at index ${idx} has an empty name; skipping it.`,
+          flowSlug,
+          filePath: eventsPath,
+        });
+        continue;
+      }
+      if (name !== rawName) {
+        issues.push({
+          level: "warning",
+          code: "event_name_trimmed",
+          message: `Event name had leading/trailing whitespace; using trimmed value (${JSON.stringify(rawName)} → ${JSON.stringify(name)}).`,
+          flowSlug,
+          filePath: eventsPath,
+        });
+      }
+
+      const normalized = {
+        name,
+        component: toTrimmedNonEmptyString(rawEvent.component),
+        stage: toTrimmedNonEmptyString(rawEvent.stage),
+        source: toTrimmedNonEmptyString(rawEvent.source),
+        description: toTrimmedNonEmptyString(rawEvent.description),
+        properties: Array.isArray(rawEvent.properties) ? rawEvent.properties : undefined,
+        note: toTrimmedNonEmptyString(rawEvent.note),
+        funnelPosition: toTrimmedNonEmptyString(rawEvent.funnelPosition),
+        firingLocation: toTrimmedNonEmptyString(rawEvent.firingLocation),
+      };
+
+      normalizedEvents.push(normalized);
+    }
+  }
+
+  const diagramMarkdown = (await pathExists(diagramsPath)) ? await fs.readFile(diagramsPath, "utf8") : undefined;
+
+  const meta = await readAnalyticsDocsMeta();
+  const catalogKey = meta.slugMap[flowSlug];
+  const catalogEntry = catalogKey ? meta.catalog?.flows?.[catalogKey] : undefined;
+
+  // Note: we intentionally do not attach meta.issues to each flow (they're global). Those are
+  // exposed at snapshot-level to avoid duplication.
+  if (catalogKey && meta.catalog?.flows && !(catalogKey in meta.catalog.flows)) {
+    issues.push({
+      level: "warning",
+      code: "catalog_key_missing",
+      message: `flow-slug-map.json maps to "${catalogKey}" but flows.json has no matching entry.`,
+      flowSlug,
+      filePath: path.join(ANALYTICS_ROOT, "flows.json"),
+    });
+  }
 
   return {
     slug: flowSlug,
-    flowId: file.flowId,
-    flowName: file.flowName,
-    description: file.description,
-    propertyDefinitions: file.propertyDefinitions ?? {},
-    stages: file.stages,
-    events: file.events,
+    flowId,
+    flowName,
+    description,
+    propertyDefinitions,
+    stages,
+    events: normalizedEvents,
     diagramMarkdown,
-    diagramSummary: file.diagram,
+    diagramSummary: isRecord(file.diagram) ? (file.diagram as AnalyticsFlowEventsFile["diagram"]) : undefined,
     catalog: catalogKey
       ? {
           key: catalogKey,
@@ -210,6 +476,7 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
           lastAudited: catalogEntry?.lastAudited,
         }
       : undefined,
+    issues: issues.length ? issues : undefined,
   };
 });
 
@@ -219,28 +486,51 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
  * This is cached via React's `cache()` to avoid repeated filesystem reads.
  */
 export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> => {
+  const meta = await readAnalyticsDocsMeta();
   const slugs = await listAnalyticsFlowSlugs();
-  const flows = await Promise.all(slugs.map((slug) => readAnalyticsFlow(slug)));
+  const settled = await Promise.allSettled(slugs.map((slug) => readAnalyticsFlow(slug)));
+  const flows: AnalyticsFlow[] = [];
+  const issues: AnalyticsDocIssue[] = [...meta.issues];
+
+  for (const result of settled) {
+    if (result.status === "fulfilled") {
+      flows.push(result.value);
+      if (result.value.issues) issues.push(...result.value.issues);
+      continue;
+    }
+
+    // This should be rare (e.g., slug safety checks). Keep the rest of the snapshot usable.
+    issues.push({
+      level: "error",
+      code: "flow_read_failed",
+      message: `Failed to read a flow: ${formatUnknownError(result.reason)}`,
+      filePath: ANALYTICS_ROOT,
+    });
+  }
 
   const occurrences: AnalyticsEventOccurrence[] = [];
   const occurrencesByEventName: Record<string, AnalyticsEventOccurrence[]> = {};
-  let skipped = 0;
-  const skippedSamples: string[] = [];
 
   for (const flow of flows) {
     for (const [index, event] of flow.events.entries()) {
       if (!event || typeof event !== "object") {
-        skipped += 1;
-        if (skippedSamples.length < 10) {
-          skippedSamples.push(`flow=${flow.slug} index=${index} reason=not-object`);
-        }
+        issues.push({
+          level: "warning",
+          code: "occurrence_event_invalid_shape",
+          message: `Flow "${flow.slug}" has an invalid event at index ${index}; skipping it.`,
+          flowSlug: flow.slug,
+          filePath: path.join(ANALYTICS_ROOT, flow.slug, "events.json"),
+        });
         continue;
       }
       if (typeof event.name !== "string" || event.name.trim().length === 0) {
-        skipped += 1;
-        if (skippedSamples.length < 10) {
-          skippedSamples.push(`flow=${flow.slug} index=${index} reason=invalid-name`);
-        }
+        issues.push({
+          level: "warning",
+          code: "occurrence_event_missing_name",
+          message: `Flow "${flow.slug}" has an event with invalid name at index ${index}; skipping it.`,
+          flowSlug: flow.slug,
+          filePath: path.join(ANALYTICS_ROOT, flow.slug, "events.json"),
+        });
         continue;
       }
 
@@ -271,14 +561,10 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
     }
   }
 
-  if (process.env.NODE_ENV !== "production" && skipped > 0) {
-    const suffix = skippedSamples.length > 0 ? ` (samples: ${skippedSamples.join(", ")})` : "";
-    console.warn(`[analytics] Skipped ${skipped} invalid event entries while building snapshot${suffix}`);
-  }
-
   return {
     flows: flows.sort((a, b) => a.flowName.localeCompare(b.flowName)),
     occurrences,
     occurrencesByEventName,
+    issues: issues.length ? issues : undefined,
   };
 });
