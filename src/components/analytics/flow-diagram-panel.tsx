@@ -117,14 +117,14 @@ export function FlowDiagramPanel({
 
   return (
     <div className={cn("space-y-3", className)}>
-      <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center sm:gap-3">
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+      <div className="space-y-1.5">
+        <div className="flex min-w-0 items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full min-w-0 justify-between gap-2 sm:w-auto sm:max-w-[520px]"
+                className="min-w-0 flex-1 justify-between gap-2 sm:max-w-[560px]"
                 aria-label="Select diagram"
               >
                 <span className="truncate">
@@ -161,35 +161,35 @@ export function FlowDiagramPanel({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <span className="text-xs text-muted-foreground">
-            {blocks.filter((b) => b.kind !== "visual-key").length} diagrams
-          </span>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="shrink-0 gap-2">
+                <Maximize2Icon className="size-4" />
+                Expand
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full p-0 sm:max-w-6xl">
+              <div className="flex h-full flex-col">
+                <SheetHeader className="border-b px-6 py-4">
+                  <SheetTitle className="text-base">
+                    {selected.title}
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex-1 p-6">
+                  <MermaidDiagramViewer
+                    code={selected.code}
+                    onEventClick={onEventClick}
+                    className="h-[calc(100vh-9.5rem)]"
+                  />
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="sm" className="shrink-0 gap-2">
-              <Maximize2Icon className="size-4" />
-              Expand
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-full p-0 sm:max-w-6xl">
-            <div className="flex h-full flex-col">
-              <SheetHeader className="border-b px-6 py-4">
-                <SheetTitle className="text-base">
-                  {selected.title}
-                </SheetTitle>
-              </SheetHeader>
-              <div className="flex-1 p-6">
-                <MermaidDiagramViewer
-                  code={selected.code}
-                  onEventClick={onEventClick}
-                  className="h-[calc(100vh-9.5rem)]"
-                />
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+        <span className="text-xs text-muted-foreground">
+          {blocks.filter((b) => b.kind !== "visual-key").length} diagrams
+        </span>
       </div>
 
       <MermaidDiagramViewer

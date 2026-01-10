@@ -93,8 +93,14 @@ test("expand button stays within viewport", async ({ page }) => {
   const expand = page.getByRole("button", { name: "Expand" }).first();
   await expect(expand).toBeVisible();
 
+  const selector = page.getByRole("button", { name: "Select diagram" }).first();
+  await expect(selector).toBeVisible();
+
   const box = await expand.boundingBox();
   expect(box).not.toBeNull();
+
+  const selectorBox = await selector.boundingBox();
+  expect(selectorBox).not.toBeNull();
 
   const viewport = page.viewportSize();
   expect(viewport).not.toBeNull();
@@ -102,6 +108,20 @@ test("expand button stays within viewport", async ({ page }) => {
 
   // Ensure the button isn't clipped or pushed outside the viewport (common regression when the selector grows).
   expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(w);
+
+  // Ensure the expand button stays aligned with the selector row.
+  expect(Math.abs((box?.y ?? 0) - (selectorBox?.y ?? 0))).toBeLessThanOrEqual(2);
+
+  // Switch to a short selector label (visual key) and re-check alignment.
+  await selector.click();
+  await page.getByRole("menuitemradio", { name: /^Visual key/i }).first().click();
+  await page.waitForTimeout(150);
+
+  const expandBox2 = await expand.boundingBox();
+  const selectorBox2 = await selector.boundingBox();
+  expect(expandBox2).not.toBeNull();
+  expect(selectorBox2).not.toBeNull();
+  expect(Math.abs((expandBox2?.y ?? 0) - (selectorBox2?.y ?? 0))).toBeLessThanOrEqual(2);
 });
 
 test("global search returns event name matches for short queries", async ({ page }) => {
