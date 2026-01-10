@@ -117,14 +117,14 @@ export function FlowDiagramPanel({
 
   return (
     <div className={cn("space-y-3", className)}>
-      <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center sm:gap-3">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className="max-w-full justify-between gap-2"
+                className="w-full min-w-0 justify-between gap-2 sm:w-auto sm:max-w-[520px]"
                 aria-label="Select diagram"
               >
                 <span className="truncate">
@@ -168,7 +168,7 @@ export function FlowDiagramPanel({
 
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2">
+            <Button variant="outline" size="sm" className="shrink-0 gap-2">
               <Maximize2Icon className="size-4" />
               Expand
             </Button>

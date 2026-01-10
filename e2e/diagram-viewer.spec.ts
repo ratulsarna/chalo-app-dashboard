@@ -86,6 +86,24 @@ test("diagram selector switches diagrams", async ({ page }) => {
   await expect(page.locator('button[aria-label="Select diagram"]').first()).toContainText(/Stop-Based Trip Planner/i);
 });
 
+test("expand button stays within viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+
+  const expand = page.getByRole("button", { name: "Expand" }).first();
+  await expect(expand).toBeVisible();
+
+  const box = await expand.boundingBox();
+  expect(box).not.toBeNull();
+
+  const viewport = page.viewportSize();
+  expect(viewport).not.toBeNull();
+  const w = viewport?.width ?? 0;
+
+  // Ensure the button isn't clipped or pushed outside the viewport (common regression when the selector grows).
+  expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(w);
+});
+
 test("zoom buttons and drag-pan update transform", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
