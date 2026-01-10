@@ -47,6 +47,7 @@ async function runCodexUpdater({
   baseSha,
   headSha,
   instructionsPath,
+  upstreamBranch,
 }) {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "analytics-updater-codex-"));
   const lastMessagePath = path.join(tmpDir, "codex-last-message.md");
@@ -56,7 +57,7 @@ async function runCodexUpdater({
     ``,
     `Read the instructions in ${instructionsPath} and do exactly what it says.`,
     ``,
-    `Upstream repo: ${upstreamRepoPath} (branch: main)`,
+    `Upstream repo: ${upstreamRepoPath} (branch: ${upstreamBranch || "main"})`,
     `Commit range to process: ${baseSha}..${headSha}`,
     ``,
     `IMPORTANT: Do not navigate away from the current page in the dashboard UI — only update content files. (This is a docs update run.)`,
@@ -99,4 +100,3 @@ async function runCodexUpdater({
 }
 
 module.exports = { runCodexUpdater };
-

@@ -12,8 +12,8 @@ async function getStatusPorcelain(repoPath) {
   return await git(["status", "--porcelain"], { cwd: repoPath });
 }
 
-async function checkoutMainAndPull(repoPath) {
-  await git(["checkout", "main"], { cwd: repoPath });
+async function checkoutBaseAndPull(repoPath, baseBranch) {
+  await git(["checkout", baseBranch], { cwd: repoPath });
   await git(["pull", "--ff-only"], { cwd: repoPath });
 }
 
@@ -33,5 +33,4 @@ async function pushBranch(repoPath, branch) {
   await git(["push", "-u", "origin", branch, "--force-with-lease"], { cwd: repoPath });
 }
 
-module.exports = { getStatusPorcelain, checkoutMainAndPull, checkoutOrCreateBranch, commitAll, pushBranch };
-
+module.exports = { getStatusPorcelain, checkoutBaseAndPull, checkoutOrCreateBranch, commitAll, pushBranch };

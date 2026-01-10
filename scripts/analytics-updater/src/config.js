@@ -25,6 +25,7 @@ function resolveConfig({ argv = process.argv.slice(2), env = process.env } = {})
   const upstreamRepoPath = env.UPSTREAM_REPO_PATH ?? "/home/ratul/Developer/chalo/chalo-app-kmp";
   const upstreamBranch = env.UPSTREAM_BRANCH ?? "main";
   const dashboardRepoPath = env.DASHBOARD_REPO_PATH ?? "/home/ratul/Developer/chalo/chalo-app-dashboard";
+  const dashboardBaseBranch = env.DASHBOARD_BASE_BRANCH ?? "main";
 
   const instructionsPath = env.CODEX_INSTRUCTIONS_PATH ?? path.join(dashboardRepoPath, ".ai", "codex", "analytics-updater.md");
 
@@ -43,6 +44,7 @@ function resolveConfig({ argv = process.argv.slice(2), env = process.env } = {})
     upstreamRepoPath,
     upstreamBranch,
     dashboardRepoPath,
+    dashboardBaseBranch,
     instructionsPath,
     statePath,
     lockPath,
@@ -53,4 +55,3 @@ function resolveConfig({ argv = process.argv.slice(2), env = process.env } = {})
 }
 
 module.exports = { resolveConfig };
-

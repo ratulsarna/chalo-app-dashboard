@@ -60,7 +60,7 @@ async function main() {
     const range = `${base}..${upstreamHead}`;
 
     // Prepare dashboard branch.
-    await dashboardGit.checkoutMainAndPull(config.dashboardRepoPath);
+    await dashboardGit.checkoutBaseAndPull(config.dashboardRepoPath, config.dashboardBaseBranch);
     const branch = computeUpdateBranchName(shortSha(upstreamHead));
     await dashboardGit.checkoutOrCreateBranch(config.dashboardRepoPath, branch);
 
@@ -78,6 +78,7 @@ async function main() {
       baseSha: base,
       headSha: upstreamHead,
       instructionsPath: config.instructionsPath,
+      upstreamBranch: config.upstreamBranch,
     });
 
     if (!codex.ok) {
@@ -122,7 +123,7 @@ async function main() {
     const prUrl = await createOrUpdatePr({
       cwd: config.dashboardRepoPath,
       headBranch: branch,
-      baseBranch: "main",
+      baseBranch: config.dashboardBaseBranch,
       title,
       body,
     });
@@ -165,4 +166,3 @@ async function main() {
 }
 
 void main();
-
