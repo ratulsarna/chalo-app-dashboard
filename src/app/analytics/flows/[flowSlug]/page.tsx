@@ -79,7 +79,7 @@ export default async function AnalyticsFlowDetailPage({
         </p>
       </div>
 
-      <Tabs defaultValue={defaultTab} className="space-y-4">
+      <Tabs key={defaultTab} defaultValue={defaultTab} className="space-y-4">
         <TabsList className="w-fit justify-start">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>

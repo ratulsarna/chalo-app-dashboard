@@ -96,7 +96,12 @@ export function FlowDiagramPanel({
         <div className="flex flex-wrap items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="max-w-full justify-between gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="max-w-full justify-between gap-2"
+                aria-label="Select diagram"
+              >
                 <span className="truncate">
                   {selected.title}
                   {selected.direction ? ` · ${selected.direction}` : ""}

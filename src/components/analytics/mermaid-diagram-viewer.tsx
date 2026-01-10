@@ -35,9 +35,14 @@ function isEventNode(node: SVGGElement) {
 
   // Fallback: compare fill to the known event green color.
   const shape = node.querySelector<SVGElement>("rect, polygon, ellipse, path");
-  const fill = shape?.getAttribute("fill") ?? shape?.getAttribute("style") ?? "";
-  const normalized = fill.toLowerCase();
-  return normalized.includes("#166534") || normalized.includes("rgb(22, 101, 52)");
+  if (!shape) return false;
+
+  // Mermaid often applies fills via CSS, not attributes.
+  const fillAttr = (shape.getAttribute("fill") ?? shape.getAttribute("style") ?? "").toLowerCase();
+  if (fillAttr.includes("#166534")) return true;
+
+  const computedFill = window.getComputedStyle(shape).fill.toLowerCase();
+  return computedFill.includes("rgb(22, 101, 52)") || computedFill.includes("#166534");
 }
 
 function svgBBox(svg: SVGSVGElement) {
@@ -126,13 +131,20 @@ export function MermaidDiagramViewer({
     };
   }, [code, safeRenderId]);
 
-  // Enhance rendered SVG: mark event nodes clickable (green convention) and add basic hover styles.
+  // Inject and enhance rendered SVG: mark event nodes clickable (green convention) and add hover styles.
+  //
+  // NOTE: We avoid `dangerouslySetInnerHTML` in JSX because React may re-assign `innerHTML` on
+  // unrelated re-renders (e.g., pan/zoom state), wiping any DOM enhancements we apply.
   React.useEffect(() => {
     const host = svgHostRef.current;
     if (!host) return;
 
+    host.innerHTML = svg ?? "";
+
     const svgEl = host.querySelector("svg") as SVGSVGElement | null;
     if (!svgEl) return;
+
+    svgEl.setAttribute("data-mermaid-root", "1");
 
     const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
     style.textContent = `
@@ -189,24 +201,42 @@ export function MermaidDiagramViewer({
     });
   }, []);
 
-  const onWheel = React.useCallback((event: React.WheelEvent) => {
-    // Trackpads can be noisy; keep the multiplier small.
-    const delta = -event.deltaY;
-    if (Math.abs(delta) < 1) return;
-    event.preventDefault();
+  // NOTE: We use a native wheel listener with `{ passive: false }` because React/Chrome can
+  // treat wheel listeners as passive, which prevents `preventDefault()` and causes scroll chaining
+  // (diagram zoom + page scroll). This must reliably block page scrolling while zooming.
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    const factor = delta > 0 ? 1.08 : 0.92;
-    zoomBy(factor, event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+    function onWheel(event: WheelEvent) {
+      // Trackpads can be noisy; keep the multiplier small.
+      const delta = -event.deltaY;
+      if (Math.abs(delta) < 1) return;
+
+      event.preventDefault();
+
+      const rect = container.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+
+      const factor = delta > 0 ? 1.08 : 0.92;
+      zoomBy(factor, offsetX, offsetY);
+    }
+
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => container.removeEventListener("wheel", onWheel);
   }, [zoomBy]);
 
   const draggingRef = React.useRef<{
     active: boolean;
+    pointerId: number | null;
     startX: number;
     startY: number;
     originX: number;
     originY: number;
     didDrag: boolean;
-  }>({ active: false, startX: 0, startY: 0, originX: 0, originY: 0 });
+    captured: boolean;
+  }>({ active: false, pointerId: null, startX: 0, startY: 0, originX: 0, originY: 0, didDrag: false, captured: false });
 
   const onPointerDown = React.useCallback((event: React.PointerEvent) => {
     // Only left click / primary touch.
@@ -216,26 +246,44 @@ export function MermaidDiagramViewer({
 
     draggingRef.current = {
       active: true,
+      pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
       originX: transform.x,
       originY: transform.y,
       didDrag: false,
+      captured: false,
     };
-
-    (event.currentTarget as HTMLDivElement).setPointerCapture(event.pointerId);
   }, [transform.x, transform.y]);
 
   const onPointerMove = React.useCallback((event: React.PointerEvent) => {
     if (!draggingRef.current.active) return;
     const dx = event.clientX - draggingRef.current.startX;
     const dy = event.clientY - draggingRef.current.startY;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) draggingRef.current.didDrag = true;
+    if (!draggingRef.current.didDrag && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+      draggingRef.current.didDrag = true;
+
+      // Only capture the pointer once we're actually dragging. Capturing immediately can cause
+      // clicks on SVG nodes to have the container as the event target, preventing node detection.
+      if (!draggingRef.current.captured && draggingRef.current.pointerId !== null) {
+        (event.currentTarget as HTMLDivElement).setPointerCapture(draggingRef.current.pointerId);
+        draggingRef.current.captured = true;
+      }
+    }
     setTransform((t) => ({ ...t, x: draggingRef.current.originX + dx, y: draggingRef.current.originY + dy }));
   }, []);
 
-  const onPointerUp = React.useCallback(() => {
+  const onPointerUp = React.useCallback((event: React.PointerEvent) => {
+    if (draggingRef.current.captured && draggingRef.current.pointerId !== null) {
+      try {
+        (event.currentTarget as HTMLDivElement).releasePointerCapture(draggingRef.current.pointerId);
+      } catch {
+        // ignore
+      }
+    }
     draggingRef.current.active = false;
+    draggingRef.current.pointerId = null;
+    draggingRef.current.captured = false;
   }, []);
 
   const onClick = React.useCallback((event: React.MouseEvent) => {
@@ -311,8 +359,7 @@ export function MermaidDiagramViewer({
 
       <div
         ref={containerRef}
-        className="relative h-full min-h-[240px] overflow-hidden"
-        onWheel={onWheel}
+        className="relative h-full min-h-[240px] overflow-hidden overscroll-contain select-none touch-none"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -329,12 +376,11 @@ export function MermaidDiagramViewer({
         <div
           ref={svgHostRef}
           className="absolute inset-0"
+          data-diagram-host="1"
           style={{
             transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
             transformOrigin: "0 0",
           }}
-          // Mermaid renders SVG strings; strict security level reduces risk.
-          dangerouslySetInnerHTML={svg ? { __html: svg } : undefined}
         />
 
         {!svg ? (
