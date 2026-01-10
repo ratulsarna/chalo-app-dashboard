@@ -5,6 +5,7 @@ import path from "node:path";
 import { cache } from "react";
 import type {
   AnalyticsEventOccurrence,
+  AnalyticsEventPropertyRef,
   AnalyticsFlow,
   AnalyticsFlowEventsFile,
   AnalyticsFlowSlug,
@@ -42,6 +43,12 @@ async function readJsonFile<T>(filePath: string): Promise<T> {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function toTrimmedNonEmptyString(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : undefined;
 }
 
 function assertNonEmptyString(value: unknown, label: string): asserts value is string {
@@ -89,6 +96,35 @@ const readFlowsCatalog = cache(async () => {
   if (!isRecord(raw) || !isRecord(raw.flows)) return undefined;
   return raw as AnalyticsFlowCatalogFile;
 });
+
+function normalizePropertiesUsed(raw: unknown): AnalyticsEventPropertyRef[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+
+  const out: AnalyticsEventPropertyRef[] = [];
+  for (const item of raw) {
+    if (typeof item === "string") {
+      const property = toTrimmedNonEmptyString(item);
+      if (property) out.push({ property });
+      continue;
+    }
+
+    if (!isRecord(item)) continue;
+
+    const property =
+      toTrimmedNonEmptyString(item.property) ?? toTrimmedNonEmptyString(item.name);
+    if (!property) continue;
+
+    const contextParts: string[] = [];
+    if (typeof item.required === "boolean" && item.required) contextParts.push("Required.");
+    const description = toTrimmedNonEmptyString(item.description);
+    if (description) contextParts.push(description);
+
+    const context = contextParts.length ? contextParts.join(" ") : undefined;
+    out.push({ property, context });
+  }
+
+  return out.length ? out : undefined;
+}
 
 function toOccurrenceId(
   flowSlug: AnalyticsFlowSlug,
@@ -202,17 +238,22 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
         continue;
       }
 
+      const stage =
+        toTrimmedNonEmptyString(event.stage) ?? toTrimmedNonEmptyString(event.funnelPosition);
+      const component =
+        toTrimmedNonEmptyString(event.component) ?? toTrimmedNonEmptyString(event.firingLocation);
+
       const occurrence: AnalyticsEventOccurrence = {
-        id: toOccurrenceId(flow.slug, event.name, index, event.stage, event.component),
+        id: toOccurrenceId(flow.slug, event.name, index, stage, component),
         flowSlug: flow.slug,
         flowId: flow.flowId,
         flowName: flow.flowName,
         eventName: event.name,
-        stage: event.stage,
-        component: event.component,
-        source: event.source,
-        description: event.description,
-        propertiesUsed: event.properties,
+        stage,
+        component,
+        source: toTrimmedNonEmptyString(event.source),
+        description: toTrimmedNonEmptyString(event.description),
+        propertiesUsed: normalizePropertiesUsed(event.properties),
         note: event.note,
       };
 

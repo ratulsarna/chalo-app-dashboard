@@ -44,14 +44,29 @@ export type AnalyticsEventPropertyRef = {
   context?: string;
 };
 
+// Some docs snapshots model per-event properties as full definitions (name/required/description)
+// instead of references to `propertyDefinitions`.
+export type AnalyticsEventPropertyDoc = {
+  name: AnalyticsPropertyKey;
+  required?: boolean;
+  description?: string;
+};
+
+export type AnalyticsEventPropertyInput = AnalyticsEventPropertyRef | AnalyticsEventPropertyDoc | AnalyticsPropertyKey;
+
 export type AnalyticsEventDefinition = {
   name: AnalyticsEventName;
   component?: string;
   stage?: string;
   source?: string;
   description?: string;
-  properties?: AnalyticsEventPropertyRef[];
+  properties?: AnalyticsEventPropertyInput[];
   note?: string;
+
+  // Some docs snapshots provide extra context; we normalize these in the fs adapter.
+  funnelPosition?: string;
+  firingLocation?: string;
+  userAction?: string;
 };
 
 export type AnalyticsFlowEventsFile = {
