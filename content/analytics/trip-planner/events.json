@@ -177,6 +177,34 @@
     "stop_name": {
       "type": "string",
       "description": "Stop name."
+    },
+    "time": {
+      "type": "string",
+      "description": "Time of the event (formatted from epoch)."
+    },
+    "date": {
+      "type": "string",
+      "description": "Date of the event (formatted from epoch)."
+    },
+    "pb_from_stop_name": {
+      "type": "string",
+      "description": "From stop name for premium bus leg."
+    },
+    "pb_to_stop_name": {
+      "type": "string",
+      "description": "To stop name for premium bus leg."
+    },
+    "pb_from_stop_id": {
+      "type": "string",
+      "description": "From stop ID for premium bus leg."
+    },
+    "pb_to_stop_id": {
+      "type": "string",
+      "description": "To stop ID for premium bus leg."
+    },
+    "is_premium_bus_route": {
+      "type": "boolean",
+      "description": "Whether the route is a premium bus route."
     }
   },
   "stages": [
@@ -814,19 +842,45 @@
       "description": "Buy product button clicked from trip details to purchase ticket.",
       "properties": [
         {
-          "property": "route_id"
-        },
-        {
-          "property": "route_name"
-        },
-        {
-          "property": "agency_name"
+          "property": "is_logged_in"
         },
         {
           "property": "city"
         },
         {
-          "property": "is_logged_in"
+          "property": "agency_name"
+        },
+        {
+          "property": "route_id"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "route_name"
+        },
+        {
+          "property": "pb_from_stop_name",
+          "context": "Present when bus leg exists"
+        },
+        {
+          "property": "pb_to_stop_name",
+          "context": "Present when bus leg exists"
+        },
+        {
+          "property": "pb_from_stop_id",
+          "context": "Present when bus leg exists"
+        },
+        {
+          "property": "pb_to_stop_id",
+          "context": "Present when bus leg exists"
+        },
+        {
+          "property": "is_premium_bus_route",
+          "context": "Present when bus leg exists"
         }
       ]
     },
@@ -838,21 +892,22 @@
       "description": "Track bus button clicked to view live tracking.",
       "properties": [
         {
-          "property": "route_id"
+          "property": "is_logged_in"
         },
         {
-          "property": "route_name"
+          "property": "city"
         },
         {
           "property": "agency_name"
         },
         {
-          "property": "stop_id",
-          "context": "From stop"
+          "property": "route_id"
         },
         {
-          "property": "stop_name",
-          "context": "From stop"
+          "property": "time"
+        },
+        {
+          "property": "date"
         }
       ]
     },

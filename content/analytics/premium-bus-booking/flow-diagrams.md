@@ -34,7 +34,7 @@ Use the initial events to identify which funnel path the user takes.
 ```mermaid
 flowchart TD
   ui_home([Home screen / App entry]) --> ev_passLandingOpen["pb pass purchase landing screen opened"]
-  ui_home --> ev_tripDetailsOpen["pb event trip details screen shown"]
+  ui_home --> ev_tripDetailsOpen["pb trip details screen shown"]
   ui_home --> ev_bulkOpen["pb bulk booking manage rides screen opened"]
 
   ev_passLandingOpen -->|Pass purchase intent| ui_passFlow([Pass Purchase Flow])
@@ -52,12 +52,12 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ui_entry([Entry: Trip search or deeplink]) --> ev_tripDetailsShown["pb event trip details screen shown"]
+  ui_entry([Entry: Trip search or deeplink]) --> ev_tripDetailsShown["pb trip details screen shown"]
 
-  ev_tripDetailsShown -->|User explores routes| ev_landingRouteClicked["pb event landing route clicked"]
-  ev_tripDetailsShown -->|View all routes| ev_viewAllClicked["pb event landing screen route view all clicked"]
-  ev_tripDetailsShown -->|Click rebook card| ev_rebookClicked["pb event rebook card clicked"]
-  ev_tripDetailsShown -->|Explore available routes| ev_exploreRoutesBtnClicked["pb event explore available routes button clicked"]
+  ev_tripDetailsShown -->|User explores routes| ev_landingRouteClicked["pb landing route clicked"]
+  ev_tripDetailsShown -->|View all routes| ev_viewAllClicked["pb landing screen route view all clicked"]
+  ev_tripDetailsShown -->|Click rebook card| ev_rebookClicked["pb rebook card clicked"]
+  ev_tripDetailsShown -->|Explore available routes| ev_exploreRoutesBtnClicked["pb explore available routes button clicked"]
   ev_tripDetailsShown -->|View all routes (alt)| ev_viewAllClicked2["pb landing screen route view all clicked"]
   ev_tripDetailsShown -->|Rebook card (alt)| ev_rebookClicked2["pb rebook card clicked"]
 
@@ -67,43 +67,43 @@ flowchart TD
   ui_allRoutes --> ev_allRoutesRouteClicked["pb all routes route clicked"]
   ev_allRoutesRouteClicked --> ev_landingRouteClicked
 
-  ev_tripDetailsShown -->|Stop suggestion| ev_newStopSuggestion["pb event new stop suggestion"]
+  ev_tripDetailsShown -->|Stop suggestion| ev_newStopSuggestion["pb stop suggestion submitted"]
   ev_newStopSuggestion --> ev_stopSuggestionSubmitted["pb stop suggestion submitted"]
 
   ev_tripDetailsShown --> ui_preferredTime([Preferred time selection])
   ui_preferredTime --> ev_preferredTimeSubmitted["premium bus preferred time submitted"]
 
   ev_tripDetailsShown --> ui_odFetch([Fetch OD pairs for source/destination])
-  ui_odFetch --> ev_odFetchSuccess["pb event pickup drop options fetched"]
-  ui_odFetch --> ev_odFetchFailed["pb event pickup drop options fetched result failed"]
+  ui_odFetch --> ev_odFetchSuccess["pb pickup drop options fetched"]
+  ui_odFetch --> ev_odFetchFailed["pb pickup drop options fetched result failed"]
   ui_odFetch --> ev_odFetchSuccess2["pb pickup drop options fetched"]
   ui_odFetch --> ev_odFetchFailed2["pb pickup drop options fetched result failed"]
 
   ev_odFetchSuccess --> ui_userSelectsOD([User selects pickup/drop])
-  ui_userSelectsOD --> ev_odSelected["pb event pickup drop selected"]
+  ui_userSelectsOD --> ev_odSelected["pb pickup drop selected"]
   ui_userSelectsOD --> ev_odSelected2["pb pickup drop selected"]
 
   ev_odSelected --> ui_configFetch([Fetch product config])
-  ui_configFetch --> ev_configSuccess["pb event complete product config by id fetched result success"]
-  ui_configFetch --> ev_configFailed["pb event complete product config by id fetched result failed"]
+  ui_configFetch --> ev_configSuccess["pb fetch complete product config success"]
+  ui_configFetch --> ev_configFailed["pb fetch complete product config failed"]
   ui_configFetch --> ev_configSuccess2["pb fetch complete product config success"]
   ui_configFetch --> ev_configFailed2["pb fetch complete product config failed"]
   ev_configFailed --> ev_noRouteError["pb no route error displayed"]
   ev_configFailed2 --> ev_noRouteError
 
-  ev_configSuccess --> ev_slotScreenOpen["pb event slot selection screen opened"]
+  ev_configSuccess --> ev_slotScreenOpen["pb slot selection screen opened"]
   ev_configSuccess2 --> ev_slotScreenOpen2["pb slot selection screen opened"]
   ev_slotScreenOpen2 --> ui_slotFetch
 
   ev_slotScreenOpen --> ui_slotFetch([Fetch available slots])
-  ui_slotFetch --> ev_slotSuccess["pb event slot fetch success"]
-  ui_slotFetch --> ev_slotFailure["pb event slot fetch failure"]
+  ui_slotFetch --> ev_slotSuccess["pb slot fetch success"]
+  ui_slotFetch --> ev_slotFailure["pb slot fetch failure"]
   ui_slotFetch --> ev_slotSuccess2["pb slot fetch success"]
   ui_slotFetch --> ev_slotFailure2["pb slot fetch failure"]
 
-  ev_slotSuccess -->|User explores passes| ev_purchaseOptionsSuccess["pb event available purchase options success"]
+  ev_slotSuccess -->|User explores passes| ev_purchaseOptionsSuccess["pb available purchase options success"]
   ev_slotSuccess --> ui_userSelectsSlot([User selects slot])
-  ui_userSelectsSlot --> ev_slotSelected["pb event slot selected by user"]
+  ui_userSelectsSlot --> ev_slotSelected["pb slot selected by user"]
   ui_userSelectsSlot --> ev_slotSelected2["pb slot selected by user"]
 
   ev_slotSelected --> ev_seatScreenOpen["pb seat selection screen opened"]
@@ -170,8 +170,8 @@ flowchart TD
 
   ev_proceedClicked --> ext_superPassFlow[Super Pass Purchase Flow]
 
-  ext_superPassFlow -->|After pass purchase| ev_slotScreenOpen["pb event slot selection screen opened"]
-  ev_slotScreenOpen -->|User explores with pass| ev_slotSuccess["pb event slot fetch success"]
+  ext_superPassFlow -->|After pass purchase| ev_slotScreenOpen["pb slot selection screen opened"]
+  ev_slotScreenOpen -->|User explores with pass| ev_slotSuccess["pb slot fetch success"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -352,28 +352,28 @@ This shows granular events within the slot selection screen, useful for conversi
 
 ```mermaid
 flowchart TD
-  ev_slotScreenOpen["pb event slot selection screen opened"] --> ui_odPairFetch([Fetch OD pairs])
+  ev_slotScreenOpen["pb slot selection screen opened"] --> ui_odPairFetch([Fetch OD pairs])
 
   ui_odPairFetch --> ev_odSuccess["pb od pair fetch success"]
   ui_odPairFetch --> ev_odFailed["pb od pair fetch failed"]
 
   ev_odSuccess --> ui_slotFetch([Fetch slots for selected section])
-  ui_slotFetch --> ev_slotSuccess["pb event slot fetch success"]
-  ui_slotFetch --> ev_slotFailure["pb event slot fetch failure"]
+  ui_slotFetch --> ev_slotSuccess["pb slot fetch success"]
+  ui_slotFetch --> ev_slotFailure["pb slot fetch failure"]
   ui_slotFetch --> ev_slotSuccess2["pb slot fetch success"]
   ui_slotFetch --> ev_slotFailure2["pb slot fetch failure"]
 
-  ev_slotSuccess -->|User clicks slot| ev_slotSelected["pb event slot selected by user"]
+  ev_slotSuccess -->|User clicks slot| ev_slotSelected["pb slot selected by user"]
   ev_slotSuccess -->|User clicks slot (alt)| ev_slotSelected2["pb slot selected by user"]
 
   ev_slotSuccess -->|User explores passes| ui_passFetch([Fetch purchase options])
-  ui_passFetch --> ev_passSuccess["pb event available purchase options success"]
-  ui_passFetch --> ev_passFailed["pb event available purchase options failed"]
+  ui_passFetch --> ev_passSuccess["pb available purchase options success"]
+  ui_passFetch --> ev_passFailed["pb available purchase options failed"]
   ui_passFetch --> ev_passSuccess2["pb available purchase options success"]
   ui_passFetch --> ev_passFailed2["pb available purchase options failed"]
 
   ev_passSuccess --> ev_passBottomSheet["pb purchase option bottom sheet item clicked"]
-  ev_passSuccess --> ev_passCardClicked["pb event pass purchased card clicked by user"]
+  ev_passSuccess --> ev_passCardClicked["pb pass purchased card clicked by user"]
   ev_passSuccess --> ev_passCardClicked2["pb pass purchased card clicked by user"]
 
   ev_passBottomSheet --> ev_valuePassBlocked["pb value pass bottomsheet booking blocked"]
@@ -535,10 +535,10 @@ flowchart TD
 
 ### Fresh Booking Conversion Funnel
 ```
-pb event trip details screen shown
-  → pb event pickup drop selected
-  → pb event slot selection screen opened
-  → pb event slot selected by user
+pb trip details screen shown
+  → pb pickup drop selected
+  → pb slot selection screen opened
+  → pb slot selected by user
   → pb seat selection screen opened
   → premium bus seat selection select seats clicked
   → premium bus order creation success
@@ -552,7 +552,7 @@ pb pass purchase landing screen opened
   → pb pass landing screen od pair clicked
   → pb pass purchase landing proceed btn clicked intent
   → [Super Pass Purchase Flow - see super-pass-purchase/flow-diagrams.md]
-  → pb event slot selection screen opened (with pass)
+  → pb slot selection screen opened (with pass)
 ```
 
 ### Bulk Booking Funnel
@@ -570,10 +570,10 @@ pb bulk booking manage rides screen opened
 
 ### Slot Selection Conversion
 ```
-pb event slot selection screen opened
-  → pb event slot fetch success
-  → pb event slot selected by user
-  (Drop-off: pb event slot fetch failure, pb no slots available)
+pb slot selection screen opened
+  → pb slot fetch success
+  → pb slot selected by user
+  (Drop-off: pb slot fetch failure, pb no slots available)
 ```
 
 ### Seat Selection Conversion
@@ -607,13 +607,13 @@ homescreen premium bus active pass info
 Track these events to monitor booking flow health:
 
 **Stop Selection Errors:**
-- `pb event pickup drop options fetched result failed`
+- `pb pickup drop options fetched result failed`
 - `pb event no route error displayed`
-- `pb event complete product config by id fetched result failed`
+- `pb fetch complete product config failed`
 
 **Slot Selection Errors:**
-- `pb event slot fetch failure`
-- `pb event available purchase options failed`
+- `pb slot fetch failure`
+- `pb available purchase options failed`
 - `pb od pair fetch failed`
 - `pb pass savings fetch failure`
 

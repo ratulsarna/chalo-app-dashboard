@@ -682,26 +682,26 @@
         "pb pass landing screen od pair clicked",
         "pb pass purchase landing proceed btn clicked intent",
         "pb pass purchase retry btn clicked intent",
-        "pb event product config fetch success",
-        "pb event product config fetch failure"
+        "pb product config fetch success",
+        "pb product config fetch failure"
       ]
     },
     {
       "name": "Stop Selection",
       "description": "User selects origin-destination pair and pickup/drop stops.",
       "events": [
-        "pb event trip details screen shown",
-        "pb event landing route clicked",
-        "pb event landing screen route view all clicked",
-        "pb event explore available routes button clicked",
-        "pb event rebook card clicked",
-        "pb event pickup drop options fetched",
-        "pb event pickup drop options fetched result failed",
-        "pb event pickup drop selected",
-        "pb event complete product config by id fetched result success",
-        "pb event complete product config by id fetched result failed",
-        "pb event new stop suggestion",
-        "pb event no route error displayed",
+        "pb trip details screen shown",
+        "pb landing route clicked",
+        "pb landing screen route view all clicked",
+        "pb explore available routes button clicked",
+        "pb rebook card clicked",
+        "pb pickup drop options fetched",
+        "pb pickup drop options fetched result failed",
+        "pb pickup drop selected",
+        "pb fetch complete product config success",
+        "pb fetch complete product config failed",
+        "pb stop suggestion submitted",
+        "pb no route error displayed",
         "premium bus preferred time submitted"
       ]
     },
@@ -709,14 +709,14 @@
       "name": "Slot Selection",
       "description": "User selects trip slot/time and optionally explores passes.",
       "events": [
-        "pb event slot selection screen opened",
-        "pb event slot fetch success",
-        "pb event slot fetch failure",
-        "pb event slot selected by user",
-        "pb event available purchase options success",
-        "pb event available purchase options failed",
+        "pb slot selection screen opened",
+        "pb slot fetch success",
+        "pb slot fetch failure",
+        "pb slot selected by user",
+        "pb available purchase options success",
+        "pb available purchase options failed",
         "pb purchase option bottom sheet item clicked",
-        "pb event pass purchased card clicked by user",
+        "pb pass purchased card clicked by user",
         "premium bus explore available routes clicked",
         "premium bus view all slots clicked",
         "pb directions to stop clicked",
@@ -1632,6 +1632,7 @@
       "stage": "Pass & Bulk Booking Management",
       "source": "Bulk booking ride details",
       "description": "Dialog dismissed.",
+      "notes": "BUG: Code constant PB_BULK_BOOKING_DISMISS_DIALOG at AnalyticsEventConstants.kt:2089 has typo 'dimsiss' instead of 'dismiss'. Actual emitted event is 'pb bulk booking dimsiss dialog'. Fix required in KMP code.",
       "properties": [
         {
           "property": "dialogType"
@@ -1834,7 +1835,7 @@
       ]
     },
     {
-      "name": "pb event available purchase options failed",
+      "name": "pb available purchase options failed",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -1846,7 +1847,7 @@
       ]
     },
     {
-      "name": "pb event available purchase options success",
+      "name": "pb available purchase options success",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -1861,7 +1862,7 @@
       ]
     },
     {
-      "name": "pb event complete product config by id fetched result failed",
+      "name": "pb fetch complete product config failed",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1885,7 +1886,7 @@
       ]
     },
     {
-      "name": "pb event complete product config by id fetched result success",
+      "name": "pb fetch complete product config success",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1909,7 +1910,7 @@
       ]
     },
     {
-      "name": "pb event explore available routes button clicked",
+      "name": "pb explore available routes button clicked",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1917,7 +1918,7 @@
       "properties": []
     },
     {
-      "name": "pb event landing route clicked",
+      "name": "pb landing route clicked",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1929,7 +1930,7 @@
       ]
     },
     {
-      "name": "pb event landing screen route view all clicked",
+      "name": "pb landing screen route view all clicked",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1937,7 +1938,7 @@
       "properties": []
     },
     {
-      "name": "pb event new stop suggestion",
+      "name": "pb stop suggestion submitted",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1952,7 +1953,7 @@
       ]
     },
     {
-      "name": "pb event no route error displayed",
+      "name": "pb no route error displayed",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -1967,7 +1968,7 @@
       ]
     },
     {
-      "name": "pb event pass purchased card clicked by user",
+      "name": "pb pass purchased card clicked by user",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -1982,7 +1983,7 @@
       ]
     },
     {
-      "name": "pb event pickup drop options fetched",
+      "name": "pb pickup drop options fetched",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -2042,7 +2043,7 @@
       ]
     },
     {
-      "name": "pb event pickup drop options fetched result failed",
+      "name": "pb pickup drop options fetched result failed",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -2078,7 +2079,7 @@
       ]
     },
     {
-      "name": "pb event pickup drop selected",
+      "name": "pb pickup drop selected",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -2132,7 +2133,7 @@
       ]
     },
     {
-      "name": "pb event product config fetch failure",
+      "name": "pb product config fetch failure",
       "component": "PbPassPurchaseLandingScreenComponent / PremiumBusStopSelectionComponent",
       "stage": "Entry & Landing / Stop Selection",
       "source": "Product config fetch",
@@ -2144,7 +2145,7 @@
       ]
     },
     {
-      "name": "pb event product config fetch success",
+      "name": "pb product config fetch success",
       "component": "PbPassPurchaseLandingScreenComponent / PremiumBusStopSelectionComponent",
       "stage": "Entry & Landing / Stop Selection",
       "source": "Product config fetch",
@@ -2159,7 +2160,7 @@
       ]
     },
     {
-      "name": "pb event rebook card clicked",
+      "name": "pb rebook card clicked",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -2192,7 +2193,7 @@
       ]
     },
     {
-      "name": "pb event slot fetch failure",
+      "name": "pb slot fetch failure",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -2207,7 +2208,7 @@
       ]
     },
     {
-      "name": "pb event slot fetch success",
+      "name": "pb slot fetch success",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -2228,7 +2229,7 @@
       ]
     },
     {
-      "name": "pb event slot selected by user",
+      "name": "pb slot selected by user",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -2252,7 +2253,7 @@
       ]
     },
     {
-      "name": "pb event slot selection screen opened",
+      "name": "pb slot selection screen opened",
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Slot selection screen",
@@ -2268,7 +2269,7 @@
       ]
     },
     {
-      "name": "pb event trip details screen shown",
+      "name": "pb trip details screen shown",
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Stop Selection",
       "source": "Trip details screen",
@@ -3390,10 +3391,10 @@
       {
         "name": "Fresh Booking (No Pass)",
         "steps": [
-          "pb event trip details screen shown",
-          "pb event pickup drop selected",
-          "pb event slot selection screen opened",
-          "pb event slot selected by user",
+          "pb trip details screen shown",
+          "pb pickup drop selected",
+          "pb slot selection screen opened",
+          "pb slot selected by user",
           "pb seat selection screen opened",
           "premium bus seat selection select seats clicked",
           "pb booking confirmed",
@@ -3405,8 +3406,8 @@
         "steps": [
           "pb pass purchase landing screen opened",
           "pb pass landing screen od pair clicked",
-          "pb event slot selection screen opened",
-          "pb event pass purchased card clicked by user",
+          "pb slot selection screen opened",
+          "pb pass purchased card clicked by user",
           "Navigate to pass purchase flow"
         ]
       },
@@ -3415,7 +3416,7 @@
         "steps": [
           "pb bulk booking manage rides screen opened",
           "pb bulk booking book multiple rides click",
-          "pb event slot selection screen opened (for each day)",
+          "pb slot selection screen opened (for each day)",
           "pb seat selection screen opened (aggregated)",
           "bulk booking confirm rides page shown",
           "bulk booking confirm details clicked",
@@ -3427,7 +3428,7 @@
         "steps": [
           "pb bulk booking manage rides screen opened",
           "pb bulk booking book single ride click",
-          "pb event slot selection screen opened",
+          "pb slot selection screen opened",
           "pb seat selection screen opened",
           "Booking created (uses pass)",
           "pb activation screen opened"

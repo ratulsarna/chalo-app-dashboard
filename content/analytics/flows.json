@@ -10,7 +10,7 @@
     "trip-planner": {
       "name": "Trip Planner",
       "description": "Trip planning (both location-based and stop-based entry) - pick from/to, swap, time/date edits, fetch itineraries (including HOP), quick filters/tabs, select itinerary, proceed to trip details/route details.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-10"
     },
     "super-pass": {
       "name": "Super Pass",
@@ -20,7 +20,7 @@
     "premium-bus": {
       "name": "Premium Bus",
       "description": "Reserved premium bus booking - route selection, seat selection, slot booking, pre-booking, cancellation. AC/premium bus services.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-10"
     },
     "metro": {
       "name": "Metro",
