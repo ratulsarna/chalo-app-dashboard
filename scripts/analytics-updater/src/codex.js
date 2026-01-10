@@ -102,12 +102,28 @@ async function runCodexUpdater({
   instructionsPath,
   upstreamBranch,
 }) {
+  async function assertAbsoluteDirExists(label, p) {
+    if (!path.isAbsolute(p)) throw new Error(`${label} must be an absolute path: ${p}`);
+    const stat = await fs.stat(p);
+    if (!stat.isDirectory()) throw new Error(`${label} is not a directory: ${p}`);
+  }
+
+  async function assertAbsoluteFileExists(label, p) {
+    if (!path.isAbsolute(p)) throw new Error(`${label} must be an absolute path: ${p}`);
+    const stat = await fs.stat(p);
+    if (!stat.isFile()) throw new Error(`${label} is not a file: ${p}`);
+  }
+
   const safeReasoningEffort = String(reasoningEffort || "")
     .trim()
     .toLowerCase();
   if (!["low", "medium", "high"].includes(safeReasoningEffort)) {
     throw new Error(`Invalid codex reasoning effort: ${String(reasoningEffort)}`);
   }
+
+  await assertAbsoluteDirExists("dashboardRepoPath", dashboardRepoPath);
+  await assertAbsoluteDirExists("upstreamRepoPath", upstreamRepoPath);
+  await assertAbsoluteFileExists("instructionsPath", instructionsPath);
 
   // Reduce secret exposure to the Codex subprocess.
   const rawEnv = {

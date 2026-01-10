@@ -12,10 +12,11 @@ function readBoolEnv(value) {
 }
 
 function parseArgs(argv) {
-  const out = { dryRun: false, init: false };
+  const out = { dryRun: false, init: false, forceLock: false };
   for (const arg of argv) {
     if (arg === "--dry-run") out.dryRun = true;
     if (arg === "--init") out.init = true;
+    if (arg === "--force" || arg === "--force-lock") out.forceLock = true;
   }
   return out;
 }
@@ -43,6 +44,7 @@ function resolveConfig({ argv = process.argv.slice(2), env = process.env } = {})
   return {
     dryRun,
     init: args.init,
+    forceLock: args.forceLock,
     upstreamRepoPath,
     upstreamBranch,
     dashboardRepoPath,

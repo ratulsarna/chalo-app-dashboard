@@ -16,3 +16,12 @@ test("acquireLock creates a lock; second acquire fails; release clears it", asyn
   await acquireLock(lockPath);
   await releaseLock(lockPath);
 });
+
+test("acquireLock removes a stale lock (dead pid) and succeeds", async () => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "analytics-updater-"));
+  const lockPath = path.join(tmp, "lock");
+
+  await fs.writeFile(lockPath, `${JSON.stringify({ pid: -1, startedAt: new Date().toISOString() })}\n`, "utf8");
+  await acquireLock(lockPath);
+  await releaseLock(lockPath);
+});

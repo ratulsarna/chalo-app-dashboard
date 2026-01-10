@@ -29,8 +29,11 @@ async function isLockStale(lockPath) {
   }
 }
 
-async function acquireLock(lockPath) {
+async function acquireLock(lockPath, { force = false } = {}) {
   await ensureDir(lockPath);
+  if (force) {
+    await fs.unlink(lockPath).catch(() => {});
+  }
 
   const payload = `${JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString() })}\n`;
   for (let attempt = 0; attempt < 2; attempt += 1) {

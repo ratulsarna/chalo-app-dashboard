@@ -151,7 +151,7 @@ Add a `test` script to `package.json`:
 2) `lock` module
    - Acquiring lock succeeds when unlocked.
    - Acquiring lock fails (or times out) when already locked.
-   - Stale lock detection (optional): can be broken with a `--force` flag.
+   - Stale lock detection (optional): can be broken with a `--force-lock` flag (alias: `--force`).
 
 3) `git` wrapper module
    - `getHeadCommit(repoPath, ref)` returns a SHA string.
@@ -374,7 +374,7 @@ Acceptance is behavior + tests.
   - If the same upstream `HEAD` is processed again (e.g., state did not advance due to a crash after PR creation), the updater must not open a second PR. It should prefer updating the deterministic branch `autoupdate/analytics/<sha>` and reusing the existing PR (via `gh pr view` + `gh pr edit` or similar), or no-op if there are no new changes.
 
 - Recovery:
-  - If a run fails mid-way, the lock is released on process exit; if not, `--force` (optional) can break a stale lock.
+  - If a run fails mid-way, the lock is released on process exit; if not, `--force-lock` (alias: `--force`) can break a stale lock.
   - `lastProcessedCommit` is only advanced after validation passes and PR is created.
   - Manual fallback: rerun `node scripts/analytics-updater/run-once.js --dry-run` to inspect failure without side effects.
 

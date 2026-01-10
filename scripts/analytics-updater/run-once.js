@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+const fs = require("node:fs/promises");
+const path = require("node:path");
+
 const { resolveConfig } = require("./src/config.js");
 const { acquireLock, releaseLock } = require("./src/lock.js");
 const upstreamGit = require("./src/git.js");
@@ -17,11 +20,54 @@ function shortSha(sha) {
   return sha.slice(0, 12);
 }
 
+function stripAnsi(s) {
+  return String(s).replace(/\u001b\[[0-9;]*m/g, "");
+}
+
+function truncateForLog(s, maxChars = 8000) {
+  const str = stripAnsi(s);
+  if (str.length <= maxChars) return str;
+  return `${str.slice(0, maxChars)}\n\n[...truncated...]`;
+}
+
+function sanitizeCodexFailureMessage(codex) {
+  const summary = codex && typeof codex === "object" ? codex.summary : "";
+  if (typeof summary === "string" && summary.trim().length > 0) return summary.trim();
+
+  const raw =
+    codex && typeof codex === "object"
+      ? codex.rawStderr || codex.rawStdout || "Unknown Codex failure"
+      : "Unknown Codex failure";
+
+  let sanitized = truncateForLog(raw);
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (typeof apiKey === "string" && apiKey.length > 0) {
+    sanitized = sanitized.split(apiKey).join("[REDACTED]");
+  }
+  return sanitized;
+}
+
+async function assertAbsoluteDirExists(label, p) {
+  if (!path.isAbsolute(p)) throw new Error(`${label} must be an absolute path: ${p}`);
+  const stat = await fs.stat(p);
+  if (!stat.isDirectory()) throw new Error(`${label} is not a directory: ${p}`);
+}
+
+async function assertAbsoluteFileExists(label, p) {
+  if (!path.isAbsolute(p)) throw new Error(`${label} must be an absolute path: ${p}`);
+  const stat = await fs.stat(p);
+  if (!stat.isFile()) throw new Error(`${label} is not a file: ${p}`);
+}
+
 async function main() {
   const config = resolveConfig();
 
-  await acquireLock(config.lockPath);
+  await acquireLock(config.lockPath, { force: config.forceLock });
   try {
+    await assertAbsoluteDirExists("UPSTREAM_REPO_PATH", config.upstreamRepoPath);
+    await assertAbsoluteDirExists("DASHBOARD_REPO_PATH", config.dashboardRepoPath);
+    await assertAbsoluteFileExists("CODEX_INSTRUCTIONS_PATH", config.instructionsPath);
+
     const state = await readState(config.statePath);
 
     // Ensure upstream is up to date.
@@ -120,7 +166,7 @@ async function main() {
     });
 
     if (!codex.ok) {
-      const msg = codex.summary || codex.rawStderr || codex.rawStdout || "Unknown Codex failure";
+      const msg = sanitizeCodexFailureMessage(codex);
       throw new Error(`Codex updater failed for range ${range}: ${msg}`);
     }
 
