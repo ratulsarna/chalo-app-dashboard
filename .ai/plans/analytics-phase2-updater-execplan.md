@@ -26,15 +26,16 @@ User-visible proof it works:
 ## Progress
 
 - [x] (2026-01-10) Create ExecPlan file and resolve open questions.
-- [ ] Implement state + lock + git wrappers (tests first).
-- [ ] Implement validator (tests first).
-- [ ] Implement updater orchestrator (dry-run + real run).
-- [ ] Add systemd service + timer (10 minute pull/check).
-- [ ] Add docs/runbook for ops + recovery.
+- [x] Implement state + lock + git wrappers (tests first).
+- [x] Implement validator (tests first).
+- [x] Implement updater orchestrator (dry-run + real run).
+- [x] Add systemd service + timer (10 minute pull/check).
+- [x] Add docs/runbook for ops + recovery.
+- [ ] Run an end-to-end test (init → upstream commit → PR).
 
 ## Surprises & Discoveries
 
-- None yet.
+- The updater needs an explicit baseline `lastProcessedCommit` before it can compute a diff; a first-time `--init` run is required (or the state file must be pre-seeded).
 
 ## Decision Log
 
@@ -89,7 +90,7 @@ TBD (filled in after Phase 2 implementation).
 
 ### Existing “owners/patterns” to extend
 
-There is no Phase 2 automation code yet. Phase 2 should be implemented as:
+Phase 2 automation code is implemented as:
 
 - **Repository-local scripts** under a single owner directory (recommended): `scripts/analytics-updater/`
 - Keeping analytics parsing/rendering logic in existing owners (`src/lib/analytics/*`) unchanged.
@@ -111,20 +112,15 @@ This keeps runtime UI concerns separate from automation concerns and avoids inve
 
 ### Baseline (before Phase 2 exists)
 
-There is currently no automation that:
+Phase 2 automation is implemented.
 
-- pulls upstream periodically
-- runs an LLM-based updater
-- opens PRs automatically
+Key entrypoints:
 
-Proof:
-
-```bash
-cd /home/ratul/Developer/chalo/chalo-app-dashboard
-rg -n "systemd|timer|cron|watcher|updater" -S .
-```
-
-Expected: no Phase 2 automation code besides design docs.
+- `scripts/analytics-updater/run-once.js`
+- `scripts/analytics-updater/validate-content.js`
+- `ops/systemd/chalo-analytics-updater.service`
+- `ops/systemd/chalo-analytics-updater.timer`
+- Codex instructions file: `.ai/codex/analytics-updater.md`
 
 ### External constraints (summarized)
 
@@ -301,6 +297,15 @@ node scripts/analytics-updater/run-once.js --dry-run
 Expected:
 - If no upstream changes: “no-op” and exit 0.
 - If upstream changed: it runs Codex + validator, but does not push/PR and does not advance state.
+
+### First-time init (sets baseline `lastProcessedCommit`)
+
+```bash
+node scripts/analytics-updater/run-once.js --init
+```
+
+Expected:
+- Writes `STATE_PATH` with `lastProcessedCommit=<current upstream HEAD>`.
 
 ### Install systemd units (VPS)
 
