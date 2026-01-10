@@ -3,6 +3,7 @@
 import * as React from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDownIcon, Maximize2Icon } from "lucide-react";
+import Link from "next/link";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
 import { extractMermaidBlocks, pickDefaultMermaidBlock, type MermaidBlockMeta } from "@/lib/analytics/diagram-markdown";
@@ -10,6 +11,9 @@ import { MermaidDiagramViewer } from "@/components/analytics/mermaid-diagram-vie
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { encodeEventNameForPath } from "@/lib/analytics/urls";
 import { cn } from "@/lib/utils";
 
 function getSelectedBlockId({
@@ -21,6 +25,18 @@ function getSelectedBlockId({
 }) {
   if (diagramParam && blocks.some((b) => b.id === diagramParam)) return diagramParam;
   return pickDefaultMermaidBlock(blocks)?.id ?? blocks[0]?.id ?? null;
+}
+
+function stageLabel(stage: string | undefined) {
+  return stage?.trim().length ? stage : "Unstaged";
+}
+
+async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    // Ignore clipboard errors (e.g., insecure context).
+  }
 }
 
 export function FlowDiagramPanel({
@@ -44,6 +60,16 @@ export function FlowDiagramPanel({
     () => getSelectedBlockId({ blocks, diagramParam }),
     [blocks, diagramParam],
   );
+  const [openEventName, setOpenEventName] = React.useState<string | null>(null);
+  const matches = React.useMemo(
+    () => (openEventName ? occurrences.filter((o) => o.eventName === openEventName) : []),
+    [occurrences, openEventName],
+  );
+  const [openOccurrenceId, setOpenOccurrenceId] = React.useState<string | null>(null);
+  const selectedOccurrence = React.useMemo(
+    () => (openOccurrenceId ? matches.find((o) => o.id === openOccurrenceId) ?? null : null),
+    [matches, openOccurrenceId],
+  );
 
   const selected = React.useMemo(
     () => blocks.find((b) => b.id === selectedId) ?? null,
@@ -59,20 +85,19 @@ export function FlowDiagramPanel({
     [pathname, router, searchParams],
   );
 
-  const onEventClick = React.useCallback(
-    (eventName: string) => {
-      const match = occurrences.find((o) => o.eventName === eventName);
-      if (match) {
-        router.push(
-          `/analytics/flows/${encodeURIComponent(flowSlug)}?tab=events&open=${encodeURIComponent(match.id)}`,
-        );
-        return;
-      }
+  const onEventClick = React.useCallback((eventName: string) => {
+    setOpenEventName(eventName);
+  }, []);
 
-      router.push(`/analytics/events?q=${encodeURIComponent(eventName)}`);
-    },
-    [flowSlug, occurrences, router],
-  );
+  React.useEffect(() => {
+    if (!openEventName) {
+      setOpenOccurrenceId(null);
+      return;
+    }
+    // When opening from a diagram node, pick the first match as the default selection.
+    const next = occurrences.find((o) => o.eventName === openEventName) ?? null;
+    setOpenOccurrenceId(next?.id ?? null);
+  }, [occurrences, openEventName]);
 
   if (!diagramMarkdown || diagramMarkdown.trim().length === 0) {
     return (
@@ -172,6 +197,161 @@ export function FlowDiagramPanel({
         onEventClick={onEventClick}
         className="h-[420px]"
       />
+
+      <Sheet
+        open={openEventName !== null}
+        onOpenChange={(v) => {
+          if (!v) setOpenEventName(null);
+        }}
+      >
+        <SheetContent className="w-full p-0 sm:max-w-xl">
+          <div className="flex h-full flex-col">
+            <SheetHeader className="border-b pb-3 pr-12">
+              <SheetTitle className="break-words">{openEventName ?? ""}</SheetTitle>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <Badge variant="secondary" className="tabular-nums">
+                  {matches.length} {matches.length === 1 ? "occurrence" : "occurrences"} in this flow
+                </Badge>
+                {selectedOccurrence?.stage ? (
+                  <Badge variant="outline">{stageLabel(selectedOccurrence.stage)}</Badge>
+                ) : null}
+                {selectedOccurrence?.source ? (
+                  <Badge variant="outline">{selectedOccurrence.source}</Badge>
+                ) : null}
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    if (openEventName) void copyToClipboard(openEventName);
+                  }}
+                >
+                  Copy event name
+                </Button>
+                {openEventName ? (
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/analytics/events/${encodeEventNameForPath(openEventName)}`}>
+                      Canonical event page
+                    </Link>
+                  </Button>
+                ) : null}
+              </div>
+            </SheetHeader>
+
+            <div className="flex-1 overflow-auto p-4">
+              {openEventName && matches.length === 0 ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    This event name appears in the diagram, but it wasn’t found in the flow’s
+                    events snapshot.
+                  </p>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/analytics/events?q=${encodeURIComponent(openEventName)}`}>
+                      Search globally
+                    </Link>
+                  </Button>
+                </div>
+              ) : null}
+
+              {matches.length > 1 ? (
+                <div className="space-y-3">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs text-muted-foreground">Occurrence</p>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="w-full justify-between">
+                          <span className="truncate">
+                            {selectedOccurrence
+                              ? `${stageLabel(selectedOccurrence.stage)}${selectedOccurrence.component ? ` · ${selectedOccurrence.component}` : ""}`
+                              : "Select occurrence"}
+                          </span>
+                          <ChevronDownIcon className="size-4 shrink-0 opacity-70" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-[min(520px,calc(100vw-2rem))]">
+                        <DropdownMenuRadioGroup
+                          value={openOccurrenceId ?? ""}
+                          onValueChange={(v) => setOpenOccurrenceId(v)}
+                        >
+                          {matches.map((o) => (
+                            <DropdownMenuRadioItem key={o.id} value={o.id} className="gap-3">
+                              <span className="min-w-0 truncate">
+                                {stageLabel(o.stage)}
+                                {o.component ? ` · ${o.component}` : ""}
+                              </span>
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  <Separator />
+                </div>
+              ) : null}
+
+              {selectedOccurrence ? (
+                <div className="space-y-5">
+                  {selectedOccurrence.component ? (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Component</p>
+                      <Badge variant="secondary" className="mt-2 max-w-full truncate font-mono">
+                        {selectedOccurrence.component}
+                      </Badge>
+                    </div>
+                  ) : null}
+
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Description</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedOccurrence.description ?? "No description available."}
+                    </p>
+                  </div>
+
+                  {selectedOccurrence.propertiesUsed && selectedOccurrence.propertiesUsed.length > 0 ? (
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold">Properties used</h3>
+                      <div className="space-y-2">
+                        {selectedOccurrence.propertiesUsed.map((p, idx) => {
+                          const rawProperty = (p as { property?: unknown }).property;
+                          const property = typeof rawProperty === "string" && rawProperty.trim().length > 0
+                            ? rawProperty
+                            : null;
+                          return (
+                            <div
+                              key={`${selectedOccurrence.id}::${property ?? "missing"}::${idx}`}
+                              className="rounded-md border p-3"
+                            >
+                              {property ? (
+                                <a
+                                  className="font-mono text-sm underline underline-offset-4 hover:text-primary"
+                                  href={`/analytics/flows/${encodeURIComponent(flowSlug)}#prop-${encodeURIComponent(
+                                    property,
+                                  )}`}
+                                >
+                                  {property}
+                                </a>
+                              ) : (
+                                <span className="font-mono text-sm text-muted-foreground">
+                                  (missing property key)
+                                </span>
+                              )}
+                              {p.context ? (
+                                <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                              ) : null}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

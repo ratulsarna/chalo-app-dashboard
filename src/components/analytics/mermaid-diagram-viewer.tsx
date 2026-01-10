@@ -207,6 +207,7 @@ export function MermaidDiagramViewer({
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    const containerEl: HTMLDivElement = container;
 
     function onWheel(event: WheelEvent) {
       // Trackpads can be noisy; keep the multiplier small.
@@ -215,7 +216,7 @@ export function MermaidDiagramViewer({
 
       event.preventDefault();
 
-      const rect = container.getBoundingClientRect();
+      const rect = containerEl.getBoundingClientRect();
       const offsetX = event.clientX - rect.left;
       const offsetY = event.clientY - rect.top;
 
@@ -223,8 +224,8 @@ export function MermaidDiagramViewer({
       zoomBy(factor, offsetX, offsetY);
     }
 
-    container.addEventListener("wheel", onWheel, { passive: false });
-    return () => container.removeEventListener("wheel", onWheel);
+    containerEl.addEventListener("wheel", onWheel, { passive: false });
+    return () => containerEl.removeEventListener("wheel", onWheel);
   }, [zoomBy]);
 
   const draggingRef = React.useRef<{

@@ -63,7 +63,10 @@ test("clicking a green node opens event sheet (best-effort)", async ({ page }) =
   await expect(firstEventNode).toBeVisible();
   await firstEventNode.click({ force: true });
 
-  await expect(page).toHaveURL(/\\?(.+&)?tab=events/);
+  await expect(page).toHaveURL(/\/analytics\/flows\/payment(\?|$)/);
+  expect(page.url()).not.toContain("/analytics/events");
+  expect(page.url()).not.toContain("tab=events");
+
   await expect(page.getByRole("button", { name: "Copy event name" }).first()).toBeVisible();
 });
 
