@@ -58,6 +58,10 @@ async function main() {
     const range = `${base}..${upstreamHead}`;
 
     // Prepare dashboard branch.
+    const dashStatus = await dashboardGit.getStatusPorcelain(config.dashboardRepoPath);
+    if (dashStatus.length > 0) {
+      throw new Error(`Dashboard repo has uncommitted changes: ${config.dashboardRepoPath}`);
+    }
     await dashboardGit.checkoutBaseAndPull(config.dashboardRepoPath, config.dashboardBaseBranch);
     const branch = computeUpdateBranchName(shortSha(upstreamHead));
 

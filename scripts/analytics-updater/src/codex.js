@@ -110,7 +110,7 @@ async function runCodexUpdater({
   }
 
   // Reduce secret exposure to the Codex subprocess.
-  const env = {
+  const rawEnv = {
     PATH: process.env.PATH,
     HOME: process.env.HOME,
     USER: process.env.USER,
@@ -118,6 +118,7 @@ async function runCodexUpdater({
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
   };
+  const env = Object.fromEntries(Object.entries(rawEnv).filter(([, v]) => v !== undefined));
 
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "analytics-updater-codex-"));
   const lastMessagePath = path.join(tmpDir, "codex-last-message.md");
