@@ -70,7 +70,7 @@ export function extractMermaidBlocks(markdown: string): MermaidBlockMeta[] {
       continue;
     }
 
-    if (!/^\s*```mermaid\s*$/.test(line)) continue;
+    if (!/^\s*```mermaid\s*$/i.test(line)) continue;
 
     const startLine = i;
     const start = i + 1;
@@ -126,4 +126,3 @@ export function pickDefaultMermaidBlock(blocks: MermaidBlockMeta[]) {
       .sort((a, b) => scoreForDefault(b) - scoreForDefault(a))[0] ?? null
   );
 }
-

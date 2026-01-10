@@ -80,7 +80,7 @@ export function FlowDiagramPanel({
     (id: string) => {
       const next = new URLSearchParams(searchParams.toString());
       next.set("diagram", id);
-      router.replace(`${pathname}?${next.toString()}`);
+      router.replace(`${pathname}?${next.toString()}`, { scroll: false });
     },
     [pathname, router, searchParams],
   );
@@ -95,9 +95,8 @@ export function FlowDiagramPanel({
       return;
     }
     // When opening from a diagram node, pick the first match as the default selection.
-    const next = occurrences.find((o) => o.eventName === openEventName) ?? null;
-    setOpenOccurrenceId(next?.id ?? null);
-  }, [occurrences, openEventName]);
+    setOpenOccurrenceId(matches[0]?.id ?? null);
+  }, [matches, openEventName]);
 
   if (!diagramMarkdown || diagramMarkdown.trim().length === 0) {
     return (
@@ -313,36 +312,21 @@ export function FlowDiagramPanel({
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold">Properties used</h3>
                       <div className="space-y-2">
-                        {selectedOccurrence.propertiesUsed.map((p, idx) => {
-                          const rawProperty = (p as { property?: unknown }).property;
-                          const property = typeof rawProperty === "string" && rawProperty.trim().length > 0
-                            ? rawProperty
-                            : null;
-                          return (
-                            <div
-                              key={`${selectedOccurrence.id}::${property ?? "missing"}::${idx}`}
-                              className="rounded-md border p-3"
+                        {selectedOccurrence.propertiesUsed.map((p, idx) => (
+                          <div key={`${selectedOccurrence.id}::${p.property}::${idx}`} className="rounded-md border p-3">
+                            <Link
+                              className="font-mono text-sm underline underline-offset-4 hover:text-primary"
+                              href={`/analytics/flows/${encodeURIComponent(flowSlug)}?tab=properties#prop-${encodeURIComponent(
+                                p.property,
+                              )}`}
                             >
-                              {property ? (
-                                <a
-                                  className="font-mono text-sm underline underline-offset-4 hover:text-primary"
-                                  href={`/analytics/flows/${encodeURIComponent(flowSlug)}#prop-${encodeURIComponent(
-                                    property,
-                                  )}`}
-                                >
-                                  {property}
-                                </a>
-                              ) : (
-                                <span className="font-mono text-sm text-muted-foreground">
-                                  (missing property key)
-                                </span>
-                              )}
-                              {p.context ? (
-                                <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
-                              ) : null}
-                            </div>
-                          );
-                        })}
+                              {p.property}
+                            </Link>
+                            {p.context ? (
+                              <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                            ) : null}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ) : null}

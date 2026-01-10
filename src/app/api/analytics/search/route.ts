@@ -51,7 +51,10 @@ export async function GET(request: Request) {
     const key = hit.occurrence.eventName;
     const entry = byName.get(key) ?? { eventName: key, count: 0, sample: [] };
     entry.count += 1;
-    if (entry.sample.length < 3) {
+    if (
+      entry.sample.length < 3 &&
+      !entry.sample.some((s) => s.flowSlug === hit.occurrence.flowSlug)
+    ) {
       entry.sample.push({ flowSlug: hit.occurrence.flowSlug, flowName: hit.occurrence.flowName });
     }
     byName.set(key, entry);

@@ -61,7 +61,8 @@ test("clicking a green node opens event sheet (best-effort)", async ({ page }) =
   // Click the first "event" node (green convention).
   const firstEventNode = viewer.locator("svg g.node.analytics-event-node").first();
   await expect(firstEventNode).toBeVisible();
-  await firstEventNode.click({ force: true });
+  await firstEventNode.scrollIntoViewIfNeeded();
+  await firstEventNode.click();
 
   await expect(page).toHaveURL(/\/analytics\/flows\/payment(\?|$)/);
   expect(page.url()).not.toContain("/analytics/events");

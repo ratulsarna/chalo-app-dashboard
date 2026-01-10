@@ -236,33 +236,23 @@ export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
                   <div className="space-y-2">
                     <h3 className="text-sm font-semibold">Properties used</h3>
                     <div className="space-y-2">
-                      {selected.propertiesUsed.map((p, idx) => {
-                        const rawProperty = (p as { property?: unknown }).property;
-                        const property = typeof rawProperty === "string" && rawProperty.trim().length > 0
-                          ? rawProperty
-                          : null;
-                        return (
-                          <div key={`${selected.id}::${property ?? "missing"}::${idx}`} className="rounded-md border p-3">
-                            {property ? (
-                              <a
+                        {selected.propertiesUsed.map((p, idx) => {
+                          return (
+                            <div key={`${selected.id}::${p.property}::${idx}`} className="rounded-md border p-3">
+                              <Link
                                 className="font-mono text-sm underline underline-offset-4 hover:text-primary"
-                                href={`/analytics/flows/${encodeURIComponent(flowSlug)}#prop-${encodeURIComponent(
-                                  property,
+                                href={`/analytics/flows/${encodeURIComponent(flowSlug)}?tab=properties#prop-${encodeURIComponent(
+                                  p.property,
                                 )}`}
                               >
-                                {property}
-                              </a>
-                            ) : (
-                              <span className="font-mono text-sm text-muted-foreground">
-                                (missing property key)
-                              </span>
-                            )}
-                            {p.context ? (
-                              <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
-                            ) : null}
-                          </div>
-                        );
-                      })}
+                                {p.property}
+                              </Link>
+                              {p.context ? (
+                                <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                              ) : null}
+                            </div>
+                          );
+                        })}
                     </div>
                   </div>
                 ) : null}

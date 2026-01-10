@@ -14,7 +14,11 @@ export async function ensureMermaidInitialized() {
       // This app defaults to dark mode; keep Mermaid consistent/readable.
       theme: "dark",
     });
-  })();
+  })().catch((err) => {
+    // If initialization fails, allow retries on subsequent calls.
+    mermaidInitPromise = null;
+    throw err;
+  });
 
   return mermaidInitPromise;
 }
@@ -24,4 +28,3 @@ export async function renderMermaidSvg(renderId: string, code: string) {
   const mermaid = (await import("mermaid")).default;
   return (await mermaid.render(renderId, code)).svg;
 }
-
