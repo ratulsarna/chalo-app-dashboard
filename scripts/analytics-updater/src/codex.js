@@ -8,15 +8,15 @@ function runCommand(
   args,
   { cwd, env, timeoutMs = 30 * 60 * 1000, maxOutputBytes = 50 * 1024 * 1024 },
 ) {
- return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const child = spawn(bin, args, {
       cwd,
       env,
       stdio: ["ignore", "pipe", "pipe"],
     });
 
-    let stdout = "";
-    let stderr = "";
+    const stdoutChunks = [];
+    const stderrChunks = [];
     let totalBytes = 0;
     let settled = false;
 
@@ -25,6 +25,7 @@ function runCommand(
       // Best-effort terminate (SIGKILL fallback).
       child.kill("SIGTERM");
       setTimeout(() => child.kill("SIGKILL"), 5000).unref();
+      safeReject(new Error(`Codex command timed out after ${timeoutMs}ms`));
     }, timeoutMs);
 
     function cleanup() {
@@ -41,20 +42,23 @@ function runCommand(
     function maybeAbortForOutput() {
       if (totalBytes <= maxOutputBytes) return;
       child.kill("SIGTERM");
+      setTimeout(() => child.kill("SIGKILL"), 5000).unref();
       safeReject(new Error(`Codex output exceeded ${maxOutputBytes} bytes`));
     }
 
     child.stdout.on("data", (d) => {
       if (settled) return;
       totalBytes += d.length;
-      stdout += d.toString("utf8");
       maybeAbortForOutput();
+      if (settled) return;
+      stdoutChunks.push(d);
     });
     child.stderr.on("data", (d) => {
       if (settled) return;
       totalBytes += d.length;
-      stderr += d.toString("utf8");
       maybeAbortForOutput();
+      if (settled) return;
+      stderrChunks.push(d);
     });
     child.on("error", (err) => safeReject(err));
     child.on("close", (code, signal) => {
@@ -66,6 +70,8 @@ function runCommand(
         reject(new Error(`Codex process terminated by signal ${signal}`));
         return;
       }
+      const stdout = Buffer.concat(stdoutChunks).toString("utf8");
+      const stderr = Buffer.concat(stderrChunks).toString("utf8");
       resolve({ code, stdout, stderr });
     });
   });
@@ -96,6 +102,23 @@ async function runCodexUpdater({
   instructionsPath,
   upstreamBranch,
 }) {
+  const safeReasoningEffort = String(reasoningEffort || "")
+    .trim()
+    .toLowerCase();
+  if (!["low", "medium", "high"].includes(safeReasoningEffort)) {
+    throw new Error(`Invalid codex reasoning effort: ${String(reasoningEffort)}`);
+  }
+
+  // Reduce secret exposure to the Codex subprocess.
+  const env = {
+    PATH: process.env.PATH,
+    HOME: process.env.HOME,
+    USER: process.env.USER,
+    TMPDIR: process.env.TMPDIR,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
+  };
+
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "analytics-updater-codex-"));
   const lastMessagePath = path.join(tmpDir, "codex-last-message.md");
 
@@ -124,7 +147,7 @@ async function runCodexUpdater({
       "--model",
       model,
       "-c",
-      `model_reasoning_effort="${reasoningEffort}"`,
+      `model_reasoning_effort="${safeReasoningEffort}"`,
       "--output-last-message",
       lastMessagePath,
       prompt,
@@ -132,7 +155,7 @@ async function runCodexUpdater({
 
     const { code, stdout, stderr } = await runCommand(codexBin, args, {
       cwd: dashboardRepoPath,
-      env: process.env,
+      env,
     });
 
     let summary = "";
