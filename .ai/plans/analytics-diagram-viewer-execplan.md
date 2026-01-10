@@ -55,6 +55,8 @@ The outcome should let a PM or engineer:
 - 2026-01-10: Add a **diagram selector** (user confirmed).
 - 2026-01-10: Only nodes using the **green/event class convention** are clickable (user confirmed).
 - 2026-01-10: For huge diagrams, start with “best effort” (fit/zoom/pan + optional layout toggle) and iterate (user confirmed).
+- 2026-01-10: If a green node label has no exact event match, open **global event search** prefilled with that label (user confirmed via `defaults`).
+- 2026-01-10: Default diagram selection prefers headings containing **“Main”/“Funnel”**; otherwise choose the largest non-visual-key block (user confirmed via `defaults`).
 
 ## Research (repo patterns + constraints)
 
@@ -88,17 +90,7 @@ The outcome should let a PM or engineer:
 
 ## Open Questions (User Clarification)
 
-1) When a green node label **does not exactly match** any event in `events.json` (rare, but possible), what should happen?
-   a) Show an inline “No exact match” notice and do nothing (safe)
-   b) Open global event search with that label prefilled (recommended)
-   c) Treat it as a fuzzy match and open the closest event (risky)
-
-2) Default diagram selection when multiple blocks exist:
-   a) Prefer headings containing “Main”/“Funnel” first; otherwise pick the largest non-visual-key block (recommended)
-   b) Always default to the largest non-visual-key block
-   c) Always default to the first non-visual-key block
-
-Reply format: `1b 2a` or `defaults`.
+None (resolved via `defaults` on 2026-01-10).
 
 ## Test Specification
 
@@ -159,6 +151,7 @@ If we decide to introduce a test runner later, these helpers should be the first
 - In flow pages, clicking a green node should:
   1) Find the first matching occurrence in this flow by exact name match.
   2) Navigate to: `/analytics/flows/<flowSlug>?tab=events&open=<occurrence.id>`
+  3) If no exact match exists, navigate to: `/analytics/events?q=<eventNameFromNode>` (prefilled global search).
 
 Implementation notes:
 - The `FlowEvents` component already reads `?open=...` and opens its sheet.
@@ -258,4 +251,4 @@ For a large flow like Payment:
 ## Plan Revision Notes
 
 - 2026-01-10: Initial plan created based on current Mermaid conventions in `content/analytics/*/flow-diagrams.md` and the existing `FlowEvents` query-param open behavior.
-
+- 2026-01-10: Recorded user decisions for “no exact match” behavior and default diagram selection heuristic; cleared open questions.
