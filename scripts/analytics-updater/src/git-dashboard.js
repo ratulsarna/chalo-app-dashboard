@@ -12,9 +12,19 @@ async function getStatusPorcelain(repoPath) {
   return await git(["status", "--porcelain"], { cwd: repoPath });
 }
 
+async function hasRemoteBranch(repoPath, remote, branch) {
+  const out = await git(["ls-remote", "--heads", remote, branch], { cwd: repoPath });
+  return out.trim().length > 0;
+}
+
 async function checkoutBaseAndPull(repoPath, baseBranch) {
   await git(["checkout", baseBranch], { cwd: repoPath });
-  await git(["pull", "--ff-only"], { cwd: repoPath });
+
+  const remote = "origin";
+  const remoteExists = await hasRemoteBranch(repoPath, remote, baseBranch);
+  if (!remoteExists) return;
+
+  await git(["pull", "--ff-only", remote, baseBranch], { cwd: repoPath });
 }
 
 async function checkoutOrCreateBranch(repoPath, branch) {
