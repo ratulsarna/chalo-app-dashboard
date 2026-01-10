@@ -1,0 +1,23 @@
+[Unit]
+Description=Chalo Dashboard - Analytics docs updater
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ratul
+WorkingDirectory=/home/ratul/Developer/chalo/chalo-app-dashboard
+# Do not commit secrets to this repo. Put keys/paths in this env file.
+EnvironmentFile=/etc/chalo-dashboard/analytics-updater.env
+ExecStart=/usr/bin/env node scripts/analytics-updater/run-once.js
+
+# Hardening (best-effort; adjust if it breaks)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+ReadWritePaths=/home/ratul/Developer/chalo/chalo-app-dashboard /home/ratul/Developer/chalo/chalo-app-kmp /home/ratul/.local/state
+
+[Install]
+WantedBy=multi-user.target
+
