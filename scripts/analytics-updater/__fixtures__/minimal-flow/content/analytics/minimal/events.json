@@ -1,0 +1,11 @@
+{
+  "flowId": "minimal",
+  "flowName": "Minimal",
+  "description": "Fixture",
+  "events": [
+    {
+      "name": "example event"
+    }
+  ]
+}
+
