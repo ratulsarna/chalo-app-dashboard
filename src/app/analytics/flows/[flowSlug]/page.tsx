@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FlowDiagramMarkdown, FlowDiagramPreview } from "@/components/analytics/flow-diagram-markdown";
+import { FlowDiagramMarkdown } from "@/components/analytics/flow-diagram-markdown";
+import { FlowDiagramPanel } from "@/components/analytics/flow-diagram-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FlowEvents } from "@/components/analytics/flow-events";
 import { Separator } from "@/components/ui/separator";
@@ -94,7 +95,11 @@ export default async function AnalyticsFlowDetailPage({
               </CardHeader>
               <CardContent>
                 {flow.diagramMarkdown ? (
-                  <FlowDiagramPreview markdown={flow.diagramMarkdown} />
+                  <FlowDiagramPanel
+                    flowSlug={flow.slug}
+                    diagramMarkdown={flow.diagramMarkdown}
+                    occurrences={flowOccurrences}
+                  />
                 ) : (
                   <p className="text-sm text-muted-foreground">No diagram file found.</p>
                 )}

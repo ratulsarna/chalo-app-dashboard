@@ -2,25 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-
-let mermaidInitPromise: Promise<void> | null = null;
-
-async function ensureMermaidInitialized() {
-  if (mermaidInitPromise) return mermaidInitPromise;
-
-  mermaidInitPromise = (async () => {
-    const mermaid = (await import("mermaid")).default;
-
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "strict",
-      // This app defaults to dark mode; keep Mermaid consistent/readable.
-      theme: "dark",
-    });
-  })();
-
-  return mermaidInitPromise;
-}
+import { renderMermaidSvg } from "@/components/analytics/mermaid";
 
 export function MermaidBlock({ code, className }: { code: string; className?: string }) {
   const [svg, setSvg] = React.useState<string | null>(null);
@@ -39,11 +21,8 @@ export function MermaidBlock({ code, className }: { code: string; className?: st
         setError(null);
         setSvg(null);
 
-        await ensureMermaidInitialized();
-        const mermaid = (await import("mermaid")).default;
-
-        const result = await mermaid.render(`mmd-${safeRenderId}`, code);
-        if (!cancelled) setSvg(result.svg);
+        const svg = await renderMermaidSvg(`mmd-${safeRenderId}`, code);
+        if (!cancelled) setSvg(svg);
       } catch (err) {
         const message = err instanceof Error ? err.message : "Failed to render Mermaid diagram.";
         if (!cancelled) setError(message);
