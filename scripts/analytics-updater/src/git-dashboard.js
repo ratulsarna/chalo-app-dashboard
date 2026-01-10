@@ -17,6 +17,21 @@ async function hasRemoteBranch(repoPath, remote, branch) {
   return out.trim().length > 0;
 }
 
+async function fetchRemoteBranch(repoPath, remote, branch) {
+  await git(["fetch", remote, branch], { cwd: repoPath });
+}
+
+async function checkoutBranchAtRemote(repoPath, branch) {
+  const remote = "origin";
+  await fetchRemoteBranch(repoPath, remote, branch);
+  await git(["checkout", "-B", branch, `${remote}/${branch}`], { cwd: repoPath });
+}
+
+async function countCommitsBetween(repoPath, baseRef, headRef) {
+  const out = await git(["rev-list", "--count", `${baseRef}..${headRef}`], { cwd: repoPath });
+  return Number(out.trim() || "0");
+}
+
 async function checkoutBaseAndPull(repoPath, baseBranch) {
   await git(["checkout", baseBranch], { cwd: repoPath });
 
@@ -43,4 +58,13 @@ async function pushBranch(repoPath, branch) {
   await git(["push", "-u", "origin", branch, "--force-with-lease"], { cwd: repoPath });
 }
 
-module.exports = { getStatusPorcelain, checkoutBaseAndPull, checkoutOrCreateBranch, commitAll, pushBranch };
+module.exports = {
+  getStatusPorcelain,
+  checkoutBaseAndPull,
+  checkoutOrCreateBranch,
+  commitAll,
+  pushBranch,
+  hasRemoteBranch,
+  checkoutBranchAtRemote,
+  countCommitsBetween,
+};

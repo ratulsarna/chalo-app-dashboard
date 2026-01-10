@@ -62,6 +62,42 @@ async function main() {
     // Prepare dashboard branch.
     await dashboardGit.checkoutBaseAndPull(config.dashboardRepoPath, config.dashboardBaseBranch);
     const branch = computeUpdateBranchName(shortSha(upstreamHead));
+
+    // Recovery path: if the update branch already exists on origin (e.g., Codex succeeded but PR
+    // creation failed), reuse it and try PR creation without rerunning Codex.
+    const remoteHasBranch = await dashboardGit.hasRemoteBranch(config.dashboardRepoPath, "origin", branch);
+    if (remoteHasBranch) {
+      await dashboardGit.checkoutBranchAtRemote(config.dashboardRepoPath, branch);
+      const commits = await dashboardGit.countCommitsBetween(
+        config.dashboardRepoPath,
+        config.dashboardBaseBranch,
+        branch,
+      );
+
+      if (commits > 0) {
+        const title = `Analytics docs update (${shortSha(upstreamHead)})`;
+        const body = `Upstream range: \`${range}\`\n\n(Recovered run: reusing existing update branch.)\n`;
+        const prUrl = await createOrUpdatePr({
+          cwd: config.dashboardRepoPath,
+          headBranch: branch,
+          baseBranch: config.dashboardBaseBranch,
+          title,
+          body,
+        });
+
+        await writeStateAtomic(config.statePath, {
+          ...state,
+          lastProcessedCommit: upstreamHead,
+          lastRunAt: nowIso(),
+          lastRunStatus: "ok",
+          lastPRUrl: prUrl,
+        });
+
+        console.log(`[ok] Opened/updated PR (recovery): ${prUrl}`);
+        return;
+      }
+    }
+
     await dashboardGit.checkoutOrCreateBranch(config.dashboardRepoPath, branch);
 
     if (config.dryRun) {
