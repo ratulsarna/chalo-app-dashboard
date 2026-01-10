@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CopyIcon, ExternalLinkIcon, SearchIcon } from "lucide-react";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
@@ -48,6 +48,8 @@ async function copyToClipboard(text: string) {
 }
 
 export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [query, setQuery] = React.useState("");
   const [openId, setOpenId] = React.useState<string | null>(null);
@@ -56,12 +58,13 @@ export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
     [occurrences, openId],
   );
 
+  const didAutoOpenFromQueryRef = React.useRef(false);
   React.useEffect(() => {
-    if (openId !== null) return;
+    if (didAutoOpenFromQueryRef.current) return;
     const open = searchParams.get("open");
-    if (!open) return;
-    if (occurrences.some((o) => o.id === open)) setOpenId(open);
-  }, [occurrences, openId, searchParams]);
+    if (open && occurrences.some((o) => o.id === open)) setOpenId(open);
+    didAutoOpenFromQueryRef.current = true;
+  }, [occurrences, searchParams]);
 
   const defaultOpenStages = React.useMemo(() => {
     const counts = new Map<string, number>();
@@ -185,7 +188,17 @@ export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
       <Sheet
         open={openId !== null}
         onOpenChange={(v) => {
-          if (!v) setOpenId(null);
+          if (!v) {
+            setOpenId(null);
+
+            // If the sheet was opened from a deep link, allow dismissing it by clearing `open`.
+            const next = new URLSearchParams(searchParams.toString());
+            if (next.has("open")) {
+              next.delete("open");
+              const qs = next.toString();
+              router.replace(qs.length ? `${pathname}?${qs}` : pathname, { scroll: false });
+            }
+          }
         }}
       >
         <SheetContent className="w-full overflow-auto sm:max-w-xl">

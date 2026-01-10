@@ -5,7 +5,6 @@ import Link from "next/link";
 import { CopyIcon, ExternalLinkIcon, InfoIcon } from "lucide-react";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
-import { occurrenceAnchorId } from "@/lib/analytics/urls";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -154,7 +153,7 @@ export function EventOccurrences({
                     <Link
                       href={`/analytics/flows/${encodeURIComponent(
                         selected.flowSlug,
-                      )}#${occurrenceAnchorId(selected)}`}
+                      )}?tab=events&open=${encodeURIComponent(selected.id)}`}
                     >
                       <ExternalLinkIcon className="mr-2 size-4" />
                       Open in flow
