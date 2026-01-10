@@ -219,22 +219,22 @@
       "events": [
         "qr screen open",
         "ble screen open",
-        "ble permission check on initialization",
-        "ble permission granted",
-        "ble permission denied",
-        "ble permissions rationale screen opened",
-        "ble permission rationale accepted",
-        "ble permissions settings opened",
-        "ble denial qr option shown",
-        "ble denial use qr clicked",
-        "ble switch to qr got it clicked",
-        "ble open qr btn clicked",
-        "simple qr validation zoom clicked",
-        "ble validation help btn clicked",
+        "BLE permission check on validation initialization",
+        "BLE permission granted",
+        "BLE permission denied",
+        "BLE validation permission rationale screen opened",
+        "BLE permission rationale accepted",
+        "BLE validation permission settings screen opened",
+        "BLE denial qr option shown",
+        "BLE denial use qr clicked",
+        "BLE validation switch to qr got it clicked",
+        "BLE validation open qr btn clicked",
+        "simple qr validation zoom qr clicked",
+        "BLE validation help btn clicked",
         "ble bottom sheet clicked",
-        "confirmation on back press shown",
-        "confirmation on back press yes clicked",
-        "confirmation on back press no clicked",
+        "exit chalo pay confirmation shown",
+        "exit chalo pay confirmation yes clicked",
+        "exit chalo pay confirmation no clicked",
         "chalo pay ticket clicked"
       ]
     },
@@ -245,8 +245,8 @@
         "chalo pay ticket punched",
         "chalo pay punch received",
         "quickpay receipt payload",
-        "tito tap in notification received on conductor validation",
-        "tito tap in polling stopped due to notification received",
+        "tito tapIn notif recv on conductor flow",
+        "tito tapin polling stopped due to notification received",
         "valid tito tap in data received in polling",
         "invalid tito tap in data received in polling",
         "invalid ble validation ack data received",
@@ -258,9 +258,9 @@
       "name": "Post validation",
       "description": "User views receipt, exit validation screen, or navigates to detailed receipt.",
       "events": [
-        "post validation screen opened",
+        "Post validation screen opened",
         "view receipt post validation clicked",
-        "exit post validation clicked",
+        "view receipt post validation clicked",
         "chalo pay view receipt clicked",
         "chalo pay receipt shown",
         "chalo pay receipt opened",
@@ -288,7 +288,7 @@
       "description": "Events that can fire from multiple screens.",
       "events": [
         "report problem clicked v2",
-        "quickpay fetched"
+        "chalo pay order fetched"
       ]
     }
   ],
@@ -490,7 +490,7 @@
       ]
     },
     {
-      "name": "ble permission check on initialization",
+      "name": "BLE permission check on validation initialization",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -511,7 +511,7 @@
       ]
     },
     {
-      "name": "ble permission granted",
+      "name": "BLE permission granted",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -525,7 +525,7 @@
       "properties": []
     },
     {
-      "name": "ble permission denied",
+      "name": "BLE permission denied",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -539,7 +539,7 @@
       "properties": []
     },
     {
-      "name": "ble permissions rationale screen opened",
+      "name": "BLE validation permission rationale screen opened",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -553,7 +553,7 @@
       "properties": []
     },
     {
-      "name": "ble permission rationale accepted",
+      "name": "BLE permission rationale accepted",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -567,7 +567,7 @@
       "properties": []
     },
     {
-      "name": "ble permissions settings opened",
+      "name": "BLE validation permission settings screen opened",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -581,7 +581,7 @@
       "properties": []
     },
     {
-      "name": "ble denial qr option shown",
+      "name": "BLE denial qr option shown",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -595,7 +595,7 @@
       "properties": []
     },
     {
-      "name": "ble denial use qr clicked",
+      "name": "BLE denial use qr clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -609,7 +609,7 @@
       "properties": []
     },
     {
-      "name": "ble switch to qr got it clicked",
+      "name": "BLE validation switch to qr got it clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -623,7 +623,7 @@
       "properties": []
     },
     {
-      "name": "ble open qr btn clicked",
+      "name": "BLE validation open qr btn clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -637,7 +637,7 @@
       "properties": []
     },
     {
-      "name": "simple qr validation zoom clicked",
+      "name": "simple qr validation zoom qr clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -651,7 +651,7 @@
       "properties": []
     },
     {
-      "name": "ble validation help btn clicked",
+      "name": "BLE validation help btn clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -679,7 +679,7 @@
       "properties": []
     },
     {
-      "name": "confirmation on back press shown",
+      "name": "exit chalo pay confirmation shown",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -687,7 +687,7 @@
       "properties": []
     },
     {
-      "name": "confirmation on back press yes clicked",
+      "name": "exit chalo pay confirmation yes clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -695,7 +695,7 @@
       "properties": []
     },
     {
-      "name": "confirmation on back press no clicked",
+      "name": "exit chalo pay confirmation no clicked",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation screen",
       "source": "Various validation sources",
@@ -783,7 +783,7 @@
       "notes": "Includes expiryTime, transactionId, amount, toStopId, endStop, via, routeNamingScheme."
     },
     {
-      "name": "tito tap in notification received on conductor validation",
+      "name": "tito tapIn notif recv on conductor flow",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation acknowledgment",
       "source": "Various validation sources",
@@ -805,7 +805,7 @@
       "notes": "TITO events also include tap-in specific properties from TITOTapInNotificationEvent."
     },
     {
-      "name": "tito tap in polling stopped due to notification received",
+      "name": "tito tapin polling stopped due to notification received",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Validation acknowledgment",
       "source": "Various validation sources",
@@ -934,7 +934,7 @@
       ]
     },
     {
-      "name": "post validation screen opened",
+      "name": "Post validation screen opened",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Post validation",
       "source": "Various validation sources",
@@ -968,11 +968,12 @@
       ]
     },
     {
-      "name": "exit post validation clicked",
+      "name": "view receipt post validation clicked",
+      "_bug": "KMP code bug: EXIT_POST_VALIDATION_CLICKED constant emits same string as VIEW_RECEIPT_POST_VALIDATION_CLICKED. Both emit 'view receipt post validation clicked'. This is a duplicate - the intended behavior is 'exit post validation clicked'.",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Post validation",
       "source": "Various validation sources",
-      "description": "User exits post-validation screen.",
+      "description": "User exits post-validation screen. NOTE: Due to a KMP bug, this event emits the same string as 'view receipt post validation clicked'.",
       "autoProperties": [
         "isQuickPay",
         "orderId",
@@ -1205,7 +1206,7 @@
       ]
     },
     {
-      "name": "quickpay fetched",
+      "name": "chalo pay order fetched",
       "component": "QuickPayTicketAnalyticsManagerValidation",
       "stage": "Global",
       "source": "Various",
@@ -1269,7 +1270,7 @@
       {
         "label": "Post validation",
         "events": [
-          "post validation screen opened",
+          "Post validation screen opened",
           "chalo pay view receipt clicked",
           "chalo pay receipt shown"
         ]

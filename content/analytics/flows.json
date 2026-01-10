@@ -24,22 +24,23 @@
     },
     "metro": {
       "name": "Metro",
-      "description": "Metro tickets - metro route discovery, fare fetching, booking, payment, validation, receipts. Includes ONDC metro tickets."
+      "description": "Metro tickets - metro route discovery, fare fetching, booking, payment, validation, receipts. Includes ONDC metro tickets.",
+      "lastAudited": "2026-01-10"
     },
     "ondc-bus": {
       "name": "ONDC Bus",
       "description": "ONDC bus tickets - booking, payment, validation, receipts for bus tickets purchased via ONDC protocol. Separate from mticket.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-10"
     },
     "instant-ticket": {
       "name": "Instant Ticket",
       "description": "Instant ticket purchase - quick ticket buying flow with fare details and summary.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-10"
     },
     "quick-pay": {
       "name": "Quick Pay",
       "description": "Wallet-based fare payment on bus - enter amount, wallet deduction, on-bus validation. Pay-as-you-go for regular buses.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-10"
     },
     "card": {
       "name": "Card",

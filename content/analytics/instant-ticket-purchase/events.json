@@ -236,7 +236,7 @@
   },
   "events": [
     {
-      "name": "ble permission check on initialization",
+      "name": "BLE permission check on validation initialization",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:158",
       "description": "BLE permission status checked when validation screen initializes.",
@@ -291,7 +291,7 @@
       "userAction": false
     },
     {
-      "name": "ble permission denied",
+      "name": "BLE permission denied",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:178",
       "description": "BLE permission was denied by the user.",
@@ -321,7 +321,7 @@
       "userAction": true
     },
     {
-      "name": "ble permission granted",
+      "name": "BLE permission granted",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:176",
       "description": "BLE permission was granted by the user.",
@@ -441,7 +441,7 @@
       "userAction": false
     },
     {
-      "name": "confirmation on back press no clicked",
+      "name": "exit chalo pay confirmation no clicked",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:124",
       "description": "User cancelled exit on back press dialog.",
@@ -450,7 +450,7 @@
       "userAction": true
     },
     {
-      "name": "confirmation on back press shown",
+      "name": "exit chalo pay confirmation shown",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:112",
       "description": "Confirmation dialog shown when user pressed back during validation.",
@@ -459,7 +459,7 @@
       "userAction": false
     },
     {
-      "name": "confirmation on back press yes clicked",
+      "name": "exit chalo pay confirmation yes clicked",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:118",
       "description": "User confirmed exit on back press dialog.",
@@ -468,10 +468,11 @@
       "userAction": true
     },
     {
-      "name": "exit post validation clicked",
+      "name": "view receipt post validation clicked",
+      "_bug": "KMP code bug: EXIT_POST_VALIDATION_CLICKED constant emits same string as VIEW_RECEIPT_POST_VALIDATION_CLICKED. Both emit 'view receipt post validation clicked'. This is a duplicate - the intended behavior is 'exit post validation clicked'.",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:365",
-      "description": "User clicked exit/back button from post-validation screen.",
+      "description": "User clicked exit/back button from post-validation screen. NOTE: Due to a KMP bug, this event emits the same string as 'view receipt post validation clicked'.",
       "properties": [
         {
           "name": "wasTitoValidation",
@@ -1054,7 +1055,7 @@
       "properties": []
     },
     {
-      "name": "post validation screen opened",
+      "name": "Post validation screen opened",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:226",
       "description": "Post-validation screen opened after successful ticket validation.",
@@ -1340,7 +1341,7 @@
       "userAction": false
     },
     {
-      "name": "tito tap in notification received on conductor validation",
+      "name": "tito tapIn notif recv on conductor flow",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:241",
       "description": "TITO tap-in notification received during conductor validation flow.",
@@ -1391,7 +1392,7 @@
       "userAction": false
     },
     {
-      "name": "tito tap in polling stopped due to notification received",
+      "name": "tito tapin polling stopped due to notification received",
       "source": "validation screen",
       "firingLocation": "shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/validation/InstantTicketValidationAnalyticManager.kt:290",
       "description": "TITO tap-in polling was stopped because notification was received.",

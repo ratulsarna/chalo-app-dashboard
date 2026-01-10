@@ -1,325 +1,860 @@
 {
   "flowId": "metro",
-  "flowName": "Metro",
-  "description": "Metro ticketing flow analytics events.",
+  "flowName": "Metro Ticket Booking",
+  "description": "Complete analytics map for the metro ticket booking journey including route discovery, fare fetching, booking, payment, and QR validation. Includes ONDC metro tickets.",
   "propertyDefinitions": {
-    "error": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
-    },
-    "count": {
-      "type": "number",
-      "description": "Auto-documented from code; validate semantics and expected values."
-    },
-    "configId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
-    },
-    "isActive": {
-      "type": "boolean",
-      "description": "Auto-documented from code; validate semantics and expected values."
-    },
     "stop id": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Unique identifier for a metro station/stop."
     },
     "stop name": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Display name of the metro station/stop."
     },
     "stop type": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Type of stop selection - FROM or TO.",
+      "values": ["FROM", "TO"]
     },
     "from stop id": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Unique identifier for the origin metro station."
     },
     "from stop name": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Display name of the origin metro station."
     },
     "to stop id": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Unique identifier for the destination metro station."
     },
     "to stop name": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Display name of the destination metro station."
+    },
+    "isActive": {
+      "type": "string",
+      "description": "Whether the metro config is active (boolean as string)."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Metro configuration identifier."
+    },
+    "count": {
+      "type": "string",
+      "description": "Count of items (stations list size or fare options count)."
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message when API calls fail."
+    },
+    "bookingMode": {
+      "type": "string",
+      "description": "The mode of booking (e.g., regular, return trip)."
+    },
+    "passengerTypes": {
+      "type": "string",
+      "description": "JSON representation of passenger types selected for booking."
+    },
+    "tripDetails": {
+      "type": "string",
+      "description": "JSON representation of trip details including from/to stations."
+    },
+    "fare": {
+      "type": "string",
+      "description": "Fare amount for the metro ticket."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Backend order identifier returned after order creation."
+    },
+    "transaction id": {
+      "type": "string",
+      "description": "Transaction identifier from the payment system."
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "Unique identifier for the booked metro ticket."
+    },
+    "route name": {
+      "type": "string",
+      "description": "Name of the metro route/line."
+    },
+    "pick up stop name": {
+      "type": "string",
+      "description": "Name of the boarding station."
+    },
+    "drop stop name": {
+      "type": "string",
+      "description": "Name of the alighting station."
+    },
+    "ticket_status": {
+      "type": "string",
+      "description": "Status of the metro ticket (e.g., BOOKED, ACTIVE, USED)."
+    },
+    "passenger_count": {
+      "type": "string",
+      "description": "Total number of passengers on the ticket."
+    },
+    "refund_info_status": {
+      "type": "string",
+      "description": "Refund eligibility status for the ticket."
+    },
+    "refund_info_message": {
+      "type": "string",
+      "description": "Message describing refund terms."
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Full name of the ticket holder."
+    },
+    "time": {
+      "type": "string",
+      "description": "Formatted time string from true time."
+    },
+    "date": {
+      "type": "string",
+      "description": "Formatted date string from true time."
+    },
+    "product_type": {
+      "type": "string",
+      "description": "Product type identifier (METRO_TICKET)."
+    },
+    "product_sub_type": {
+      "type": "string",
+      "description": "Product sub-type identifier."
+    },
+    "activation_timestamp_ms": {
+      "type": "number",
+      "description": "Epoch milliseconds when the ticket was activated."
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product identifier from receipt data."
+    },
+    "punch_time": {
+      "type": "string",
+      "description": "Time when the ticket was punched/validated."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount from receipt data."
+    },
+    "vehicle_no": {
+      "type": "string",
+      "description": "Vehicle number where validation occurred."
+    },
+    "start_stop": {
+      "type": "string",
+      "description": "Start stop from receipt data."
+    },
+    "end_stop": {
+      "type": "string",
+      "description": "End stop from receipt data."
+    },
+    "conductor_id": {
+      "type": "string",
+      "description": "ID of the conductor who validated the ticket."
+    },
+    "end_stop_id": {
+      "type": "string",
+      "description": "ID of the end stop from receipt."
+    },
+    "problem_type": {
+      "type": "string",
+      "description": "Type of problem being reported.",
+      "values": ["ACTIVATION_SCREEN_TICKETING_PROBLEMS"]
+    },
+    "problem_source": {
+      "type": "string",
+      "description": "Source screen where problem was reported.",
+      "values": ["VALIDATION_SCREEN"]
     },
     "invalidResponse": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
-    },
-    "reason": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Invalid response data from fare fetch."
     },
     "type": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Type of fare fetch failure."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for failure or invalid data."
     }
   },
   "stages": [
     {
-      "name": "Landing",
-      "description": "Auto-added stage (validate grouping).",
+      "name": "Landing & Discovery",
+      "description": "Metro landing screen - station selection, config fetching, and fare discovery.",
       "events": [
-        "booking mode proceed button clicked",
-        "booking mode search button clicked",
-        "from station clicked",
-        "metro all stations fetch failed",
-        "metro all stations fetch success",
-        "metro config fetch failed",
-        "metro config fetch success",
-        "metro fare fetch failed",
-        "metro fare fetch success",
-        "metro stop selected",
-        "recent stop based trip clicked",
         "stop based metro landing screen opened",
-        "to station clicked"
+        "from station clicked",
+        "to station clicked",
+        "metro stop selected",
+        "swap button clicked",
+        "recent stop based trip clicked",
+        "metro config fetch success",
+        "metro config fetch failed",
+        "metro all stations fetch success",
+        "metro all stations fetch failed",
+        "metro fare fetch success",
+        "metro fare fetch failed",
+        "ticket fare fetch failure",
+        "booking mode search button clicked",
+        "booking mode proceed button clicked"
       ]
     },
     {
-      "name": "Misc",
-      "description": "Auto-added stage (validate grouping).",
+      "name": "Confirm Booking",
+      "description": "Booking confirmation screen - final fare calculation and order creation.",
       "events": [
-        "ticket fare fetch failure"
+        "confirm screen opened",
+        "confirm final fare fetch success",
+        "confirm final fare fetch failed",
+        "pay button clicked",
+        "order api success",
+        "order api failure",
+        "retry button clicked"
+      ]
+    },
+    {
+      "name": "Payment",
+      "description": "Payment processing and ticket details fetching.",
+      "events": [
+        "metro ticket payment successful",
+        "metro ticket payment failed",
+        "ondc metro ticket payment successful",
+        "ondc metro ticket payment failed",
+        "metro ticket details not available",
+        "ondc metro ticket details not available"
       ]
     },
     {
       "name": "Booking Success",
-      "description": "Auto-added stage (validate grouping).",
+      "description": "Post-payment confirmation screen.",
       "events": [
         "metro booking confirmed",
         "ondc metro booking confirmed"
+      ]
+    },
+    {
+      "name": "Ticket Fetch",
+      "description": "Ticket data fetching for validation.",
+      "events": [
+        "metro ticket fetched",
+        "ondc metro ticket fetched"
+      ]
+    },
+    {
+      "name": "QR Validation",
+      "description": "Static QR code validation screen. Metro tickets only support QR validation (no BLE or TITO).",
+      "events": [
+        "qr screen open",
+        "simple qr validation zoom qr clicked",
+        "Post validation screen opened"
+      ]
+    },
+    {
+      "name": "Validation & Receipt",
+      "description": "Ticket validation completion and receipt viewing.",
+      "events": [
+        "metro ticket trip punched",
+        "ondc metro ticket trip punched",
+        "metro ticket view receipt clicked",
+        "ondc ticket view receipt clicked",
+        "view trip receipt from menu clicked",
+        "view receipt post validation clicked"
+      ]
+    },
+    {
+      "name": "Exit Confirmation",
+      "description": "Back press confirmation dialog during validation.",
+      "events": [
+        "exit chalo pay confirmation shown",
+        "exit chalo pay confirmation yes clicked",
+        "exit chalo pay confirmation no clicked"
+      ]
+    },
+    {
+      "name": "Global",
+      "description": "Events that can fire from multiple places.",
+      "events": [
+        "report problem clicked v2"
       ]
     }
   ],
   "events": [
     {
-      "name": "booking mode proceed button clicked",
+      "name": "stop based metro landing screen opened",
       "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
+      "stage": "Landing & Discovery",
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:132",
-      "properties": []
-    },
-    {
-      "name": "booking mode search button clicked",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:145",
+      "description": "Raised when the metro landing screen is opened.",
       "properties": []
     },
     {
       "name": "from station clicked",
       "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
+      "stage": "Landing & Discovery",
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:584",
+      "description": "User tapped the from/origin station selector.",
       "properties": []
     },
     {
-      "name": "metro all stations fetch failed",
+      "name": "to station clicked",
       "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
+      "stage": "Landing & Discovery",
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:641",
+      "description": "User tapped the to/destination station selector.",
+      "properties": []
+    },
+    {
+      "name": "metro stop selected",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "User selected a metro station from the picker.",
       "properties": [
-        {
-          "property": "error"
-        }
+        { "property": "stop id" },
+        { "property": "stop name" },
+        { "property": "stop type", "context": "FROM or TO indicating which station was selected" }
+      ]
+    },
+    {
+      "name": "swap button clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "User tapped the swap button to interchange from/to stations.",
+      "properties": [
+        { "property": "from stop name" },
+        { "property": "to stop name" }
+      ]
+    },
+    {
+      "name": "recent stop based trip clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "User tapped a recent trip pair to auto-fill stations.",
+      "properties": [
+        { "property": "from stop id" },
+        { "property": "from stop name" },
+        { "property": "to stop id" },
+        { "property": "to stop name" }
+      ]
+    },
+    {
+      "name": "metro config fetch success",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Metro configuration was successfully fetched.",
+      "properties": [
+        { "property": "isActive", "context": "Boolean as string indicating if config is active" },
+        { "property": "configId" }
+      ]
+    },
+    {
+      "name": "metro config fetch failed",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Metro configuration fetch failed.",
+      "properties": [
+        { "property": "error" }
       ]
     },
     {
       "name": "metro all stations fetch success",
       "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
+      "stage": "Landing & Discovery",
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:657",
+      "description": "All metro stations list was successfully fetched.",
       "properties": [
-        {
-          "property": "count"
-        }
+        { "property": "count", "context": "Number of stations returned" }
       ]
+    },
+    {
+      "name": "metro all stations fetch failed",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Failed to fetch metro stations list.",
+      "properties": [
+        { "property": "error" }
+      ]
+    },
+    {
+      "name": "metro fare fetch success",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Fare details were successfully fetched for the selected route.",
+      "properties": [
+        { "property": "count", "context": "Number of fare options available" }
+      ]
+    },
+    {
+      "name": "metro fare fetch failed",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "Failed to fetch fare details.",
+      "properties": [
+        { "property": "error" }
+      ]
+    },
+    {
+      "name": "ticket fare fetch failure",
+      "component": "FetchTicketBookingsFareUseCase",
+      "stage": "Landing & Discovery",
+      "source": "Source.FARE_DETAILS_FETCH_USECASE",
+      "description": "Fare fetch failed with invalid response details.",
+      "properties": [
+        { "property": "invalidResponse" },
+        { "property": "reason" },
+        { "property": "type" }
+      ]
+    },
+    {
+      "name": "booking mode search button clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "User clicked the search button to fetch fare details.",
+      "properties": []
+    },
+    {
+      "name": "booking mode proceed button clicked",
+      "component": "StopBasedMetroLandingScreenComponent",
+      "stage": "Landing & Discovery",
+      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
+      "description": "User clicked proceed to navigate to the confirm booking screen.",
+      "properties": []
+    },
+    {
+      "name": "confirm screen opened",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "Booking confirmation screen was opened.",
+      "properties": [
+        { "property": "bookingMode" },
+        { "property": "passengerTypes", "context": "JSON string of passenger type counts" },
+        { "property": "tripDetails", "context": "JSON string with from/to station details" }
+      ]
+    },
+    {
+      "name": "confirm final fare fetch success",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "Final fare was successfully calculated.",
+      "properties": [
+        { "property": "fare" }
+      ]
+    },
+    {
+      "name": "confirm final fare fetch failed",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "Failed to calculate final fare.",
+      "properties": [
+        { "property": "error" }
+      ]
+    },
+    {
+      "name": "pay button clicked",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "User clicked the pay button to proceed to payment.",
+      "properties": [
+        { "property": "fare" }
+      ]
+    },
+    {
+      "name": "order api success",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "Metro ticket order was successfully created.",
+      "properties": [
+        { "property": "orderId" },
+        { "property": "transaction id" }
+      ]
+    },
+    {
+      "name": "order api failure",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "Failed to create metro ticket order.",
+      "properties": [
+        { "property": "error" }
+      ]
+    },
+    {
+      "name": "retry button clicked",
+      "component": "ConfirmBookingScreenComponent",
+      "stage": "Confirm Booking",
+      "source": "Source.CONFIRM_BOOKING_SCREEN",
+      "description": "User clicked retry button after fare fetch failure.",
+      "properties": []
+    },
+    {
+      "name": "metro ticket payment successful",
+      "component": "CheckoutComponent",
+      "stage": "Payment",
+      "source": "Source.CHECKOUT_ACTIVITY",
+      "description": "Metro ticket payment completed successfully.",
+      "properties": []
+    },
+    {
+      "name": "metro ticket payment failed",
+      "component": "CheckoutComponent",
+      "stage": "Payment",
+      "source": "Source.CHECKOUT_ACTIVITY",
+      "description": "Metro ticket payment failed.",
+      "properties": []
+    },
+    {
+      "name": "ondc metro ticket payment successful",
+      "component": "CheckoutComponent",
+      "stage": "Payment",
+      "source": "Source.CHECKOUT_ACTIVITY",
+      "description": "ONDC metro ticket payment completed successfully.",
+      "properties": []
+    },
+    {
+      "name": "ondc metro ticket payment failed",
+      "component": "CheckoutComponent",
+      "stage": "Payment",
+      "source": "Source.CHECKOUT_ACTIVITY",
+      "description": "ONDC metro ticket payment failed.",
+      "properties": []
+    },
+    {
+      "name": "metro ticket details not available",
+      "component": "CheckoutComponent",
+      "stage": "Payment",
+      "source": "Source.POST_PAYMENT_SCREEN",
+      "description": "Failed to fetch metro ticket details after successful payment.",
+      "properties": []
+    },
+    {
+      "name": "ondc metro ticket details not available",
+      "component": "CheckoutComponent",
+      "stage": "Payment",
+      "source": "Source.POST_PAYMENT_SCREEN",
+      "description": "Failed to fetch ONDC metro ticket details after successful payment.",
+      "properties": []
     },
     {
       "name": "metro booking confirmed",
       "component": "ProductBookingSuccessComponent",
       "stage": "Booking Success",
       "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/success/ProductBookingSuccessComponent.kt:449",
-      "properties": []
-    },
-    {
-      "name": "metro config fetch failed",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:477",
+      "description": "Metro ticket booking confirmed and success screen displayed.",
       "properties": [
-        {
-          "property": "error"
-        }
-      ]
-    },
-    {
-      "name": "metro config fetch success",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:492",
-      "properties": [
-        {
-          "property": "configId"
-        },
-        {
-          "property": "isActive"
-        }
-      ]
-    },
-    {
-      "name": "metro fare fetch failed",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:285",
-      "properties": [
-        {
-          "property": "error"
-        }
-      ]
-    },
-    {
-      "name": "metro fare fetch success",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:301",
-      "properties": [
-        {
-          "property": "count"
-        }
-      ]
-    },
-    {
-      "name": "metro stop selected",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:215",
-      "properties": [
-        {
-          "property": "stop id"
-        },
-        {
-          "property": "stop name"
-        },
-        {
-          "property": "stop type"
-        }
-      ]
+        { "property": "bookingId" },
+        { "property": "route name" },
+        { "property": "pick up stop name" },
+        { "property": "drop stop name" },
+        { "property": "ticket_status" },
+        { "property": "fare" },
+        { "property": "passenger_count" },
+        { "property": "refund_info_status" },
+        { "property": "refund_info_message" }
+      ],
+      "notes": "sendToPlotline is true for this event."
     },
     {
       "name": "ondc metro booking confirmed",
       "component": "ProductBookingSuccessComponent",
       "stage": "Booking Success",
-      "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/success/ProductBookingSuccessComponent.kt:418",
-      "properties": []
+      "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT",
+      "description": "ONDC metro ticket booking confirmed and success screen displayed.",
+      "properties": [
+        { "property": "bookingId" },
+        { "property": "route name" },
+        { "property": "pick up stop name" },
+        { "property": "drop stop name" },
+        { "property": "ticket_status" },
+        { "property": "fare" },
+        { "property": "passenger_count" },
+        { "property": "refund_info_status" },
+        { "property": "refund_info_message" }
+      ],
+      "notes": "sendToPlotline is true for this event."
     },
     {
-      "name": "recent stop based trip clicked",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:197",
+      "name": "metro ticket fetched",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Ticket Fetch",
+      "source": "validation screen",
+      "description": "Metro ticket data was fetched for validation.",
       "properties": [
-        {
-          "property": "from stop id"
-        },
-        {
-          "property": "from stop name"
-        },
-        {
-          "property": "to stop id"
-        },
-        {
-          "property": "to stop name"
-        }
+        { "property": "full_name" },
+        { "property": "time" },
+        { "property": "date" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" },
+        { "property": "orderId" },
+        { "property": "activation_timestamp_ms" }
       ]
     },
     {
-      "name": "stop based metro landing screen opened",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:539",
-      "properties": []
-    },
-    {
-      "name": "ticket fare fetch failure",
-      "component": "FetchTicketBookingsFareUseCase",
-      "stage": "Misc",
-      "source": "Source.FARE_DETAILS_FETCH_USECASE",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/domain/FetchTicketBookingsFareUseCase.kt:86",
+      "name": "ondc metro ticket fetched",
+      "component": "OndcMetroTicketValidationAnalyticManager",
+      "stage": "Ticket Fetch",
+      "source": "validation screen",
+      "description": "ONDC metro ticket data was fetched for validation.",
       "properties": [
-        {
-          "property": "invalidResponse"
-        },
-        {
-          "property": "reason"
-        },
-        {
-          "property": "type"
-        }
+        { "property": "full_name" },
+        { "property": "time" },
+        { "property": "date" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" },
+        { "property": "orderId" },
+        { "property": "activation_timestamp_ms" }
       ]
     },
     {
-      "name": "to station clicked",
-      "component": "StopBasedMetroLandingScreenComponent",
-      "stage": "Landing",
-      "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/metro/ui/regular/StopBasedMetroLandingScreenComponent.kt:606",
+      "name": "qr screen open",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "QR Validation",
+      "source": "validation screen",
+      "description": "QR code validation screen was opened. Metro tickets use static QR validation only.",
+      "properties": [
+        { "property": "orderId" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" }
+      ]
+    },
+    {
+      "name": "simple qr validation zoom qr clicked",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "QR Validation",
+      "source": "validation screen",
+      "description": "User clicked to zoom the QR code for easier scanning.",
+      "properties": [
+        { "property": "orderId" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" }
+      ]
+    },
+    {
+      "name": "Post validation screen opened",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "QR Validation",
+      "source": "validation screen",
+      "description": "Post-validation screen was opened after successful validation.",
+      "properties": [
+        { "property": "orderId" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" }
+      ]
+    },
+    {
+      "name": "metro ticket trip punched",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Validation & Receipt",
+      "source": "validation screen",
+      "description": "Metro ticket was punched/validated by conductor via QR scan.",
+      "properties": [
+        { "property": "product_id" },
+        { "property": "punch_time" },
+        { "property": "amount" },
+        { "property": "vehicle_no" },
+        { "property": "route name" },
+        { "property": "start_stop" },
+        { "property": "end_stop" },
+        { "property": "conductor_id" },
+        { "property": "end_stop_id" }
+      ]
+    },
+    {
+      "name": "ondc metro ticket trip punched",
+      "component": "OndcMetroTicketValidationAnalyticManager",
+      "stage": "Validation & Receipt",
+      "source": "validation screen",
+      "description": "ONDC metro ticket was punched/validated by conductor via QR scan.",
+      "properties": [
+        { "property": "product_id" },
+        { "property": "punch_time" },
+        { "property": "amount" },
+        { "property": "vehicle_no" },
+        { "property": "route name" },
+        { "property": "start_stop" },
+        { "property": "end_stop" },
+        { "property": "conductor_id" },
+        { "property": "end_stop_id" }
+      ]
+    },
+    {
+      "name": "metro ticket view receipt clicked",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Validation & Receipt",
+      "source": "validation screen",
+      "description": "User clicked to view metro ticket receipt.",
+      "properties": [
+        { "property": "product_id" },
+        { "property": "punch_time" },
+        { "property": "amount" },
+        { "property": "vehicle_no" },
+        { "property": "route name" },
+        { "property": "start_stop" },
+        { "property": "end_stop" },
+        { "property": "conductor_id" },
+        { "property": "end_stop_id" }
+      ]
+    },
+    {
+      "name": "ondc ticket view receipt clicked",
+      "component": "OndcMetroTicketValidationAnalyticManager",
+      "stage": "Validation & Receipt",
+      "source": "validation screen",
+      "description": "User clicked to view ONDC metro ticket receipt.",
+      "properties": [
+        { "property": "product_id" },
+        { "property": "punch_time" },
+        { "property": "amount" },
+        { "property": "vehicle_no" },
+        { "property": "route name" },
+        { "property": "start_stop" },
+        { "property": "end_stop" },
+        { "property": "conductor_id" },
+        { "property": "end_stop_id" }
+      ]
+    },
+    {
+      "name": "view trip receipt from menu clicked",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Validation & Receipt",
+      "source": "validation screen",
+      "description": "User clicked view trip receipt from the menu.",
+      "properties": [
+        { "property": "full_name" },
+        { "property": "time" },
+        { "property": "date" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" },
+        { "property": "orderId" },
+        { "property": "activation_timestamp_ms" }
+      ]
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Validation & Receipt",
+      "source": "validation screen",
+      "description": "User clicked to view receipt from post-validation screen.",
+      "properties": [
+        { "property": "full_name" },
+        { "property": "time" },
+        { "property": "date" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" },
+        { "property": "orderId" },
+        { "property": "activation_timestamp_ms" }
+      ]
+    },
+    {
+      "name": "exit chalo pay confirmation shown",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Exit Confirmation",
+      "source": "validation screen",
+      "description": "Exit confirmation dialog was shown when user pressed back.",
       "properties": []
+    },
+    {
+      "name": "exit chalo pay confirmation yes clicked",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Exit Confirmation",
+      "source": "validation screen",
+      "description": "User confirmed exit from validation screen.",
+      "properties": []
+    },
+    {
+      "name": "exit chalo pay confirmation no clicked",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Exit Confirmation",
+      "source": "validation screen",
+      "description": "User cancelled exit and stayed on validation screen.",
+      "properties": []
+    },
+    {
+      "name": "report problem clicked v2",
+      "component": "MetroTicketValidationAnalyticManager",
+      "stage": "Global",
+      "source": "validation screen",
+      "description": "User clicked report problem button from validation screen.",
+      "properties": [
+        { "property": "problem_type", "context": "ACTIVATION_SCREEN_TICKETING_PROBLEMS" },
+        { "property": "problem_source", "context": "VALIDATION_SCREEN" },
+        { "property": "full_name" },
+        { "property": "time" },
+        { "property": "date" },
+        { "property": "product_type" },
+        { "property": "product_sub_type" },
+        { "property": "orderId" },
+        { "property": "activation_timestamp_ms" }
+      ]
     }
   ],
   "diagram": {
     "type": "sequence",
     "steps": [
       {
-        "label": "Additional events",
+        "label": "Landing & Discovery",
         "events": [
-          "booking mode proceed button clicked",
-          "booking mode search button clicked",
-          "from station clicked",
-          "metro all stations fetch failed",
-          "metro all stations fetch success",
-          "metro config fetch failed",
-          "metro config fetch success",
-          "metro fare fetch failed",
-          "metro fare fetch success",
-          "metro stop selected",
-          "recent stop based trip clicked",
           "stop based metro landing screen opened",
-          "ticket fare fetch failure",
-          "to station clicked"
-        ]
+          "metro config fetch success",
+          "metro all stations fetch success",
+          "metro stop selected",
+          "metro fare fetch success",
+          "booking mode proceed button clicked"
+        ],
+        "next": "Confirm Booking"
       },
       {
-        "label": "Additional events: Booking Success",
+        "label": "Confirm Booking",
+        "events": [
+          "confirm screen opened",
+          "confirm final fare fetch success",
+          "pay button clicked",
+          "order api success"
+        ],
+        "next": "Payment"
+      },
+      {
+        "label": "Payment",
+        "events": [
+          "metro ticket payment successful"
+        ],
+        "next": "Booking Success"
+      },
+      {
+        "label": "Booking Success",
         "events": [
           "metro booking confirmed"
-        ]
+        ],
+        "next": "Validation"
       },
       {
-        "label": "Additional events: Booking Success",
+        "label": "Validation",
         "events": [
-          "ondc metro booking confirmed"
+          "metro ticket fetched",
+          "qr screen open",
+          "metro ticket trip punched",
+          "Post validation screen opened"
         ]
       }
-    ]
+    ],
+    "notes": "ONDC metro events mirror regular metro events with 'ondc' prefix. Metro tickets only support static QR validation."
   }
 }

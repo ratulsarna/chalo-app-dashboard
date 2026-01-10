@@ -199,11 +199,11 @@ flowchart TD
   ev_fetched --> ui_bleFlow([User selects BLE validation])
   ui_bleFlow --> ev_bleOpen["ble screen open"]
 
-  ev_bleOpen --> ev_permCheck["ble permission check on initialization"]
+  ev_bleOpen --> ev_permCheck["BLE permission check on validation initialization"]
 
   ev_permCheck -->|not granted| ui_requestPerm([Request BLE permission])
-  ui_requestPerm -->|granted| ev_permGranted["ble permission granted"]
-  ui_requestPerm -->|denied| ev_permDenied["ble permission denied"]
+  ui_requestPerm -->|granted| ev_permGranted["BLE permission granted"]
+  ui_requestPerm -->|denied| ev_permDenied["BLE permission denied"]
 
   ev_permDenied --> ui_fallbackQR([Show QR option])
 
@@ -213,16 +213,16 @@ flowchart TD
   ui_bleReady --> ui_conductorValidate([Conductor validates via BLE])
   ui_conductorValidate --> ev_tripPunched["instant ticket trip punched"]
 
-  ev_tripPunched --> ev_postValidationOpen["post validation screen opened"]
+  ev_tripPunched --> ev_postValidationOpen["Post validation screen opened"]
   ev_postValidationOpen --> ui_postValActions([User post-validation actions])
 
   ui_postValActions --> ev_viewReceiptPost["view receipt post validation clicked"]
-  ui_postValActions --> ev_exitPost["exit post validation clicked"]
+  ui_postValActions --> ev_exitPost["view receipt post validation clicked"]
 
   ui_bleReady --> ui_backPress([User presses back])
-  ui_backPress --> ev_confirmShown["confirmation on back press shown"]
-  ev_confirmShown --> ev_confirmYes["confirmation on back press yes clicked"]
-  ev_confirmShown --> ev_confirmNo["confirmation on back press no clicked"]
+  ui_backPress --> ev_confirmShown["exit chalo pay confirmation shown"]
+  ev_confirmShown --> ev_confirmYes["exit chalo pay confirmation yes clicked"]
+  ev_confirmShown --> ev_confirmNo["exit chalo pay confirmation no clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -246,8 +246,8 @@ flowchart TD
   ev_validTito --> ui_processData([Process validation])
   ev_invalidTito --> ui_pollCheck
 
-  ui_pollCheck -->|notification arrives| ev_notifReceived["tito tap in notification received on conductor validation"]
-  ev_notifReceived --> ev_pollingStopped["tito tap in polling stopped due to notification received"]
+  ui_pollCheck -->|notification arrives| ev_notifReceived["tito tapIn notif recv on conductor flow"]
+  ev_notifReceived --> ev_pollingStopped["tito tapin polling stopped due to notification received"]
   ev_pollingStopped --> ui_processData
 
   ui_processData --> ui_bleAck([BLE ack data received])
@@ -342,9 +342,9 @@ Track wallet usage:
 Track BLE permission handling:
 
 1. `ble screen open` - BLE validation attempted
-2. `ble permission check on initialization` - Permission status checked
-3. `ble permission granted` - Permission granted rate
-4. `ble permission denied` - Permission denied rate
+2. `BLE permission check on validation initialization` - Permission status checked
+3. `BLE permission granted` - Permission granted rate
+4. `BLE permission denied` - Permission denied rate
 5. `instant ticket trip punched` where BLE - Successful BLE validation
 
 **Metrics**:
@@ -354,7 +354,7 @@ Track BLE permission handling:
 ### TITO Performance Metrics
 For TITO-enabled routes:
 
-1. `tito tap in notification received on conductor validation` - TITO notification received
+1. `tito tapIn notif recv on conductor flow` - TITO notification received
 2. Split by `notificationDeliveryMedium` - INTERNET vs BLE delivery
 3. `valid tito tap in data received in polling` vs `invalid tito tap in data received in polling` - Data quality
 4. `ble validation ack data consumed` - Processing success
@@ -402,7 +402,7 @@ Track different user segments:
 **Answer**: Track `instant ticket bottmsheet opened` over time, segment by `isChalowWalletActivated` and measure conversion to wallet payment.
 
 ### Q: Which validation method is more successful?
-**Answer**: Compare time from validation screen open to `instant ticket trip punched` for QR vs BLE. Check `ble permission denied` rate for BLE friction.
+**Answer**: Compare time from validation screen open to `instant ticket trip punched` for QR vs BLE. Check `BLE permission denied` rate for BLE friction.
 
 ### Q: What's the TITO failure rate?
 **Answer**: Count `invalid tito tap in data received in polling` and `syncing post ble validation failed` as failures. Compare to successful `instant ticket trip punched` events.

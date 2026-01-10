@@ -94,23 +94,23 @@ flowchart TD
   ev_ticketClicked --> ev_bleScreenOpen
   ev_ticketClicked --> ev_qrScreenOpen
 
-  ev_bleScreenOpen --> ev_permissionCheck["ble permission check on initialization"]
-  ev_permissionCheck -->|Granted| ev_permissionGranted["ble permission granted"]
-  ev_permissionCheck -->|Denied| ev_permissionDenied["ble permission denied"]
+  ev_bleScreenOpen --> ev_permissionCheck["BLE permission check on validation initialization"]
+  ev_permissionCheck -->|Granted| ev_permissionGranted["BLE permission granted"]
+  ev_permissionCheck -->|Denied| ev_permissionDenied["BLE permission denied"]
 
-  ev_permissionDenied --> ev_rationaleOpened["ble permissions rationale screen opened"]
-  ev_rationaleOpened --> ev_rationaleAccepted["ble permission rationale accepted"]
-  ev_rationaleOpened --> ev_settingsOpened["ble permissions settings opened"]
+  ev_permissionDenied --> ev_rationaleOpened["BLE validation permission rationale screen opened"]
+  ev_rationaleOpened --> ev_rationaleAccepted["BLE permission rationale accepted"]
+  ev_rationaleOpened --> ev_settingsOpened["BLE validation permission settings screen opened"]
 
-  ev_permissionDenied --> ev_qrOptionShown["ble denial qr option shown"]
-  ev_qrOptionShown --> ev_useQrClicked["ble denial use qr clicked"]
+  ev_permissionDenied --> ev_qrOptionShown["BLE denial qr option shown"]
+  ev_qrOptionShown --> ev_useQrClicked["BLE denial use qr clicked"]
 
-  ev_bleScreenOpen -->|Manual QR| ev_openQrClicked["ble open qr btn clicked"]
-  ev_bleScreenOpen --> ev_switchToQr["ble switch to qr got it clicked"]
+  ev_bleScreenOpen -->|Manual QR| ev_openQrClicked["BLE validation open qr btn clicked"]
+  ev_bleScreenOpen --> ev_switchToQr["BLE validation switch to qr got it clicked"]
 
-  ev_qrScreenOpen --> ev_qrZoomClicked["simple qr validation zoom clicked"]
+  ev_qrScreenOpen --> ev_qrZoomClicked["simple qr validation zoom qr clicked"]
 
-  ev_bleScreenOpen --> ev_helpClicked["ble validation help btn clicked"]
+  ev_bleScreenOpen --> ev_helpClicked["BLE validation help btn clicked"]
   ev_bleScreenOpen --> ev_bottomSheetClicked["ble bottom sheet clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
@@ -129,10 +129,10 @@ flowchart TD
   ui_conductorScan([Conductor scans ticket]) --> ui_ackReceived([Validation ack received])
 
   ui_ackReceived -->|Conductor validation| ev_ticketPunched["chalo pay ticket punched"]
-  ui_ackReceived -->|TITO validation| ev_titoNotificationReceived["tito tap in notification received on conductor validation"]
+  ui_ackReceived -->|TITO validation| ev_titoNotificationReceived["tito tapIn notif recv on conductor flow"]
 
   ui_ackReceived -->|Invalid data| ev_invalidAckData["invalid ble validation ack data received"]
-  ui_ackReceived -->|Polling stopped| ev_pollingStoppedTito["tito tap in polling stopped due to notification received"]
+  ui_ackReceived -->|Polling stopped| ev_pollingStoppedTito["tito tapin polling stopped due to notification received"]
 
   ui_ackReceived -->|Valid polling| ev_validTitoPolling["valid tito tap in data received in polling"]
   ui_ackReceived -->|Invalid polling| ev_invalidTitoPolling["invalid tito tap in data received in polling"]
@@ -143,10 +143,10 @@ flowchart TD
   ev_titoNotificationReceived --> ev_ackConsumed
 
   ev_ackConsumed -->|Sync fails| ev_syncFailed["syncing post ble validation failed"]
-  ev_ackConsumed -->|Success| ev_postValidationOpened["post validation screen opened"]
+  ev_ackConsumed -->|Success| ev_postValidationOpened["Post validation screen opened"]
 
   ev_postValidationOpened --> ev_viewReceiptClicked["view receipt post validation clicked"]
-  ev_postValidationOpened --> ev_exitClicked["exit post validation clicked"]
+  ev_postValidationOpened --> ev_exitClicked["view receipt post validation clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -215,12 +215,12 @@ Additional validation screen interactions.
 
 ```mermaid
 flowchart TD
-  ui_validation([Validation screen]) --> ev_backPress["confirmation on back press shown"]
-  ev_backPress --> ev_backYes["confirmation on back press yes clicked"]
-  ev_backPress --> ev_backNo["confirmation on back press no clicked"]
+  ui_validation([Validation screen]) --> ev_backPress["exit chalo pay confirmation shown"]
+  ev_backPress --> ev_backYes["exit chalo pay confirmation yes clicked"]
+  ev_backPress --> ev_backNo["exit chalo pay confirmation no clicked"]
 
   ui_validation --> ev_reportProblem["report problem clicked v2"]
-  ui_validation --> ev_quickpayFetched["quickpay fetched"]
+  ui_validation --> ev_quickpayFetched["chalo pay order fetched"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -250,7 +250,7 @@ flowchart TD
   ev_summaryOpened --> ev_bleScreenOpen["ble screen open"]
   ev_bleScreenOpen --> ev_ticketPunched["chalo pay ticket punched"]
 
-  ev_ticketPunched --> ev_postValidationOpened["post validation screen opened"]
+  ev_ticketPunched --> ev_postValidationOpened["Post validation screen opened"]
   ev_postValidationOpened --> ev_viewReceiptClicked["view receipt post validation clicked"]
 
   ev_viewReceiptClicked --> ev_receiptShown["chalo pay receipt shown"]
@@ -289,13 +289,13 @@ Tracks validation screen to successful ticket punch.
 2. `chalo pay ticket punched` (conversion)
 
 **Permission sub-funnel:**
-- `ble permission check on initialization` → `ble permission granted` vs `ble permission denied`
+- `BLE permission check on validation initialization` → `BLE permission granted` vs `BLE permission denied`
 
 ### Funnel 3: Receipt viewing engagement
 Tracks post-validation receipt views.
 
 **Events:**
-1. `post validation screen opened` (start)
+1. `Post validation screen opened` (start)
 2. `view receipt post validation clicked` (intent)
 3. `chalo pay receipt shown` (view)
 4. `chalo pay receipt opened` (detailed view)
