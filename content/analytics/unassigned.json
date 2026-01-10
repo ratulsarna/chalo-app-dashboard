@@ -1,0 +1,21 @@
+{
+  "_comment": "Events observed in upstream analytics constants but not confidently attributable to any documented product flow. Keep event names exact.",
+  "events": [
+    {
+      "name": "codex updater test event",
+      "suspectedFlows": [],
+      "callsites": [
+        "shared/analytics/src/commonMain/kotlin/app/chalo/analytics/constants/AnalyticsEventConstants.kt"
+      ],
+      "reason": "Temporary test event constant; no references found outside the constants file as of upstream bb5dce45e73b4a407a60b09a01a1c86feaf71963."
+    },
+    {
+      "name": "codex updater test event 2",
+      "suspectedFlows": [],
+      "callsites": [
+        "shared/analytics/src/commonMain/kotlin/app/chalo/analytics/constants/AnalyticsEventConstants.kt"
+      ],
+      "reason": "Temporary test event constant added in upstream bb5dce45e73b4a407a60b09a01a1c86feaf71963; no references found outside the constants file."
+    }
+  ]
+}
