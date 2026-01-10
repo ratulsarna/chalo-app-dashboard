@@ -125,6 +125,11 @@ async function main() {
       );
 
       if (commits > 0) {
+        if (config.dryRun) {
+          console.log(`[dry-run] Would open/update PR (recovery) for branch ${branch} and upstream range ${range}.`);
+          return;
+        }
+
         const title = `Analytics docs update (${shortSha(upstreamHead)})`;
         const body = `Upstream range: \`${range}\`\n\n(Recovered run: reusing existing update branch.)\n`;
         const prUrl = await createOrUpdatePr({
