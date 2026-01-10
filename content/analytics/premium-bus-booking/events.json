@@ -906,6 +906,34 @@
       "events": [
         "pb booking reschedule successful event"
       ]
+    },
+    {
+      "name": "Home & Campaign",
+      "description": "Home screen entry points and campaign card interactions.",
+      "events": [
+        "pb adjust campaign card clicked",
+        "pb adjust campaign card shown",
+        "pb booking card expired",
+        "pb homescreen book trip clicked",
+        "premium bus hook route details rendered"
+      ]
+    },
+    {
+      "name": "Preferred Time",
+      "description": "Preferred time selection bottomsheet events.",
+      "events": [
+        "pb preferred time bottomsheet opened",
+        "pb preferred time submitted"
+      ]
+    },
+    {
+      "name": "Validation",
+      "description": "Premium bus ticket validation and punch events.",
+      "events": [
+        "premium reserve ticket punch received",
+        "premium reserve ticket trip punched",
+        "premium service bus interaction"
+      ]
     }
   ],
   "events": [
@@ -3382,6 +3410,76 @@
       "source": "Source.PREMIUM_BUS_PRODUCT_SELECTION_SCREEN.sourceName",
       "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/productselection/PremiumBusProductSelectionComponent.kt:713",
       "properties": []
+    },
+    {
+      "name": "pb adjust campaign card clicked",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Home & Campaign",
+      "source": "universal search",
+      "description": "User clicked on Adjust campaign card in universal search."
+    },
+    {
+      "name": "pb adjust campaign card shown",
+      "component": "UniversalSearchAnalyticsEventHelperImpl",
+      "stage": "Home & Campaign",
+      "source": "universal search",
+      "description": "Adjust campaign card shown to user in universal search."
+    },
+    {
+      "name": "pb booking card expired",
+      "component": "PremiumBusBookingComponent",
+      "stage": "Home & Campaign",
+      "source": "home/booking",
+      "description": "Premium bus booking card expired and removed from display."
+    },
+    {
+      "name": "pb homescreen book trip clicked",
+      "component": "HomeComponent",
+      "stage": "Home & Campaign",
+      "source": "home screen",
+      "description": "User clicked book trip from premium bus card on home screen."
+    },
+    {
+      "name": "premium bus hook route details rendered",
+      "component": "RouteDetailsComponent",
+      "stage": "Home & Campaign",
+      "source": "route details",
+      "description": "Premium bus hook rendered in route details screen."
+    },
+    {
+      "name": "pb preferred time bottomsheet opened",
+      "component": "SlotSelectionComponent",
+      "stage": "Preferred Time",
+      "source": "slot selection",
+      "description": "Preferred time bottomsheet opened for slot selection."
+    },
+    {
+      "name": "pb preferred time submitted",
+      "component": "SlotSelectionComponent",
+      "stage": "Preferred Time",
+      "source": "slot selection",
+      "description": "User submitted preferred time selection."
+    },
+    {
+      "name": "premium reserve ticket punch received",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation",
+      "description": "Premium bus ticket punch received from backend."
+    },
+    {
+      "name": "premium reserve ticket trip punched",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation",
+      "description": "Premium bus ticket trip marked as punched."
+    },
+    {
+      "name": "premium service bus interaction",
+      "component": "PremiumBusComponent",
+      "stage": "Validation",
+      "source": "various",
+      "description": "Generic interaction event for premium bus routes."
     }
   ],
   "diagram": {

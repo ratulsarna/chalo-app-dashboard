@@ -344,10 +344,88 @@
       ]
     },
     {
+      "name": "Validation",
+      "description": "BLE/QR validation screen events for activated Super Pass tickets.",
+      "events": [
+        "ble screen open",
+        "qr screen open",
+        "ble bottom sheet clicked",
+        "BLE permission check on validation initialization",
+        "BLE permission granted",
+        "BLE permission denied",
+        "BLE validation help btn clicked",
+        "BLE validation permission rationale screen opened",
+        "BLE validation permission settings screen opened",
+        "BLE validation switch to qr got it clicked",
+        "BLE validation open qr btn clicked",
+        "simple qr validation zoom qr clicked",
+        "BLE denial qr option shown",
+        "BLE permission rationale accepted",
+        "BLE denial use qr clicked",
+        "Post validation screen opened",
+        "view receipt post validation clicked",
+        "view trip receipt from menu clicked",
+        "exit chalo pay confirmation shown",
+        "exit chalo pay confirmation yes clicked",
+        "exit chalo pay confirmation no clicked"
+      ]
+    },
+    {
+      "name": "TITO & BLE Ack",
+      "description": "TITO tap-in/out validation and BLE acknowledgment events.",
+      "events": [
+        "tito tapIn notif recv on conductor flow",
+        "tito tapin polling stopped due to notification received",
+        "valid tito tap in data received in polling",
+        "invalid tito tap in data received in polling",
+        "ble validation ack data consumed",
+        "syncing post ble validation failed",
+        "invalid ble validation ack data received"
+      ]
+    },
+    {
+      "name": "TITO Encryption Keys",
+      "description": "TITO encryption key fetch events during Super Pass activation.",
+      "events": [
+        "tito encryption keys available on superpass activation",
+        "tito encryption keys fetch success on superpass activation",
+        "tito encryption keys fetch failed on superpass activation",
+        "tito encryption keys not available on superpass activation",
+        "tito encryption keys fetch retry clicked on superpass activation",
+        "tito encryption keys fetch cancel clicked on superpass activation"
+      ]
+    },
+    {
+      "name": "Home & Navigation",
+      "description": "Home screen and navigation entry points for Super Pass.",
+      "events": [
+        "home screen super pass your plans clicked",
+        "product history screen super pass your plans clicked",
+        "bottom sheet dialog fragment super pass open",
+        "super pass menu view summary clicked",
+        "super pass updated"
+      ]
+    },
+    {
+      "name": "Trip Receipt",
+      "description": "Super Pass trip receipt viewing and history events.",
+      "events": [
+        "superpass trip receipt screen opened",
+        "superpass trip receipt available",
+        "superpass trip receipt not available",
+        "superpass trip receipt history screen opened",
+        "superpass trip receipt history displayed",
+        "superpass trip receipt clicked"
+      ]
+    },
+    {
       "name": "Global",
       "description": "Events that can fire from multiple places, such as report problem.",
       "events": [
-        "report problem clicked v2"
+        "report problem clicked v2",
+        "superpass booking flow login exception event",
+        "superpass activated for visual validation",
+        "send superpass activation timestamp to backend for visual validation"
       ]
     },
     {
@@ -1583,6 +1661,342 @@
           "property": "url"
         }
       ]
+    },
+    {
+      "name": "ble screen open",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "BLE validation screen opened for Super Pass ticket validation."
+    },
+    {
+      "name": "qr screen open",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "QR validation screen opened for Super Pass ticket validation."
+    },
+    {
+      "name": "ble bottom sheet clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User clicked the BLE bottom sheet."
+    },
+    {
+      "name": "BLE permission check on validation initialization",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "BLE permission check triggered when validation screen initializes."
+    },
+    {
+      "name": "BLE permission granted",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User granted BLE permission for ticket validation."
+    },
+    {
+      "name": "BLE permission denied",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User denied BLE permission for ticket validation."
+    },
+    {
+      "name": "BLE validation help btn clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User clicked the help button on BLE validation screen."
+    },
+    {
+      "name": "BLE validation permission rationale screen opened",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "BLE permission rationale screen displayed to user."
+    },
+    {
+      "name": "BLE validation permission settings screen opened",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User navigated to device settings for BLE permission."
+    },
+    {
+      "name": "BLE validation switch to qr got it clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User acknowledged switch to QR validation prompt."
+    },
+    {
+      "name": "BLE validation open qr btn clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User clicked to open QR from BLE validation screen."
+    },
+    {
+      "name": "simple qr validation zoom qr clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User clicked to zoom QR code on validation screen."
+    },
+    {
+      "name": "BLE denial qr option shown",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "QR fallback option shown after BLE permission denial."
+    },
+    {
+      "name": "BLE permission rationale accepted",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User accepted BLE permission rationale."
+    },
+    {
+      "name": "BLE denial use qr clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User chose to use QR after BLE permission denial."
+    },
+    {
+      "name": "Post validation screen opened",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "Post-validation screen displayed after successful ticket punch."
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User clicked to view receipt from post-validation screen."
+    },
+    {
+      "name": "view trip receipt from menu clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User clicked view receipt from validation screen menu."
+    },
+    {
+      "name": "exit chalo pay confirmation shown",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "Exit confirmation dialog shown when user tries to leave validation."
+    },
+    {
+      "name": "exit chalo pay confirmation yes clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User confirmed exit from validation screen."
+    },
+    {
+      "name": "exit chalo pay confirmation no clicked",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation screen",
+      "description": "User cancelled exit from validation screen."
+    },
+    {
+      "name": "tito tapIn notif recv on conductor flow",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "TITO tap-in notification received during conductor validation flow."
+    },
+    {
+      "name": "tito tapin polling stopped due to notification received",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "TITO polling stopped because notification was received."
+    },
+    {
+      "name": "valid tito tap in data received in polling",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "Valid TITO tap-in data received during polling."
+    },
+    {
+      "name": "invalid tito tap in data received in polling",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "Invalid TITO tap-in data received during polling."
+    },
+    {
+      "name": "ble validation ack data consumed",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "BLE validation acknowledgment data processed."
+    },
+    {
+      "name": "syncing post ble validation failed",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "Post-BLE validation sync with backend failed."
+    },
+    {
+      "name": "invalid ble validation ack data received",
+      "component": "SuperPassValidationAnalyticsManager",
+      "stage": "TITO & BLE Ack",
+      "source": "validation screen",
+      "description": "Invalid BLE validation acknowledgment data received."
+    },
+    {
+      "name": "tito encryption keys available on superpass activation",
+      "component": "SuperPassActivationComponent",
+      "stage": "TITO Encryption Keys",
+      "source": "activation screen",
+      "description": "TITO encryption keys already available when Super Pass is activated."
+    },
+    {
+      "name": "tito encryption keys fetch success on superpass activation",
+      "component": "SuperPassActivationComponent",
+      "stage": "TITO Encryption Keys",
+      "source": "activation screen",
+      "description": "TITO encryption keys fetched successfully during Super Pass activation."
+    },
+    {
+      "name": "tito encryption keys fetch failed on superpass activation",
+      "component": "SuperPassActivationComponent",
+      "stage": "TITO Encryption Keys",
+      "source": "activation screen",
+      "description": "TITO encryption keys fetch failed during Super Pass activation."
+    },
+    {
+      "name": "tito encryption keys not available on superpass activation",
+      "component": "SuperPassActivationComponent",
+      "stage": "TITO Encryption Keys",
+      "source": "activation screen",
+      "description": "TITO encryption keys not available during Super Pass activation."
+    },
+    {
+      "name": "tito encryption keys fetch retry clicked on superpass activation",
+      "component": "SuperPassActivationComponent",
+      "stage": "TITO Encryption Keys",
+      "source": "activation screen",
+      "description": "User clicked retry for TITO encryption keys fetch."
+    },
+    {
+      "name": "tito encryption keys fetch cancel clicked on superpass activation",
+      "component": "SuperPassActivationComponent",
+      "stage": "TITO Encryption Keys",
+      "source": "activation screen",
+      "description": "User cancelled TITO encryption keys fetch."
+    },
+    {
+      "name": "home screen super pass your plans clicked",
+      "component": "HomeComponent",
+      "stage": "Home & Navigation",
+      "source": "home screen",
+      "description": "User clicked Super Pass 'Your Plans' card from home screen."
+    },
+    {
+      "name": "product history screen super pass your plans clicked",
+      "component": "ProductHistoryComponent",
+      "stage": "Home & Navigation",
+      "source": "product history",
+      "description": "User clicked Super Pass 'Your Plans' card from product history screen."
+    },
+    {
+      "name": "bottom sheet dialog fragment super pass open",
+      "component": "BottomSheetDialogFragment",
+      "stage": "Home & Navigation",
+      "source": "bottom sheet",
+      "description": "Super Pass bottom sheet dialog opened."
+    },
+    {
+      "name": "super pass menu view summary clicked",
+      "component": "SuperPassValidationComponent",
+      "stage": "Home & Navigation",
+      "source": "validation menu",
+      "description": "User clicked view summary from Super Pass menu."
+    },
+    {
+      "name": "super pass updated",
+      "component": "SuperPassComponent",
+      "stage": "Home & Navigation",
+      "source": "various",
+      "description": "Super Pass data updated (sync or refresh)."
+    },
+    {
+      "name": "superpass trip receipt screen opened",
+      "component": "SuperPassTripReceiptComponent",
+      "stage": "Trip Receipt",
+      "source": "trip receipt",
+      "description": "Super Pass trip receipt screen opened."
+    },
+    {
+      "name": "superpass trip receipt available",
+      "component": "SuperPassTripReceiptComponent",
+      "stage": "Trip Receipt",
+      "source": "trip receipt",
+      "description": "Trip receipt data available for display."
+    },
+    {
+      "name": "superpass trip receipt not available",
+      "component": "SuperPassTripReceiptComponent",
+      "stage": "Trip Receipt",
+      "source": "trip receipt",
+      "description": "Trip receipt data not available."
+    },
+    {
+      "name": "superpass trip receipt history screen opened",
+      "component": "SuperPassTripReceiptHistoryComponent",
+      "stage": "Trip Receipt",
+      "source": "trip receipt history",
+      "description": "Super Pass trip receipt history screen opened."
+    },
+    {
+      "name": "superpass trip receipt history displayed",
+      "component": "SuperPassTripReceiptHistoryComponent",
+      "stage": "Trip Receipt",
+      "source": "trip receipt history",
+      "description": "Trip receipt history data displayed."
+    },
+    {
+      "name": "superpass trip receipt clicked",
+      "component": "SuperPassTripReceiptHistoryComponent",
+      "stage": "Trip Receipt",
+      "source": "trip receipt history",
+      "description": "User clicked on a trip receipt in history."
+    },
+    {
+      "name": "superpass booking flow login exception event",
+      "component": "SuperPassPurchaseComponent",
+      "stage": "Global",
+      "source": "purchase flow",
+      "description": "Login exception occurred during Super Pass booking flow."
+    },
+    {
+      "name": "superpass activated for visual validation",
+      "component": "SuperPassActivationComponent",
+      "stage": "Global",
+      "source": "activation",
+      "description": "Super Pass activated with visual validation enabled."
+    },
+    {
+      "name": "send superpass activation timestamp to backend for visual validation",
+      "component": "SuperPassActivationComponent",
+      "stage": "Global",
+      "source": "activation",
+      "description": "Super Pass activation timestamp sent to backend for visual validation tracking."
     }
   ],
   "diagram": {

@@ -147,10 +147,10 @@ flowchart TD
   ev_ondcTicketFetched --> ev_qrOpen
 
   ev_qrOpen --> ev_qrZoom["simple qr validation zoom qr clicked"]
-  ev_qrOpen --> ui_conductorScan([Conductor scans QR])
+  ev_qrOpen --> ui_gateScan([Gate machine scans QR])
 
-  ui_conductorScan --> ev_tripPunched["metro ticket trip punched"]
-  ui_conductorScan --> ev_ondcTripPunched["ondc metro ticket trip punched"]
+  ui_gateScan --> ev_tripPunched["metro ticket trip punched"]
+  ui_gateScan --> ev_ondcTripPunched["ondc metro ticket trip punched"]
 
   ev_tripPunched --> ev_postValidation["Post validation screen opened"]
   ev_ondcTripPunched --> ev_postValidation
@@ -163,7 +163,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
   class ev_ticketFetched,ev_ondcTicketFetched,ev_qrOpen,ev_qrZoom,ev_tripPunched,ev_ondcTripPunched,ev_postValidation,ev_viewReceipt,ev_ondcViewReceipt,ev_viewReceiptPostValidation event;
-  class ui_openTicket,ui_conductorScan ui;
+  class ui_openTicket,ui_gateScan ui;
 ```
 
 ## Exit Confirmation Dialog

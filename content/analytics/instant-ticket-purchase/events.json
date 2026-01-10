@@ -1581,6 +1581,30 @@
       ],
       "funnelPosition": "validation",
       "userAction": true
+    },
+    {
+      "name": "fare details final amount bottomsheet tnc clicked",
+      "component": "FareDetailsComponent",
+      "stage": "Fare Details Bottomsheet",
+      "source": "fare details",
+      "description": "User clicked Terms & Conditions link in fare details final amount bottomsheet.",
+      "properties": []
+    },
+    {
+      "name": "fare details final amount bottomsheet continue click",
+      "component": "FareDetailsComponent",
+      "stage": "Fare Details Bottomsheet",
+      "source": "fare details",
+      "description": "User clicked continue button in fare details final amount bottomsheet.",
+      "properties": []
+    },
+    {
+      "name": "pb coupon applied",
+      "component": "FareDetailsComponent",
+      "stage": "Fare Details Bottomsheet",
+      "source": "fare details",
+      "description": "Premium bus coupon applied to instant ticket fare.",
+      "properties": []
     }
   ],
   "stages": [
@@ -1608,6 +1632,15 @@
         "stop based stop selection screen route result item click",
         "stop based stop selection screen from stop",
         "stop based stop selection screen to stop"
+      ]
+    },
+    {
+      "name": "Fare Details Bottomsheet",
+      "description": "Fare details final amount bottomsheet events.",
+      "events": [
+        "fare details final amount bottomsheet tnc clicked",
+        "fare details final amount bottomsheet continue click",
+        "pb coupon applied"
       ]
     }
   ],

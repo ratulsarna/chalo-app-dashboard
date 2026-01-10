@@ -128,38 +128,6 @@
       "type": "number",
       "description": "Epoch milliseconds when the ticket was activated."
     },
-    "product_id": {
-      "type": "string",
-      "description": "Product identifier from receipt data."
-    },
-    "punch_time": {
-      "type": "string",
-      "description": "Time when the ticket was punched/validated."
-    },
-    "amount": {
-      "type": "number",
-      "description": "Amount from receipt data."
-    },
-    "vehicle_no": {
-      "type": "string",
-      "description": "Vehicle number where validation occurred."
-    },
-    "start_stop": {
-      "type": "string",
-      "description": "Start stop from receipt data."
-    },
-    "end_stop": {
-      "type": "string",
-      "description": "End stop from receipt data."
-    },
-    "conductor_id": {
-      "type": "string",
-      "description": "ID of the conductor who validated the ticket."
-    },
-    "end_stop_id": {
-      "type": "string",
-      "description": "ID of the end stop from receipt."
-    },
     "problem_type": {
       "type": "string",
       "description": "Type of problem being reported.",
@@ -664,36 +632,18 @@
       "component": "MetroTicketValidationAnalyticManager",
       "stage": "Validation & Receipt",
       "source": "validation screen",
-      "description": "Metro ticket was punched/validated by conductor via QR scan.",
-      "properties": [
-        { "property": "product_id" },
-        { "property": "punch_time" },
-        { "property": "amount" },
-        { "property": "vehicle_no" },
-        { "property": "route name" },
-        { "property": "start_stop" },
-        { "property": "end_stop" },
-        { "property": "conductor_id" },
-        { "property": "end_stop_id" }
-      ]
+      "description": "Metro ticket was validated at gate. Note: Receipt properties are not populated for metro - getProductReceiptDataFromBleDataReceived() returns null.",
+      "properties": [],
+      "notes": "Metro validation config returns null for all receipt data methods, so this event fires without receipt properties."
     },
     {
       "name": "ondc metro ticket trip punched",
       "component": "OndcMetroTicketValidationAnalyticManager",
       "stage": "Validation & Receipt",
       "source": "validation screen",
-      "description": "ONDC metro ticket was punched/validated by conductor via QR scan.",
-      "properties": [
-        { "property": "product_id" },
-        { "property": "punch_time" },
-        { "property": "amount" },
-        { "property": "vehicle_no" },
-        { "property": "route name" },
-        { "property": "start_stop" },
-        { "property": "end_stop" },
-        { "property": "conductor_id" },
-        { "property": "end_stop_id" }
-      ]
+      "description": "ONDC metro ticket was validated at gate. Note: Receipt properties are not populated for metro.",
+      "properties": [],
+      "notes": "ONDC Metro validation config returns null for all receipt data methods, so this event fires without receipt properties."
     },
     {
       "name": "metro ticket view receipt clicked",
@@ -701,17 +651,8 @@
       "stage": "Validation & Receipt",
       "source": "validation screen",
       "description": "User clicked to view metro ticket receipt.",
-      "properties": [
-        { "property": "product_id" },
-        { "property": "punch_time" },
-        { "property": "amount" },
-        { "property": "vehicle_no" },
-        { "property": "route name" },
-        { "property": "start_stop" },
-        { "property": "end_stop" },
-        { "property": "conductor_id" },
-        { "property": "end_stop_id" }
-      ]
+      "properties": [],
+      "notes": "Receipt properties are not populated for metro tickets."
     },
     {
       "name": "ondc ticket view receipt clicked",
@@ -719,17 +660,8 @@
       "stage": "Validation & Receipt",
       "source": "validation screen",
       "description": "User clicked to view ONDC metro ticket receipt.",
-      "properties": [
-        { "property": "product_id" },
-        { "property": "punch_time" },
-        { "property": "amount" },
-        { "property": "vehicle_no" },
-        { "property": "route name" },
-        { "property": "start_stop" },
-        { "property": "end_stop" },
-        { "property": "conductor_id" },
-        { "property": "end_stop_id" }
-      ]
+      "properties": [],
+      "notes": "Receipt properties are not populated for ONDC metro tickets."
     },
     {
       "name": "view trip receipt from menu clicked",

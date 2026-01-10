@@ -314,6 +314,15 @@
       ]
     },
     {
+      "name": "Notification",
+      "description": "Punch notification events for mTicket validation.",
+      "events": [
+        "mTicket punch notification received",
+        "mTicket punch notification posted",
+        "sync mTicket activation timeStamp with backend"
+      ]
+    },
+    {
       "name": "Misc",
       "description": "Auto-added stage (validate grouping).",
       "events": [
@@ -1458,6 +1467,53 @@
         },
         {
           "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "mTicket punch notification received",
+      "component": "NotificationCentralProcessingManagerImpl",
+      "stage": "Notification",
+      "source": "Source.NOTIFICATION",
+      "description": "mTicket punch notification received from backend. Tracks delay between punch timestamp and notification delivery.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "punchNotificationDelay",
+          "description": "Delay in milliseconds between punch and notification receipt"
+        }
+      ]
+    },
+    {
+      "name": "mTicket punch notification posted",
+      "component": "NotificationDisplayDataManagerImpl",
+      "stage": "Notification",
+      "source": "Source.NOTIFICATION",
+      "description": "mTicket punch notification posted to system notification tray.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "punchNotificationDelay",
+          "description": "Delay in milliseconds between punch and notification display"
+        }
+      ]
+    },
+    {
+      "name": "sync mTicket activation timeStamp with backend",
+      "component": "DigitalTripReceiptFeature",
+      "stage": "Notification",
+      "source": "",
+      "description": "mTicket activation timestamp synced with backend for trip receipt digital sync feature.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
         }
       ]
     }
