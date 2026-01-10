@@ -5,7 +5,7 @@
     "mticket": {
       "name": "M-Ticket",
       "description": "Mobile ticket booking for city buses - ticket selection, fare details, activation, QR display. Single-ride tickets purchased via app.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-10"
     },
     "trip-planner": {
       "name": "Trip Planner",
@@ -15,7 +15,7 @@
     "super-pass": {
       "name": "Super Pass",
       "description": "Monthly/weekly passes for city buses - pass selection, passenger details, proof submission, verification, activation. Multi-ride passes.",
-      "lastAudited": "2026-01-08"
+      "lastAudited": "2026-01-10"
     },
     "premium-bus": {
       "name": "Premium Bus",

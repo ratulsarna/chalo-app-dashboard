@@ -233,19 +233,19 @@
       "name": "BLE Validation",
       "description": "Bluetooth Low Energy validation flow for conductor validation.",
       "events": [
-        "ble permission check on initialization",
-        "ble permission granted",
-        "ble permission denied",
-        "ble permissions rationale screen opened",
-        "ble permissions settings opened",
-        "ble permission rationale accepted",
+        "BLE permission check on validation initialization",
+        "BLE permission granted",
+        "BLE permission denied",
+        "BLE validation permission rationale screen opened",
+        "BLE validation permission settings screen opened",
+        "BLE permission rationale accepted",
         "ble screen open",
-        "ble validation help btn clicked",
+        "BLE validation help btn clicked",
         "ble bottom sheet clicked",
-        "ble switch to qr got it clicked",
-        "ble open qr btn clicked",
-        "ble denial qr option shown",
-        "ble denial use qr clicked"
+        "BLE validation switch to qr got it clicked",
+        "BLE validation open qr btn clicked",
+        "BLE denial qr option shown",
+        "BLE denial use qr clicked"
       ]
     },
     {
@@ -253,7 +253,7 @@
       "description": "QR code based validation flow.",
       "events": [
         "mticket qr code zoomed",
-        "simple qr validation zoom clicked"
+        "simple qr validation zoom qr clicked"
       ]
     },
     {
@@ -261,7 +261,7 @@
       "description": "Post-validation events and trip receipt.",
       "events": [
         "mTicket trip punch",
-        "post validation screen opened",
+        "Post validation screen opened",
         "view trip receipt from menu clicked",
         "view receipt post validation clicked",
         "exit post validation clicked",
@@ -278,7 +278,7 @@
         "tito encryption keys not available on mticket activation",
         "tito encryption keys fetch retry clicked on mticket activation",
         "tito encryption keys fetch cancel clicked on mticket activation",
-        "tito tap in notification received on conductor validation",
+        "tito tapIn notif recv on conductor flow",
         "tito tap in polling stopped due to notification received",
         "valid tito tap in data received in polling",
         "invalid tito tap in data received in polling"
@@ -297,9 +297,9 @@
       "name": "Back Press Confirmation",
       "description": "Confirmation dialogs on back press during validation.",
       "events": [
-        "confirmation on back press shown",
-        "confirmation on back press yes clicked",
-        "confirmation on back press no clicked"
+        "exit chalo pay confirmation shown",
+        "exit chalo pay confirmation yes clicked",
+        "exit chalo pay confirmation no clicked"
       ]
     },
     {
@@ -359,7 +359,7 @@
       ]
     },
     {
-      "name": "ble denial qr option shown",
+      "name": "BLE denial qr option shown",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -380,7 +380,7 @@
       ]
     },
     {
-      "name": "ble denial use qr clicked",
+      "name": "BLE denial use qr clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -401,7 +401,7 @@
       ]
     },
     {
-      "name": "ble open qr btn clicked",
+      "name": "BLE validation open qr btn clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -422,7 +422,7 @@
       ]
     },
     {
-      "name": "ble permission check on initialization",
+      "name": "BLE permission check on validation initialization",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -447,7 +447,7 @@
       ]
     },
     {
-      "name": "ble permission denied",
+      "name": "BLE permission denied",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -468,7 +468,7 @@
       ]
     },
     {
-      "name": "ble permission granted",
+      "name": "BLE permission granted",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -489,7 +489,7 @@
       ]
     },
     {
-      "name": "ble permission rationale accepted",
+      "name": "BLE permission rationale accepted",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -510,7 +510,7 @@
       ]
     },
     {
-      "name": "ble permissions rationale screen opened",
+      "name": "BLE validation permission rationale screen opened",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -531,7 +531,7 @@
       ]
     },
     {
-      "name": "ble permissions settings opened",
+      "name": "BLE validation permission settings screen opened",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -576,7 +576,7 @@
       ]
     },
     {
-      "name": "ble switch to qr got it clicked",
+      "name": "BLE validation switch to qr got it clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -625,7 +625,7 @@
       ]
     },
     {
-      "name": "ble validation help btn clicked",
+      "name": "BLE validation help btn clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "BLE Validation",
       "source": "Validation screen source",
@@ -662,7 +662,7 @@
       "properties": []
     },
     {
-      "name": "confirmation on back press no clicked",
+      "name": "exit chalo pay confirmation no clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "Back Press Confirmation",
       "source": "Validation screen source",
@@ -670,7 +670,7 @@
       "properties": []
     },
     {
-      "name": "confirmation on back press shown",
+      "name": "exit chalo pay confirmation shown",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "Back Press Confirmation",
       "source": "Validation screen source",
@@ -678,7 +678,7 @@
       "properties": []
     },
     {
-      "name": "confirmation on back press yes clicked",
+      "name": "exit chalo pay confirmation yes clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "Back Press Confirmation",
       "source": "Validation screen source",
@@ -691,6 +691,7 @@
       "stage": "Validation Result",
       "source": "Validation screen source",
       "description": "User clicked exit on post-validation screen.",
+      "notes": "BUG: In KMP code, EXIT_POST_VALIDATION_CLICKED constant (AnalyticsEventConstants.kt:1848) incorrectly maps to 'view receipt post validation clicked' instead of 'exit post validation clicked'. This event is indistinguishable from 'view receipt post validation clicked' until the KMP bug is fixed.",
       "properties": [
         {
           "property": "productType"
@@ -1172,7 +1173,7 @@
       ]
     },
     {
-      "name": "post validation screen opened",
+      "name": "Post validation screen opened",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "Validation Result",
       "source": "Validation screen source",
@@ -1244,7 +1245,7 @@
       ]
     },
     {
-      "name": "simple qr validation zoom clicked",
+      "name": "simple qr validation zoom qr clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "QR Validation",
       "source": "Validation screen source",
@@ -1345,7 +1346,7 @@
       "properties": []
     },
     {
-      "name": "tito tap in notification received on conductor validation",
+      "name": "tito tapIn notif recv on conductor flow",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "TITO Validation",
       "source": "Validation screen source",
@@ -1519,7 +1520,7 @@
       {
         "label": "Post Validation",
         "events": [
-          "post validation screen opened",
+          "Post validation screen opened",
           "view receipt post validation clicked",
           "exit post validation clicked"
         ]
