@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-const path = require("node:path");
-
 const { resolveConfig } = require("./src/config.js");
 const { acquireLock, releaseLock } = require("./src/lock.js");
 const upstreamGit = require("./src/git.js");
