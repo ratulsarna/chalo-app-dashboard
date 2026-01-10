@@ -104,6 +104,20 @@ test("expand button stays within viewport", async ({ page }) => {
   expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(w);
 });
 
+test("global search returns event name matches for short queries", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+
+  await page.getByRole("button", { name: /Search flows and events/i }).click();
+
+  const input = page.locator('[data-slot="command-input"]').first();
+  await expect(input).toBeVisible();
+  await input.fill("checkout");
+
+  await expect(page.getByRole("group", { name: "Events" })).toBeVisible();
+  await expect(page.getByRole("option", { name: /checkout post payment screen opened/i }).first()).toBeVisible();
+});
+
 test("zoom buttons and drag-pan update transform", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
