@@ -1,0 +1,9 @@
+{
+  "_version": "2.0",
+  "flows": {
+    "missing": {
+      "name": "Missing events.json",
+      "description": "Fixture flow missing events.json"
+    }
+  }
+}

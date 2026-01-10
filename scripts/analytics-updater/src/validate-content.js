@@ -17,6 +17,9 @@ async function validateAnalyticsContent(repoRoot) {
   const flowsJsonPath = path.join(contentRoot, "flows.json");
   const slugMapPath = path.join(contentRoot, "flow-slug-map.json");
 
+  let flowsJson = null;
+  let slugMapJson = null;
+
   for (const requiredPath of [flowsJsonPath, slugMapPath]) {
     try {
       await fs.access(requiredPath);
@@ -26,10 +29,47 @@ async function validateAnalyticsContent(repoRoot) {
     }
 
     try {
-      await readJson(requiredPath);
+      const parsed = await readJson(requiredPath);
+      if (requiredPath === flowsJsonPath) flowsJson = parsed;
+      if (requiredPath === slugMapPath) slugMapJson = parsed;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       issues.push({ level: "error", code: "invalid_json", path: requiredPath, message });
+    }
+  }
+
+  // Ensure all referenced flows have an events.json so flows can't silently "disappear".
+  const referencedSlugs = new Set();
+  if (isRecord(slugMapJson)) {
+    for (const [key, value] of Object.entries(slugMapJson)) {
+      if (typeof key === "string" && key.trim().length > 0) referencedSlugs.add(key);
+      if (typeof value === "string" && value.trim().length > 0) referencedSlugs.add(value);
+    }
+  }
+  if (isRecord(flowsJson) && isRecord(flowsJson.flows)) {
+    for (const key of Object.keys(flowsJson.flows)) {
+      if (key.trim().length > 0) referencedSlugs.add(key);
+    }
+  }
+
+  for (const flowSlug of referencedSlugs) {
+    const dirPath = path.join(contentRoot, flowSlug);
+    try {
+      const stat = await fs.stat(dirPath);
+      if (!stat.isDirectory()) {
+        issues.push({ level: "error", code: "invalid_flow_dir", path: dirPath });
+        continue;
+      }
+    } catch {
+      issues.push({ level: "error", code: "missing_flow_dir", path: dirPath });
+      continue;
+    }
+
+    const eventsPath = path.join(dirPath, "events.json");
+    try {
+      await fs.access(eventsPath);
+    } catch {
+      issues.push({ level: "error", code: "missing_events_json", path: eventsPath });
     }
   }
 
