@@ -5,6 +5,7 @@ import path from "node:path";
 import { cache } from "react";
 import type {
   AnalyticsEventOccurrence,
+  AnalyticsEventPropertyRef,
   AnalyticsFlow,
   AnalyticsFlowEventsFile,
   AnalyticsFlowSlug,
@@ -14,6 +15,17 @@ import type {
 const ANALYTICS_ROOT = path.join(process.cwd(), "content", "analytics");
 const ANALYTICS_ROOT_RESOLVED = path.resolve(ANALYTICS_ROOT);
 const FLOW_SLUG_PATTERN = /^[a-z0-9][a-z0-9_-]*$/i;
+
+type AnalyticsFlowCatalogFile = {
+  flows?: Record<
+    string,
+    {
+      name?: string;
+      description?: string;
+      lastAudited?: string;
+    }
+  >;
+};
 
 async function pathExists(filePath: string): Promise<boolean> {
   try {
@@ -31,6 +43,12 @@ async function readJsonFile<T>(filePath: string): Promise<T> {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function toTrimmedNonEmptyString(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : undefined;
 }
 
 function assertNonEmptyString(value: unknown, label: string): asserts value is string {
@@ -56,6 +74,62 @@ function resolveUnderAnalyticsRoot(...segments: string[]) {
     throw new Error("Resolved path escapes analytics root");
   }
   return resolved;
+}
+
+const readFlowSlugMap = cache(async () => {
+  const mapPath = path.join(ANALYTICS_ROOT, "flow-slug-map.json");
+  if (!(await pathExists(mapPath))) return {} as Record<string, string>;
+  const raw = await readJsonFile<Record<string, unknown>>(mapPath);
+  if (!isRecord(raw)) return {} as Record<string, string>;
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (k.startsWith("_")) continue;
+    if (typeof v === "string" && v.trim().length > 0) out[k] = v;
+  }
+  return out;
+});
+
+const readFlowsCatalog = cache(async () => {
+  const catalogPath = path.join(ANALYTICS_ROOT, "flows.json");
+  if (!(await pathExists(catalogPath))) return undefined;
+  const raw = await readJsonFile<AnalyticsFlowCatalogFile>(catalogPath);
+  if (!isRecord(raw) || !isRecord(raw.flows)) return undefined;
+  return raw as AnalyticsFlowCatalogFile;
+});
+
+function normalizePropertiesUsed(raw: unknown): AnalyticsEventPropertyRef[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0) return undefined;
+
+  const out: AnalyticsEventPropertyRef[] = [];
+  for (const item of raw) {
+    if (typeof item === "string") {
+      const property = toTrimmedNonEmptyString(item);
+      if (property) out.push({ property });
+      continue;
+    }
+
+    if (!isRecord(item)) continue;
+
+    const property =
+      toTrimmedNonEmptyString(item.property) ?? toTrimmedNonEmptyString(item.name);
+    if (!property) continue;
+
+    const contextParts: string[] = [];
+    if (typeof item.required === "boolean" && item.required) contextParts.push("Required.");
+
+    // Some flows store per-event property context as `context` (already normalized).
+    // Others store richer metadata as `description` + `required`.
+    const explicitContext = toTrimmedNonEmptyString(item.context);
+    if (explicitContext) contextParts.push(explicitContext);
+
+    const description = toTrimmedNonEmptyString(item.description);
+    if (description && description !== explicitContext) contextParts.push(description);
+
+    const combinedContext = contextParts.length ? contextParts.join(" ") : undefined;
+    out.push({ property, context: combinedContext });
+  }
+
+  return out.length ? out : undefined;
 }
 
 function toOccurrenceId(
@@ -114,6 +188,10 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     ? await fs.readFile(diagramsPath, "utf8")
     : undefined;
 
+  const [slugMap, catalog] = await Promise.all([readFlowSlugMap(), readFlowsCatalog()]);
+  const catalogKey = slugMap[flowSlug];
+  const catalogEntry = catalogKey ? catalog?.flows?.[catalogKey] : undefined;
+
   return {
     slug: flowSlug,
     flowId: file.flowId,
@@ -124,6 +202,14 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     events: file.events,
     diagramMarkdown,
     diagramSummary: file.diagram,
+    catalog: catalogKey
+      ? {
+          key: catalogKey,
+          name: catalogEntry?.name,
+          description: catalogEntry?.description,
+          lastAudited: catalogEntry?.lastAudited,
+        }
+      : undefined,
   };
 });
 
@@ -158,17 +244,22 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
         continue;
       }
 
+      const stage =
+        toTrimmedNonEmptyString(event.stage) ?? toTrimmedNonEmptyString(event.funnelPosition);
+      const component =
+        toTrimmedNonEmptyString(event.component) ?? toTrimmedNonEmptyString(event.firingLocation);
+
       const occurrence: AnalyticsEventOccurrence = {
-        id: toOccurrenceId(flow.slug, event.name, index, event.stage, event.component),
+        id: toOccurrenceId(flow.slug, event.name, index, stage, component),
         flowSlug: flow.slug,
         flowId: flow.flowId,
         flowName: flow.flowName,
         eventName: event.name,
-        stage: event.stage,
-        component: event.component,
-        source: event.source,
-        description: event.description,
-        propertiesUsed: event.properties,
+        stage,
+        component,
+        source: toTrimmedNonEmptyString(event.source),
+        description: toTrimmedNonEmptyString(event.description),
+        propertiesUsed: normalizePropertiesUsed(event.properties),
         note: event.note,
       };
 
