@@ -31,7 +31,8 @@ async function validateAnalyticsContent(repoRoot) {
     entries = await fs.readdir(contentRoot, { withFileTypes: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    return { ok: false, issues: [{ level: "error", code: "read_failed", path: contentRoot, message }] };
+    issues.push({ level: "error", code: "read_failed", path: contentRoot, message });
+    return { ok: false, issues };
   }
 
   for (const entry of entries) {

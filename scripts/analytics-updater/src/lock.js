@@ -8,10 +8,8 @@ async function ensureDir(filePath) {
 async function acquireLock(lockPath) {
   await ensureDir(lockPath);
   try {
-    const handle = await fs.open(lockPath, "wx");
     const payload = `${JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString() })}\n`;
-    await handle.writeFile(payload, "utf8");
-    await handle.close();
+    await fs.writeFile(lockPath, payload, { encoding: "utf8", flag: "wx" });
   } catch (err) {
     const code = err && typeof err === "object" && "code" in err ? err.code : null;
     if (code === "EEXIST") {

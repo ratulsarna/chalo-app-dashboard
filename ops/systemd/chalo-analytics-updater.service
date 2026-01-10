@@ -6,7 +6,7 @@ After=network-online.target
 [Service]
 Type=oneshot
 User=ratul
-WorkingDirectory=/home/ratul/Developer/chalo/chalo-app-dashboard
+WorkingDirectory=%h/Developer/chalo/chalo-app-dashboard
 # Do not commit secrets to this repo. Put keys/paths in this env file.
 EnvironmentFile=/etc/chalo-dashboard/analytics-updater.env
 ExecStart=/usr/bin/env node scripts/analytics-updater/run-once.js
@@ -16,8 +16,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
 ProtectHome=false
-ReadWritePaths=/home/ratul/Developer/chalo/chalo-app-dashboard /home/ratul/Developer/chalo/chalo-app-kmp /home/ratul/.local/state
+ReadWritePaths=%h/Developer/chalo/chalo-app-dashboard %h/Developer/chalo/chalo-app-kmp %h/.local/state
 
 [Install]
 WantedBy=multi-user.target
-

@@ -1,3 +1,4 @@
+const os = require("node:os");
 const path = require("node:path");
 
 const { defaultLockPath, defaultStatePath } = require("./paths.js");
@@ -22,9 +23,10 @@ function parseArgs(argv) {
 function resolveConfig({ argv = process.argv.slice(2), env = process.env } = {}) {
   const args = parseArgs(argv);
 
-  const upstreamRepoPath = env.UPSTREAM_REPO_PATH ?? "/home/ratul/Developer/chalo/chalo-app-kmp";
+  const home = os.homedir();
+  const upstreamRepoPath = env.UPSTREAM_REPO_PATH ?? path.join(home, "Developer", "chalo", "chalo-app-kmp");
   const upstreamBranch = env.UPSTREAM_BRANCH ?? "main";
-  const dashboardRepoPath = env.DASHBOARD_REPO_PATH ?? "/home/ratul/Developer/chalo/chalo-app-dashboard";
+  const dashboardRepoPath = env.DASHBOARD_REPO_PATH ?? path.join(home, "Developer", "chalo", "chalo-app-dashboard");
   const dashboardBaseBranch = env.DASHBOARD_BASE_BRANCH ?? "main";
 
   const instructionsPath = env.CODEX_INSTRUCTIONS_PATH ?? path.join(dashboardRepoPath, ".ai", "codex", "analytics-updater.md");

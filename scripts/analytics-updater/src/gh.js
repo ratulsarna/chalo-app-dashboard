@@ -23,7 +23,12 @@ async function writeTempFile(contents) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "analytics-updater-pr-"));
   const filePath = path.join(dir, "body.md");
   await fs.writeFile(filePath, contents, "utf8");
-  return filePath;
+  return {
+    path: filePath,
+    cleanup: async () => {
+      await fs.rm(dir, { recursive: true, force: true }).catch(() => {});
+    },
+  };
 }
 
 async function ensureGhAuth(cwd) {
@@ -42,20 +47,22 @@ async function findExistingPrUrl(cwd, headBranch) {
 
 async function createOrUpdatePr({ cwd, headBranch, baseBranch, title, body }) {
   await ensureGhAuth(cwd);
-  const bodyFile = await writeTempFile(`${body.trim()}\n`);
+  const { path: bodyFile, cleanup } = await writeTempFile(`${body.trim()}\n`);
+  try {
+    const existing = await findExistingPrUrl(cwd, headBranch);
+    if (existing) {
+      await runGh(["pr", "edit", "--head", headBranch, "--title", title, "--body-file", bodyFile], { cwd });
+      return existing;
+    }
 
-  const existing = await findExistingPrUrl(cwd, headBranch);
-  if (existing) {
-    await runGh(["pr", "edit", "--head", headBranch, "--title", title, "--body-file", bodyFile], { cwd });
-    return existing;
+    const url = await runGh(
+      ["pr", "create", "--base", baseBranch, "--head", headBranch, "--title", title, "--body-file", bodyFile],
+      { cwd },
+    );
+    return url.trim();
+  } finally {
+    await cleanup();
   }
-
-  const url = await runGh(
-    ["pr", "create", "--base", baseBranch, "--head", headBranch, "--title", title, "--body-file", bodyFile],
-    { cwd },
-  );
-  return url.trim();
 }
 
 module.exports = { createOrUpdatePr, findExistingPrUrl, ensureGhAuth };
-

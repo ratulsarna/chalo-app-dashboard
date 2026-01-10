@@ -39,7 +39,15 @@ async function writeStateAtomic(statePath, state) {
   const tmpPath = `${statePath}.tmp`;
   const payload = `${JSON.stringify(state, null, 2)}\n`;
   await fs.writeFile(tmpPath, payload, "utf8");
-  await fs.rename(tmpPath, statePath);
+  try {
+    await fs.rename(tmpPath, statePath);
+  } catch (err) {
+    const code = err && typeof err === "object" && "code" in err ? err.code : null;
+    if (code !== "EEXIST" && code !== "EPERM") throw err;
+    // Best-effort fallback for Windows-like semantics where rename may fail if destination exists.
+    await fs.rm(statePath, { force: true });
+    await fs.rename(tmpPath, statePath);
+  }
 }
 
 module.exports = { createDefaultState, readState, writeStateAtomic };
