@@ -21,7 +21,9 @@ function shortSha(sha) {
 }
 
 function stripAnsi(s) {
-  return String(s).replace(/\u001b\[[0-9;]*m/g, "");
+  // Avoid regex literals containing control characters (some linters/formatters flag them).
+  const ansi = new RegExp("\\u001b\\[[0-9;]*m", "g");
+  return String(s).replace(ansi, "");
 }
 
 function truncateForLog(s, maxChars = 8000) {
