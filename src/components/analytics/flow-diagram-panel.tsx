@@ -123,7 +123,7 @@ export function FlowDiagramPanel({
               <Button
                 variant="outline"
                 size="sm"
-                className="min-w-0 flex-1 justify-between gap-2 sm:max-w-[560px]"
+                className="min-w-0 flex-1 shrink justify-between gap-2 sm:max-w-[560px]"
                 aria-label="Select diagram"
               >
                 <span className="truncate">

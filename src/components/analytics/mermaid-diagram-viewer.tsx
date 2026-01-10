@@ -45,19 +45,54 @@ function isEventNode(node: SVGGElement) {
   return computedFill.includes("rgb(22, 101, 52)") || computedFill.includes("#166534");
 }
 
-function svgBBox(svg: SVGSVGElement) {
-  // Prefer viewBox when available: Mermaid sometimes produces elements that sit far outside the
-  // visible viewBox (e.g., markers/paths), which can inflate `getBBox()` and make fit-to-screen
-  // zoom way too far out (tiny diagrams anchored near the top).
+type SvgBBox = { x: number; y: number; width: number; height: number };
+
+function unionBBox(a: SvgBBox, b: SvgBBox): SvgBBox {
+  const x1 = Math.min(a.x, b.x);
+  const y1 = Math.min(a.y, b.y);
+  const x2 = Math.max(a.x + a.width, b.x + b.width);
+  const y2 = Math.max(a.y + a.height, b.y + b.height);
+  return { x: x1, y: y1, width: Math.max(0, x2 - x1), height: Math.max(0, y2 - y1) };
+}
+
+function safeGetBBox(el: SVGGraphicsElement): SvgBBox | null {
+  try {
+    const b = el.getBBox();
+    if (!Number.isFinite(b.x) || !Number.isFinite(b.y) || !Number.isFinite(b.width) || !Number.isFinite(b.height)) {
+      return null;
+    }
+    if (b.width <= 0 || b.height <= 0) return null;
+    return { x: b.x, y: b.y, width: b.width, height: b.height };
+  } catch {
+    return null;
+  }
+}
+
+function svgBBox(svg: SVGSVGElement): SvgBBox {
+  // Mermaid sometimes produces SVGs where the overall viewBox/getBBox is massively inflated by
+  // invisible artifacts. This makes "fit to screen" zoom out too far (tiny diagrams). Use a
+  // best-effort bbox over actual nodes/clusters first.
+  const contentEls = Array.from(
+    svg.querySelectorAll<SVGGraphicsElement>("g.node, g.cluster"),
+  );
+  let contentBBox: SvgBBox | null = null;
+  for (const el of contentEls) {
+    const b = safeGetBBox(el);
+    if (!b) continue;
+    contentBBox = contentBBox ? unionBBox(contentBBox, b) : b;
+  }
+  if (contentBBox) return contentBBox;
+
   const vb = svg.viewBox?.baseVal;
   if (vb && vb.width > 0 && vb.height > 0) {
-    return { x: vb.x, y: vb.y, width: vb.width, height: vb.height } as DOMRect;
+    return { x: vb.x, y: vb.y, width: vb.width, height: vb.height };
   }
 
   try {
-    return svg.getBBox();
+    const b = svg.getBBox();
+    return { x: b.x, y: b.y, width: b.width, height: b.height };
   } catch {
-    return { x: 0, y: 0, width: 1000, height: 800 } as DOMRect;
+    return { x: 0, y: 0, width: 1000, height: 800 };
   }
 }
 
@@ -74,6 +109,51 @@ function computeFit(container: HTMLDivElement, svg: SVGSVGElement): ViewTransfor
   const y = rect.height / 2 - (bbox.y + bbox.height / 2) * scale;
 
   return { scale, x, y };
+}
+
+function unionClientRects(rects: DOMRect[]): DOMRect | null {
+  if (rects.length === 0) return null;
+  let left = Infinity;
+  let top = Infinity;
+  let right = -Infinity;
+  let bottom = -Infinity;
+
+  for (const r of rects) {
+    if (!Number.isFinite(r.left) || !Number.isFinite(r.top) || !Number.isFinite(r.right) || !Number.isFinite(r.bottom)) continue;
+    left = Math.min(left, r.left);
+    top = Math.min(top, r.top);
+    right = Math.max(right, r.right);
+    bottom = Math.max(bottom, r.bottom);
+  }
+
+  if (!Number.isFinite(left) || !Number.isFinite(top) || !Number.isFinite(right) || !Number.isFinite(bottom)) return null;
+  const width = Math.max(0, right - left);
+  const height = Math.max(0, bottom - top);
+  if (width <= 0 || height <= 0) return null;
+
+  return new DOMRect(left, top, width, height);
+}
+
+function measureContentRect(container: HTMLDivElement, host: HTMLDivElement): { containerRect: DOMRect; contentRect: DOMRect } | null {
+  const svgEl = host.querySelector("svg") as SVGSVGElement | null;
+  if (!svgEl) return null;
+
+  // Use pixel-space measurement to avoid relying on Mermaid SVG coordinate bboxes (which can be
+  // distorted by viewBox/marker artifacts or internal SVG scaling).
+  const prevTransform = host.style.transform;
+  host.style.transform = "translate(0px, 0px) scale(1)";
+
+  // Force layout flush.
+  const containerRect = container.getBoundingClientRect();
+
+  const elements = Array.from(svgEl.querySelectorAll<SVGGraphicsElement>("g.node, g.cluster"));
+  const rects = elements.map((el) => el.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
+  const contentRect = unionClientRects(rects);
+
+  host.style.transform = prevTransform;
+
+  if (!contentRect) return null;
+  return { containerRect, contentRect };
 }
 
 export function MermaidDiagramViewer({
@@ -99,19 +179,54 @@ export function MermaidDiagramViewer({
 
   const applyFit = React.useCallback(() => {
     const container = containerRef.current;
-    const svgEl = svgHostRef.current?.querySelector("svg") as SVGSVGElement | null;
-    if (!container || !svgEl) return;
-    setTransform(computeFit(container, svgEl));
+    const host = svgHostRef.current;
+    const svgEl = host?.querySelector("svg") as SVGSVGElement | null;
+    if (!container || !host || !svgEl) return;
+
+    const measured = measureContentRect(container, host);
+    if (!measured) {
+      setTransform(computeFit(container, svgEl));
+      return;
+    }
+
+    const pad = 24;
+    const availableW = Math.max(1, measured.containerRect.width - pad * 2);
+    const availableH = Math.max(1, measured.containerRect.height - pad * 2);
+    const scale = clamp(
+      Math.min(availableW / measured.contentRect.width, availableH / measured.contentRect.height),
+      MIN_SCALE,
+      MAX_SCALE,
+    );
+
+    const centerXLocal = (measured.contentRect.left - measured.containerRect.left) + measured.contentRect.width / 2;
+    const centerYLocal = (measured.contentRect.top - measured.containerRect.top) + measured.contentRect.height / 2;
+
+    const x = measured.containerRect.width / 2 - centerXLocal * scale;
+    const y = measured.containerRect.height / 2 - centerYLocal * scale;
+
+    setTransform({ scale, x, y });
   }, []);
 
   const applyReset = React.useCallback(() => {
     const container = containerRef.current;
-    const svgEl = svgHostRef.current?.querySelector("svg") as SVGSVGElement | null;
-    if (!container || !svgEl) return;
-    const bbox = svgBBox(svgEl);
-    const rect = container.getBoundingClientRect();
-    const x = rect.width / 2 - (bbox.x + bbox.width / 2) * 1;
-    const y = rect.height / 2 - (bbox.y + bbox.height / 2) * 1;
+    const host = svgHostRef.current;
+    const svgEl = host?.querySelector("svg") as SVGSVGElement | null;
+    if (!container || !host || !svgEl) return;
+
+    const measured = measureContentRect(container, host);
+    if (!measured) {
+      const bbox = svgBBox(svgEl);
+      const rect = container.getBoundingClientRect();
+      const x = rect.width / 2 - (bbox.x + bbox.width / 2) * 1;
+      const y = rect.height / 2 - (bbox.y + bbox.height / 2) * 1;
+      setTransform({ scale: 1, x, y });
+      return;
+    }
+
+    const centerXLocal = (measured.contentRect.left - measured.containerRect.left) + measured.contentRect.width / 2;
+    const centerYLocal = (measured.contentRect.top - measured.containerRect.top) + measured.contentRect.height / 2;
+    const x = measured.containerRect.width / 2 - centerXLocal;
+    const y = measured.containerRect.height / 2 - centerYLocal;
     setTransform({ scale: 1, x, y });
   }, []);
 
@@ -213,17 +328,16 @@ export function MermaidDiagramViewer({
     const containerEl: HTMLDivElement = container;
 
     function onWheel(event: WheelEvent) {
-      // Trackpads can be noisy; keep the multiplier small.
-      const delta = -event.deltaY;
-      if (Math.abs(delta) < 1) return;
-
       event.preventDefault();
 
       const rect = containerEl.getBoundingClientRect();
       const offsetX = event.clientX - rect.left;
       const offsetY = event.clientY - rect.top;
 
-      const factor = delta > 0 ? 1.08 : 0.92;
+      // Smooth exponential zoom: works for both mouse wheels and trackpads.
+      // Positive deltaY (scroll down) => zoom out; negative => zoom in.
+      const factor = Math.exp(-event.deltaY * 0.002);
+      if (factor === 1) return;
       zoomBy(factor, offsetX, offsetY);
     }
 
