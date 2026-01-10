@@ -321,7 +321,7 @@ export function MermaidDiagramViewer({
           size="icon"
           className="size-8"
           onClick={applyFit}
-          title="Fit to screen"
+          aria-label="Fit to screen"
         >
           <ScanIcon className="size-4" />
         </Button>
@@ -331,7 +331,7 @@ export function MermaidDiagramViewer({
           size="icon"
           className="size-8"
           onClick={() => zoomBy(1.15)}
-          title="Zoom in"
+          aria-label="Zoom in"
         >
           <PlusIcon className="size-4" />
         </Button>
@@ -341,7 +341,7 @@ export function MermaidDiagramViewer({
           size="icon"
           className="size-8"
           onClick={() => zoomBy(0.87)}
-          title="Zoom out"
+          aria-label="Zoom out"
         >
           <MinusIcon className="size-4" />
         </Button>
@@ -351,7 +351,7 @@ export function MermaidDiagramViewer({
           size="icon"
           className="size-8"
           onClick={applyReset}
-          title="Reset (100%)"
+          aria-label="Reset zoom"
         >
           <RotateCcwIcon className="size-4" />
         </Button>

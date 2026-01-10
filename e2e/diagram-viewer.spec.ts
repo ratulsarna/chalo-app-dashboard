@@ -82,3 +82,32 @@ test("diagram selector switches diagrams", async ({ page }) => {
   // The selector should now reflect the chosen diagram.
   await expect(page.locator('button[aria-label="Select diagram"]').first()).toContainText(/Stop-Based Trip Planner/i);
 });
+
+test("zoom buttons and drag-pan update transform", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+
+  const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
+  const host = viewer.locator('div[data-diagram-host="1"]').first();
+
+  const before = await host.evaluate((el) => (el as HTMLElement).style.transform);
+
+  await page.getByRole("button", { name: "Zoom in" }).first().click();
+  await page.waitForTimeout(100);
+  const afterZoom = await host.evaluate((el) => (el as HTMLElement).style.transform);
+  expect(afterZoom).not.toBe(before);
+
+  const box = await viewer.boundingBox();
+  expect(box).not.toBeNull();
+  const startX = (box?.x ?? 0) + (box?.width ?? 0) * 0.35;
+  const startY = (box?.y ?? 0) + (box?.height ?? 0) * 0.6;
+
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(startX + 140, startY + 60);
+  await page.mouse.up();
+
+  await page.waitForTimeout(100);
+  const afterPan = await host.evaluate((el) => (el as HTMLElement).style.transform);
+  expect(afterPan).not.toBe(afterZoom);
+});
