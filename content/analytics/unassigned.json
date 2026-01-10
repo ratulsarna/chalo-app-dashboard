@@ -1,0 +1,19 @@
+{
+  "_comment": "Low-confidence or unclassified analytics events discovered during diff-based updates. Not currently consumed by the dashboard UI.",
+  "generatedAt": "2026-01-10",
+  "upstream": {
+    "repoPath": "/home/ratul/Developer/chalo/chalo-app-kmp",
+    "branch": "main",
+    "commitRange": "74d7d3ac07a7e80fead67876dcc13f59212626c5..2ecf78be94d2709e995e1599d3f8dba2e501672c"
+  },
+  "items": [
+    {
+      "name": "codex updater test event",
+      "suspectedFlows": [],
+      "callsites": [
+        "shared/analytics/src/commonMain/kotlin/app/chalo/analytics/constants/AnalyticsEventConstants.kt:5"
+      ],
+      "reason": "Added as a constant in AnalyticsEventConstants but not referenced elsewhere in the repo (no usages of the constant or the event string found)."
+    }
+  ]
+}
