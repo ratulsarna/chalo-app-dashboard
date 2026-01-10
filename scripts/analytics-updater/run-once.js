@@ -182,6 +182,7 @@ async function main() {
     if (!validation.ok) {
       const errors = validation.issues.filter((i) => i.level === "error");
       const sample = errors.slice(0, 10).map((e) => `${e.code}: ${e.path}${e.message ? ` (${e.message})` : ""}`);
+      process.exitCode = 2;
       throw new Error(`Content validation failed:\n${sample.join("\n")}`);
     }
 
