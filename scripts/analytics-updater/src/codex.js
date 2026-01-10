@@ -8,7 +8,7 @@ function runCommand(
   args,
   { cwd, env, timeoutMs = 30 * 60 * 1000, maxOutputBytes = 50 * 1024 * 1024 },
 ) {
-  return new Promise((resolve, reject) => {
+ return new Promise((resolve, reject) => {
     const child = spawn(bin, args, {
       cwd,
       env,
@@ -17,6 +17,7 @@ function runCommand(
 
     let stdout = "";
     let stderr = "";
+    let totalBytes = 0;
     let settled = false;
 
     const timeout = setTimeout(() => {
@@ -38,16 +39,20 @@ function runCommand(
     }
 
     function maybeAbortForOutput() {
-      if (stdout.length + stderr.length <= maxOutputBytes) return;
+      if (totalBytes <= maxOutputBytes) return;
       child.kill("SIGTERM");
       safeReject(new Error(`Codex output exceeded ${maxOutputBytes} bytes`));
     }
 
     child.stdout.on("data", (d) => {
+      if (settled) return;
+      totalBytes += d.length;
       stdout += d.toString("utf8");
       maybeAbortForOutput();
     });
     child.stderr.on("data", (d) => {
+      if (settled) return;
+      totalBytes += d.length;
       stderr += d.toString("utf8");
       maybeAbortForOutput();
     });

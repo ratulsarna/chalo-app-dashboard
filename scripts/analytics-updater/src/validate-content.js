@@ -22,6 +22,14 @@ async function validateAnalyticsContent(repoRoot) {
       await fs.access(requiredPath);
     } catch {
       issues.push({ level: "error", code: "missing_file", path: requiredPath });
+      continue;
+    }
+
+    try {
+      await readJson(requiredPath);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      issues.push({ level: "error", code: "invalid_json", path: requiredPath, message });
     }
   }
 
