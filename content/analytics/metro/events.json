@@ -137,18 +137,6 @@
       "type": "string",
       "description": "Source screen where problem was reported.",
       "values": ["VALIDATION_SCREEN"]
-    },
-    "invalidResponse": {
-      "type": "string",
-      "description": "Invalid response data from fare fetch."
-    },
-    "type": {
-      "type": "string",
-      "description": "Type of fare fetch failure."
-    },
-    "reason": {
-      "type": "string",
-      "description": "Reason for failure or invalid data."
     }
   },
   "stages": [
@@ -168,7 +156,6 @@
         "metro all stations fetch failed",
         "metro fare fetch success",
         "metro fare fetch failed",
-        "ticket fare fetch failure",
         "booking mode search button clicked",
         "booking mode proceed button clicked"
       ]
@@ -372,18 +359,6 @@
       "description": "Failed to fetch fare details.",
       "properties": [
         { "property": "error" }
-      ]
-    },
-    {
-      "name": "ticket fare fetch failure",
-      "component": "FetchTicketBookingsFareUseCase",
-      "stage": "Landing & Discovery",
-      "source": "Source.FARE_DETAILS_FETCH_USECASE",
-      "description": "Fare fetch failed with invalid response details.",
-      "properties": [
-        { "property": "invalidResponse" },
-        { "property": "reason" },
-        { "property": "type" }
       ]
     },
     {

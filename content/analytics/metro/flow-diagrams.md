@@ -60,14 +60,13 @@ flowchart TD
   ev_searchBtn --> ui_fareFetch{Fetch fare}
   ui_fareFetch -->|Success| ev_fareOk["metro fare fetch success"]
   ui_fareFetch -->|Failure| ev_fareFail["metro fare fetch failed"]
-  ui_fareFetch -->|Invalid response| ev_ticketFareFail["ticket fare fetch failure"]
 
   ev_fareOk --> ev_proceedBtn["booking mode proceed button clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_open,ev_cfgOk,ev_cfgFail,ev_stationsOk,ev_stationsFail,ev_fromClick,ev_stopSelectedFrom,ev_toClick,ev_stopSelectedTo,ev_swap,ev_recentTrip,ev_searchBtn,ev_fareOk,ev_fareFail,ev_ticketFareFail,ev_proceedBtn event;
+  class ev_open,ev_cfgOk,ev_cfgFail,ev_stationsOk,ev_stationsFail,ev_fromClick,ev_stopSelectedFrom,ev_toClick,ev_stopSelectedTo,ev_swap,ev_recentTrip,ev_searchBtn,ev_fareOk,ev_fareFail,ev_proceedBtn event;
   class ui_open,ui_config,ui_stations,ui_selectStops,ui_fareFetch ui;
 ```
 
