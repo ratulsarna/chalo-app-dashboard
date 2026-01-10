@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CopyIcon, ExternalLinkIcon, SearchIcon } from "lucide-react";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
@@ -47,12 +48,20 @@ async function copyToClipboard(text: string) {
 }
 
 export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
+  const searchParams = useSearchParams();
   const [query, setQuery] = React.useState("");
   const [openId, setOpenId] = React.useState<string | null>(null);
   const selected = React.useMemo(
     () => (openId ? occurrences.find((o) => o.id === openId) ?? null : null),
     [occurrences, openId],
   );
+
+  React.useEffect(() => {
+    if (openId !== null) return;
+    const open = searchParams.get("open");
+    if (!open) return;
+    if (occurrences.some((o) => o.id === open)) setOpenId(open);
+  }, [occurrences, openId, searchParams]);
 
   const defaultOpenStages = React.useMemo(() => {
     const counts = new Map<string, number>();
@@ -181,65 +190,71 @@ export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
       >
         <SheetContent className="w-full overflow-auto sm:max-w-xl">
           {selected ? (
-            <div className="space-y-4">
-              <SheetHeader>
+            <div className="pb-6">
+              <SheetHeader className="pb-3 pr-12">
                 <SheetTitle className="break-words">{selected.eventName}</SheetTitle>
               </SheetHeader>
 
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">{stageLabel(selected.stage)}</Badge>
-                {selected.source ? <Badge variant="outline">{selected.source}</Badge> : null}
-                {selected.component ? (
-                  <Badge variant="secondary" className="max-w-full truncate font-mono">
-                    {selected.component}
-                  </Badge>
+              <div className="space-y-5 px-4">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">{stageLabel(selected.stage)}</Badge>
+                  {selected.source ? <Badge variant="outline">{selected.source}</Badge> : null}
+                  {selected.component ? (
+                    <Badge variant="secondary" className="max-w-full truncate font-mono">
+                      {selected.component}
+                    </Badge>
+                  ) : null}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => copyToClipboard(selected.eventName)}
+                  >
+                    <CopyIcon className="mr-2 size-4" />
+                    Copy event name
+                  </Button>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/analytics/events/${encodeEventNameForPath(selected.eventName)}`}>
+                      <ExternalLinkIcon className="mr-2 size-4" />
+                      Canonical event page
+                    </Link>
+                  </Button>
+                </div>
+
+                <Separator className="-mx-4" />
+
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold">Description</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {selected.description ?? "No description available."}
+                  </p>
+                </div>
+
+                {selected.propertiesUsed && selected.propertiesUsed.length > 0 ? (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Properties used</h3>
+                    <div className="space-y-2">
+                      {selected.propertiesUsed.map((p) => (
+                        <div key={`${selected.id}::${p.property}`} className="rounded-md border p-3">
+                          <a
+                            className="font-mono text-sm underline underline-offset-4 hover:text-primary"
+                            href={`/analytics/flows/${encodeURIComponent(flowSlug)}#prop-${encodeURIComponent(
+                              p.property,
+                            )}`}
+                          >
+                            {p.property}
+                          </a>
+                          {p.context ? (
+                            <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 ) : null}
               </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Button variant="secondary" size="sm" onClick={() => copyToClipboard(selected.eventName)}>
-                  <CopyIcon className="mr-2 size-4" />
-                  Copy event name
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/analytics/events/${encodeEventNameForPath(selected.eventName)}`}>
-                    <ExternalLinkIcon className="mr-2 size-4" />
-                    Canonical event page
-                  </Link>
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold">Description</h3>
-                <p className="text-sm text-muted-foreground">
-                  {selected.description ?? "No description available."}
-                </p>
-              </div>
-
-              {selected.propertiesUsed && selected.propertiesUsed.length > 0 ? (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Properties used</h3>
-                  <div className="space-y-2">
-                    {selected.propertiesUsed.map((p) => (
-                      <div key={`${selected.id}::${p.property}`} className="rounded-md border p-3">
-                        <a
-                          className="font-mono text-sm underline underline-offset-4 hover:text-primary"
-                          href={`/analytics/flows/${encodeURIComponent(flowSlug)}#prop-${encodeURIComponent(
-                            p.property,
-                          )}`}
-                        >
-                          {p.property}
-                        </a>
-                        {p.context ? (
-                          <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
             </div>
           ) : null}
         </SheetContent>

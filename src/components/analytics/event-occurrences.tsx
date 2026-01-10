@@ -130,84 +130,86 @@ export function EventOccurrences({
       >
         <SheetContent className="w-full overflow-auto sm:max-w-xl">
           {selected ? (
-            <div className="space-y-4">
-              <SheetHeader>
+            <div className="pb-6">
+              <SheetHeader className="pb-3 pr-12">
                 <SheetTitle className="break-words">{eventName}</SheetTitle>
               </SheetHeader>
 
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">{selected.flowName}</Badge>
-                <Badge variant="outline">{stageLabel(selected.stage)}</Badge>
-              </div>
+              <div className="space-y-5 px-4">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">{selected.flowName}</Badge>
+                  <Badge variant="outline">{stageLabel(selected.stage)}</Badge>
+                </div>
 
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => copyToClipboard(eventName)}
-                >
-                  <CopyIcon className="mr-2 size-4" />
-                  Copy event name
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link
-                    href={`/analytics/flows/${encodeURIComponent(
-                      selected.flowSlug,
-                    )}#${occurrenceAnchorId(selected)}`}
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => copyToClipboard(eventName)}
                   >
-                    <ExternalLinkIcon className="mr-2 size-4" />
-                    Open in flow
-                  </Link>
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold">Description</h3>
-                <p className="text-sm text-muted-foreground">
-                  {selected.description?.trim().length ? selected.description : "No description."}
-                </p>
-              </div>
-
-              {selected.component ? (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Component</h3>
-                  <div className="rounded-md border bg-muted/20 p-3 font-mono text-xs text-muted-foreground">
-                    <span className="break-words">{selected.component}</span>
-                  </div>
+                    <CopyIcon className="mr-2 size-4" />
+                    Copy event name
+                  </Button>
+                  <Button asChild variant="outline" size="sm">
+                    <Link
+                      href={`/analytics/flows/${encodeURIComponent(
+                        selected.flowSlug,
+                      )}#${occurrenceAnchorId(selected)}`}
+                    >
+                      <ExternalLinkIcon className="mr-2 size-4" />
+                      Open in flow
+                    </Link>
+                  </Button>
                 </div>
-              ) : null}
 
-              {selected.propertiesUsed && selected.propertiesUsed.length > 0 ? (
+                <Separator className="-mx-4" />
+
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Properties used</h3>
+                  <h3 className="text-sm font-semibold">Description</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {selected.description?.trim().length ? selected.description : "No description."}
+                  </p>
+                </div>
+
+                {selected.component ? (
                   <div className="space-y-2">
-                    {selected.propertiesUsed.map((p) => (
-                      <div key={`${selected.id}::${p.property}`} className="rounded-md border p-3">
-                        <a
-                          className="font-mono text-sm underline underline-offset-4 hover:text-primary"
-                          href={`/analytics/flows/${encodeURIComponent(
-                            selected.flowSlug,
-                          )}#prop-${encodeURIComponent(p.property)}`}
-                        >
-                          {p.property}
-                        </a>
-                        {p.context ? (
-                          <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
-                        ) : null}
-                      </div>
-                    ))}
+                    <h3 className="text-sm font-semibold">Component</h3>
+                    <div className="rounded-md border bg-muted/20 p-3 font-mono text-xs text-muted-foreground">
+                      <span className="break-words">{selected.component}</span>
+                    </div>
                   </div>
-                </div>
-              ) : null}
+                ) : null}
 
-              {selected.note ? (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">Notes</h3>
-                  <p className="text-sm text-muted-foreground">{selected.note}</p>
-                </div>
-              ) : null}
+                {selected.propertiesUsed && selected.propertiesUsed.length > 0 ? (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Properties used</h3>
+                    <div className="space-y-2">
+                      {selected.propertiesUsed.map((p) => (
+                        <div key={`${selected.id}::${p.property}`} className="rounded-md border p-3">
+                          <a
+                            className="font-mono text-sm underline underline-offset-4 hover:text-primary"
+                            href={`/analytics/flows/${encodeURIComponent(
+                              selected.flowSlug,
+                            )}#prop-${encodeURIComponent(p.property)}`}
+                          >
+                            {p.property}
+                          </a>
+                          {p.context ? (
+                            <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {selected.note ? (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Notes</h3>
+                    <p className="text-sm text-muted-foreground">{selected.note}</p>
+                  </div>
+                ) : null}
+              </div>
             </div>
           ) : null}
         </SheetContent>
@@ -215,4 +217,3 @@ export function EventOccurrences({
     </div>
   );
 }
-
