@@ -1,89 +1,111 @@
-# Chalo Dashboard — Analytics (MVP) HLD
+# Chalo Dashboard — Analytics HLD (Phased)
 
 ## Purpose
 
-Build an internal, interactive web app that helps **PMs and engineers** explore Chalo’s analytics instrumentation:
+Build an internal, interactive web app that helps PMs and engineers explore Chalo’s analytics instrumentation:
 
-- Browse flows (journeys) and understand the event taxonomy per flow.
-- Search across all events/properties by **partial** match (not exact-only).
+- Browse flows (journeys) and understand event taxonomy per flow.
+- Search across events/properties by **partial match** (not exact-only).
 
 This dashboard will later expand beyond analytics, so the foundation should support additional modules.
+
+## Audience
+
+- PMs: validate instrumentation coverage, understand funnels/journeys, answer “what fires where?”
+- Engineers: implement/debug analytics, confirm emitted strings + properties, trace flow context
 
 ## Goals (MVP)
 
 ### Primary user workflows
 
-1) **Flows-first landing**
-- Choose a flow → view:
+1) **Flows-first**
+- Pick a flow → view:
   - Flow metadata (name/description/last audited)
-  - Event list (name, stage, component, description, properties used)
+  - Event list (name, stage, component/source, description, properties used)
   - Property definitions for that flow
 
 2) **Global search**
-- Search (partial match) across:
+- Partial match across:
   - event `name`
   - event `stage`
   - event `component`
+  - (optionally) property keys and description text
 - Results allow drilling into:
-  - the **flow occurrence** (event-in-flow context)
+  - a **flow occurrence** (event-in-flow context)
   - the **canonical event** page (one event string aggregated across flows)
 
 ### Non-goals (MVP)
 
 - Authentication/authorization (assumed behind Tailscale).
-- Admin triage inbox (unassigned/low-confidence) and edit workflows.
-- Git watcher + LLM updater pipeline (planned for Phase 2).
+- Admin triage inbox and edit workflows.
+- Automated updater pipeline (planned for later phases).
 
-## Source of truth (Phase 1)
+## Key concepts
 
-Analytics documentation will be **copied/moved into this repo** (not kept in the app code repo).
+### Canonical event vs occurrence
 
-Expected structure (to be created):
+Key constraint: the same event string can appear in multiple flows.
+
+- **Canonical Event** = the exact emitted string (case-sensitive, exact match).
+- **Event Occurrence** = usage of an event within a specific flow + stage + component/source (context).
+
+The UI should primarily render occurrences (flow context), while enabling a Canonical Event page that
+aggregates occurrences across flows.
+
+### Property keys
+
+Property keys must remain **exact** (including spaces/casing). We must not “normalize away” the
+real keys, otherwise lookups drift from production analytics.
+
+## Source of truth (filesystem snapshot)
+
+Analytics documentation lives in this repo as a snapshot under `content/analytics/`.
+
+Expected structure:
 
 ```
-docs/analytics/
+content/analytics/
   flows.json
-  <flowId>/
+  <flowSlug>/
     events.json
     flow-diagrams.md
 ```
 
 ### Notes on diagrams
 
-- `flow-diagrams.md` (Mermaid) is treated as the **primary** diagram artifact for display.
-- `events.json.diagram` exists in some flows but appears to be a **summary** and may not match the Markdown diagrams; the app should not assume they are identical.
+- `flow-diagrams.md` (Mermaid) is the **display-first** artifact.
+- Some flows may also contain diagram summaries in JSON; the app should not assume JSON and Markdown match.
+- Diagrams should follow the “green node = analytics event string” convention so nodes can be clickable.
 
 ## Data model (conceptual)
 
-Key constraint: the same event string can appear in multiple flows (e.g., Validation).
+### Analytics Snapshot
 
-### Canonical event vs occurrence
+UI reads from an in-memory **Analytics Snapshot** produced by a source adapter:
 
-- **Canonical Event** = the exact emitted string (case-sensitive, exact match).
-- **Event Occurrence** = usage of an event within a specific flow/stage/component.
+- `flows[]` (catalog + metadata)
+- `occurrences[]` (flattened occurrences across flows)
+- derived indexes:
+  - canonical event → occurrences
+  - flow → stages → occurrences
+  - property → occurrences that use it
 
-The UI should primarily render occurrences (flow context) while enabling an Event page that aggregates occurrences.
-
-### Property keys
-
-Property keys must remain **exact** (including spaces/casing) to avoid drifting from emitted analytics properties and breaking lookups.
+This allows swapping storage (filesystem now, DB later) without rewriting UI routes/components.
 
 ## Architecture
 
 ### Web app
 
-- **Next.js (App Router) + TypeScript**
-- **Tailwind + shadcn/ui**
-- **Convex** is present for future DB-backed features, but MVP can start read-only from files.
+- Next.js (App Router) + TypeScript
+- Tailwind + shadcn/ui
+- Convex can be introduced later; MVP can stay read-only from the filesystem snapshot
 
 ### Data access strategy
 
-Use a “source adapter” abstraction so UI does not depend on where data comes from:
+Use a “source adapter” boundary:
 
-- **Phase 1 adapter (files):** reads `docs/analytics/**`, parses JSON/Markdown.
-- **Phase 2 adapter (Convex):** reads normalized tables / imported snapshot.
-
-UI consumes a stable, in-memory **Analytics Snapshot** produced by the adapter.
+- **Filesystem adapter:** reads `content/analytics/**`, parses JSON/Markdown, builds snapshot.
+- **DB adapter (later):** reads imported/normalized data, builds the same snapshot shape.
 
 ## UI (MVP)
 
@@ -91,38 +113,138 @@ UI consumes a stable, in-memory **Analytics Snapshot** produced by the adapter.
 
 - `/analytics` (landing)
 - `/analytics/flows` (flows index)
-- `/analytics/flows/[flowId]` (flow detail)
+- `/analytics/flows/[flowSlug]` (flow detail)
 - `/analytics/events` (global search + event index)
-- `/analytics/events/[eventName]` (canonical event detail: all occurrences)
+- `/analytics/events/[eventName]` (canonical event detail)
 
 ### Search behavior
 
-- Partial match (substring) over:
-  - event name
-  - stage
-  - component
-- Default sort: best match first, then flowId/stage for stable grouping.
+- Partial match (substring) over event name/stage/component.
+- Prefer event-name matches for short queries in global search (so “checkout” works as expected).
+- Stable sorting: best match → deterministic tie-breakers.
 
-## Operational plan (Phase 2, later)
+## Phases (no timelines)
 
-### Git watcher + LLM updater
+Each phase should preserve the UX surface and evolve internals behind stable interfaces.
 
-When the upstream app repo receives a new commit on `main`:
+### Phase 0 — Read-only dashboard (filesystem-backed)
 
-1) A watcher triggers a Codex CLI + GPT-5.2 run on the VPS.
-2) The agent reviews the diff and updates/adds/removes:
-   - `docs/analytics/<flowId>/events.json`
-   - `docs/analytics/<flowId>/flow-diagrams.md`
-   - `docs/analytics/flows.json` (if flow catalog changes)
-3) The agent opens a **PR** against this dashboard repo for review.
+Scope:
+- `content/analytics/**` is the source of truth.
+- Server-only adapter builds the Analytics Snapshot.
+- Flows browse + Flow detail + Canonical Event pages + Global search.
+- Diagrams: diagram selector + pan/zoom/fit; green nodes open an event sheet (no navigation).
 
-### Triage bucket
+Exit criteria:
+- PM can answer: “what fires in this flow?”, “where does this event fire?”, “what props does it send?”
 
-If the agent can’t confidently classify an event into a flow/stage, it writes it to a separate artifact (e.g. `docs/analytics/unassigned.json`) for later admin triage (not required for MVP UI).
+### Phase 1 — Content hardening + UX polish
+
+Scope:
+- Improve ingestion robustness (schema drift across flows, missing optional fields, graceful fallbacks).
+- Validation + clearer error surfacing for corrupt artifacts.
+- Deep-linking consistency (`?tab=events&open=<occurrenceId>` patterns) and dismissible sheets.
+- Accessibility (keyboard navigation, focus management for dialogs/sheets).
+
+Exit criteria:
+- Partial/broken docs do not break the whole app; issues are localized and actionable.
+- Deep links are shareable and predictable.
+
+### Phase 2 — Automated updater pipeline (git watcher + LLM agent)
+
+Goal: keep `content/analytics/**` continuously up to date with the upstream app repo (`chalo-app-kmp`)
+without manual sweeps.
+
+#### Design principles
+
+- **No AST-only extraction step.** The pipeline is LLM-driven with tool-assisted repo exploration
+  (search/grep/navigation) because events can live anywhere and conventions are not reliable.
+- **Diff-first:** constrain the agent to changes since the last processed commit (plus required context).
+- **PR-based:** never push directly to `main`; always open a PR with a clear audit summary.
+- **Deterministic validation:** run schema + integrity checks before opening a PR.
+
+#### Inputs / outputs
+
+Inputs:
+- Upstream app repo on the VPS (main branch).
+- This dashboard repo containing `content/analytics/**`.
+- Stored pointer to the last processed upstream commit.
+
+Outputs:
+- Updated artifacts:
+  - `content/analytics/flows.json`
+  - `content/analytics/<flowSlug>/events.json`
+  - `content/analytics/<flowSlug>/flow-diagrams.md`
+- Optional triage artifact:
+  - `content/analytics/unassigned.json` (low-confidence items requiring human review)
+- A PR in this repo for review/merge.
+
+#### Components
+
+1) **Watcher / trigger (VPS)**
+- Detects new commits on upstream `main`.
+- Stores `lastProcessedCommit` locally.
+- Debounces rapid successive commits.
+- Guards concurrency (lock file) so only one run happens at a time.
+
+2) **Analyzer + generator (Codex CLI + GPT-5.2)**
+- Computes `git diff <lastProcessed>..<head>` in the upstream repo.
+- Updates/adds/removes docs in `content/analytics/**`:
+  - events and properties (exact strings)
+  - Mermaid diagrams (split into multiple diagrams when huge; selector already supports this)
+  - flow catalog updates
+- Produces a PR-ready audit summary:
+  - counts of new/changed/removed events
+  - touched flows
+  - any unassigned items
+
+3) **Validator**
+- Schema validation for JSON files.
+- Referential integrity checks (flows.json ↔ flow dirs).
+- Duplicate handling rules:
+  - repeated events in a flow are allowed, but occurrence IDs must remain unique.
+- Blocks PR creation on failures and emits actionable logs.
+
+4) **PR opener**
+- Creates a branch, commits artifacts, opens a PR against `main`.
+- Adds labels like `analytics` + `autogenerated` (+ `needs-triage` if applicable).
+
+#### Safety and correctness
+
+- **Idempotency:** rerunning on the same upstream commit should produce the same output (or no-op).
+- **Auditability:** PR references the upstream commit hash; optionally write generation metadata under
+  `content/analytics/_meta.json`.
+- **Human gate:** humans review and merge; no silent mutations.
+
+Exit criteria:
+- A new upstream commit produces a correct PR with doc updates + audit summary.
+- Rare uncertain classifications are captured in `unassigned.json` for later resolution.
+
+### Phase 3 — DB-backed storage (optional)
+
+Goal: unlock richer relationships (cross-flow linking, canonical property catalog, tagging) while keeping
+the same UX.
+
+Scope:
+- Import pipeline reads `content/analytics/**` and writes to DB tables.
+- A DB adapter produces the same snapshot shape for UI.
+- Keep `content/analytics/**` as the portable snapshot even if DB becomes the runtime store.
+
+### Phase 4 — Admin workflows (triage + edits)
+
+Scope:
+- Admin views for unassigned items and manual corrections.
+- Versioning/approvals for manual edits (avoid silent drift).
+
+### Phase 5 — Expand beyond analytics
+
+Scope:
+- Treat Analytics as one module in a multi-module dashboard.
+- Shared shell/navigation/search patterns and shared storage boundaries.
 
 ## Risks / constraints
 
 - Analytics event strings can live across many places in the codebase; the updater must be robust and thorough.
-- Diagram artifacts may diverge (Markdown Mermaid vs JSON summary); UI should treat Mermaid as display-first.
+- Diagram artifacts may diverge (Markdown Mermaid vs JSON summary); treat Mermaid as display-first.
 - Event meaning can vary across flows; store meaning at the **occurrence** level rather than forcing a single “global description”.
-
+- Underlying docs schemas can drift across flows; ingestion should normalize without losing exact strings.
