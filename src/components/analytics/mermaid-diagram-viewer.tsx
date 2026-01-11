@@ -289,6 +289,7 @@ export function MermaidDiagramViewer({
       }
       .analytics-diagram-link-node:hover rect,
       .analytics-diagram-link-node:hover polygon,
+      .analytics-diagram-link-node:hover ellipse,
       .analytics-diagram-link-node:hover path {
         stroke-width: 3px !important;
       }
