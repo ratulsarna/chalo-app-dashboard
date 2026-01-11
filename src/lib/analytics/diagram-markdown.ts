@@ -99,30 +99,10 @@ export function extractMermaidBlocks(markdown: string): MermaidBlockMeta[] {
   return blocks;
 }
 
-function scoreForDefault(block: MermaidBlockMeta) {
-  const title = block.title.toLowerCase();
-  const lower = block.code.toLowerCase();
-
-  let score = block.code.length;
-  if (title.includes("main") || title.includes("funnel")) score += 2500;
-  if (lower.includes("flowchart")) score += 500;
-  if (lower.includes("sequencediagram")) score += 350;
-  if (block.kind === "visual-key") score -= 10_000;
-  return score;
-}
-
 /**
  * Default selection heuristic (per product decision):
- * - Prefer headings containing "Main" or "Funnel".
- * - Otherwise choose the largest non-visual-key block.
+ * - Use the first non-visual-key block in document order.
  */
 export function pickDefaultMermaidBlock(blocks: MermaidBlockMeta[]) {
-  const candidates = blocks.filter((b) => b.kind !== "visual-key");
-  if (candidates.length === 0) return blocks[0] ?? null;
-
-  return (
-    candidates
-      .slice()
-      .sort((a, b) => scoreForDefault(b) - scoreForDefault(a))[0] ?? null
-  );
+  return blocks.find((b) => b.kind !== "visual-key") ?? blocks[0] ?? null;
 }
