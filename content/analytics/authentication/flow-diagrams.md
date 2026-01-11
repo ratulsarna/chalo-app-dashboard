@@ -38,11 +38,8 @@ flowchart TD
 
   ev_loginScreen -->|User chooses| ui_pathChoice([Authentication path choice])
 
-  ui_pathChoice -->|Phone number| ui_otpPath([OTP path])
-  ui_pathChoice -->|Truecaller| ui_truecallerPath([Truecaller path])
-
-  ui_otpPath --> funnel_otp([OTP Login Funnel])
-  ui_truecallerPath --> funnel_truecaller([Truecaller Login Funnel])
+  ui_pathChoice -->|Phone number| funnel_otp([OTP Login Funnel])
+  ui_pathChoice -->|Truecaller| funnel_truecaller([Truecaller Login Funnel])
 
   funnel_otp --> ev_loginSuccess1["login successful"]
   funnel_truecaller --> ev_loginSuccess2["login successful"]
@@ -57,7 +54,7 @@ flowchart TD
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
   class ev_loginScreen,ev_loginSuccess1,ev_loginSuccess2 event;
-  class ui_entry,ui_pathChoice,ui_otpPath,ui_truecallerPath,ui_authenticated,ui_profileAccess,funnel_otp,funnel_truecaller ui;
+  class ui_entry,ui_pathChoice,ui_authenticated,ui_profileAccess,funnel_otp,funnel_truecaller ui;
 ```
 
 ## Funnel 1: OTP-based login (phone number)
