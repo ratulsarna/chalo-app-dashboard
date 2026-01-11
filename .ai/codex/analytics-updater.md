@@ -18,6 +18,7 @@ The output must be usable by the existing dashboard UI without code changes.
 - Do **not** “normalize” analytics event strings. Event names must remain **exact**.
 - Prefer **minimal diffs** to existing docs: update only what changed or what is required to keep docs consistent.
 - The dashboard is the consumer; do not change UI code in this run—only the content snapshot.
+- `content/analytics/<flowSlug>/flow-diagrams.md` is maintained in **this** repo. The upstream repo may not contain diagrams; do not delete or “blank out” diagrams just because upstream changed.
 
 ## What “good” looks like
 
@@ -65,6 +66,11 @@ Rules:
   - Apply `class <nodeIds> event;` to all event nodes
 - **Event node labels must match the exact event strings** found in that flow’s `events.json`.
   - This is required so clicking a green node can open the side panel for that event.
+- Preserve and maintain **intra-flow sub-diagram navigation directives** (do not remove them during edits):
+  - Format (Mermaid comment line): `%%chalo:diagram-link <nodeId> -> title:<diagramHeading>`
+  - Purpose: clicking that node in the dashboard switches the viewer to the Mermaid diagram whose nearest preceding markdown heading matches `<diagramHeading>` (same flow only).
+  - When you rename a diagram heading, update any `%%chalo:diagram-link ... title:...` directives that reference it.
+  - Only add these directives for non-event “sub-flow” nodes (e.g. `[UPI Flow]`, `[Card Flow]`), not for green event nodes.
 
 ### 3) Flow catalog + slug mapping
 
@@ -119,4 +125,3 @@ Use these existing docs as style references:
 - Do not edit anything outside `content/analytics/**` unless explicitly required by these instructions.
 - Do not delete flows unless the upstream diff clearly removes the feature or its instrumentation.
 - Preserve event name strings exactly (case, punctuation, spacing).
-

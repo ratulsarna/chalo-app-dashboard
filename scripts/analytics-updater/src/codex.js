@@ -146,6 +146,8 @@ async function runCodexUpdater({
       `Upstream repo: ${upstreamRepoPath} (branch: ${upstreamBranch || "main"})`,
       `Commit range to process: ${baseSha}..${headSha}`,
       ``,
+      `Important: preserve existing content/analytics/** docs conventions (including any %%chalo:diagram-link directives in flow-diagrams.md).`,
+      ``,
       `At the end, output a PR-ready run summary as your final message.`,
     ].join("\n");
 
