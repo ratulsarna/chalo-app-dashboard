@@ -25,7 +25,7 @@
     "metro": {
       "name": "Metro",
       "description": "Metro tickets - metro route discovery, fare fetching, booking, payment, validation, receipts. Includes ONDC metro tickets.",
-      "lastAudited": "2026-01-10"
+      "lastAudited": "2026-01-11"
     },
     "ondc-bus": {
       "name": "ONDC Bus",

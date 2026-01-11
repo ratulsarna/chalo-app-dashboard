@@ -4,7 +4,7 @@ These diagrams exist to help build funnels in analytics dashboards. Green nodes 
 
 Notes:
 - The metro flow includes both regular metro tickets and ONDC metro tickets.
-- ONDC metro events mirror regular metro events with `ondc` prefix.
+- Some ONDC metro events are `ondc`-prefixed (e.g., payment/booking confirmed/ticket fetched), but others are shared (e.g., stop selection route-result events) and are not prefixed.
 - Metro tickets only support static QR validation (no BLE or TITO).
 
 Visual key:
@@ -60,14 +60,33 @@ flowchart TD
   ev_searchBtn --> ui_fareFetch{Fetch fare}
   ui_fareFetch -->|Success| ev_fareOk["metro fare fetch success"]
   ui_fareFetch -->|Failure| ev_fareFail["metro fare fetch failed"]
+  ui_fareFetch -->|Exception| ev_fareException["ticket fare fetch failure"]
 
   ev_fareOk --> ev_proceedBtn["booking mode proceed button clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_open,ev_cfgOk,ev_cfgFail,ev_stationsOk,ev_stationsFail,ev_fromClick,ev_stopSelectedFrom,ev_toClick,ev_stopSelectedTo,ev_swap,ev_recentTrip,ev_searchBtn,ev_fareOk,ev_fareFail,ev_proceedBtn event;
+  class ev_open,ev_cfgOk,ev_cfgFail,ev_stationsOk,ev_stationsFail,ev_fromClick,ev_stopSelectedFrom,ev_toClick,ev_stopSelectedTo,ev_swap,ev_recentTrip,ev_searchBtn,ev_fareOk,ev_fareFail,ev_fareException,ev_proceedBtn event;
   class ui_open,ui_config,ui_stations,ui_selectStops,ui_fareFetch ui;
+```
+
+## Funnel: ONDC Route Search Results
+
+This funnel covers the ONDC route search result events emitted during ONDC metro route discovery.
+
+```mermaid
+flowchart TD
+  ui_search([Search ONDC metro routes]) --> ui_results{Route search result}
+
+  ui_results -->|Success / No routes| ev_routesOk["stop based stop selection screen route result success"]
+  ui_results -->|Failure| ev_routesFail["stop based stop selection screen route result failure"]
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+
+  class ev_routesOk,ev_routesFail event;
+  class ui_search,ui_results ui;
 ```
 
 ## Funnel: Confirm Booking to Order Creation
@@ -118,8 +137,7 @@ flowchart TD
   ev_ondcPaymentOk --> ui_fetchTicketDetails
 
   ui_fetchTicketDetails -->|Success| ui_successScreen([Booking success screen])
-  ui_fetchTicketDetails -->|Metro Failure| ev_detailsNotAvailable["metro ticket details not available"]
-  ui_fetchTicketDetails -->|ONDC Failure| ev_ondcDetailsNotAvailable["ondc metro ticket details not available"]
+  ui_fetchTicketDetails -->|Failure| ext_postPaymentFail[Post-payment history call failure (checkout flow)]
 
   ui_successScreen --> ev_bookingConfirmed["metro booking confirmed"]
   ui_successScreen --> ev_ondcBookingConfirmed["ondc metro booking confirmed"]
@@ -128,63 +146,32 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_paymentOk,ev_paymentFail,ev_ondcPaymentOk,ev_ondcPaymentFail,ev_detailsNotAvailable,ev_ondcDetailsNotAvailable,ev_bookingConfirmed,ev_ondcBookingConfirmed event;
+  class ev_paymentOk,ev_paymentFail,ev_ondcPaymentOk,ev_ondcPaymentFail,ev_bookingConfirmed,ev_ondcBookingConfirmed event;
   class ui_paymentResult,ui_fetchTicketDetails,ui_successScreen ui;
-  class ext_checkout external;
+  class ext_checkout,ext_postPaymentFail external;
 ```
 
 ## Funnel: Ticket Validation - QR Flow
 
-This funnel covers the static QR code validation path. Metro tickets only support QR validation.
+This funnel covers the static QR validation path events that are currently emitted for metro tickets.
 
 ```mermaid
 flowchart TD
   ui_openTicket([User opens ticket for validation]) --> ev_ticketFetched["metro ticket fetched"]
   ui_openTicket --> ev_ondcTicketFetched["ondc metro ticket fetched"]
 
-  ev_ticketFetched --> ev_qrOpen["qr screen open"]
-  ev_ondcTicketFetched --> ev_qrOpen
+  ev_ticketFetched --> ui_qr([QR screen])
+  ev_ondcTicketFetched --> ui_qr
 
-  ev_qrOpen --> ev_qrZoom["simple qr validation zoom qr clicked"]
-  ev_qrOpen --> ui_gateScan([Gate machine scans QR])
-
-  ui_gateScan --> ev_tripPunched["metro ticket trip punched"]
-  ui_gateScan --> ev_ondcTripPunched["ondc metro ticket trip punched"]
-
-  ev_tripPunched --> ev_postValidation["Post validation screen opened"]
-  ev_ondcTripPunched --> ev_postValidation
-
-  ev_postValidation --> ev_viewReceipt["metro ticket view receipt clicked"]
-  ev_postValidation --> ev_ondcViewReceipt["ondc ticket view receipt clicked"]
-  ev_postValidation --> ev_viewReceiptPostValidation["view receipt post validation clicked"]
+  ui_qr --> ev_qrZoom["simple qr validation zoom qr clicked"]
+  ui_qr --> ev_viewReceiptMenu["view trip receipt from menu clicked"]
+  ui_qr --> ev_reportProblem["report problem clicked v2"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_ticketFetched,ev_ondcTicketFetched,ev_qrOpen,ev_qrZoom,ev_tripPunched,ev_ondcTripPunched,ev_postValidation,ev_viewReceipt,ev_ondcViewReceipt,ev_viewReceiptPostValidation event;
-  class ui_openTicket,ui_gateScan ui;
-```
-
-## Exit Confirmation Dialog
-
-Events for the exit confirmation dialog during validation.
-
-```mermaid
-flowchart TD
-  ui_backPress([User presses back during validation]) --> ev_exitShown["exit chalo pay confirmation shown"]
-
-  ev_exitShown --> ui_userChoice{User choice}
-  ui_userChoice -->|Yes - Exit| ev_exitYes["exit chalo pay confirmation yes clicked"]
-  ui_userChoice -->|No - Stay| ev_exitNo["exit chalo pay confirmation no clicked"]
-
-  ev_exitYes --> ui_exit([Exit validation screen])
-  ev_exitNo --> ui_stay([Stay on validation screen])
-
-  classDef event fill:#166534,stroke:#166534,color:#ffffff;
-  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
-
-  class ev_exitShown,ev_exitYes,ev_exitNo event;
-  class ui_backPress,ui_userChoice,ui_exit,ui_stay ui;
+  class ev_ticketFetched,ev_ondcTicketFetched,ev_qrZoom,ev_viewReceiptMenu,ev_reportProblem event;
+  class ui_openTicket,ui_qr ui;
 ```
 
 ## Global Events
@@ -230,15 +217,14 @@ flowchart TD
 
   ev_paymentOk --> ev_bookingConfirmed["metro booking confirmed"]
   ev_bookingConfirmed --> ev_ticketFetched["metro ticket fetched"]
-  ev_ticketFetched --> ev_qrOpen["qr screen open"]
-  ev_qrOpen --> ev_tripPunched["metro ticket trip punched"]
-  ev_tripPunched --> ev_postValidation["Post validation screen opened"]
+  ev_ticketFetched --> ui_qr([QR screen])
+  ui_qr --> ev_qrZoom["simple qr validation zoom qr clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_landingOpen,ev_configOk,ev_stationsOk,ev_fromClick,ev_stopFrom,ev_toClick,ev_stopTo,ev_searchBtn,ev_fareOk,ev_proceedBtn,ev_confirmOpen,ev_finalFareOk,ev_payBtn,ev_orderOk,ev_paymentOk,ev_bookingConfirmed,ev_ticketFetched,ev_qrOpen,ev_tripPunched,ev_postValidation event;
-  class ui_start ui;
+  class ev_landingOpen,ev_configOk,ev_stationsOk,ev_fromClick,ev_stopFrom,ev_toClick,ev_stopTo,ev_searchBtn,ev_fareOk,ev_proceedBtn,ev_confirmOpen,ev_finalFareOk,ev_payBtn,ev_orderOk,ev_paymentOk,ev_bookingConfirmed,ev_ticketFetched,ev_qrZoom event;
+  class ui_start,ui_qr ui;
   class ext_checkout external;
 ```
