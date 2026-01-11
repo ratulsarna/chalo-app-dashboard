@@ -366,6 +366,22 @@
       "type": "string",
       "description": "Product sub-type (e.g., valuePass, bulkBooking)."
     },
+    "fullName": {
+      "type": "string",
+      "description": "User full name."
+    },
+    "time": {
+      "type": "string",
+      "description": "Event time string."
+    },
+    "date": {
+      "type": "string",
+      "description": "Event date string."
+    },
+    "cityName": {
+      "type": "string",
+      "description": "City name for the premium reserve ticket."
+    },
     "couponName": {
       "type": "string",
       "description": "Applied coupon name."
@@ -373,6 +389,18 @@
     "effectiveFare": {
       "type": "number",
       "description": "Final effective fare after discounts."
+    },
+    "fare": {
+      "type": "string",
+      "description": "Fare amount for the booking."
+    },
+    "passUsedForBooking": {
+      "type": "string",
+      "description": "Pass identifier used to purchase the booking, if any."
+    },
+    "passengerCount": {
+      "type": "string",
+      "description": "Passenger count for the booking."
     },
     "appliedRulesId": {
       "type": "array",
@@ -436,6 +464,10 @@
       "type": "boolean",
       "description": "Toggle state (for traffic view)."
     },
+    "pb activation screen traffic view toggled": {
+      "type": "boolean",
+      "description": "Toggle state emitted for activation screen traffic view."
+    },
     "activeBookingActionType": {
       "type": "string",
       "description": "Type of action on active booking."
@@ -447,6 +479,10 @@
     "isActionAllowed": {
       "type": "boolean",
       "description": "Whether the action is allowed."
+    },
+    "isFromCancellationConfirmationBottomSheet": {
+      "type": "boolean",
+      "description": "Whether the action was triggered from the cancellation confirmation bottom sheet."
     },
     "premiumBusStackType": {
       "type": "string",
@@ -579,6 +615,38 @@
     "routeName": {
       "type": "string",
       "description": "Name of the route."
+    },
+    "isTripReceiptAvailable": {
+      "type": "boolean",
+      "description": "Whether a trip receipt is available."
+    },
+    "startStop": {
+      "type": "string",
+      "description": "Receipt start stop name."
+    },
+    "endStop": {
+      "type": "string",
+      "description": "Receipt end stop name."
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Conductor identifier on receipt."
+    },
+    "punchTime": {
+      "type": "string",
+      "description": "Punch time shown in receipt."
+    },
+    "punch notification delay": {
+      "type": "number",
+      "description": "Delay between punch time and notification receipt (millis)."
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Vehicle number on receipt."
+    },
+    "endStopId": {
+      "type": "string",
+      "description": "Receipt end stop identifier."
     },
     "tripDate": {
       "type": "string",
@@ -715,7 +783,7 @@
       "description": "Traffic view toggled on map.",
       "properties": [
         {
-          "property": "isToggledOn"
+          "property": "pb activation screen traffic view toggled"
         }
       ]
     },
@@ -733,10 +801,10 @@
           "property": "activeBookingActionType"
         },
         {
-          "property": "activeBookingActionSubText"
+          "property": "isActionAllowed"
         },
         {
-          "property": "isActionAllowed"
+          "property": "isFromCancellationConfirmationBottomSheet"
         }
       ]
     },
@@ -754,16 +822,37 @@
     },
     {
       "name": "pb booking cancellation successful",
-      "component": "Cancellation flow",
+      "component": "PremiumBusProductModificationReasonsComponent",
       "stage": "Ticket Management",
-      "source": "Cancellation flow",
+      "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
       "description": "Booking cancelled successfully.",
       "properties": [
         {
           "property": "bookingId"
         },
         {
-          "property": "cancellationReason"
+          "property": "pickupStopId"
+        },
+        {
+          "property": "pickupStopName"
+        },
+        {
+          "property": "dropStopId"
+        },
+        {
+          "property": "dropStopName"
+        },
+        {
+          "property": "tripDate"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "passUsedForBooking"
+        },
+        {
+          "property": "passengerCount"
         }
       ]
     },
@@ -834,12 +923,27 @@
       "name": "pb trip cancel conf bottom sheet opened",
       "component": "PremiumBusAnalyticsHelper",
       "stage": "Ticket Management",
-      "source": "Cancellation flow",
+      "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
       "description": "Trip cancellation confirmation bottom sheet opened.",
       "properties": [
         {
           "property": "bookingId"
         },
+        {
+          "property": "activeBookingActionType"
+        },
+        {
+          "property": "activeBookingActionSubText"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation book another ride cta clicked",
+      "component": "PremiumBusProductModificationReasonsComponent",
+      "stage": "Ticket Management",
+      "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
+      "description": "Book another ride CTA clicked after cancellation.",
+      "properties": [
         {
           "property": "cancellationReason"
         },
@@ -849,22 +953,10 @@
       ]
     },
     {
-      "name": "pb trip cancellation book another ride cta clicked",
-      "component": "Cancellation flow",
-      "stage": "Ticket Management",
-      "source": "Cancellation dialog",
-      "description": "Book another ride CTA clicked after cancellation.",
-      "properties": [
-        {
-          "property": "bookingId"
-        }
-      ]
-    },
-    {
       "name": "pb trip cancellation go back cta clicked",
       "component": "NewPremiumBusReserveTicketActivationComponent",
       "stage": "Ticket Management",
-      "source": "Cancellation dialog",
+      "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
       "description": "Go back CTA clicked on cancellation confirmation.",
       "properties": [
         {
@@ -874,14 +966,11 @@
     },
     {
       "name": "pb trip cancellation okay cta clicked",
-      "component": "Cancellation flow",
+      "component": "PremiumBusProductModificationReasonsComponent",
       "stage": "Ticket Management",
-      "source": "Cancellation dialog",
+      "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
       "description": "Okay CTA clicked to proceed with cancellation.",
       "properties": [
-        {
-          "property": "bookingId"
-        },
         {
           "property": "cancellationReason"
         },
@@ -1030,13 +1119,38 @@
       "component": "PremiumReserveTicketValidationAnalyticsManager",
       "stage": "Misc",
       "source": "source",
-      "properties": []
+      "properties": [
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cityName"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "tripId"
+        }
+      ]
     },
     {
       "name": "premium reserve ticket receipt payload",
       "component": "PremiumReserveTicketValidationConfig",
       "stage": "Misc",
-      "source": "this::class.simpleName.toString(",
+      "source": "PremiumReserveTicketValidationConfig",
       "properties": [
         {
           "property": "payload"
@@ -1048,13 +1162,44 @@
       "component": "PremiumReserveTicketValidationAnalyticsManager",
       "stage": "Misc",
       "source": "source",
-      "properties": []
+      "properties": [
+        {
+          "property": "isTripReceiptAvailable"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "startStop"
+        },
+        {
+          "property": "endStop"
+        },
+        {
+          "property": "conductorId"
+        },
+        {
+          "property": "punchTime"
+        },
+        {
+          "property": "vehicleNo"
+        },
+        {
+          "property": "endStopId"
+        }
+      ]
     },
     {
       "name": "premium reserve ticket punch received",
-      "component": "PremiumReserveTicketValidationAnalyticsManager",
-      "stage": "Validation",
-      "source": "validation",
+      "component": "NotificationCentralProcessingManagerImpl",
+      "stage": "Notifications",
+      "source": "Source.PRODUCT_NOTIFICATION_HELPER",
       "description": "Premium bus ticket punch received from backend."
     },
     {
@@ -1062,7 +1207,42 @@
       "component": "PremiumReserveTicketValidationAnalyticsManager",
       "stage": "Validation",
       "source": "validation",
-      "description": "Premium bus ticket trip marked as punched."
+      "description": "Premium bus ticket trip marked as punched.",
+      "properties": [
+        {
+          "property": "isTripReceiptAvailable"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "routeName"
+        },
+        {
+          "property": "startStop"
+        },
+        {
+          "property": "endStop"
+        },
+        {
+          "property": "conductorId"
+        },
+        {
+          "property": "punchTime"
+        },
+        {
+          "property": "vehicleNo"
+        },
+        {
+          "property": "endStopId"
+        },
+        {
+          "property": "punch notification delay"
+        }
+      ]
     }
   ]
 }

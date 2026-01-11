@@ -33,16 +33,15 @@ flowchart LR
 flowchart TD
   ev_bookingConfirmed["pb booking confirmed"] --> ev_activationOpen["pb activation screen opened"]
 
-  ev_activationOpen --> ui_etaFetch([Fetch live ETA])
-  ui_etaFetch --> ev_etaRendered["pb first time eta rendered on activation screen"]
+  ev_activationOpen --> ui_tripPolling([Trip details polling / live ETA])
+  ui_tripPolling --> ev_etaRendered["pb first time eta rendered on activation screen"]
+  ui_tripPolling --> ev_tripPollingChange["pb trip polling response change"]
 
   ev_activationOpen --> ui_trackingStart([Start live tracking])
   ui_trackingStart --> ev_trackingStarted["pb trip tracking started for user"]
-  ui_trackingStart --> ev_tripPollingChange["pb trip polling response change"]
-
-  ev_activationOpen --> ev_premiumReserveFetched["premium reserve ticket fetched"]
-  ev_activationOpen -->|View receipt| ev_premiumReserveViewReceipt["premium reserve ticket view receipt clicked"]
-  ev_premiumReserveViewReceipt --> ev_premiumReserveReceiptPayload["premium reserve ticket receipt payload"]
+  ui_trackingStart -->|Poor network detected| ev_deadZone["pb poor network or dead zone detected"]
+  ui_trackingStart -->|User closes screen or trip ends| ui_trackingEnd([End tracking])
+  ui_trackingEnd --> ev_trackingEnded["pb trip tracking ended for user"]
 
   ev_activationOpen -->|User clicks verify| ev_verifyClicked["pb verify ticket clicked"]
   ev_activationOpen -->|User clicks more options| ev_optionsClicked["pb active booking options clicked"]
@@ -51,26 +50,62 @@ flowchart TD
 
   ev_optionsClicked --> ev_optionItemClicked["pb active booking option item clicked"]
 
-  ev_optionItemClicked -->|Cancellation selected| ui_cancelFlow([Cancellation flow])
-  ui_cancelFlow --> ev_cancelBottomSheet["pb trip cancel conf bottom sheet opened"]
+  ev_optionItemClicked -->|Cancellation selected| ev_cancelBottomSheet["pb trip cancel conf bottom sheet opened"]
+  ev_optionItemClicked -->|Reschedule selected| ext_reschedule[Reschedule flow (premium bus booking)]
+
   ev_cancelBottomSheet --> ev_cancelGoBack["pb trip cancellation go back cta clicked"]
-  ev_cancelBottomSheet --> ev_cancelOkay["pb trip cancellation okay cta clicked"]
+  ev_cancelBottomSheet --> ui_cancelFlow([Cancellation flow])
   ev_cancelBottomSheet --> ev_refundBlocked["pb value pass booking cancellation refund blocked"]
   ev_refundBlocked --> ev_upgradeCta["pb value pass booking cancellation upgrade CTA clicked"]
 
-  ev_cancelOkay --> ev_cancelSuccess["pb booking cancellation successful"]
-  ev_cancelSuccess --> ev_bookAnotherRide["pb trip cancellation book another ride cta clicked"]
+  %%chalo:diagram-link ev_verifyClicked -> title:Validation & Receipt (Premium Reserve Ticket)
+  %%chalo:diagram-link ui_cancelFlow -> title:Cancellation Flow (Premium Bus Product Modification)
+  %%chalo:diagram-link ext_reschedule -> title:External: Premium Bus Booking Flow
 
-  ui_trackingStart -->|Poor network detected| ev_deadZone["pb poor network or dead zone detected"]
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  ui_trackingStart -->|User closes screen or trip ends| ui_trackingEnd([End tracking])
-  ui_trackingEnd --> ev_trackingEnded["pb trip tracking ended for user"]
+  class ev_bookingConfirmed,ev_activationOpen,ev_etaRendered,ev_tripPollingChange,ev_trackingStarted,ev_deadZone,ev_trackingEnded,ev_verifyClicked,ev_optionsClicked,ev_trafficToggled,ev_directionsClicked,ev_optionItemClicked,ev_cancelBottomSheet,ev_cancelGoBack,ev_refundBlocked,ev_upgradeCta event;
+  class ui_tripPolling,ui_trackingStart,ui_trackingEnd,ui_cancelFlow ui;
+  class ext_reschedule external;
+```
+
+## Validation & Receipt (Premium Reserve Ticket)
+
+```mermaid
+flowchart TD
+  ui_validationStart([Validation flow started]) --> ev_premiumReserveFetched["premium reserve ticket fetched"]
+
+  ev_premiumReserveFetched --> ui_validationScreen([Validation / receipt screen])
+  ui_validationScreen --> ev_premiumReserveViewReceipt["premium reserve ticket view receipt clicked"]
+
+  ui_validationScreen --> ui_punch([Punch received / receipt payload])
+  ui_punch --> ev_premiumReserveReceiptPayload["premium reserve ticket receipt payload"]
+  ui_punch --> ev_premiumReserveTripPunched["premium reserve ticket trip punched"]
+
+  ui_notification([Punch notification received]) --> ev_premiumReservePunchReceived["premium reserve ticket punch received"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_bookingConfirmed,ev_activationOpen,ev_etaRendered,ev_trackingStarted,ev_tripPollingChange,ev_premiumReserveFetched,ev_premiumReserveViewReceipt,ev_premiumReserveReceiptPayload,ev_verifyClicked,ev_optionsClicked,ev_trafficToggled,ev_directionsClicked,ev_optionItemClicked,ev_cancelBottomSheet,ev_cancelGoBack,ev_cancelOkay,ev_refundBlocked,ev_upgradeCta,ev_cancelSuccess,ev_bookAnotherRide,ev_deadZone,ev_trackingEnded event;
-  class ui_etaFetch,ui_trackingStart,ui_cancelFlow,ui_trackingEnd ui;
+  class ev_premiumReserveFetched,ev_premiumReserveViewReceipt,ev_premiumReserveReceiptPayload,ev_premiumReserveTripPunched,ev_premiumReservePunchReceived event;
+  class ui_validationStart,ui_validationScreen,ui_punch,ui_notification ui;
+```
+
+## Cancellation Flow (Premium Bus Product Modification)
+
+```mermaid
+flowchart TD
+  ui_cancelReasons([Cancellation reasons screen]) --> ev_cancelOkay["pb trip cancellation okay cta clicked"]
+  ev_cancelOkay --> ev_cancelSuccess["pb booking cancellation successful"]
+  ev_cancelSuccess --> ev_bookAnotherRide["pb trip cancellation book another ride cta clicked"]
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+
+  class ev_cancelOkay,ev_cancelSuccess,ev_bookAnotherRide event;
+  class ui_cancelReasons ui;
 ```
 
 ## Home Screen Acknowledgment Cards
