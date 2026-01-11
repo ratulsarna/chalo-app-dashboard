@@ -52,12 +52,10 @@
       "description": "True when logout was user-triggered; false when session/logout is triggered automatically (sent as a boolean string)."
     },
     "url": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "userId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -448,7 +446,6 @@
       "component": "LogoutUserUseCase",
       "stage": "Misc",
       "source": "\"LogoutUserUseCase\"",
-      "description": "Auto-documented from code callsite: shared/login/src/commonMain/kotlin/app/chalo/userprofile/domain/LogoutUserUseCase.kt:62",
       "properties": [
         {
           "property": "sessionLogout"

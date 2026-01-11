@@ -194,44 +194,34 @@
       "description": "Type of validation acknowledgment data received."
     },
     "balance amount": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "is chalo wallet activated": {
-      "type": "boolean",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "boolean"
     },
     "is quick pay bought once": {
-      "type": "boolean",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "boolean"
     },
     "is recharge done once": {
-      "type": "boolean",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "boolean"
     },
     "payload": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "searchQuery": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "isActive": {
-      "type": "boolean",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "boolean"
     },
     "from stop id": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "route id": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "to stop id": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "events": [
@@ -523,7 +513,6 @@
       "component": "FareDetailsComponent",
       "stage": "Misc",
       "source": "Source.INSTANT_TICKET_FARE_DETAILS_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/faredetails/FareDetailsComponent.kt:795",
       "properties": [
         {
           "property": "selectedSeatCount"
@@ -709,7 +698,6 @@
       "component": "InstantTicketWalletAccessComponent",
       "stage": "Misc",
       "source": "SOURCE",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/instantticket/ui/instantticketscreen/InstantTicketWalletAccessComponent.kt:589",
       "properties": [
         {
           "property": "balance amount"
@@ -909,7 +897,6 @@
       "component": "InstantTicketProductValidationConfig",
       "stage": "Misc",
       "source": "this::class.simpleName ?: \"InstantTicketProductValidationConfig\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/validation/instantticket/InstantTicketProductValidationConfig.kt:147",
       "properties": [
         {
           "property": "payload"
@@ -1043,7 +1030,6 @@
       "component": "PickRouteLocationComponent",
       "stage": "Route/Stop Selection",
       "source": "args.source ?: Source.UNKNOWN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/productbooking/pickroutelocation/PickRouteLocationComponent.kt:103",
       "properties": []
     },
     {
@@ -1051,7 +1037,6 @@
       "component": "PickStopComponent",
       "stage": "Route/Stop Selection",
       "source": "Source.PRODUCT_BOOKING_SRC",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/productbooking/pickstop/PickStopComponent.kt:71",
       "properties": []
     },
     {
@@ -1189,7 +1174,6 @@
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
       "source": "Source.STOP_BASED_ROUTE_SEARCH_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:898",
       "properties": [
         {
           "property": "flowType"
@@ -1204,7 +1188,6 @@
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
       "source": "Unknown",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:366",
       "properties": []
     },
     {
@@ -1212,7 +1195,6 @@
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
       "source": "Unknown",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:338",
       "properties": [
         {
           "property": "isActive"
@@ -1224,7 +1206,6 @@
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
       "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:160",
       "properties": [
         {
           "property": "flowType"
@@ -1236,7 +1217,6 @@
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
       "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:277",
       "properties": []
     },
     {
@@ -1244,7 +1224,6 @@
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
       "source": "Unknown",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/routeselection/ui/StopBasedRouteSearchForProductPurchaseComponent.kt:884",
       "properties": [
         {
           "property": "flowType"

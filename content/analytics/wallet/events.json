@@ -598,7 +598,6 @@
       "component": "PayForTicketComponent",
       "stage": "Misc",
       "source": "Source.PAY_FOR_TICKET_SCREEN",
-      "description": "Auto-documented from code callsite: shared/wallet/src/commonMain/kotlin/app/chalo/quickpay/ui/payforticket/PayForTicketComponent.kt:155",
       "properties": []
     },
     {

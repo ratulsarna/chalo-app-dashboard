@@ -60,20 +60,16 @@
       "description": "Retry attempt number for app migration history call."
     },
     "error message": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "activationInfo": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "lastRideInfo": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "url": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "experimentId": {
       "type": "string",
@@ -518,7 +514,6 @@
       "component": "AppRatingProcessManager",
       "stage": "Misc",
       "source": "\"DefaultManager\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.kt:58",
       "properties": []
     },
     {
@@ -526,7 +521,6 @@
       "component": "AppMigrationPreconditionsComponent",
       "stage": "Misc",
       "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:311",
       "properties": [
         {
           "property": "attempt"
@@ -541,7 +535,6 @@
       "component": "AppMigrationPreconditionsComponent",
       "stage": "Misc",
       "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:258",
       "properties": [
         {
           "property": "attempt"
@@ -556,7 +549,6 @@
       "component": "AppMigrationPreconditionsComponent",
       "stage": "Misc",
       "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:240",
       "properties": [
         {
           "property": "activationInfo"
@@ -571,7 +563,6 @@
       "component": "AppMigrationPreconditionsComponent",
       "stage": "Misc",
       "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:216",
       "properties": []
     },
     {
@@ -579,7 +570,6 @@
       "component": "AppMigrationPreconditionsComponent",
       "stage": "Misc",
       "source": "Source.APP_MIGRATION_PRECONDITION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appmigrationpreconditions/AppMigrationPreconditionsComponent.kt:87",
       "properties": []
     },
     {
@@ -587,7 +577,6 @@
       "component": "AppRatingProcessManager.ios",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/iosMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.ios.kt:61",
       "properties": [
         {
           "property": "url"
@@ -607,7 +596,6 @@
       "component": "ForceAppUpdateComponent",
       "stage": "Misc",
       "source": "Source.FORCE_APP_UPDATE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:64",
       "properties": []
     },
     {
@@ -615,7 +603,6 @@
       "component": "ForceAppUpdateComponent",
       "stage": "Misc",
       "source": "Source.FORCE_APP_UPDATE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:92",
       "properties": []
     },
     {
@@ -623,7 +610,6 @@
       "component": "ForceAppUpdateComponent",
       "stage": "Misc",
       "source": "Source.FORCE_APP_UPDATE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:120",
       "properties": []
     },
     {
@@ -631,7 +617,6 @@
       "component": "FireAppOpenEventIfRequiredUseCase",
       "stage": "App Open",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:113",
       "properties": [
         {
           "property": "current app version"
@@ -643,7 +628,6 @@
       "component": "FireAppOpenEventIfRequiredUseCase",
       "stage": "App Open",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:100",
       "properties": [
         {
           "property": "current app version"
@@ -655,7 +639,6 @@
       "component": "FireAppOpenEventIfRequiredUseCase",
       "stage": "App Open",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:75",
       "properties": [
         {
           "property": "difference"
@@ -667,7 +650,6 @@
       "component": "FireAppOpenEventIfRequiredUseCase",
       "stage": "App Open",
       "source": "Source.SPLASH_SCREEN",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt:83",
       "properties": []
     },
     {
@@ -675,7 +657,6 @@
       "component": "ForceAppUpdateComponent",
       "stage": "Misc",
       "source": "Source.FORCE_APP_UPDATE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:103",
       "properties": [
         {
           "property": "isForceUpdate"
@@ -687,7 +668,6 @@
       "component": "ForceAppUpdateComponent",
       "stage": "Misc",
       "source": "Source.FORCE_APP_UPDATE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/appUpdate/ForceAppUpdateComponent.kt:75",
       "properties": [
         {
           "property": "force app update launch failure reason"
@@ -699,7 +679,6 @@
       "component": "AppRatingProcessManager.android",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:62",
       "properties": []
     },
     {
@@ -707,7 +686,6 @@
       "component": "AppRatingProcessManager.android",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:52",
       "properties": []
     },
     {
@@ -715,7 +693,6 @@
       "component": "AppRatingProcessSkeleton",
       "stage": "Ratings",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/manager/AppRatingProcessSkeleton.kt:24",
       "properties": []
     },
     {
@@ -723,7 +700,6 @@
       "component": "AppRatingProcessManager.android",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/androidMain/kotlin/app/chalo/home/manager/AppRatingProcessManager.android.kt:87",
       "properties": []
     },
     {

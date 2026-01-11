@@ -287,12 +287,10 @@
       "description": "Previous screen before opening stop-based trip planner search."
     },
     "reason": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "timedOut": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -551,7 +549,6 @@
       "component": "UniversalSearchAnalyticsEventHelperImpl",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/analytics/UniversalSearchAnalyticsEventHelperImpl.kt:369",
       "properties": []
     },
     {
@@ -559,7 +556,6 @@
       "component": "UniversalSearchAnalyticsEventHelperImpl",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/analytics/UniversalSearchAnalyticsEventHelperImpl.kt:362",
       "properties": []
     },
     {
@@ -1065,7 +1061,6 @@
       "component": "FetchRemoteSearchResultUseCase",
       "stage": "Misc",
       "source": "Source.FETCH_REMOTE_SEARCH_RESULT_USE_CASE",
-      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/domain/FetchRemoteSearchResultUseCase.kt:108",
       "properties": [
         {
           "property": "reason"
@@ -1080,7 +1075,6 @@
       "component": "UniversalPickerComponent",
       "stage": "Misc",
       "source": "Source.UNIVERSAL_SEARCH",
-      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/ui/UniversalPickerComponent.kt:1572",
       "properties": [
         {
           "property": "reason"
@@ -1092,7 +1086,6 @@
       "component": "UniversalPickerComponent",
       "stage": "Misc",
       "source": "Source.UNIVERSAL_SEARCH",
-      "description": "Auto-documented from code callsite: shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/ui/UniversalPickerComponent.kt:1420",
       "properties": []
     }
   ],

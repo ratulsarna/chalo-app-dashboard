@@ -238,120 +238,91 @@
       "description": "Error message for failed operations"
     },
     "failureReason": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "preferredDestination": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "Exp:": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "disableSearchBarOnHomeScreen": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "experimentId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "showSearchTabOnBottomNav": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "variant": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "pass status": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "tripId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "versionCode": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "bottomSheetType": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "network type": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "response time": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "firstLoadTimeMillis": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "geoSpatialSrc": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "hourOfEvent": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "agency": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "mode": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "routeName": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "totalMarkers": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "errorCode": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "errorMsg": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "url": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "stopId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "stopName": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "fromName": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "routeId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "toName": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "stop": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -564,7 +535,6 @@
       "component": "GeoSpatialLiveBusesDataPollingManager",
       "stage": "Live Vehicles",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/geoquery/domain/GeoSpatialLiveBusesDataPollingManager.kt:168",
       "properties": [
         {
           "property": "versionCode"
@@ -616,7 +586,6 @@
       "component": "ChaloBusComponent",
       "stage": "Misc",
       "source": "Source.CHALO_BUS_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/chalobus/ChaloBusComponent.kt:933",
       "properties": [
         {
           "property": "bottomSheetType"
@@ -628,7 +597,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1189",
       "properties": [
         {
           "property": "failureReason"
@@ -672,7 +640,6 @@
       "component": "FetchGeoSpatialDataUseCase",
       "stage": "Live Vehicles",
       "source": "Source.UNKNOWN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/geoquery/domain/FetchGeoSpatialDataUseCase.kt:81",
       "properties": [
         {
           "property": "network type"
@@ -725,7 +692,6 @@
       "component": "GetHomePageItemsUseCase",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetHomePageItemsUseCase.kt:48",
       "properties": [
         {
           "property": "position"
@@ -770,7 +736,6 @@
       "component": "GetHomePageItemsUseCase",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetHomePageItemsUseCase.kt:140",
       "properties": [
         {
           "property": "desc list"
@@ -813,7 +778,6 @@
       "component": "BusesAroundYouComponent",
       "stage": "Live Vehicles",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:640",
       "properties": [
         {
           "property": "firstLoadTimeMillis"
@@ -831,7 +795,6 @@
       "component": "BusesAroundYouComponent",
       "stage": "Live Vehicles",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:680",
       "properties": [
         {
           "property": "agency"
@@ -855,7 +818,6 @@
       "component": "BusesAroundYouComponent",
       "stage": "Live Vehicles",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:664",
       "properties": [
         {
           "property": "firstLoadTimeMillis"
@@ -876,7 +838,6 @@
       "component": "BusesAroundYouComponent",
       "stage": "Live Vehicles",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/busesaroundyou/BusesAroundYouComponent.kt:655",
       "properties": [
         {
           "property": "geoSpatialSrc"
@@ -891,7 +852,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:924",
       "properties": [
         {
           "property": "preferredDestination"
@@ -903,7 +863,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:605",
       "properties": [
         {
           "property": "Exp:"
@@ -927,7 +886,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1198",
       "properties": []
     },
     {
@@ -1256,7 +1214,6 @@
       "component": "NearbyStopsMapComponent",
       "stage": "Nearby Trips",
       "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:963",
       "properties": [
         {
           "property": "stopId"
@@ -1271,7 +1228,6 @@
       "component": "NearbyStopsMapComponent",
       "stage": "Nearby Trips",
       "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:982",
       "properties": [
         {
           "property": "fromName"
@@ -1349,7 +1305,6 @@
       "component": "NearbyStopsMapComponent",
       "stage": "Nearby Trips",
       "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:998",
       "properties": []
     },
     {
@@ -1357,7 +1312,6 @@
       "component": "NearbyStopsMapComponent",
       "stage": "Nearby Trips",
       "source": "Source.NEARBY_STOPS_MAP_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/nearbytrips/ui/mapscreen/NearbyStopsMapComponent.kt:948",
       "properties": [
         {
           "property": "mode"
@@ -1392,7 +1346,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1089",
       "properties": []
     },
     {
@@ -1400,7 +1353,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1535",
       "properties": []
     },
     {
@@ -1408,7 +1360,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1129",
       "properties": []
     },
     {
@@ -1416,7 +1367,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1558",
       "properties": []
     },
     {
@@ -1424,7 +1374,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1053",
       "properties": []
     },
     {
@@ -1432,7 +1381,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1109",
       "properties": []
     },
     {
@@ -1464,7 +1412,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1579",
       "properties": [
         {
           "property": "pass status"
@@ -1476,7 +1423,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1638",
       "properties": [
         {
           "property": "bookingId"
@@ -1679,7 +1625,6 @@
       "component": "GetProfilePageItemsUseCase",
       "stage": "Misc",
       "source": "Source.PROFILE_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetProfilePageItemsUseCase.kt:30",
       "properties": [
         {
           "property": "displayType"
@@ -1738,7 +1683,6 @@
       "component": "GetRegularBusPageItemsUseCase",
       "stage": "Misc",
       "source": "Source.REGULAR_BUS_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/GetRegularBusPageItemsUseCase.kt:75",
       "properties": [
         {
           "property": "position"
@@ -1836,7 +1780,6 @@
       "component": "HomeComponent",
       "stage": "Misc",
       "source": "Source.HOME_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/base/HomeComponent.kt:1204",
       "properties": []
     },
     {
@@ -1852,7 +1795,6 @@
       "component": "WebViewScreenComponent",
       "stage": "Misc",
       "source": "Source.WEB_VIEW_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/webview/WebViewScreenComponent.kt:123",
       "properties": [
         {
           "property": "errorCode"

@@ -185,8 +185,7 @@
       "description": "Medium through which validation notification was delivered."
     },
     "payload": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -339,7 +338,6 @@
       "component": "MTicketProductValidationConfig",
       "stage": "Misc",
       "source": "this::class.simpleName.toString(",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mTicketing/validation/MTicketProductValidationConfig.kt:144",
       "properties": [
         {
           "property": "payload"
@@ -724,7 +722,6 @@
       "component": "MTicketTripInfoComponent",
       "stage": "Misc",
       "source": "Source.MTICKET_BOOKING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mticket/ui/tripinfo/MTicketTripInfoComponent.kt:358",
       "properties": []
     },
     {
@@ -789,7 +786,6 @@
       "component": "MTicketTripInfoComponent",
       "stage": "Misc",
       "source": "Source.MTICKET_BOOKING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mticket/ui/tripinfo/MTicketTripInfoComponent.kt:374",
       "properties": []
     },
     {
@@ -1303,7 +1299,6 @@
       "component": "MTicketPassengerSelectionComponent",
       "stage": "Misc",
       "source": "Source.MTICKET_SELECTION_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/mticket/ui/passengerselection/MTicketPassengerSelectionComponent.kt:268",
       "properties": []
     },
     {

@@ -32,24 +32,19 @@
       "description": "The base socket URL used when cookie-based connections are requested (`socketConnectionData.baseUrl`)."
     },
     "timeTaken": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "turnBluetoothOnResult": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "syncedRouteIds": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "error": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "logMsg": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -107,7 +102,6 @@
       "component": "BluetoothHardwareOperationsFeature.android",
       "stage": "Misc",
       "source": "Source.BLE_COMMUNICATION_FEATURE.sourceName",
-      "description": "Auto-documented from code callsite: shared/ble-communication/src/androidMain/kotlin/app/chalo/ble_communication/feature/BluetoothHardwareOperationsFeature.android.kt:252",
       "properties": [
         {
           "property": "timeTaken"
@@ -122,7 +116,6 @@
       "component": "GetCityDataRemoteConfigUseCase",
       "stage": "Misc",
       "source": "Source.FETCH_CITY_DATA_CONFIG_USE_CASE.sourceName",
-      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/GetCityDataRemoteConfigUseCase.kt:78",
       "properties": [
         {
           "property": "reason"
@@ -134,7 +127,6 @@
       "component": "SyncRoutesDataUseCase",
       "stage": "Misc",
       "source": "Source.SYNC_CITY_DATA_USECASE.sourceName",
-      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/SyncRoutesDataUseCase.kt:175",
       "properties": [
         {
           "property": "reason"
@@ -146,7 +138,6 @@
       "component": "SyncRoutesDataUseCase",
       "stage": "Misc",
       "source": "Source.SYNC_CITY_DATA_USECASE.sourceName",
-      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/SyncRoutesDataUseCase.kt:154",
       "properties": [
         {
           "property": "syncedRouteIds"
@@ -158,7 +149,6 @@
       "component": "FetchNearbyRoutesToLocationUseCase",
       "stage": "Misc",
       "source": "Source.FETCH_NEARBY_ROUTES_USECASE.sourceName",
-      "description": "Auto-documented from code callsite: shared/framework-city-data/src/commonMain/kotlin/app/chalo/citydata/domain/FetchNearbyRoutesToLocationUseCase.kt:102",
       "properties": [
         {
           "property": "reason"
@@ -354,7 +344,6 @@
       "component": "EncryptionFeatureImpl",
       "stage": "Misc",
       "source": "\"decryptionAction\"",
-      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/EncryptionFeatureImpl.kt:58",
       "properties": [
         {
           "property": "error"
@@ -369,7 +358,6 @@
       "component": "EncryptionFeatureImpl",
       "stage": "Misc",
       "source": "\"encryptionAction\"",
-      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/EncryptionFeatureImpl.kt:83",
       "properties": [
         {
           "property": "error"
@@ -384,7 +372,6 @@
       "component": "KeySyncManager",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/sync/KeySyncManager.kt:89",
       "properties": [
         {
           "property": "error"
@@ -399,7 +386,6 @@
       "component": "KeySyncManager",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/sync/KeySyncManager.kt:101",
       "properties": [
         {
           "property": "logMsg"
@@ -411,7 +397,6 @@
       "component": "KeySyncBackgroundWorkerTaskDelegate",
       "stage": "Misc",
       "source": "this::class.simpleName ?: \"KeySyncWorker\"",
-      "description": "Auto-documented from code callsite: shared/security/src/commonMain/kotlin/app/chalo/security/sync/KeySyncBackgroundWorkerTaskDelegate.kt:17",
       "properties": []
     },
     {

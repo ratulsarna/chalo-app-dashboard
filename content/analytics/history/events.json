@@ -152,28 +152,22 @@
       "description": "Formatted pass/ticket start date"
     },
     "rideCount": {
-      "type": "number",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "number"
     },
     "renew disabled product source": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "ctaType": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "amount paid": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "expiry time": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "reason": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -332,7 +326,6 @@
       "component": "InitiateProductHistorySyncCallUseCase",
       "stage": "History Sync",
       "source": "source.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/usecase/InitiateProductHistorySyncCallUseCase.kt:350",
       "properties": [
         {
           "property": "reason"
@@ -344,7 +337,6 @@
       "component": "InitiateProductHistorySyncCallUseCase",
       "stage": "History Sync",
       "source": "source.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/usecase/InitiateProductHistorySyncCallUseCase.kt:398",
       "properties": []
     },
     {
@@ -352,7 +344,6 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "Source.ACTIVATE_MERGE_FLOW_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:829",
       "properties": [
         {
           "property": "amount paid"
@@ -379,7 +370,6 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "PASS_ACTIVATION_SOURCE_NAME",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:762",
       "properties": [
         {
           "property": "passId"
@@ -580,7 +570,6 @@
       "component": "ActivateProductIfRequiredUseCase",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/domain/ActivateProductIfRequiredUseCase.kt:226",
       "properties": []
     },
     {
@@ -588,7 +577,6 @@
       "component": "RideReceiptComponent",
       "stage": "Misc",
       "source": "Source.RIDE_RECEIPT_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/tripreceipt/tripreceiptnew/RideReceiptComponent.kt:716",
       "properties": [
         {
           "property": "passId"
@@ -603,7 +591,6 @@
       "component": "PassSummaryComponent",
       "stage": "Pass Summary",
       "source": "intent.source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productsummary/ui/pass/PassSummaryComponent.kt:194",
       "properties": [
         {
           "property": "passId"
@@ -752,7 +739,6 @@
       "component": "MyTicketsComponent",
       "stage": "Misc",
       "source": "Source.MY_TICKETS_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2789",
       "properties": []
     },
     {
@@ -760,7 +746,6 @@
       "component": "MyTicketsComponent",
       "stage": "Misc",
       "source": "Source.MY_TICKETS_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2358",
       "properties": [
         {
           "property": "bookingId"
@@ -960,7 +945,6 @@
       "component": "MyTicketsComponent",
       "stage": "Misc",
       "source": "Source.MY_TICKETS_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2748",
       "properties": [
         {
           "property": "renew disabled product source"
@@ -1087,7 +1071,6 @@
       "component": "RideReceiptComponent",
       "stage": "Misc",
       "source": "Source.RIDE_RECEIPT_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/tripreceipt/tripreceiptnew/RideReceiptComponent.kt:150",
       "properties": [
         {
           "property": "ctaType"
@@ -1102,7 +1085,6 @@
       "component": "ChaloRideFeedbackCollectionHelper",
       "stage": "Ride Feedback",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/ridefeedbacktracker/ChaloRideFeedbackCollectionHelper.kt:47",
       "properties": []
     },
     {
@@ -1110,7 +1092,6 @@
       "component": "ChaloRideFeedbackCollectionHelper",
       "stage": "Ride Feedback",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/ridefeedbacktracker/ChaloRideFeedbackCollectionHelper.kt:24",
       "properties": []
     },
     {
@@ -1118,7 +1099,6 @@
       "component": "RideReceiptComponent",
       "stage": "Misc",
       "source": "intent.source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/tripreceipt/tripreceiptnew/RideReceiptComponent.kt:197",
       "properties": [
         {
           "property": "passId"
@@ -1185,7 +1165,6 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "PASS_ACTIVATION_SOURCE_NAME",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:711",
       "properties": []
     },
     {
@@ -1193,7 +1172,6 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "Source.ACTIVATE_SUPER_PASS_FRAGMENT",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:844",
       "properties": []
     },
     {
@@ -1323,7 +1301,6 @@
       "component": "MyTicketsComponent",
       "stage": "Misc",
       "source": "Source.MY_TICKETS_SCREEN_TAB",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/home/ui/history/MyTicketsComponent.kt:2769",
       "properties": [
         {
           "property": "bookingId"
@@ -1341,7 +1318,6 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "PASS_ACTIVATION_SOURCE_NAME",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productactivation/ui/ProductActivationComponent.kt:741",
       "properties": []
     }
   ],

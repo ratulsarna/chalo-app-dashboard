@@ -77,8 +77,7 @@
       "description": "Type of super saver reclaim operation."
     },
     "source": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -197,7 +196,6 @@
       "component": "ReportProblemComponent",
       "stage": "Misc",
       "source": "\"ReportProblemFeature\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/reportproblem/ReportProblemComponent.kt:238",
       "properties": [
         {
           "property": "isDeviceAutoLinked"
@@ -299,7 +297,6 @@
       "component": "FreshchatSupportLauncher",
       "stage": "Misc",
       "source": "Source.DEEPLINK_HELPER.sourceName",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/features/freshchat/FreshchatSupportLauncher.kt:38",
       "properties": [
         {
           "property": "source"

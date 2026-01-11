@@ -194,68 +194,52 @@
       "description": "Source tag for report problem events (src_mPassPurchaseActivity)."
     },
     "durationId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "durationName": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "fare": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "position": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "bookingDate": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "categoryId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "numDays": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "previousScreen": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "configId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "error message": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "reason": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "selected subCategory": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "payload": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "response": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "recent product mticket clicked": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "passId": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -599,7 +583,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:744",
       "properties": []
     },
     {
@@ -738,7 +721,6 @@
       "component": "ProductSelectionComponent",
       "stage": "Product Selection",
       "source": "Source.PRODUCT_SELECTION_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:753",
       "properties": [
         {
           "property": "response"
@@ -779,7 +761,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:676",
       "properties": [
         {
           "property": "durationId"
@@ -1122,7 +1103,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "Source.PASS_SELECTION_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:753",
       "properties": [
         {
           "property": "position"
@@ -1134,7 +1114,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:691",
       "properties": [
         {
           "property": "bookingDate"
@@ -1173,7 +1152,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:778",
       "properties": [
         {
           "property": "configId"
@@ -1220,7 +1198,6 @@
       "component": "DigitalTripReceiptRepository",
       "stage": "Misc",
       "source": "Source.NONE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:284",
       "properties": [
         {
           "property": "error message"
@@ -1232,7 +1209,6 @@
       "component": "DigitalTripReceiptRepository",
       "stage": "Misc",
       "source": "Source.NONE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:274",
       "properties": [
         {
           "property": "reason"
@@ -1244,7 +1220,6 @@
       "component": "DigitalTripReceiptRepository",
       "stage": "Misc",
       "source": "Source.NONE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:252",
       "properties": [
         {
           "property": "productType"
@@ -1256,7 +1231,6 @@
       "component": "ProductSelectionComponent",
       "stage": "Product Selection",
       "source": "Source.PRODUCT_SELECTION_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:701",
       "properties": [
         {
           "property": "productId"
@@ -1271,7 +1245,6 @@
       "component": "ProductSelectionComponent",
       "stage": "Product Selection",
       "source": "Source.PRODUCT_SELECTION_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:1454",
       "properties": []
     },
     {
@@ -1303,7 +1276,6 @@
       "component": "ProductSelectionComponent",
       "stage": "Product Selection",
       "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:264",
       "properties": [
         {
           "property": "recent product mticket clicked"
@@ -1315,7 +1287,6 @@
       "component": "ProductSelectionComponent",
       "stage": "Product Selection",
       "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:247",
       "properties": [
         {
           "property": "passId"
@@ -1330,7 +1301,6 @@
       "component": "ProductSelectionComponent",
       "stage": "Product Selection",
       "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/productselection/ui/ProductSelectionComponent.kt:1467",
       "properties": []
     },
     {
@@ -1427,7 +1397,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:725",
       "properties": [
         {
           "property": "configId"
@@ -1445,7 +1414,6 @@
       "component": "PassSelectionComponent",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/productpurchase/passselection/ui/PassSelectionComponent.kt:713",
       "properties": [
         {
           "property": "configId"
@@ -1460,7 +1428,6 @@
       "component": "SuperPassValidationAnalyticsManager",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/validation/superpass/SuperPassValidationAnalyticsManager.kt:71",
       "properties": []
     },
     {
@@ -1497,7 +1464,6 @@
       "component": "SuperPassProductValidationConfig",
       "stage": "Misc",
       "source": "this::class.simpleName ?: \"SuperPassProductValidationConfig\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/validation/superpass/SuperPassProductValidationConfig.kt:158",
       "properties": [
         {
           "property": "payload"
@@ -1509,7 +1475,6 @@
       "component": "DigitalTripReceiptRepository",
       "stage": "Misc",
       "source": "Source.NONE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:305",
       "properties": [
         {
           "property": "error message"
@@ -1521,7 +1486,6 @@
       "component": "DigitalTripReceiptRepository",
       "stage": "Misc",
       "source": "Source.NONE",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/repository/DigitalTripReceiptRepository.kt:292",
       "properties": []
     },
     {
@@ -1583,7 +1547,6 @@
       "component": "DigitalTripReceiptFeature",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/features/DigitalTripReceiptFeature.kt:170",
       "properties": []
     },
     {
@@ -1591,7 +1554,6 @@
       "component": "DigitalTripReceiptFeature",
       "stage": "Misc",
       "source": "\"\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/superpass/data/features/DigitalTripReceiptFeature.kt:148",
       "properties": []
     },
     {

@@ -148,12 +148,10 @@
       "description": "Whether invalid conductor punch data was received"
     },
     "notification type": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "Plotline Redirect Custom Action Value": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "events": [
@@ -465,7 +463,6 @@
       "component": "SharedBaseModule",
       "stage": "Misc",
       "source": "Source.PLOTLINE",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/di/SharedBaseModule.kt:536",
       "properties": [
         {
           "property": "Plotline Redirect Custom Action Value"
@@ -477,7 +474,6 @@
       "component": "PlotlineNotificationManager.android",
       "stage": "Notifications",
       "source": "Source.PLOTLINE",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/androidMain/kotlin/app/chalo/plotline/PlotlineNotificationManager.android.kt:54",
       "properties": []
     },
     {
@@ -554,7 +550,6 @@
       "component": "GCMReceiverImpl",
       "stage": "Notifications",
       "source": "Source.NONE",
-      "description": "Auto-documented from code callsite: shared/chalo-base/src/commonMain/kotlin/app/chalo/notification/core/GCMReceiverImpl.kt:145",
       "properties": [
         {
           "property": "notification type"
@@ -566,7 +561,6 @@
       "component": "NotificationDisplayDataManagerImpl",
       "stage": "Notifications",
       "source": "Source.NOTIFICATION",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationDisplayDataManagerImpl.kt:301",
       "properties": []
     },
     {
@@ -574,7 +568,6 @@
       "component": "NotificationCentralProcessingManagerImpl",
       "stage": "Notifications",
       "source": "Source.NOTIFICATION",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:148",
       "properties": []
     },
     {
@@ -582,7 +575,6 @@
       "component": "NotificationCentralProcessingManagerImpl",
       "stage": "Notifications",
       "source": "Source.PRODUCT_NOTIFICATION_HELPER",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:85",
       "properties": []
     },
     {
@@ -590,7 +582,6 @@
       "component": "NotificationCentralProcessingManagerImpl",
       "stage": "Notifications",
       "source": "Source.NOTIFICATION",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/notification/managers/NotificationCentralProcessingManagerImpl.kt:140",
       "properties": []
     }
   ],

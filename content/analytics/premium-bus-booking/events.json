@@ -661,12 +661,10 @@
       "description": "Trip details summary."
     },
     "route id": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     },
     "payload": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "string"
     }
   },
   "stages": [
@@ -942,7 +940,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:329",
       "properties": []
     },
     {
@@ -950,7 +947,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:279",
       "properties": []
     },
     {
@@ -958,7 +954,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:700",
       "properties": []
     },
     {
@@ -1119,7 +1114,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:994",
       "properties": []
     },
     {
@@ -1127,7 +1121,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:353",
       "properties": []
     },
     {
@@ -1135,7 +1128,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:638",
       "properties": []
     },
     {
@@ -1143,7 +1135,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:373",
       "properties": []
     },
     {
@@ -1151,7 +1142,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:345",
       "properties": []
     },
     {
@@ -1159,7 +1149,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:441",
       "properties": []
     },
     {
@@ -1167,7 +1156,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:398",
       "properties": []
     },
     {
@@ -1175,7 +1163,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:474",
       "properties": []
     },
     {
@@ -1183,7 +1170,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:849",
       "properties": []
     },
     {
@@ -1191,7 +1177,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:899",
       "properties": []
     },
     {
@@ -1199,7 +1184,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:813",
       "properties": []
     },
     {
@@ -1207,7 +1191,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:932",
       "properties": []
     },
     {
@@ -1215,7 +1198,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:412",
       "properties": []
     },
     {
@@ -1223,7 +1205,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:608",
       "properties": []
     },
     {
@@ -1231,7 +1212,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:329",
       "properties": []
     },
     {
@@ -1239,7 +1219,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:307",
       "properties": []
     },
     {
@@ -1288,7 +1267,6 @@
       "component": "PBPreBookingDetailsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_DETAILS_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/bookingdetails/PBPreBookingDetailsComponent.kt:220",
       "properties": []
     },
     {
@@ -1458,7 +1436,6 @@
       "component": "PremiumBusAllRoutesComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_ALL_ROUTES_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/allroutes/PremiumBusAllRoutesComponent.kt:69",
       "properties": [
         {
           "property": "route id"
@@ -1470,7 +1447,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2451",
       "properties": []
     },
     {
@@ -1478,7 +1454,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2438",
       "properties": []
     },
     {
@@ -1528,7 +1503,6 @@
       "component": "ProductBookingSuccessComponent",
       "stage": "Booking Success",
       "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/success/ProductBookingSuccessComponent.kt:482",
       "properties": []
     },
     {
@@ -1596,7 +1570,6 @@
       "component": "PbBulkBookingRideDetailsComponent",
       "stage": "Bulk Booking",
       "source": "Source.PB_BULK_BOOKING_RIDE_DETAILS_SCREEN.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/bulkbookingridedetails/ui/PbBulkBookingRideDetailsComponent.kt:1451",
       "properties": [
         {
           "property": "passId"
@@ -1647,7 +1620,6 @@
       "component": "PbBulkBookingRideDetailsComponent",
       "stage": "Bulk Booking",
       "source": "Source.PB_BULK_BOOKING_RIDE_DETAILS_SCREEN.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/bulkbookingridedetails/ui/PbBulkBookingRideDetailsComponent.kt:1510",
       "properties": [
         {
           "property": "dialogType"
@@ -2320,7 +2292,6 @@
       "component": "PremiumBusProductModificationReasonsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/productmodification/PremiumBusProductModificationReasonsComponent.kt:200",
       "properties": []
     },
     {
@@ -2328,7 +2299,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1990",
       "properties": [
         {
           "property": "configId"
@@ -2355,7 +2325,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1972",
       "properties": [
         {
           "property": "configId"
@@ -2403,7 +2372,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:310",
       "properties": []
     },
     {
@@ -2423,7 +2391,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1837",
       "properties": [
         {
           "property": "destinationLat"
@@ -2582,7 +2549,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2415",
       "properties": []
     },
     {
@@ -2632,7 +2598,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1818",
       "properties": [
         {
           "property": "firstCombinationDropId"
@@ -2659,7 +2624,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1955",
       "properties": [
         {
           "property": "destinationName"
@@ -2683,7 +2647,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1869",
       "properties": [
         {
           "property": "combinedWalkingTime"
@@ -2743,7 +2706,6 @@
       "component": "PbPassPurchaseLandingScreenComponent",
       "stage": "Landing",
       "source": "Source.PB_PASS_PURCHASE_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/passpurchaselanding/PbPassPurchaseLandingScreenComponent.kt:1623",
       "properties": [
         {
           "property": "errorMsg"
@@ -2755,7 +2717,6 @@
       "component": "PbPassPurchaseLandingScreenComponent",
       "stage": "Landing",
       "source": "Source.PB_PASS_PURCHASE_LANDING_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/passpurchaselanding/PbPassPurchaseLandingScreenComponent.kt:1612",
       "properties": [
         {
           "property": "configId"
@@ -2770,7 +2731,6 @@
       "component": "PremiumBusProductSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRODUCT_SELECTION_SCREEN.sourceName",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/productselection/PremiumBusProductSelectionComponent.kt:669",
       "properties": []
     },
     {
@@ -2790,7 +2750,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:1913",
       "properties": [
         {
           "property": "destinationLat"
@@ -2920,7 +2879,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2400",
       "properties": []
     },
     {
@@ -2928,7 +2886,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2384",
       "properties": []
     },
     {
@@ -2936,7 +2893,6 @@
       "component": "PremiumBusProductModificationReasonsComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_PRODUCT_BOOKING_MODIFICATION_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/productmodification/PremiumBusProductModificationReasonsComponent.kt:1011",
       "properties": []
     },
     {
@@ -2944,7 +2900,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2344",
       "properties": []
     },
     {
@@ -2952,7 +2907,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:1239",
       "properties": []
     },
     {
@@ -2960,7 +2914,6 @@
       "component": "PremiumBusStopSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/stopselection/PremiumBusStopSelectionComponent.kt:2046",
       "properties": []
     },
     {
@@ -2968,7 +2921,6 @@
       "component": "PBPreBookingSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_PRE_BOOKING_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/pbprebooking/slotselection/PBPreBookingSlotSelectionComponent.kt:775",
       "properties": []
     },
     {
@@ -3036,7 +2988,6 @@
       "component": "FetchPremiumBusTripDetailsAndLiveEtaUseCase",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/domains/FetchPremiumBusTripDetailsAndLiveEtaUseCase.kt:85",
       "properties": [
         {
           "property": "bookingId"
@@ -3114,7 +3065,6 @@
       "component": "PremiumBusAnalyticsHelper",
       "stage": "Misc",
       "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/PremiumBusAnalyticsHelper.kt:141",
       "properties": [
         {
           "property": "passId"
@@ -3126,7 +3076,6 @@
       "component": "NewPremiumBusReserveTicketActivationComponent",
       "stage": "Activation",
       "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/ui/newactivation/NewPremiumBusReserveTicketActivationComponent.kt:604",
       "properties": [
         {
           "property": "passId"
@@ -3138,7 +3087,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:2688",
       "properties": []
     },
     {
@@ -3146,7 +3094,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:457",
       "properties": [
         {
           "property": "advanceBookingDays"
@@ -3179,7 +3126,6 @@
       "component": "PremiumBusSlotSelectionComponent",
       "stage": "Slot Selection",
       "source": "Source.PREMIUM_BUS_SLOT_SELECTION_SCREEN",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/slotselection/PremiumBusSlotSelectionComponent.kt:830",
       "properties": []
     },
     {
@@ -3380,7 +3326,6 @@
       "component": "PremiumReserveTicketValidationAnalyticsManager",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/validation/PremiumReserveTicketValidationAnalyticsManager.kt:70",
       "properties": []
     },
     {
@@ -3388,7 +3333,6 @@
       "component": "PremiumReserveTicketValidationConfig",
       "stage": "Misc",
       "source": "this::class.simpleName.toString(",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/validation/PremiumReserveTicketValidationConfig.kt:226",
       "properties": [
         {
           "property": "payload"
@@ -3400,7 +3344,6 @@
       "component": "PremiumReserveTicketValidationAnalyticsManager",
       "stage": "Misc",
       "source": "source",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/premiumbus/prebookedtickets/validation/PremiumReserveTicketValidationAnalyticsManager.kt:151",
       "properties": []
     },
     {
@@ -3408,7 +3351,6 @@
       "component": "PremiumBusProductSelectionComponent",
       "stage": "Misc",
       "source": "Source.PREMIUM_BUS_PRODUCT_SELECTION_SCREEN.sourceName",
-      "description": "Auto-documented from code callsite: shared/productbooking/src/commonMain/kotlin/app/chalo/premiumbus/ui/productselection/PremiumBusProductSelectionComponent.kt:713",
       "properties": []
     },
     {

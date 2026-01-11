@@ -476,7 +476,6 @@
       "component": "LocationDisclaimerComponent",
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:179",
       "properties": [
         {
           "property": "is fine location enabled",
@@ -556,7 +555,6 @@
       "component": "LocationDisclaimerComponent",
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:249",
       "properties": [
         {
           "property": "is fine location enabled",
@@ -585,7 +583,6 @@
       "component": "LocationDisclaimerComponent",
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:143",
       "properties": [
         {
           "property": "is fine location enabled",
@@ -610,7 +607,6 @@
       "component": "LocationDisclaimerComponent",
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:299",
       "properties": [
         {
           "property": "is fine location enabled",
@@ -635,7 +631,6 @@
       "component": "LocationDisclaimerComponent",
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:208",
       "properties": [
         {
           "property": "is fine location enabled",
