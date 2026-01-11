@@ -160,10 +160,17 @@ export function MermaidDiagramViewer({
   code,
   className,
   onEventClick,
+  diagramLinks,
+  onDiagramLinkClick,
 }: {
   code: string;
   className?: string;
   onEventClick?: (eventName: string) => void;
+  diagramLinks?: {
+    byNodeId?: Record<string, string>;
+    byLabel?: Record<string, string>;
+  };
+  onDiagramLinkClick?: (diagramId: string) => void;
 }) {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const svgHostRef = React.useRef<HTMLDivElement | null>(null);
@@ -272,12 +279,19 @@ export function MermaidDiagramViewer({
       .analytics-event-node:hover path {
         stroke-width: 2px !important;
       }
+      .analytics-diagram-link-node { cursor: pointer; }
+      .analytics-diagram-link-node:hover rect,
+      .analytics-diagram-link-node:hover polygon,
+      .analytics-diagram-link-node:hover path {
+        stroke-width: 2px !important;
+      }
     `;
     // Avoid accumulating multiple <style> tags if mermaid re-renders.
     svgEl.querySelectorAll("style[data-analytics-style='1']").forEach((n) => n.remove());
     style.setAttribute("data-analytics-style", "1");
     svgEl.prepend(style);
 
+    const linkKeys = diagramLinks?.byNodeId ? new Set(Object.keys(diagramLinks.byNodeId)) : null;
     const nodes = Array.from(svgEl.querySelectorAll<SVGGElement>("g.node"));
     for (const node of nodes) {
       if (!isEventNode(node)) continue;
@@ -285,7 +299,46 @@ export function MermaidDiagramViewer({
       const label = getNodeLabel(node);
       if (label.length > 0) node.setAttribute("data-analytics-event", label);
     }
-  }, [svg]);
+
+    function extractMermaidNodeIdCandidates(node: SVGGElement) {
+      const out: string[] = [];
+
+      const title = node.querySelector("title")?.textContent?.trim();
+      if (title && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(title)) out.push(title);
+
+      const idAttr = node.getAttribute("id")?.trim();
+      if (idAttr) {
+        const tokens = idAttr
+          .split(/[^a-zA-Z0-9_]+/g)
+          .map((t) => t.trim())
+          .filter((t) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(t));
+        out.push(...tokens);
+      }
+
+      return out;
+    }
+
+    for (const node of nodes) {
+      if (isEventNode(node)) continue;
+
+      let diagramId: string | undefined;
+      if (linkKeys && diagramLinks?.byNodeId) {
+        const candidates = extractMermaidNodeIdCandidates(node);
+        const matchedKey = candidates.find((c) => linkKeys.has(c));
+        if (matchedKey) diagramId = diagramLinks.byNodeId[matchedKey];
+      }
+
+      if (!diagramId && diagramLinks?.byLabel) {
+        const label = getNodeLabel(node);
+        if (label.length > 0) diagramId = diagramLinks.byLabel[label];
+      }
+
+      if (!diagramId) continue;
+
+      node.classList.add("analytics-diagram-link-node");
+      node.setAttribute("data-analytics-diagram", diagramId);
+    }
+  }, [diagramLinks, svg]);
 
   // Fit-to-screen after SVG is injected and whenever the container is resized.
   React.useEffect(() => {
@@ -407,19 +460,26 @@ export function MermaidDiagramViewer({
   }, []);
 
   const onClick = React.useCallback((event: React.MouseEvent) => {
-    if (!onEventClick) return;
     if (draggingRef.current.didDrag) return;
     const target = event.target as Element | null;
     if (!target) return;
 
     const node = target.closest("g.node") as SVGGElement | null;
     if (!node) return;
+
+    const diagramId = node.getAttribute("data-analytics-diagram");
+    if (diagramId && onDiagramLinkClick && node.classList.contains("analytics-diagram-link-node")) {
+      onDiagramLinkClick(diagramId);
+      return;
+    }
+
+    if (!onEventClick) return;
     const label = node.getAttribute("data-analytics-event");
     if (!label) return;
     if (!node.classList.contains("analytics-event-node")) return;
 
     onEventClick(label);
-  }, [onEventClick]);
+  }, [onDiagramLinkClick, onEventClick]);
 
   if (error) {
     return (

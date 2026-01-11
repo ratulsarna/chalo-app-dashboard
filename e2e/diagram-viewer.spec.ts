@@ -87,6 +87,32 @@ test("diagram selector switches diagrams", async ({ page }) => {
   await expect(page.locator('button[aria-label="Select diagram"]').first()).toContainText(/Stop-Based Trip Planner/i);
 });
 
+test("clicking a sub-flow node navigates to the sub-diagram (same flow)", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+
+  const selector = page.getByRole("button", { name: "Select diagram" }).first();
+  await expect(selector).toBeVisible();
+
+  // Ensure we're on the main diagram first (where the sub-flow nodes exist).
+  await selector.click();
+  await page.getByRole("menuitemradio", { name: /Main payment flow/i }).first().click();
+  await expect(selector).toContainText(/Main payment flow/i);
+
+  const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
+  await expect(viewer).toBeVisible();
+
+  const upiNode = viewer.locator("svg g.node", { hasText: "UPI Flow" }).first();
+  await expect(upiNode).toBeVisible();
+  await upiNode.click();
+
+  await expect(selector).toContainText(/Funnel: UPI payment method flow/i);
+  await expect(page).toHaveURL(/\/analytics\/flows\/payment\?[^#]*diagram=/);
+
+  await page.goBack();
+  await expect(selector).toContainText(/Main payment flow/i);
+});
+
 test("expand button stays within viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
