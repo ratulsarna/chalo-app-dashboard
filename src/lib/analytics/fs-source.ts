@@ -181,13 +181,12 @@ function toOccurrenceId(
   flowSlug: AnalyticsFlowSlug,
   eventName: string,
   eventIndex: number,
-  stage?: string,
   component?: string,
 ) {
   // Encode segments to avoid collisions if values contain the separator.
   // Include eventIndex to ensure uniqueness when the same event appears multiple times
-  // within the same flow with identical stage/component metadata.
-  return [flowSlug, String(eventIndex), eventName, stage ?? "", component ?? ""]
+  // within the same flow with identical component metadata.
+  return [flowSlug, String(eventIndex), eventName, component ?? ""]
     .map((value) => encodeURIComponent(value))
     .join("::");
 }
@@ -349,26 +348,6 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     }
   }
 
-  const stages = Array.isArray(file.stages)
-    ? file.stages
-        .filter(isRecord)
-        .map((s) => ({
-          name: toTrimmedNonEmptyString(s.name) ?? "Unnamed stage",
-          description: toTrimmedNonEmptyString(s.description),
-          events: Array.isArray(s.events) ? s.events.map(toTrimmedNonEmptyString).filter(Boolean) as string[] : undefined,
-        }))
-    : undefined;
-
-  if (file.stages !== undefined && !Array.isArray(file.stages)) {
-    issues.push({
-      level: "warning",
-      code: "stages_invalid_shape",
-      message: "stages must be an array; ignoring it.",
-      flowSlug,
-      filePath: eventsPath,
-    });
-  }
-
   const normalizedEvents: AnalyticsFlowEventsFile["events"] = [];
   if (!Array.isArray(file.events)) {
     issues.push({
@@ -426,14 +405,13 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
 
       const normalized = {
         name,
-        component: toTrimmedNonEmptyString(rawEvent.component),
-        stage: toTrimmedNonEmptyString(rawEvent.stage),
+        component:
+          toTrimmedNonEmptyString(rawEvent.component) ??
+          toTrimmedNonEmptyString((rawEvent as Record<string, unknown>).firingLocation),
         source: toTrimmedNonEmptyString(rawEvent.source),
         description: toTrimmedNonEmptyString(rawEvent.description),
         properties: Array.isArray(rawEvent.properties) ? rawEvent.properties : undefined,
         note: toTrimmedNonEmptyString(rawEvent.note),
-        funnelPosition: toTrimmedNonEmptyString(rawEvent.funnelPosition),
-        firingLocation: toTrimmedNonEmptyString(rawEvent.firingLocation),
       };
 
       normalizedEvents.push(normalized);
@@ -464,7 +442,6 @@ export const readAnalyticsFlow = cache(async (flowSlug: AnalyticsFlowSlug): Prom
     flowName,
     description,
     propertyDefinitions,
-    stages,
     events: normalizedEvents,
     diagramMarkdown,
     diagramSummary: isRecord(file.diagram) ? (file.diagram as AnalyticsFlowEventsFile["diagram"]) : undefined,
@@ -533,19 +510,14 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
         });
         continue;
       }
-
-      const stage =
-        toTrimmedNonEmptyString(event.stage) ?? toTrimmedNonEmptyString(event.funnelPosition);
-      const component =
-        toTrimmedNonEmptyString(event.component) ?? toTrimmedNonEmptyString(event.firingLocation);
+      const component = toTrimmedNonEmptyString(event.component);
 
       const occurrence: AnalyticsEventOccurrence = {
-        id: toOccurrenceId(flow.slug, event.name, index, stage, component),
+        id: toOccurrenceId(flow.slug, event.name, index, component),
         flowSlug: flow.slug,
         flowId: flow.flowId,
         flowName: flow.flowName,
         eventName: event.name,
-        stage,
         component,
         source: toTrimmedNonEmptyString(event.source),
         description: toTrimmedNonEmptyString(event.description),

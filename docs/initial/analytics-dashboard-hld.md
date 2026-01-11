@@ -21,13 +21,12 @@ This dashboard will later expand beyond analytics, so the foundation should supp
 1) **Flows-first**
 - Pick a flow → view:
   - Flow metadata (name/description/last audited)
-  - Event list (name, stage, component/source, description, properties used)
+  - Event list (name, component/source, description, properties used)
   - Property definitions for that flow
 
 2) **Global search**
 - Partial match across:
   - event `name`
-  - event `stage`
   - event `component`
   - (optionally) property keys and description text
 - Results allow drilling into:
@@ -47,7 +46,7 @@ This dashboard will later expand beyond analytics, so the foundation should supp
 Key constraint: the same event string can appear in multiple flows.
 
 - **Canonical Event** = the exact emitted string (case-sensitive, exact match).
-- **Event Occurrence** = usage of an event within a specific flow + stage + component/source (context).
+- **Event Occurrence** = usage of an event within a specific flow + component/source (context).
 
 The UI should primarily render occurrences (flow context), while enabling a Canonical Event page that
 aggregates occurrences across flows.
@@ -87,7 +86,7 @@ UI reads from an in-memory **Analytics Snapshot** produced by a source adapter:
 - `occurrences[]` (flattened occurrences across flows)
 - derived indexes:
   - canonical event → occurrences
-  - flow → stages → occurrences
+  - flow → occurrences
   - property → occurrences that use it
 
 This allows swapping storage (filesystem now, DB later) without rewriting UI routes/components.
@@ -119,7 +118,7 @@ Use a “source adapter” boundary:
 
 ### Search behavior
 
-- Partial match (substring) over event name/stage/component.
+- Partial match (substring) over event name/component.
 - Prefer event-name matches for short queries in global search (so “checkout” works as expected).
 - Stable sorting: best match → deterministic tie-breakers.
 
@@ -148,7 +147,6 @@ Scope:
 
 Normalization rules (filesystem adapter):
 - Treat event `name` as exact, but trim leading/trailing whitespace if present (record a warning).
-- Stage field fallback: `event.stage` → `event.funnelPosition`.
 - Component field fallback: `event.component` → `event.firingLocation` (when docs store code callsite paths).
 - Properties list normalization:
   - accepts `["propKey", ...]`

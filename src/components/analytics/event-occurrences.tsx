@@ -12,10 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-function stageLabel(stage: string | undefined) {
-  return stage?.trim().length ? stage : "Unstaged";
-}
-
 async function copyToClipboard(text: string) {
   try {
     await navigator.clipboard.writeText(text);
@@ -53,7 +49,11 @@ export function EventOccurrences({
     return Array.from(map.values())
       .map((flow) => ({
         ...flow,
-        items: flow.items.sort((a, b) => stageLabel(a.stage).localeCompare(stageLabel(b.stage))),
+        items: flow.items.sort((a, b) => {
+          const aComponent = a.component ?? "";
+          const bComponent = b.component ?? "";
+          return aComponent.localeCompare(bComponent) || a.id.localeCompare(b.id);
+        }),
       }))
       .sort((a, b) => b.items.length - a.items.length || a.flowName.localeCompare(b.flowName));
   }, [occurrences]);
@@ -90,7 +90,7 @@ export function EventOccurrences({
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              {flow.items.map((o) => (
+              {flow.items.map((o, idx) => (
                 <button
                   key={o.id}
                   type="button"
@@ -102,10 +102,15 @@ export function EventOccurrences({
                 >
                   <div className="min-w-0 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline">{stageLabel(o.stage)}</Badge>
+                      <Badge variant="outline">Occurrence {idx + 1}</Badge>
                       {o.source ? (
                         <Badge variant="outline" className="max-w-full truncate font-mono">
                           {o.source}
+                        </Badge>
+                      ) : null}
+                      {o.component ? (
+                        <Badge variant="secondary" className="max-w-full truncate font-mono">
+                          {o.component}
                         </Badge>
                       ) : null}
                     </div>
@@ -137,7 +142,11 @@ export function EventOccurrences({
               <div className="space-y-5 px-4">
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="outline">{selected.flowName}</Badge>
-                  <Badge variant="outline">{stageLabel(selected.stage)}</Badge>
+                  {selected.component ? (
+                    <Badge variant="secondary" className="max-w-full truncate font-mono">
+                      {selected.component}
+                    </Badge>
+                  ) : null}
                 </div>
 
                 <div className="flex flex-wrap gap-2">

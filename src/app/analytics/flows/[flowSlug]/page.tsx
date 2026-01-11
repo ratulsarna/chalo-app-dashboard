@@ -17,7 +17,6 @@ import { FlowDiagramMarkdown } from "@/components/analytics/flow-diagram-markdow
 import { FlowDiagramPanel } from "@/components/analytics/flow-diagram-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FlowEvents } from "@/components/analytics/flow-events";
-import { Separator } from "@/components/ui/separator";
 
 function byFlowSlug(snapshotFlows: AnalyticsFlow[], flowSlug: string) {
   return snapshotFlows.find((flow) => flow.slug === flowSlug);
@@ -25,10 +24,6 @@ function byFlowSlug(snapshotFlows: AnalyticsFlow[], flowSlug: string) {
 
 function propertyAnchorId(propertyKey: string) {
   return `prop-${encodeURIComponent(propertyKey)}`;
-}
-
-function stageLabel(stage: string | undefined) {
-  return stage?.trim().length ? stage : "Unstaged";
 }
 
 export default async function AnalyticsFlowDetailPage({
@@ -58,15 +53,6 @@ export default async function AnalyticsFlowDetailPage({
     if (a.level !== b.level) return a.level === "error" ? -1 : 1;
     return a.code.localeCompare(b.code);
   });
-
-  const stageCounts = (() => {
-    const counts = new Map<string, number>();
-    for (const occurrence of flowOccurrences) {
-      const key = stageLabel(occurrence.stage);
-      counts.set(key, (counts.get(key) ?? 0) + 1);
-    }
-    return Array.from(counts.entries()).sort(([a], [b]) => a.localeCompare(b));
-  })();
 
   return (
     <main className="space-y-6">
@@ -128,47 +114,22 @@ export default async function AnalyticsFlowDetailPage({
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-5">
-            <Card className="min-w-0 lg:col-span-3">
-              <CardHeader>
-                <CardTitle className="text-base">Flow diagram</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {flow.diagramMarkdown ? (
-                  <FlowDiagramPanel
-                    flowSlug={flow.slug}
-                    diagramMarkdown={flow.diagramMarkdown}
-                    occurrences={flowOccurrences}
-                  />
-                ) : (
-                  <p className="text-sm text-muted-foreground">No diagram file found.</p>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="text-base">Stages</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Quick overview of where events fire in this journey.
-                </p>
-                <Separator />
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {stageCounts.map(([stage, count]) => (
-                    <div key={stage} className="rounded-md border bg-muted/30 p-3">
-                      <p className="truncate text-sm font-medium">{stage}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{count} events</p>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Use the <span className="font-medium">Events</span> tab to search and inspect details.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="min-w-0">
+            <CardHeader>
+              <CardTitle className="text-base">Flow diagram</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {flow.diagramMarkdown ? (
+                <FlowDiagramPanel
+                  flowSlug={flow.slug}
+                  diagramMarkdown={flow.diagramMarkdown}
+                  occurrences={flowOccurrences}
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground">No diagram file found.</p>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="events" className="space-y-6">

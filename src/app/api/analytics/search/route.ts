@@ -36,7 +36,7 @@ export async function GET(request: Request) {
   const allHits = searchAnalyticsOccurrences(snapshot, query);
   const nameHits = allHits.filter((hit) => hit.matchedOn.includes("name"));
   // Global search is primarily for navigation by event name; prefer name matches so that
-  // short queries like "checkout" don't get crowded out by component/stage matches.
+  // short queries like "checkout" don't get crowded out by component matches.
   const hits = (nameHits.length > 0 ? nameHits : allHits).slice(0, 200);
   const byName = new Map<
     string,

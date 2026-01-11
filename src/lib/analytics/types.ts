@@ -12,12 +12,6 @@ export type AnalyticsDocIssue = {
   filePath?: string;
 };
 
-export type AnalyticsStage = {
-  name: string;
-  description?: string;
-  events?: string[];
-};
-
 export type AnalyticsDiagramSequenceStep = {
   label: string;
   events?: string[];
@@ -67,16 +61,10 @@ export type AnalyticsEventPropertyInput = AnalyticsEventPropertyRef | AnalyticsE
 export type AnalyticsEventDefinition = {
   name: AnalyticsEventName;
   component?: string;
-  stage?: string;
   source?: string;
   description?: string;
   properties?: AnalyticsEventPropertyInput[];
   note?: string;
-
-  // Some docs snapshots provide extra context; we normalize these in the fs adapter.
-  funnelPosition?: string;
-  firingLocation?: string;
-  userAction?: string;
 };
 
 export type AnalyticsFlowEventsFile = {
@@ -84,7 +72,6 @@ export type AnalyticsFlowEventsFile = {
   flowName: string;
   description?: string;
   propertyDefinitions?: Record<AnalyticsPropertyKey, AnalyticsPropertyDefinition>;
-  stages?: AnalyticsStage[];
   events: AnalyticsEventDefinition[];
   diagram?: AnalyticsDiagram;
 };
@@ -95,7 +82,6 @@ export type AnalyticsFlow = {
   flowName: string;
   description?: string;
   propertyDefinitions: Record<AnalyticsPropertyKey, AnalyticsPropertyDefinition>;
-  stages?: AnalyticsStage[];
   events: AnalyticsEventDefinition[];
   diagramMarkdown?: string;
   diagramSummary?: AnalyticsDiagram;
@@ -114,7 +100,6 @@ export type AnalyticsEventOccurrence = {
   flowId: string;
   flowName: string;
   eventName: AnalyticsEventName;
-  stage?: string;
   component?: string;
   source?: string;
   description?: string;

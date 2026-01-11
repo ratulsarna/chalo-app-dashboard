@@ -27,8 +27,10 @@ function getSelectedBlockId({
   return pickDefaultMermaidBlock(blocks)?.id ?? blocks[0]?.id ?? null;
 }
 
-function stageLabel(stage: string | undefined) {
-  return stage?.trim().length ? stage : "Unstaged";
+function occurrenceLabel(occurrence: AnalyticsEventOccurrence, index: number) {
+  const parts: string[] = [`Occurrence ${index + 1}`];
+  if (occurrence.component?.trim().length) parts.push(occurrence.component);
+  return parts.join(" · ");
 }
 
 async function copyToClipboard(text: string) {
@@ -211,9 +213,6 @@ export function FlowDiagramPanel({
                 <Badge variant="secondary" className="tabular-nums">
                   {matches.length} {matches.length === 1 ? "occurrence" : "occurrences"} in this flow
                 </Badge>
-                {selectedOccurrence?.stage ? (
-                  <Badge variant="outline">{stageLabel(selectedOccurrence.stage)}</Badge>
-                ) : null}
                 {selectedOccurrence?.source ? (
                   <Badge variant="outline">{selectedOccurrence.source}</Badge>
                 ) : null}
@@ -263,7 +262,10 @@ export function FlowDiagramPanel({
                         <Button variant="outline" size="sm" className="w-full justify-between">
                           <span className="truncate">
                             {selectedOccurrence
-                              ? `${stageLabel(selectedOccurrence.stage)}${selectedOccurrence.component ? ` · ${selectedOccurrence.component}` : ""}`
+                              ? occurrenceLabel(
+                                  selectedOccurrence,
+                                  Math.max(0, matches.findIndex((o) => o.id === selectedOccurrence.id)),
+                                )
                               : "Select occurrence"}
                           </span>
                           <ChevronDownIcon className="size-4 shrink-0 opacity-70" />
@@ -274,11 +276,10 @@ export function FlowDiagramPanel({
                           value={openOccurrenceId ?? ""}
                           onValueChange={(v) => setOpenOccurrenceId(v)}
                         >
-                          {matches.map((o) => (
+                          {matches.map((o, idx) => (
                             <DropdownMenuRadioItem key={o.id} value={o.id} className="gap-3">
                               <span className="min-w-0 truncate">
-                                {stageLabel(o.stage)}
-                                {o.component ? ` · ${o.component}` : ""}
+                                {occurrenceLabel(o, idx)}
                               </span>
                             </DropdownMenuRadioItem>
                           ))}

@@ -143,8 +143,8 @@ async function validateAnalyticsContent(repoRoot) {
       if (typeof file.flowName !== "string" || file.flowName.trim().length === 0) {
         issues.push({ level: "error", code: "missing_flowName", path: eventsPath });
       }
-      if (!Array.isArray(file.events) && !Array.isArray(file.stages)) {
-        issues.push({ level: "warning", code: "missing_events_and_stages", path: eventsPath });
+      if (!Array.isArray(file.events)) {
+        issues.push({ level: "warning", code: "missing_events", path: eventsPath });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

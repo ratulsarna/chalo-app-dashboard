@@ -4,7 +4,7 @@ import type { AnalyticsEventOccurrence, AnalyticsSnapshot } from "@/lib/analytic
 
 export type AnalyticsSearchHit = {
   occurrence: AnalyticsEventOccurrence;
-  matchedOn: Array<"name" | "stage" | "component">;
+  matchedOn: Array<"name" | "component">;
 };
 
 function includesInsensitive(haystack: string | undefined, needleLower: string) {
@@ -15,7 +15,7 @@ function includesInsensitive(haystack: string | undefined, needleLower: string) 
 /**
  * Performs a case-insensitive substring search over event occurrences.
  *
- * Matches on: event name, stage, component. Results are sorted by match breadth
+ * Matches on: event name, component. Results are sorted by match breadth
  * (matches across more fields first), then by event name for stability.
  */
 export function searchAnalyticsOccurrences(
@@ -31,7 +31,6 @@ export function searchAnalyticsOccurrences(
   for (const occurrence of snapshot.occurrences) {
     const matchedOn: AnalyticsSearchHit["matchedOn"] = [];
     if (includesInsensitive(occurrence.eventName, needleLower)) matchedOn.push("name");
-    if (includesInsensitive(occurrence.stage, needleLower)) matchedOn.push("stage");
     if (includesInsensitive(occurrence.component, needleLower)) matchedOn.push("component");
 
     if (matchedOn.length > 0) hits.push({ occurrence, matchedOn });

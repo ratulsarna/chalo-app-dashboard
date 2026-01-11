@@ -64,7 +64,6 @@ export default async function AnalyticsEventsPage({
         <h1 className="text-2xl font-semibold tracking-tight">Events</h1>
       <p className="mt-2 text-muted-foreground">
         Global partial search across event <span className="font-medium">name</span>,{" "}
-        <span className="font-medium">stage</span>, and{" "}
         <span className="font-medium">component</span>.
       </p>
       </div>
@@ -79,7 +78,7 @@ export default async function AnalyticsEventsPage({
           <CardHeader>
             <CardTitle className="text-base">How to use</CardTitle>
             <CardDescription>
-              Start typing an event name (or part of a stage/component). For faster navigation,
+              Start typing an event name (or part of a component). For faster navigation,
               press <span className="font-medium">⌘K</span> to open global search.
             </CardDescription>
           </CardHeader>

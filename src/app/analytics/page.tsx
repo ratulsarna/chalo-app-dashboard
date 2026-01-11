@@ -23,7 +23,7 @@ export default function AnalyticsHomePage() {
             <CardHeader>
               <CardTitle className="text-base">Browse flows</CardTitle>
               <CardDescription>
-                Start from a journey. See funnel diagram, stages, and events.
+                Start from a journey. See diagram and events.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -33,7 +33,7 @@ export default function AnalyticsHomePage() {
             <CardHeader>
               <CardTitle className="text-base">Search events</CardTitle>
               <CardDescription>
-                Find an event by partial match (name, stage, component).
+                Find an event by partial match (name, component).
               </CardDescription>
             </CardHeader>
           </Card>
