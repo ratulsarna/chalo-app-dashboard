@@ -5,11 +5,11 @@
   "propertyDefinitions": {
     "source": {
       "type": "string",
-      "description": "Screen or context where the event occurred. Typically Source enum values like 'Source.SPLASH_SCREEN', 'Source.LANGUAGE_SELECTION', 'Source.CITY_SELECTION_SCREEN', etc."
+      "description": "Screen or context where the event occurred. Typically the exact value of `Source.<X>.sourceName` (e.g., Source.SPLASH_SCREEN.sourceName, Source.LANGUAGE_SELECTION.sourceName, Source.CITY_SELECTION_SCREEN.sourceName)."
     },
-    "previousScreenSource": {
+    "previousScreen": {
       "type": "string",
-      "description": "Navigation origin point - the source of the screen that triggered navigation to the current screen."
+      "description": "Navigation origin point - the `Source.<X>.sourceName` value of the screen that triggered navigation to the current screen. Emitted via AnalyticsEventConstants.ATTRIBUTE_PREVIOUS_SCREEN."
     },
     "locale": {
       "type": "string",
@@ -41,7 +41,11 @@
     },
     "city": {
       "type": "string",
-      "description": "City name or city ID selected by the user or fetched from location."
+      "description": "City identifier emitted by the app. In the new city-location-selection flow this is typically the selected cityId."
+    },
+    "cityName": {
+      "type": "string",
+      "description": "City display name emitted by the app. Used in the old city selection flow and the city discontinued flow."
     },
     "desc": {
       "type": "string",
@@ -68,9 +72,28 @@
       "description": "Error reason when city fetch from location fails.",
       "values": [
         "CityIdNotAvailable",
-        "CityMetaDataFetchError",
-        "NetworkError",
-        "LocationUnavailable"
+        "CityNotServiceable",
+        "CityMetaDataFetchError(msg=...)"
+      ]
+    },
+    "locationAccessAction": {
+      "type": "string",
+      "description": "User action captured by `access location event` when the system permission prompt is responded to.",
+      "values": [
+        "preciseLocationOptionSelected",
+        "approxLocationOptionSelected",
+        "locationPermissionDeniedByUser"
+      ]
+    },
+    "isChaloConfigMigrated": {
+      "type": "boolean",
+      "description": "Whether Chalo Config has been migrated. Sent on `app open`."
+    },
+    "src": {
+      "type": "string",
+      "description": "App-open sub-source string for internal bucketing. Sent on `app open`.",
+      "values": [
+        "onboarding"
       ]
     },
     "deviceId": {
@@ -78,20 +101,40 @@
       "description": "Unique device identifier set as user property."
     },
     "isNotifPermGranted": {
-      "type": "boolean",
-      "description": "Whether notification permission is granted - set as user property."
+      "type": "string",
+      "description": "Whether notification permission is granted - stored as a string user property.",
+      "values": [
+        "true",
+        "false"
+      ]
     },
     "migrationRequired": {
-      "type": "boolean",
-      "description": "Whether app migration is required - set as user property."
+      "type": "string",
+      "description": "Whether app migration is required - stored as a string user property.",
+      "values": [
+        "true",
+        "false"
+      ]
     },
     "firstSeen": {
       "type": "string",
       "description": "Installation date/time - set as user property on first app open."
     },
+    "is fine location enabled": {
+      "type": "boolean",
+      "description": "Whether fine (precise) location permission is granted. Sent on Location Disclaimer events."
+    },
+    "is coarse location enabled": {
+      "type": "boolean",
+      "description": "Whether coarse (approximate) location permission is granted. Sent on Location Disclaimer events."
+    },
+    "is gps enabled": {
+      "type": "boolean",
+      "description": "Whether GPS is enabled. Sent on Location Disclaimer events."
+    },
     "result denied": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "number",
+      "description": "Location settings resolution denied status code (from SettingsResolutionException.statusCode)."
     }
   },
   "stages": [
@@ -130,6 +173,7 @@
       "events": [
         "city location selection screen opened",
         "enable device location clicked",
+        "access location event",
         "enter location manually clicked",
         "retry city fetch clicked",
         "change location clicked",
@@ -159,6 +203,7 @@
       "name": "Location Disclaimer",
       "description": "Auto-added stage (validate grouping).",
       "events": [
+        "access location event",
         "go to settings btn clicked",
         "location denied event",
         "location disclaimer activity opened",
@@ -170,11 +215,24 @@
   "events": [
     {
       "name": "app open",
-      "component": "SplashScreenComponent",
+      "component": "FireAppOpenEventIfRequiredUseCase (called from SplashScreenComponent)",
       "stage": "Splash Screen",
-      "source": "(implicit)",
-      "description": "Increments app open count when splash screen becomes active. Tracked via analyticsContract.incrementAppOpen().",
-      "properties": []
+      "source": "Source.SPLASH_SCREEN.sourceName",
+      "description": "Raised during splash initialization to mark an app-open. Note: analyticsContract.incrementAppOpen() increments a usage counter, but does not emit the 'app open' event.",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.SPLASH_SCREEN.sourceName"
+        },
+        {
+          "property": "isChaloConfigMigrated",
+          "context": "Hardcoded boolean (currently true)"
+        },
+        {
+          "property": "src",
+          "context": "'onboarding' (hardcoded)"
+        }
+      ]
     },
     {
       "name": "change location clicked",
@@ -188,7 +246,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -218,7 +276,7 @@
           "context": "Source.CITY_DISCONTINUED_SCREEN"
         },
         {
-          "property": "city",
+          "property": "cityName",
           "context": "Name of the discontinued city"
         }
       ]
@@ -235,7 +293,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         },
         {
@@ -256,7 +314,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From navigation args"
         }
       ]
@@ -273,7 +331,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -290,12 +348,16 @@
           "context": "Source.CITY_SELECTION_FRAGMENT_SPACED (old) or Source.CITY_SELECTION_SCREEN (new)"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state (new flow only)"
         },
         {
+          "property": "cityName",
+          "context": "City display name (old flow only)"
+        },
+        {
           "property": "city",
-          "context": "City name or city ID"
+          "context": "City id (new flow only)"
         },
         {
           "property": "selectedby",
@@ -345,7 +407,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -362,7 +424,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -379,7 +441,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -393,12 +455,46 @@
       "properties": []
     },
     {
+      "name": "access location event",
+      "component": "LocationPermissionCallbackHandler",
+      "stage": "City Location Selection (New Flow) / Location Disclaimer",
+      "source": "Source.ONBOARDING_LOCATION_SHARING_SCREEN / Source.LOCATION_DISCLAIMER_ACTIVITY",
+      "description": "Raised when the system location permission prompt is responded to (precise/approx/denied).",
+      "properties": [
+        {
+          "property": "source",
+          "context": "Source.ONBOARDING_LOCATION_SHARING_SCREEN.sourceName or Source.LOCATION_DISCLAIMER_ACTIVITY.sourceName"
+        },
+        {
+          "property": "locationAccessAction",
+          "context": "preciseLocationOptionSelected / approxLocationOptionSelected / locationPermissionDeniedByUser"
+        }
+      ]
+    },
+    {
       "name": "go to settings btn clicked",
       "component": "LocationDisclaimerComponent",
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
       "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:179",
-      "properties": []
+      "properties": [
+        {
+          "property": "is fine location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is coarse location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is gps enabled",
+          "context": "From GPS state"
+        },
+        {
+          "property": "previousScreen",
+          "context": "From args.previousScreenSource"
+        }
+      ]
     },
     {
       "name": "language changed",
@@ -429,7 +525,7 @@
           "context": "Source.LANGUAGE_SELECTION"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         },
         {
@@ -450,7 +546,7 @@
           "context": "Source.LANGUAGE_SELECTION"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From navigation args"
         }
       ]
@@ -463,7 +559,24 @@
       "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:249",
       "properties": [
         {
-          "property": "result denied"
+          "property": "is fine location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is coarse location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is gps enabled",
+          "context": "From GPS state"
+        },
+        {
+          "property": "previousScreen",
+          "context": "From args.previousScreenSource"
+        },
+        {
+          "property": "result denied",
+          "context": "SettingsResolutionException.statusCode"
         }
       ]
     },
@@ -473,7 +586,24 @@
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
       "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:143",
-      "properties": []
+      "properties": [
+        {
+          "property": "is fine location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is coarse location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is gps enabled",
+          "context": "From GPS state"
+        },
+        {
+          "property": "previousScreen",
+          "context": "From args.previousScreenSource"
+        }
+      ]
     },
     {
       "name": "location permission result event",
@@ -481,7 +611,24 @@
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
       "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:299",
-      "properties": []
+      "properties": [
+        {
+          "property": "is fine location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is coarse location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is gps enabled",
+          "context": "From GPS state"
+        },
+        {
+          "property": "previousScreen",
+          "context": "From args.previousScreenSource"
+        }
+      ]
     },
     {
       "name": "location successfully enabled",
@@ -489,7 +636,24 @@
       "stage": "Location Disclaimer",
       "source": "Source.LOCATION_DISCLAIMER_ACTIVITY",
       "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/locationdisclaimer/LocationDisclaimerComponent.kt:208",
-      "properties": []
+      "properties": [
+        {
+          "property": "is fine location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is coarse location enabled",
+          "context": "From permissions status map"
+        },
+        {
+          "property": "is gps enabled",
+          "context": "From GPS state"
+        },
+        {
+          "property": "previousScreen",
+          "context": "From args.previousScreenSource"
+        }
+      ]
     },
     {
       "name": "new home screen rendered",
@@ -528,7 +692,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -553,7 +717,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -570,7 +734,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -587,7 +751,7 @@
           "context": "Source.CITY_SELECTION_SCREEN"
         },
         {
-          "property": "previousScreenSource",
+          "property": "previousScreen",
           "context": "From state"
         }
       ]
@@ -633,6 +797,7 @@
         "events": [
           "city location selection screen opened",
           "enable device location clicked",
+          "access location event",
           "enter location manually clicked",
           "user refused location permission",
           "user refused location permission via settings",
@@ -671,6 +836,12 @@
           "tab based homescreen rendered"
         ],
         "next": "end"
+      },
+      {
+        "label": "Additional events: Location Disclaimer",
+        "events": [
+          "access location event"
+        ]
       },
       {
         "label": "Additional events: Location Disclaimer",

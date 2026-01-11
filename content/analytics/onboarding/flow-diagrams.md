@@ -6,6 +6,7 @@ Notes:
 - The onboarding flow branches based on user state: first-time users go through language + city selection, returning users may skip directly to home
 - There are two city selection implementations: old flow (CitySelectionComponent) and new flow (CityLocationSelectionComponent) - both emit some events with the same name but different source values
 - User properties (deviceId, isNotifPermGranted, migrationRequired, firstSeen) are set during splash screen but are not analytics events
+- System location permission prompt responses also emit `access location event` (via LocationPermissionCallbackHandler)
 
 Visual key:
 - Green solid boxes: analytics events (exact strings from `events.json`)
@@ -33,7 +34,7 @@ This diagram shows the complete onboarding flow from app launch to home screen.
 ```mermaid
 flowchart TD
   ui_appLaunch([App Launch]) --> ev_firstScreen["first screen open"]
-  ev_firstScreen --> ev_appOpen["app open"]
+  ui_appLaunch --> ev_appOpen["app open"]
 
   ev_appOpen --> ui_checkLanguage([Check language selected?])
   ui_checkLanguage -->|Not selected| ui_languageFlow([Language Selection Flow])
@@ -91,7 +92,7 @@ This is the entry point for all users. These events fire on every app launch.
 ```mermaid
 flowchart TD
   ui_splashScreen([Splash Screen Component]) --> ev_firstScreen["first screen open"]
-  ev_firstScreen --> ev_appOpen["app open"]
+  ui_splashScreen --> ev_appOpen["app open"]
 
   ev_appOpen --> ui_setupAnalytics([Setup Analytics])
   ui_setupAnalytics --> ui_initUserProps([Initialize User Properties])
@@ -127,12 +128,11 @@ flowchart TD
   ui_needLanguage([Language Not Set]) --> ev_langDisplay["language selection screen displayed"]
 
   ev_langDisplay --> ui_userSelectsLang([User Selects Language])
-  ui_userSelectsLang --> ev_langChanged["language changed"]
-
-  ev_langChanged --> ui_clickContinue([User Clicks Continue])
+  ui_userSelectsLang --> ui_clickContinue([User Clicks Continue])
   ui_clickContinue --> ev_langContinue["language screen continue clicked"]
+  ev_langContinue --> ev_langChanged["language changed"]
 
-  ev_langContinue --> ui_nextScreen([Next: Login or City Selection])
+  ev_langChanged --> ui_nextScreen([Next: Login or City Selection])
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

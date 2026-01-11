@@ -38,22 +38,60 @@ async function validateAnalyticsContent(repoRoot) {
     }
   }
 
-  // Ensure all referenced flows have an events.json so flows can't silently "disappear".
-  const referencedSlugs = new Set();
-  if (isRecord(slugMapJson)) {
-    for (const [key, value] of Object.entries(slugMapJson)) {
-      if (typeof key === "string" && key.trim().length > 0) referencedSlugs.add(key);
-      if (typeof value === "string" && value.trim().length > 0) referencedSlugs.add(value);
-    }
-  }
+  // Ensure all flow folders referenced by the slug map exist and contain events.json,
+  // and ensure all flow keys in flows.json are backed by at least one folder.
+  const flowKeys = new Set();
   if (isRecord(flowsJson) && isRecord(flowsJson.flows)) {
     for (const key of Object.keys(flowsJson.flows)) {
-      if (key.trim().length > 0) referencedSlugs.add(key);
+      if (typeof key === "string" && key.trim().length > 0) flowKeys.add(key);
     }
   }
 
-  for (const flowSlug of referencedSlugs) {
+  const slugToFlowKey = new Map();
+  const flowKeyToSlugs = new Map();
+  if (isRecord(slugMapJson)) {
+    for (const [flowSlug, flowKey] of Object.entries(slugMapJson)) {
+      if (typeof flowSlug !== "string" || flowSlug.trim().length === 0) continue;
+      if (flowSlug.startsWith("_")) continue;
+      if (typeof flowKey !== "string" || flowKey.trim().length === 0) continue;
+      slugToFlowKey.set(flowSlug, flowKey);
+
+      const slugs = flowKeyToSlugs.get(flowKey) ?? [];
+      slugs.push(flowSlug);
+      flowKeyToSlugs.set(flowKey, slugs);
+    }
+  }
+
+  for (const [flowSlug, flowKey] of slugToFlowKey.entries()) {
+    if (flowKeys.size > 0 && !flowKeys.has(flowKey)) {
+      issues.push({ level: "error", code: "unknown_flow_key", path: slugMapPath, flowSlug, flowKey });
+    }
+
     const dirPath = path.join(contentRoot, flowSlug);
+    try {
+      const stat = await fs.stat(dirPath);
+      if (!stat.isDirectory()) {
+        issues.push({ level: "error", code: "invalid_flow_dir", path: dirPath });
+        continue;
+      }
+    } catch {
+      issues.push({ level: "error", code: "missing_flow_dir", path: dirPath });
+      continue;
+    }
+
+    const eventsPath = path.join(dirPath, "events.json");
+    try {
+      await fs.access(eventsPath);
+    } catch {
+      issues.push({ level: "error", code: "missing_events_json", path: eventsPath });
+    }
+  }
+
+  for (const flowKey of flowKeys) {
+    const hasMappedSlug = (flowKeyToSlugs.get(flowKey) ?? []).length > 0;
+    if (hasMappedSlug) continue;
+
+    const dirPath = path.join(contentRoot, flowKey);
     try {
       const stat = await fs.stat(dirPath);
       if (!stat.isDirectory()) {

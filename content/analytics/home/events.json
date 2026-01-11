@@ -98,6 +98,38 @@
       "type": "number",
       "description": "Number of items received (e.g., geospatial data count)"
     },
+    "ride based pass booking count": {
+      "type": "string",
+      "description": "Count of ride-based pass bookings shown on the tickets screen (stringified number)."
+    },
+    "magic pass booking count": {
+      "type": "string",
+      "description": "Count of magic super pass bookings shown on the tickets screen (stringified number)."
+    },
+    "super pass application booking count": {
+      "type": "string",
+      "description": "Count of super pass application bookings shown on the tickets screen (stringified number)."
+    },
+    "pending super pass application booking count": {
+      "type": "string",
+      "description": "Count of pending super pass bookings shown on the tickets screen (stringified number)."
+    },
+    "quick pay booking count": {
+      "type": "string",
+      "description": "Count of Quick Pay bookings shown on the tickets screen (stringified number)."
+    },
+    "mobile ticket booking count": {
+      "type": "string",
+      "description": "Count of mobile ticket bookings shown on the tickets screen (stringified number)."
+    },
+    "instant ticket booking count": {
+      "type": "string",
+      "description": "Count of instant ticket bookings shown on the tickets screen (stringified number)."
+    },
+    "premium bus booking count": {
+      "type": "string",
+      "description": "Count of premium bus ticket bookings shown on the tickets screen (stringified number)."
+    },
     "inCity": {
       "type": "string",
       "description": "City name when city change prompt is shown"
@@ -381,7 +413,15 @@
         "seat occupancy bottomsheet dismissed clicked",
         "seat occupancy bottomsheet got it clicked",
         "seat occupancy bottomsheet learn more clicked",
-        "regular bus tab, pay for ticket click navigation failed"
+        "regular bus tab, pay for ticket click navigation failed",
+        "location manager initiated",
+        "location manager location received",
+        "location manager location fetch failed",
+        "location manager permission not granted",
+        "location manager no valid location",
+        "location manager resolution required",
+        "location manager settings unavailable",
+        "location manager general error"
       ]
     },
     {
@@ -412,7 +452,19 @@
       "name": "My Tickets/History Tab",
       "description": "User tickets and booking history",
       "events": [
-        "my tickets screen rendered"
+        "empty tickets page rendered",
+        "active tickets tab selected",
+        "expired tickets tab selected",
+        "empty active tickets page rendered",
+        "active tickets page rendered",
+        "empty expired tickets page rendered",
+        "expired tickets page rendered",
+        "tickets page card item rendered",
+        "tickets page card item clicked",
+        "tickets page hook rendered",
+        "tickets page hook clicked",
+        "buy ticket passes button clicked",
+        "product purchase bottomsheet opened"
       ]
     },
     {
@@ -918,11 +970,285 @@
       ]
     },
     {
-      "name": "my tickets screen rendered",
+      "name": "location manager initiated",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager session initiated.",
+      "properties": []
+    },
+    {
+      "name": "location manager location received",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager delivers a valid location update.",
+      "properties": [
+        {
+          "property": "lat"
+        },
+        {
+          "property": "long"
+        }
+      ]
+    },
+    {
+      "name": "location manager location fetch failed",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager fails to fetch a location (no attributes).",
+      "properties": []
+    },
+    {
+      "name": "location manager permission not granted",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager reports location permission is not granted (no attributes).",
+      "properties": []
+    },
+    {
+      "name": "location manager no valid location",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager reports no valid location is available (no attributes).",
+      "properties": []
+    },
+    {
+      "name": "location manager resolution required",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager requires a settings resolution step (e.g., enable GPS).",
+      "properties": [
+        {
+          "property": "errorCode"
+        },
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "location manager settings unavailable",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager reports required location settings are unavailable (no attributes).",
+      "properties": []
+    },
+    {
+      "name": "location manager general error",
+      "component": "ChaloLocationManager (via RegularBusComponent)",
+      "stage": "Regular Bus Tab",
+      "source": "regular bus screen tab",
+      "description": "Location manager reports a general exception.",
+      "properties": [
+        {
+          "property": "errorMsg"
+        }
+      ]
+    },
+    {
+      "name": "empty tickets page rendered",
       "component": "MyTicketsComponent",
-      "stage": "My Tickets Tab",
+      "stage": "My Tickets/History Tab",
       "source": "my tickets screen tab",
-      "description": "My tickets screen rendered and displayed.",
+      "description": "Tickets screen renders an empty state when no tickets/passes are available (no tabs).",
+      "properties": []
+    },
+    {
+      "name": "active tickets tab selected",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "User selects the Active tab on the tickets screen.",
+      "properties": []
+    },
+    {
+      "name": "expired tickets tab selected",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "User selects the Expired tab on the tickets screen.",
+      "properties": []
+    },
+    {
+      "name": "empty active tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Active tickets page renders with no active bookings.",
+      "properties": []
+    },
+    {
+      "name": "active tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Active tickets page renders with counts of booking types.",
+      "properties": [
+        {
+          "property": "ride based pass booking count"
+        },
+        {
+          "property": "magic pass booking count"
+        },
+        {
+          "property": "super pass application booking count"
+        },
+        {
+          "property": "pending super pass application booking count"
+        },
+        {
+          "property": "quick pay booking count"
+        },
+        {
+          "property": "mobile ticket booking count"
+        },
+        {
+          "property": "instant ticket booking count"
+        },
+        {
+          "property": "premium bus booking count"
+        }
+      ]
+    },
+    {
+      "name": "empty expired tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Expired tickets page renders with no expired bookings.",
+      "properties": []
+    },
+    {
+      "name": "expired tickets page rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Expired tickets page renders with counts of booking types.",
+      "properties": [
+        {
+          "property": "ride based pass booking count"
+        },
+        {
+          "property": "magic pass booking count"
+        },
+        {
+          "property": "super pass application booking count"
+        },
+        {
+          "property": "pending super pass application booking count"
+        },
+        {
+          "property": "quick pay booking count"
+        },
+        {
+          "property": "mobile ticket booking count"
+        },
+        {
+          "property": "instant ticket booking count"
+        },
+        {
+          "property": "premium bus booking count"
+        }
+      ]
+    },
+    {
+      "name": "tickets page card item rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Tickets screen renders a product purchase card item (empty state variant).",
+      "properties": [
+        {
+          "property": "title"
+        }
+      ]
+    },
+    {
+      "name": "tickets page card item clicked",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "User clicks the tickets screen product purchase card item.",
+      "properties": [
+        {
+          "property": "title"
+        }
+      ]
+    },
+    {
+      "name": "tickets page hook rendered",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Tickets screen renders a hook item (empty state variant).",
+      "properties": [
+        {
+          "property": "type"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "desc list"
+        },
+        {
+          "property": "tag list"
+        },
+        {
+          "property": "image url"
+        }
+      ]
+    },
+    {
+      "name": "tickets page hook clicked",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "User clicks a tickets screen hook item.",
+      "properties": [
+        {
+          "property": "type"
+        },
+        {
+          "property": "position"
+        },
+        {
+          "property": "title"
+        },
+        {
+          "property": "desc list"
+        },
+        {
+          "property": "tag list"
+        },
+        {
+          "property": "image url"
+        }
+      ]
+    },
+    {
+      "name": "buy ticket passes button clicked",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "User clicks the buy tickets/passes button on the tickets screen.",
+      "properties": []
+    },
+    {
+      "name": "product purchase bottomsheet opened",
+      "component": "MyTicketsComponent",
+      "stage": "My Tickets/History Tab",
+      "source": "my tickets screen tab",
+      "description": "Tickets screen opens the product purchase bottom sheet.",
       "properties": []
     },
     {
@@ -1583,8 +1909,13 @@
       },
       {
         "label": "Tickets Tab",
-        "entry": "my tickets screen rendered",
-        "mainEvents": []
+        "entry": "active tickets page rendered",
+        "mainEvents": [
+          "expired tickets tab selected",
+          "buy ticket passes button clicked",
+          "tickets page hook clicked",
+          "tickets page card item clicked"
+        ]
       }
     ],
     "sharedEvents": [

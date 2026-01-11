@@ -1,7 +1,7 @@
 {
   "_comment": "Maps content/analytics/<flowSlug>/ to content/analytics/flows.json flow keys.",
   "ads": "ads",
-  "authentication": "auth",
+  "authentication": "authentication",
   "bills": "bills",
   "card": "card",
   "help": "help",
@@ -9,7 +9,7 @@
   "home": "home",
   "instant-ticket-purchase": "instant-ticket",
   "lifecycle": "lifecycle",
-  "live-tracking": "tracking",
+  "live-tracking": "live-tracking",
   "metro": "metro",
   "mticket": "mticket",
   "network": "network",

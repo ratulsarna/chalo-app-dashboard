@@ -196,14 +196,34 @@ User tickets and booking history.
 
 ```mermaid
 flowchart TD
-  ui_ticketsScreen([Tickets Tab Opens]) --> ev_myTicketsScreenRendered["my tickets screen rendered"]
+  ui_ticketsScreen([Tickets Tab Opens]) --> ui_ticketData{Has tickets/passes?}
+
+  ui_ticketData -->|No| ev_emptyTickets["empty tickets page rendered"]
+  ui_ticketData -->|Yes| ui_ticketTabs([Active/Expired tabs])
+
+  ui_ticketTabs --> ev_activeRendered["active tickets page rendered"]
+  ui_ticketTabs --> ev_emptyActiveRendered["empty active tickets page rendered"]
+  ui_ticketTabs --> ev_expiredRendered["expired tickets page rendered"]
+  ui_ticketTabs --> ev_emptyExpiredRendered["empty expired tickets page rendered"]
+
+  ui_ticketTabs --> ev_activeSelected["active tickets tab selected"]
+  ui_ticketTabs --> ev_expiredSelected["expired tickets tab selected"]
+
+  ev_emptyTickets --> ev_ticketsCardRendered["tickets page card item rendered"]
+  ev_ticketsCardRendered --> ev_ticketsCardClicked["tickets page card item clicked"]
+
+  ev_emptyTickets --> ev_ticketsHookRendered["tickets page hook rendered"]
+  ev_ticketsHookRendered --> ev_ticketsHookClicked["tickets page hook clicked"]
+
+  ui_ticketTabs --> ev_buyClicked["buy ticket passes button clicked"]
+  ev_buyClicked --> ev_purchaseBottomsheet["product purchase bottomsheet opened"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_myTicketsScreenRendered event;
-  class ui_ticketsScreen ui;
+  class ev_emptyTickets,ev_activeRendered,ev_emptyActiveRendered,ev_expiredRendered,ev_emptyExpiredRendered,ev_activeSelected,ev_expiredSelected,ev_ticketsCardRendered,ev_ticketsCardClicked,ev_ticketsHookRendered,ev_ticketsHookClicked,ev_buyClicked,ev_purchaseBottomsheet event;
+  class ui_ticketsScreen,ui_ticketData,ui_ticketTabs ui;
 ```
 
 ## Shared Flow: Location & GPS (All Tabs)
@@ -236,6 +256,29 @@ flowchart TD
 
   class ev_locationTooltipTurnOnClicked,ev_locationTooltipCancelClicked,ev_gpsRequestOn,ev_gpsRequestResultReceived,ev_locationUpdateReceived,ev_locationSettingsUnavailable,ev_accessLocationEvent,ev_cityChangeCardClicked,ev_newGeoQueryManagerDataReceived,ev_cityNotSupportedPromptOpen,ev_cityChangePromptOpen event;
   class ui_anyTab,ui_permissionDialog,ui_regularBusTab ui;
+```
+
+## Shared Flow: Location Manager Telemetry (Regular Bus Tab)
+
+These events come from `ChaloLocationManager` via `RegularBusComponent` and can fire during location update lifecycles.
+
+```mermaid
+flowchart TD
+  ui_regularBusTab([Regular Bus Tab]) --> ev_lmInitiated["location manager initiated"]
+  ev_lmInitiated --> ev_lmLocationReceived["location manager location received"]
+
+  ev_lmInitiated --> ev_lmFetchFailed["location manager location fetch failed"]
+  ev_lmInitiated --> ev_lmPermissionNotGranted["location manager permission not granted"]
+  ev_lmInitiated --> ev_lmNoValid["location manager no valid location"]
+  ev_lmInitiated --> ev_lmResolutionRequired["location manager resolution required"]
+  ev_lmInitiated --> ev_lmSettingsUnavailable["location manager settings unavailable"]
+  ev_lmInitiated --> ev_lmGeneralError["location manager general error"]
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+
+  class ev_lmInitiated,ev_lmLocationReceived,ev_lmFetchFailed,ev_lmPermissionNotGranted,ev_lmNoValid,ev_lmResolutionRequired,ev_lmSettingsUnavailable,ev_lmGeneralError event;
+  class ui_regularBusTab ui;
 ```
 
 ## Funnel: Nearby Stops Map (From Regular Bus)

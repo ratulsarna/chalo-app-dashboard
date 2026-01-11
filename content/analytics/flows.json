@@ -60,7 +60,7 @@
     "onboarding": {
       "name": "Onboarding",
       "description": "First-time user setup - language selection, city selection, tutorials, location permissions, get started flow.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-11"
     },
     "authentication": {
       "name": "Authentication",
@@ -70,14 +70,14 @@
     "home": {
       "name": "Home",
       "description": "Home screen interactions - tabs, navigation drawer, nearby stops display, home cards, city change. The main app screen.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-11"
     },
     "search": {
       "name": "Search",
       "description": "Route and stop search - universal search/picker, route search results, stop selection. Finding routes.",
       "lastAudited": "2026-01-09"
     },
-    "tracking": {
+    "live-tracking": {
       "name": "Live Tracking",
       "description": "Route details and live tracking - ETA display, schedules, live bus positions, favorites, seat availability. Real-time info.",
       "lastAudited": "2026-01-09"
