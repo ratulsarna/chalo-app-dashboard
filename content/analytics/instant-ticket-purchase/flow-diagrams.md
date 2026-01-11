@@ -35,15 +35,18 @@ The instant ticket flow starts with route-based stop selection where users first
 flowchart TD
   ui_entry([User initiates instant ticket]) --> ev_screenOpen["route based stop selection screen opened"]
   ev_screenOpen --> ui_routeSelection([User selecting route])
-  ui_routeSelection --> ev_routeEntered["find my ticket fare route number entered"]
+  ui_routeSelection --> ev_pickRouteOpen["pick route screen opened"]
+  ev_pickRouteOpen --> ev_routeEntered["find my ticket fare route number entered"]
 
   ev_routeEntered --> ui_fromStop([User selecting FROM stop])
   ui_fromStop --> ev_stopClicked1["find my ticket fare stop clicked"]
-  ev_stopClicked1 --> ev_stopEntered1["find my ticket fare stop entered"]
+  ev_stopClicked1 --> ev_pickStopOpen1["pick stop screen opened"]
+  ev_pickStopOpen1 --> ev_stopEntered1["find my ticket fare stop entered"]
 
   ev_stopEntered1 --> ui_toStop([User selecting TO stop])
   ui_toStop --> ev_stopClicked2["find my ticket fare stop clicked"]
-  ev_stopClicked2 --> ev_stopEntered2["find my ticket fare stop entered"]
+  ev_stopClicked2 --> ev_pickStopOpen2["pick stop screen opened"]
+  ev_pickStopOpen2 --> ev_stopEntered2["find my ticket fare stop entered"]
 
   ev_stopEntered2 --> ui_next([User clicks next])
   ui_next --> ev_nextClicked["find my ticket fare route details next clicked"]
@@ -53,7 +56,7 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_screenOpen,ev_routeEntered,ev_stopClicked1,ev_stopEntered1,ev_stopClicked2,ev_stopEntered2,ev_nextClicked event;
+  class ev_screenOpen,ev_pickRouteOpen,ev_routeEntered,ev_stopClicked1,ev_pickStopOpen1,ev_stopEntered1,ev_stopClicked2,ev_pickStopOpen2,ev_stopEntered2,ev_nextClicked event;
   class ui_entry,ui_routeSelection,ui_fromStop,ui_toStop,ui_next,ui_fareDetails ui;
 ```
 
@@ -63,31 +66,34 @@ Some cities/products use a stop-based route selection surface before fare detail
 
 ```mermaid
 flowchart TD
-  ui_entry([User initiates instant ticket]) --> ev_pickRoute["pick route screen opened"]
-  ev_pickRoute --> ev_pickStop["pick stop screen opened"]
-
-  ev_pickStop --> ev_stopBasedOpen["stop based stop selection screen opened"]
+  ui_entry([User initiates instant ticket]) --> ev_stopBasedOpen["stop based stop selection screen opened"]
   ev_stopBasedOpen --> ui_selectFrom([Select FROM stop])
   ui_selectFrom --> ev_fromStop["stop based stop selection screen from stop"]
   ev_fromStop --> ui_selectTo([Select TO stop])
   ui_selectTo --> ev_toStop["stop based stop selection screen to stop"]
 
-  ev_stopBasedOpen --> ui_results([Route results list])
-  ui_results --> ev_resultClick["stop based stop selection screen route result item click"]
-  ui_results --> ev_clear["stop based route selection screen clear search click"]
+  ev_toStop --> ev_proceed["stop based stop selection screen proceed button click"]
 
-  ev_stopBasedOpen --> ui_configFetch{Instant ticket config fetch}
+  ev_proceed --> ui_configFetch{Instant ticket config fetch}
   ui_configFetch -->|Success| ev_cfgOk["stop based stop selection screen instant ticket config fetch success"]
   ui_configFetch -->|Failure| ev_cfgFail["stop based stop selection screen instant ticket config fetch failed"]
 
-  ev_resultClick --> ev_proceed["stop based stop selection screen proceed button click"]
+  ev_cfgOk --> ui_routeFetch([Fetch routes for stop pair])
+  ui_routeFetch -->|Success| ev_routeResultOk["stop based stop selection screen route result success"]
+  ui_routeFetch -->|Failure| ev_routeResultFail["stop based stop selection screen route result failure"]
+
+  ev_routeResultOk --> ui_results([Route results list])
+  ui_results --> ev_resultClick["stop based stop selection screen route result item click"]
+  ui_results --> ev_clear["stop based route selection screen clear search click"]
+
+  ev_resultClick --> ev_proceed
   ev_proceed --> ui_fareDetails([Navigate to fare details])
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_pickRoute,ev_pickStop,ev_stopBasedOpen,ev_fromStop,ev_toStop,ev_resultClick,ev_clear,ev_cfgOk,ev_cfgFail,ev_proceed event;
-  class ui_entry,ui_selectFrom,ui_selectTo,ui_results,ui_configFetch,ui_fareDetails ui;
+  class ev_stopBasedOpen,ev_fromStop,ev_toStop,ev_proceed,ev_cfgOk,ev_cfgFail,ev_routeResultOk,ev_routeResultFail,ev_resultClick,ev_clear event;
+  class ui_entry,ui_selectFrom,ui_selectTo,ui_configFetch,ui_routeFetch,ui_results,ui_fareDetails ui;
 ```
 
 ## Fare Details → Passenger Selection → Payment
@@ -272,34 +278,39 @@ Use this diagram to build complete conversion funnels from entry to validation.
 ```mermaid
 flowchart TD
   Start([User Entry]) --> F1["route based stop selection screen opened"]
-  F1 --> F2["find my ticket fare route number entered"]
-  F2 --> F3["find my ticket fare stop clicked"]
-  F3 --> F4["find my ticket fare stop entered"]
-  F4 --> F5["find my ticket fare route details next clicked"]
-  F5 --> F6["find my ticket fare fare details screen opened"]
-  F6 --> F7["find my ticket fare fare details pay button clicked"]
+  F1 --> F2["pick route screen opened"]
+  F2 --> F3["find my ticket fare route number entered"]
+  F3 --> F4["find my ticket fare stop clicked"]
+  F4 --> F5["pick stop screen opened"]
+  F5 --> F6["find my ticket fare stop entered"]
+  F6 --> F7["find my ticket fare stop clicked"]
+  F7 --> F8["pick stop screen opened"]
+  F8 --> F9["find my ticket fare stop entered"]
+  F9 --> F10["find my ticket fare route details next clicked"]
+  F10 --> F11["find my ticket fare fare details screen opened"]
+  F11 --> F12["find my ticket fare fare details pay button clicked"]
 
-  F7 -->|wallet flow| F8["instant ticket bottmsheet opened"]
-  F8 --> F9["instant ticket fetched"]
+  F12 -->|wallet flow| F13["instant ticket bottmsheet opened"]
+  F13 --> F14["instant ticket fetched"]
 
-  F7 -->|direct payment| F9
+  F12 -->|direct payment| F14
 
-  F9 -->|QR| F10["qr screen open"]
-  F9 -->|BLE| F11["ble screen open"]
+  F14 -->|QR| F15["qr screen open"]
+  F14 -->|BLE| F16["ble screen open"]
 
-  F10 --> F12["instant ticket trip punched"]
-  F11 --> F12
+  F15 --> F17["instant ticket trip punched"]
+  F16 --> F17
 
-  F12 --> F13["post validation screen opened"]
-  F13 --> F14["view receipt post validation clicked"]
+  F17 --> F18["post validation screen opened"]
+  F18 --> F19["view receipt post validation clicked"]
 
-  F13 --> End([Flow Complete])
-  F14 --> End
+  F18 --> End([Flow Complete])
+  F19 --> End
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 event;
+  class F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19 event;
   class Start,End ui;
 ```
 

@@ -348,11 +348,7 @@
         "premium reserve ticket ack cta clicked",
         "app update install clicked",
         "app update cancel clicked",
-        "ocr homescreen card recharge card",
-        "ocr tutorial bottomsheet displayed",
-        "ocr tutorial bottomsheet next clicked",
-        "pb preferred time bottomsheet opened",
-        "pb preferred time submitted"
+        "ocr tutorial bottomsheet next clicked"
       ]
     },
     {
@@ -361,7 +357,7 @@
       "events": [
         "regular bus page rendered",
         "regular bus page card item clicked",
-        "home screen bottom nav search tab clicked",
+        "chalo search bar clicked",
         "profile icon clicked",
         "location tooltip turn on clicked",
         "gps request on",
@@ -407,6 +403,7 @@
         "pb preferred time bottomsheet opened",
         "pb trip details submitted",
         "pb trip details screen shown",
+        "pb preferred time submitted",
         "chalo bus tab notification icon click"
       ]
     },
@@ -442,7 +439,8 @@
       "name": "Bottom Navigation",
       "description": "Bottom navigation bar interactions",
       "events": [
-        "bottom nav item clicked"
+        "bottom nav item clicked",
+        "home screen bottom nav search tab clicked"
       ]
     },
     {
@@ -543,10 +541,10 @@
     },
     {
       "name": "bottom nav item clicked",
-      "component": "HomeScreenComponent (inferred)",
+      "component": "HomeComponent",
       "stage": "Bottom Navigation",
-      "source": "home screen tab",
-      "description": "User clicks bottom navigation item.",
+      "source": "home screen tab / regular bus screen tab / chalo bus screen tab / my tickets screen tab",
+      "description": "User clicks a bottom navigation item; source reflects the previously selected tab.",
       "properties": [
         {
           "property": "bottom nav item"
@@ -571,10 +569,10 @@
     },
     {
       "name": "chalo search bar clicked",
-      "component": "HomeScreenComponent",
-      "stage": "Home Screen Tab",
-      "source": "home screen tab",
-      "description": "User clicks the search bar on home screen.",
+      "component": "HomeScreenComponent / RegularBusComponent",
+      "stage": "Home Screen Tab / Regular Bus Tab",
+      "source": "home screen tab / regular bus screen tab",
+      "description": "User clicks the search bar on home or regular bus screen.",
       "properties": [
         {
           "property": "search bar title"
@@ -767,9 +765,9 @@
     },
     {
       "name": "home screen bottom nav search tab clicked",
-      "component": "RegularBusComponent",
-      "stage": "Regular Bus Tab",
-      "source": "regular bus screen tab",
+      "component": "HomeComponent",
+      "stage": "Bottom Navigation",
+      "source": "Source.HOME_SCREEN",
       "description": "User clicks search tab in bottom navigation.",
       "properties": []
     },
@@ -1384,27 +1382,11 @@
       "properties": []
     },
     {
-      "name": "ocr homescreen card recharge card",
-      "component": "HomeScreenComponent",
-      "stage": "Home Screen Tab",
-      "source": "home screen tab",
-      "description": "User clicks card recharge card on home screen.",
-      "properties": []
-    },
-    {
-      "name": "ocr tutorial bottomsheet displayed",
-      "component": "HomeScreenComponent",
-      "stage": "Home Screen Tab",
-      "source": "home screen tab",
-      "description": "Card recharge tutorial bottom sheet is shown.",
-      "properties": []
-    },
-    {
       "name": "ocr tutorial bottomsheet next clicked",
-      "component": "HomeScreenComponent",
+      "component": "HomeComponent",
       "stage": "Home Screen Tab",
-      "source": "home screen tab",
-      "description": "User clicks OK/Next in card recharge tutorial.",
+      "source": "Source.HOME_SCREEN_TAB",
+      "description": "User clicks the CTA in the card recharge tutorial bottom sheet.",
       "properties": []
     },
     {
@@ -1484,18 +1466,18 @@
     },
     {
       "name": "pb preferred time bottomsheet opened",
-      "component": "HomeScreenComponent / ChaloBusComponent",
-      "stage": "Home Screen Tab / Chalo Bus Tab",
-      "source": "home screen tab / chalo bus screen tab",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
       "description": "Preferred time bottom sheet opens for premium bus.",
       "properties": []
     },
     {
       "name": "pb preferred time submitted",
-      "component": "HomeScreenComponent",
-      "stage": "Home Screen Tab",
-      "source": "home screen tab",
-      "description": "User submits preferred time for premium bus.",
+      "component": "ChaloBusComponent",
+      "stage": "Chalo Bus Tab",
+      "source": "chalo bus screen tab",
+      "description": "User submits preferred time for premium bus from the Chalo Bus tab.",
       "properties": [
         {
           "property": "default time date"
@@ -1839,7 +1821,9 @@
         "mainEvents": [
           "pb landing route clicked",
           "pb trip details submitted",
-          "pb trip details screen shown"
+          "pb trip details screen shown",
+          "pb preferred time bottomsheet opened",
+          "pb preferred time submitted"
         ]
       },
       {

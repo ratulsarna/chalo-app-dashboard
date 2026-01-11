@@ -38,6 +38,10 @@
       "type": "string",
       "description": "Display name of the selected route."
     },
+    "totalResults": {
+      "type": "number",
+      "description": "Number of routes returned for a stop-pair search."
+    },
     "stopId": {
       "type": "string",
       "description": "Unique identifier for a stop (either from or to)."
@@ -1202,6 +1206,31 @@
       ]
     },
     {
+      "name": "stop based stop selection screen route result success",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
+      "properties": [
+        {
+          "property": "totalResults"
+        },
+        {
+          "property": "flowType"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen route result failure",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route/Stop Selection",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
+      "properties": [
+        {
+          "property": "flowType"
+        }
+      ]
+    },
+    {
       "name": "stop based stop selection screen opened",
       "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route/Stop Selection",
@@ -1606,6 +1635,8 @@
         "stop based route selection screen clear search click",
         "stop based stop selection screen instant ticket config fetch failed",
         "stop based stop selection screen instant ticket config fetch success",
+        "stop based stop selection screen route result success",
+        "stop based stop selection screen route result failure",
         "stop based stop selection screen opened",
         "stop based stop selection screen proceed button click",
         "stop based stop selection screen route result item click",
@@ -1663,6 +1694,18 @@
         "label": "Additional events: Route/Stop Selection",
         "events": [
           "stop based stop selection screen instant ticket config fetch success"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen route result success"
+        ]
+      },
+      {
+        "label": "Additional events: Route/Stop Selection",
+        "events": [
+          "stop based stop selection screen route result failure"
         ]
       },
       {

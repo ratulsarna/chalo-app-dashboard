@@ -3,7 +3,8 @@
 These diagrams exist to help build funnels in analytics dashboards. Green nodes are the exact event strings emitted by the app; grey nodes are non-analytics context (screens/states/branches). Edges show the typical order and major forks.
 
 Notes:
-- The home flow spans **5 main tabs**: Home, Regular Bus, Chalo Bus, Profile, and Tickets
+- The bottom nav includes **Home, Regular Bus, Chalo Bus, Tickets**, plus an optional **Search** tab
+- The Profile screen is opened via the profile icon (drawer), not a bottom nav tab
 - Location-related events (`gps request on`, `location update received`, etc.) fire across multiple tabs
 - Each tab has its own `rendered` event as the entry point
 
@@ -32,20 +33,27 @@ Use `bottom nav item clicked` to track which tab the user navigates to.
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_homeTab -> title:Tab 1: Home Screen Tab
+  %%chalo:diagram-link ui_regularBusTab -> title:Tab 2: Regular Bus Tab
+  %%chalo:diagram-link ui_chaloBusTab -> title:Tab 3: Chalo Bus (Premium Bus) Tab
+  %%chalo:diagram-link ui_ticketsTab -> title:Tab 5: Tickets/History Tab
   ui_bottomNav([Bottom Navigation Bar]) --> ev_bottomNavItemClicked["bottom nav item clicked"]
 
   ev_bottomNavItemClicked -->|bottom nav item = home| ui_homeTab([Home Tab])
   ev_bottomNavItemClicked -->|bottom nav item = regular bus| ui_regularBusTab([Regular Bus Tab])
   ev_bottomNavItemClicked -->|bottom nav item = chalo bus| ui_chaloBusTab([Chalo Bus Tab])
-  ev_bottomNavItemClicked -->|bottom nav item = profile| ui_profileTab([Profile Tab])
   ev_bottomNavItemClicked -->|bottom nav item = tickets| ui_ticketsTab([Tickets Tab])
+
+  ui_bottomNav --> ev_bottomNavSearchClicked["home screen bottom nav search tab clicked"]
+  ev_bottomNavSearchClicked --> external_searchFlow[Trip Planner / Search Flow]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_bottomNavItemClicked event;
-  class ui_bottomNav,ui_homeTab,ui_regularBusTab,ui_chaloBusTab,ui_profileTab,ui_ticketsTab ui;
+  class ev_bottomNavItemClicked,ev_bottomNavSearchClicked event;
+  class ui_bottomNav,ui_homeTab,ui_regularBusTab,ui_chaloBusTab,ui_ticketsTab ui;
+  class external_searchFlow external;
 ```
 
 ## Tab 1: Home Screen Tab
@@ -54,6 +62,8 @@ Main landing screen with premium bus cards, search, and profile access.
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_profileIconClicked -> title:Profile Screen (drawer)
+  %%chalo:diagram-link ev_pbHomescreenBookTripClicked -> title:Funnel: Home Screen → Premium Bus Booking Card
   ui_homeScreen([Home Screen Tab Opens]) --> ui_homeBoot([HomeComponent boot])
   ui_deeplink([Home opened via deeplink]) --> ev_homeViaDeeplink["home screen opened via deeplink"]
   ev_homeViaDeeplink --> ui_homeBoot
@@ -84,9 +94,8 @@ flowchart TD
 
   ev_homePageRendered --> ev_premiumReserveTicketAckCtaClicked["premium reserve ticket ack cta clicked"]
 
-  ev_homePageRendered --> ev_ocrHomescreenCardRecharge["ocr homescreen card recharge card"]
-  ev_ocrHomescreenCardRecharge --> ev_ocrTutorialBottomsheetDisplayed["ocr tutorial bottomsheet displayed"]
-  ev_ocrTutorialBottomsheetDisplayed --> ev_ocrTutorialBottomsheetNextClicked["ocr tutorial bottomsheet next clicked"]
+  ev_homePageRendered --> ui_ocrTutorial([Card recharge tutorial bottom sheet])
+  ui_ocrTutorial --> ev_ocrTutorialBottomsheetNextClicked["ocr tutorial bottomsheet next clicked"]
 
   ev_homePageRendered --> ev_appUpdateInstallClicked["app update install clicked"]
   ev_homePageRendered --> ev_appUpdateCancelClicked["app update cancel clicked"]
@@ -95,8 +104,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_homeViaDeeplink,ev_searchRemovalConfigFetch,ev_cacheLogger,ev_cacheEmpty,ev_cacheFailed,ev_homePageRendered,ev_homePageCardItemRendered,ev_homePageCardItemClicked,ev_homePageHookRendered,ev_homePageHookClicked,ev_profileIconClicked,ev_chaloSearchBarClicked,ev_cityChangeCardClicked,ev_pbHomescreenBookTripClicked,ev_premiumServiceBusInteraction,ev_pbBookingCardExpired,ev_premiumReserveTicketAckCtaClicked,ev_ocrHomescreenCardRecharge,ev_ocrTutorialBottomsheetDisplayed,ev_ocrTutorialBottomsheetNextClicked,ev_appUpdateInstallClicked,ev_appUpdateCancelClicked event;
-  class ui_homeScreen,ui_deeplink,ui_homeBoot,ui_cacheCheck,ui_pbBookingCardTap ui;
+  class ev_homeViaDeeplink,ev_searchRemovalConfigFetch,ev_cacheLogger,ev_cacheEmpty,ev_cacheFailed,ev_homePageRendered,ev_homePageCardItemRendered,ev_homePageCardItemClicked,ev_homePageHookRendered,ev_homePageHookClicked,ev_profileIconClicked,ev_chaloSearchBarClicked,ev_cityChangeCardClicked,ev_pbHomescreenBookTripClicked,ev_premiumServiceBusInteraction,ev_pbBookingCardExpired,ev_premiumReserveTicketAckCtaClicked,ev_ocrTutorialBottomsheetNextClicked,ev_appUpdateInstallClicked,ev_appUpdateCancelClicked event;
+  class ui_homeScreen,ui_deeplink,ui_homeBoot,ui_cacheCheck,ui_pbBookingCardTap,ui_ocrTutorial ui;
   class external_pbFlow external;
 ```
 
@@ -111,7 +120,7 @@ flowchart TD
   ev_regularBusPageRendered --> ev_regularBusPageCardItemRendered["regular bus page card item rendered"]
   ev_regularBusPageCardItemRendered --> ev_regularBusPageCardItemClicked["regular bus page card item clicked"]
   ev_regularBusPageRendered --> ev_profileIconClicked["profile icon clicked"]
-  ev_regularBusPageRendered --> ev_homeScreenBottomNavSearchTabClicked["home screen bottom nav search tab clicked"]
+  ev_regularBusPageRendered --> ev_chaloSearchBarClicked["chalo search bar clicked"]
 
   ev_regularBusPageRendered --> ev_nearbyStopsMoreClicked["nearby stops more clicked"]
   ev_regularBusPageRendered --> ev_nearbyStopsCardStopNameClicked["nearby stops card stop name header clicked"]
@@ -125,6 +134,10 @@ flowchart TD
   ev_regularBusPageRendered --> ev_cityChangeCardClicked["city change card clicked"]
   ev_regularBusPageRendered --> ev_regularBusPageMapThumbnailClicked["regular bus page map thumbnail clicked"]
 
+  %%chalo:diagram-link ev_profileIconClicked -> title:Profile Screen (drawer)
+  %%chalo:diagram-link ev_regularBusPageMapThumbnailClicked -> title:Funnel: Nearby Stops Map (From Regular Bus)
+  %%chalo:diagram-link ev_nearbyStopsCardRouteClicked -> title:Funnel: Regular Bus Tab → Route Details
+
   ev_regularBusPageRendered --> ev_seatOccupancyBottomsheetRendered["seat occupancy bottomsheet rendered on homescreen"]
   ev_seatOccupancyBottomsheetRendered --> ev_seatOccupancyBottomsheetDismissed["seat occupancy bottomsheet dismissed clicked"]
   ev_seatOccupancyBottomsheetRendered --> ev_seatOccupancyBottomsheetGotIt["seat occupancy bottomsheet got it clicked"]
@@ -136,7 +149,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_regularBusPageRendered,ev_regularBusPageCardItemRendered,ev_regularBusPageCardItemClicked,ev_profileIconClicked,ev_homeScreenBottomNavSearchTabClicked,ev_nearbyStopsMoreClicked,ev_nearbyStopsCardStopNameClicked,ev_nearbyStopsCardMoreTripsClicked,ev_nearbyStopsCardRouteClicked,ev_regularBusPageRecentSearchCardClicked,ev_seeAllPassesClicked,ev_cityChangeCardClicked,ev_regularBusPageMapThumbnailClicked,ev_seatOccupancyBottomsheetRendered,ev_seatOccupancyBottomsheetDismissed,ev_seatOccupancyBottomsheetGotIt,ev_seatOccupancyBottomsheetLearnMore,ev_payForTicketClickNavFailed event;
+  class ev_regularBusPageRendered,ev_regularBusPageCardItemRendered,ev_regularBusPageCardItemClicked,ev_profileIconClicked,ev_chaloSearchBarClicked,ev_nearbyStopsMoreClicked,ev_nearbyStopsCardStopNameClicked,ev_nearbyStopsCardMoreTripsClicked,ev_nearbyStopsCardRouteClicked,ev_regularBusPageRecentSearchCardClicked,ev_seeAllPassesClicked,ev_cityChangeCardClicked,ev_regularBusPageMapThumbnailClicked,ev_seatOccupancyBottomsheetRendered,ev_seatOccupancyBottomsheetDismissed,ev_seatOccupancyBottomsheetGotIt,ev_seatOccupancyBottomsheetLearnMore,ev_payForTicketClickNavFailed event;
   class ui_regularBusScreen ui;
   class external_routeDetails external;
 ```
@@ -148,6 +161,7 @@ Premium bus landing with routes, passes, trip submission.
 ```mermaid
 flowchart TD
   ui_chaloBusScreen([Chalo Bus Tab Opens]) --> ev_chaloBusPageRendered["chalo bus page rendered"]
+  ev_chaloBusPageRendered --> ev_pbTripDetailsScreenShown["pb trip details screen shown"]
 
   ev_chaloBusPageRendered --> ev_chaloTabBottomSheetDismissed["chalo tab bottom sheet dismissed"]
   ev_chaloBusPageRendered --> ev_seeAllPassesClicked["see all passes clicked"]
@@ -155,9 +169,14 @@ flowchart TD
   ev_chaloBusPageRendered --> ev_pbExploreAvailableRoutesClicked["pb explore available routes button clicked"]
   ev_chaloBusPageRendered --> ev_pbLandingRouteClicked["pb landing route clicked"]
 
-  ev_pbLandingRouteClicked --> ev_pbPreferredTimeBottomsheetOpened["pb preferred time bottomsheet opened"]
-  ev_pbPreferredTimeBottomsheetOpened --> ev_pbTripDetailsSubmitted["pb trip details submitted"]
-  ev_pbTripDetailsSubmitted --> ev_pbTripDetailsScreenShown["pb trip details screen shown"]
+  ev_pbExploreAvailableRoutesClicked --> external_pbAllRoutes[Premium Bus All Routes]
+  ev_pbLandingRouteClicked --> external_routeDetails[Route Details Flow]
+
+  ev_pbTripDetailsScreenShown --> ui_tripDetailsInput([Select from/to stops + Proceed])
+  ui_tripDetailsInput --> ev_pbTripDetailsSubmitted["pb trip details submitted"]
+  ev_pbTripDetailsSubmitted --> ev_pbPreferredTimeBottomsheetOpened["pb preferred time bottomsheet opened"]
+  ev_pbPreferredTimeBottomsheetOpened --> ev_pbPreferredTimeSubmitted["pb preferred time submitted"]
+  ev_pbPreferredTimeSubmitted --> external_pbFlow[Premium Bus Booking Flow]
 
   ev_chaloBusPageRendered --> ev_chaloBusTabNotificationIconClick["chalo bus tab notification icon click"]
 
@@ -165,17 +184,18 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_chaloBusPageRendered,ev_chaloTabBottomSheetDismissed,ev_seeAllPassesClicked,ev_pbPassSavingsInfoBtnClicked,ev_pbExploreAvailableRoutesClicked,ev_pbLandingRouteClicked,ev_pbPreferredTimeBottomsheetOpened,ev_pbTripDetailsSubmitted,ev_pbTripDetailsScreenShown,ev_chaloBusTabNotificationIconClick event;
-  class ui_chaloBusScreen ui;
+  class ev_chaloBusPageRendered,ev_pbTripDetailsScreenShown,ev_chaloTabBottomSheetDismissed,ev_seeAllPassesClicked,ev_pbPassSavingsInfoBtnClicked,ev_pbExploreAvailableRoutesClicked,ev_pbLandingRouteClicked,ev_pbTripDetailsSubmitted,ev_pbPreferredTimeBottomsheetOpened,ev_pbPreferredTimeSubmitted,ev_chaloBusTabNotificationIconClick event;
+  class ui_chaloBusScreen,ui_tripDetailsInput ui;
+  class external_pbAllRoutes,external_routeDetails,external_pbFlow external;
 ```
 
-## Tab 4: Profile Tab
+## Profile Screen (via profile icon)
 
 User profile with menu options.
 
 ```mermaid
 flowchart TD
-  ui_profileScreen([Profile Tab Opens]) --> ev_profileScreenRendered["profile screen rendered"]
+  ui_profileScreen([Profile Screen Opens]) --> ev_profileScreenRendered["profile screen rendered"]
 
   ev_profileScreenRendered --> ev_profileScreenItemRendered["profile screen item rendered"]
   ev_profileScreenItemRendered --> ev_profileScreenItemClicked["profile screen item clicked"]
@@ -395,9 +415,7 @@ Typical flow for premium bus bookings from home screen.
 flowchart TD
   ev_homePageRendered["home page rendered"]
   ev_homePageRendered --> ev_pbHomescreenBookTripClicked["pb homescreen book trip clicked"]
-  ev_pbHomescreenBookTripClicked --> ev_pbPreferredTimeBottomsheetOpened["pb preferred time bottomsheet opened"]
-  ev_pbPreferredTimeBottomsheetOpened --> ev_pbPreferredTimeSubmitted["pb preferred time submitted"]
-  ev_pbPreferredTimeSubmitted --> external_pbBookingFlow[Premium Bus Booking Flow]
+  ev_pbHomescreenBookTripClicked --> external_pbBookingFlow[Premium Bus Booking / Ticket Details]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -432,14 +450,16 @@ Premium bus trip details submission flow.
 ```mermaid
 flowchart TD
   ev_chaloBusPageRendered["chalo bus page rendered"]
-  ev_chaloBusPageRendered --> ev_pbLandingRouteClicked["pb landing route clicked"]
-  ev_pbLandingRouteClicked --> ev_pbPreferredTimeBottomsheetOpened["pb preferred time bottomsheet opened"]
-  ev_pbPreferredTimeBottomsheetOpened --> ev_pbTripDetailsSubmitted["pb trip details submitted"]
-  ev_pbTripDetailsSubmitted --> ev_pbTripDetailsScreenShown["pb trip details screen shown"]
+  ev_chaloBusPageRendered --> ev_pbTripDetailsScreenShown["pb trip details screen shown"]
+  ev_pbTripDetailsScreenShown --> ev_pbTripDetailsSubmitted["pb trip details submitted"]
+  ev_pbTripDetailsSubmitted --> ev_pbPreferredTimeBottomsheetOpened["pb preferred time bottomsheet opened"]
+  ev_pbPreferredTimeBottomsheetOpened --> ev_pbPreferredTimeSubmitted["pb preferred time submitted"]
+  ev_pbPreferredTimeSubmitted --> external_pbBookingFlow[Premium Bus Booking Flow]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_chaloBusPageRendered,ev_pbLandingRouteClicked,ev_pbPreferredTimeBottomsheetOpened,ev_pbTripDetailsSubmitted,ev_pbTripDetailsScreenShown event;
+  class ev_chaloBusPageRendered,ev_pbTripDetailsScreenShown,ev_pbTripDetailsSubmitted,ev_pbPreferredTimeBottomsheetOpened,ev_pbPreferredTimeSubmitted event;
+  class external_pbBookingFlow external;
 ```
