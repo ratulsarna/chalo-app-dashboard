@@ -15,7 +15,7 @@
       "type": "string",
       "description": "The screen/source from which search was initiated (e.g., home, route details, trip planner)."
     },
-    "no of recent trips available": {
+    "noOfRecentTripsAvailable": {
       "type": "number",
       "description": "Count of recent trips shown in search suggestions when screen opens."
     },
@@ -24,30 +24,30 @@
       "description": "The search query text entered by user."
     },
     "queryLength": {
-      "type": "number",
+      "type": "string",
       "description": "Character count of the search query (as string)."
     },
     "loadingTime": {
       "type": "string",
       "description": "Time taken to load and display search results, in milliseconds (as string)."
     },
-    "user lat long": {
+    "userLatLong": {
       "type": "string",
       "description": "User's GPS coordinates formatted as 'lat: {latitude}, long: {longitude}'."
     },
-    "total results": {
+    "totalResults": {
       "type": "string",
       "description": "Total count of all search results returned (routes + stops + places)."
     },
-    "route": {
+    "ROUTE": {
       "type": "string",
       "description": "Count of route results in search (as string)."
     },
-    "trips locations": {
+    "TRIPS_LOCATIONS": {
       "type": "string",
       "description": "Count of location/place results in search (as string)."
     },
-    "trips stops": {
+    "TRIPS_STOPS": {
       "type": "string",
       "description": "Count of stop results in search (as string)."
     },
@@ -82,27 +82,27 @@
         "TRIP_LOCATION"
       ]
     },
-    "total stops and places": {
+    "totalStopsAndPlaces": {
       "type": "number",
       "description": "Combined count of stops and places in search results."
     },
-    "total routes": {
+    "totalRoutes": {
       "type": "number",
       "description": "Count of routes in search results."
     },
-    "result lat long": {
+    "resultLatLong": {
       "type": "string",
       "description": "GPS coordinates of the selected result formatted as 'lat: {latitude}, long: {longitude}'."
     },
-    "is recent item": {
+    "isRecentResult": {
       "type": "string",
       "description": "Whether the selected item is from recent searches (boolean as string)."
     },
-    "is device back clicked": {
+    "isDeviceBackClicked": {
       "type": "string",
       "description": "Whether device back button was used to exit search (boolean as string)."
     },
-    "time from result shown": {
+    "timeFromResultShown": {
       "type": "string",
       "description": "Time elapsed from when results were shown to when back/clear was clicked, in milliseconds (as string)."
     },
@@ -138,7 +138,7 @@
       "type": "string",
       "description": "Stop name for legacy universal item clicked events."
     },
-    "stopid": {
+    "stopId": {
       "type": "string",
       "description": "Stop ID for legacy universal item clicked events."
     },
@@ -150,15 +150,15 @@
       "type": "string",
       "description": "Route ID for legacy universal item clicked events."
     },
-    "agency name": {
+    "agency": {
       "type": "string",
       "description": "Agency name for route items."
     },
-    "start stop": {
+    "startStop": {
       "type": "string",
       "description": "Start stop name for route items."
     },
-    "is free ride": {
+    "isFreeRide": {
       "type": "string",
       "description": "Whether the route offers free rides (boolean as string)."
     },
@@ -170,11 +170,11 @@
       "type": "string",
       "description": "Type of item clicked in universal search (LOCATION, STOP, ROUTE, TRIP_STOP, TRIP_LOCATION)."
     },
-    "from recent list": {
+    "fromRecentList": {
       "type": "string",
       "description": "Whether item is from recent list (boolean as string)."
     },
-    "is popular route": {
+    "isPopularRoute": {
       "type": "string",
       "description": "Whether route is a popular route (boolean as string)."
     },
@@ -182,11 +182,11 @@
       "type": "string",
       "description": "Search query string (only included if not recent/popular item)."
     },
-    "hour of event": {
+    "hourOfEvent": {
       "type": "string",
       "description": "Hour of day when event occurred (0-23)."
     },
-    "network status": {
+    "networkStatus": {
       "type": "string",
       "description": "Network connectivity status (boolean as string)."
     },
@@ -218,19 +218,19 @@
       "type": "string",
       "description": "Type of FROM selection (STOP or PLACE)."
     },
-    "from_stop_name": {
+    "from_stop name": {
       "type": "string",
       "description": "Name of FROM stop."
     },
-    "from_stop_id": {
+    "from_stop id": {
       "type": "string",
       "description": "ID of FROM stop."
     },
-    "from_place_name": {
+    "from_locationName": {
       "type": "string",
       "description": "Name of FROM place."
     },
-    "from_place_id": {
+    "from_place id": {
       "type": "string",
       "description": "ID of FROM place."
     },
@@ -238,19 +238,19 @@
       "type": "string",
       "description": "Type of TO selection (STOP or PLACE)."
     },
-    "to_stop_name": {
+    "to_stop name": {
       "type": "string",
       "description": "Name of TO stop."
     },
-    "to_stop_id": {
+    "to_stop id": {
       "type": "string",
       "description": "ID of TO stop."
     },
-    "to_place_name": {
+    "to_locationName": {
       "type": "string",
       "description": "Name of TO place."
     },
-    "to_place_id": {
+    "to_place id": {
       "type": "string",
       "description": "ID of TO place."
     },
@@ -262,7 +262,7 @@
       "type": "string",
       "description": "ID of selected stop."
     },
-    "location name": {
+    "locationName": {
       "type": "string",
       "description": "Name of selected location/place."
     },
@@ -274,7 +274,7 @@
       "type": "number",
       "description": "Count of nearby stops found for a place."
     },
-    "error type": {
+    "errorType": {
       "type": "string",
       "description": "Type of error when nearest stop fetch fails."
     },
@@ -282,7 +282,7 @@
       "type": "string",
       "description": "Distance to selected nearest stop."
     },
-    "previous screen": {
+    "previousScreen": {
       "type": "string",
       "description": "Previous screen before opening stop-based trip planner search."
     },
@@ -291,6 +291,14 @@
     },
     "timedOut": {
       "type": "string"
+    },
+    "from_distance": {
+      "type": "string",
+      "description": "Distance to selected nearest stop."
+    },
+    "to_distance": {
+      "type": "string",
+      "description": "Distance to selected nearest stop."
     }
   },
   "stages": [
@@ -377,22 +385,22 @@
           "property": "searchScreenInputScreen"
         },
         {
-          "property": "user lat long"
+          "property": "userLatLong"
         },
         {
-          "property": "total results",
+          "property": "totalResults",
           "context": "Present on success"
         },
         {
-          "property": "route",
+          "property": "ROUTE",
           "context": "Present on success"
         },
         {
-          "property": "trips locations",
+          "property": "TRIPS_LOCATIONS",
           "context": "Present on success"
         },
         {
-          "property": "trips stops",
+          "property": "TRIPS_STOPS",
           "context": "Present on success"
         },
         {
@@ -470,10 +478,10 @@
           "property": "place id"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         },
         {
-          "property": "error type"
+          "property": "errorType"
         }
       ]
     },
@@ -491,7 +499,7 @@
           "property": "place id"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         },
         {
           "property": "count",
@@ -513,7 +521,7 @@
           "property": "place id"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         },
         {
           "property": "stop name"
@@ -540,7 +548,7 @@
           "property": "place id"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         }
       ]
     },
@@ -570,7 +578,7 @@
           "context": "FROM or TO"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         },
         {
           "property": "place id"
@@ -603,20 +611,20 @@
           "property": "universal item clicked"
         },
         {
-          "property": "from recent list"
+          "property": "fromRecentList"
         },
         {
-          "property": "is popular route"
+          "property": "isPopularRoute"
         },
         {
           "property": "searchString",
           "context": "Only if not recent or popular"
         },
         {
-          "property": "hour of event"
+          "property": "hourOfEvent"
         },
         {
-          "property": "network status"
+          "property": "networkStatus"
         }
       ]
     },
@@ -647,7 +655,7 @@
           "property": "place id"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         }
       ]
     },
@@ -674,7 +682,7 @@
           "property": "searchScreenInputScreen"
         },
         {
-          "property": "time from result shown"
+          "property": "timeFromResultShown"
         },
         {
           "property": "searchResult1Type",
@@ -740,19 +748,19 @@
           "property": "searchResultType"
         },
         {
-          "property": "total stops and places"
+          "property": "totalStopsAndPlaces"
         },
         {
-          "property": "total routes"
+          "property": "totalRoutes"
         },
         {
-          "property": "result lat long"
+          "property": "resultLatLong"
         },
         {
-          "property": "user lat long"
+          "property": "userLatLong"
         },
         {
-          "property": "is recent item"
+          "property": "isRecentResult"
         }
       ]
     },
@@ -779,10 +787,10 @@
           "property": "searchScreenInputScreen"
         },
         {
-          "property": "is device back clicked"
+          "property": "isDeviceBackClicked"
         },
         {
-          "property": "time from result shown"
+          "property": "timeFromResultShown"
         },
         {
           "property": "searchResult1Type",
@@ -830,7 +838,7 @@
           "context": "Screen from which search was initiated"
         },
         {
-          "property": "no of recent trips available",
+          "property": "noOfRecentTripsAvailable",
           "context": "Count of recent trips shown"
         }
       ]
@@ -849,7 +857,7 @@
           "property": "place id"
         },
         {
-          "property": "location name"
+          "property": "locationName"
         }
       ]
     },
@@ -891,39 +899,47 @@
           "property": "from_type"
         },
         {
-          "property": "from_stop_name",
+          "property": "from_stop name",
           "context": "If from is a stop"
         },
         {
-          "property": "from_stop_id",
+          "property": "from_stop id",
           "context": "If from is a stop"
         },
         {
-          "property": "from_place_name",
+          "property": "from_locationName",
           "context": "If from is a place"
         },
         {
-          "property": "from_place_id",
+          "property": "from_place id",
           "context": "If from is a place"
+        },
+        {
+          "property": "from_distance",
+          "context": "If from is a nearest stop selection"
         },
         {
           "property": "to_type"
         },
         {
-          "property": "to_stop_name",
+          "property": "to_stop name",
           "context": "If to is a stop"
         },
         {
-          "property": "to_stop_id",
+          "property": "to_stop id",
           "context": "If to is a stop"
         },
         {
-          "property": "to_place_name",
+          "property": "to_locationName",
           "context": "If to is a place"
         },
         {
-          "property": "to_place_id",
+          "property": "to_place id",
           "context": "If to is a place"
+        },
+        {
+          "property": "to_distance",
+          "context": "If to is a nearest stop selection"
         }
       ]
     },
@@ -935,7 +951,7 @@
       "description": "Stop-based trip planner search screen is opened for selecting from/to locations.",
       "properties": [
         {
-          "property": "previous screen",
+          "property": "previousScreen",
           "context": "Optional - screen before opening trip planner search"
         }
       ]
@@ -959,39 +975,47 @@
           "property": "from_type"
         },
         {
-          "property": "from_stop_name",
+          "property": "from_stop name",
           "context": "If from is a stop"
         },
         {
-          "property": "from_stop_id",
+          "property": "from_stop id",
           "context": "If from is a stop"
         },
         {
-          "property": "from_place_name",
+          "property": "from_locationName",
           "context": "If from is a place"
         },
         {
-          "property": "from_place_id",
+          "property": "from_place id",
           "context": "If from is a place"
+        },
+        {
+          "property": "from_distance",
+          "context": "If from is a nearest stop selection"
         },
         {
           "property": "to_type"
         },
         {
-          "property": "to_stop_name",
+          "property": "to_stop name",
           "context": "If to is a stop"
         },
         {
-          "property": "to_stop_id",
+          "property": "to_stop id",
           "context": "If to is a stop"
         },
         {
-          "property": "to_place_name",
+          "property": "to_locationName",
           "context": "If to is a place"
         },
         {
-          "property": "to_place_id",
+          "property": "to_place id",
           "context": "If to is a place"
+        },
+        {
+          "property": "to_distance",
+          "context": "If to is a nearest stop selection"
         }
       ]
     },
@@ -1011,7 +1035,7 @@
           "context": "For STOP type items"
         },
         {
-          "property": "stopid",
+          "property": "stopId",
           "context": "For STOP type items"
         },
         {
@@ -1019,15 +1043,15 @@
           "context": "For ROUTE type items"
         },
         {
-          "property": "agency name",
+          "property": "agency",
           "context": "For ROUTE type items"
         },
         {
-          "property": "start stop",
+          "property": "startStop",
           "context": "For ROUTE type items"
         },
         {
-          "property": "is free ride",
+          "property": "isFreeRide",
           "context": "For ROUTE type items"
         },
         {
@@ -1038,20 +1062,20 @@
           "context": "Item type: LOCATION, STOP, ROUTE, TRIP_STOP, TRIP_LOCATION"
         },
         {
-          "property": "from recent list"
+          "property": "fromRecentList"
         },
         {
-          "property": "is popular route"
+          "property": "isPopularRoute"
         },
         {
           "property": "searchString",
           "context": "Only if not recent or popular item"
         },
         {
-          "property": "hour of event"
+          "property": "hourOfEvent"
         },
         {
-          "property": "network status"
+          "property": "networkStatus"
         }
       ],
       "notes": "This is a legacy event. New code should use 'search result clicked' instead."

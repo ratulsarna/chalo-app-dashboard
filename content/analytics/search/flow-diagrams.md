@@ -41,6 +41,8 @@ flowchart TD
   ev_bottomNavSearchTab --> ui_universalSearch
   ev_recentSearchCard --> ui_universalSearch
 
+  %%chalo:diagram-link ui_universalSearch -> title:Universal Search Flow (Main Funnel)
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
@@ -56,25 +58,24 @@ The primary search experience where users search for routes, stops, or places.
 ```mermaid
 flowchart TD
   ui_searchOpen([Universal Search Opens]) --> ev_screenOpened["search screen opened"]
+  ev_screenOpened --> ui_queryEmpty([Empty query / recent items])
+  ui_queryEmpty --> ev_resultsShown["Search results shown"]
+
   ev_screenOpened --> ui_userTyping([User starts typing])
   ui_userTyping --> ev_firstChar["first character type after search open"]
   ev_firstChar --> ui_searching([Query being typed])
-  ui_searching --> ev_resultsShown["Search results shown"]
+  ui_searching --> ev_resultsShown
 
   ev_resultsShown -->|Success| ui_resultsList([Results displayed])
   ev_resultsShown -->|Failure| ui_errorState([Error state])
 
-  ui_resultsList --> ev_resultClicked["search result clicked"]
   ui_resultsList --> ev_universalItemClicked["universal item clicked"]
+  ev_universalItemClicked --> ev_resultClicked["search result clicked"]
   ui_resultsList --> ev_recentTripClicked["recent trip result clicked"]
 
   ev_resultClicked --> ext_routeDetails[Route Details Flow]
   ev_resultClicked --> ext_stopDetails[Stop Details Flow]
   ev_resultClicked --> ext_tripPlanner[Trip Planner Flow]
-
-  ev_universalItemClicked --> ext_routeDetails
-  ev_universalItemClicked --> ext_stopDetails
-  ev_universalItemClicked --> ext_tripPlanner
 
   ev_recentTripClicked --> ext_tripPlanner
 
@@ -85,12 +86,14 @@ flowchart TD
   ev_clearQuery --> ui_emptySearch([Empty search state])
   ev_backClicked --> ui_previousScreen([Previous screen])
 
+  %%chalo:diagram-link ev_resultClicked -> title:Universal Search Item Types (Result Click Detail)
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
   class ev_screenOpened,ev_firstChar,ev_resultsShown,ev_resultClicked,ev_universalItemClicked,ev_recentTripClicked,ev_clearQuery,ev_backClicked event;
-  class ui_searchOpen,ui_userTyping,ui_searching,ui_resultsList,ui_errorState,ui_emptySearch,ui_previousScreen ui;
+  class ui_searchOpen,ui_queryEmpty,ui_userTyping,ui_searching,ui_resultsList,ui_errorState,ui_emptySearch,ui_previousScreen ui;
   class ext_routeDetails,ext_stopDetails,ext_tripPlanner external;
 ```
 
@@ -109,42 +112,49 @@ flowchart TD
   ui_fromToFields --> ev_swapClicked["swap button clicked"]
   ui_fromToFields --> ev_recentClicked["stop trip planner search recent clicked"]
 
-  ev_fromClicked --> ui_searchBottomSheet([Search Bottom Sheet])
-  ev_toClicked --> ui_searchBottomSheet
+  ev_fromClicked --> ext_universalSearch[Universal Search Screen]
+  ev_toClicked --> ext_universalSearch
 
-  ui_searchBottomSheet --> ev_stopSelected["stop search result selected"]
-  ui_searchBottomSheet --> ev_placeSelected["place search result selected"]
+  ext_universalSearch --> ev_stopSelected["stop search result selected"]
+  ext_universalSearch --> ev_placeSelected["place search result selected"]
 
-  ev_stopSelected --> ui_fieldPopulated([Field populated with stop])
+  ev_stopSelected --> ui_fieldPopulated([Field populated])
 
   ev_placeSelected --> ui_nearestStopFetch([Fetching nearest stops])
   ui_nearestStopFetch --> ev_fetchSuccess["nearest stop fetch success"]
   ui_nearestStopFetch --> ev_fetchFailure["nearest stop fetch failure"]
 
-  ev_fetchSuccess --> ui_nearbyStopsList([Nearby stops list shown])
+  ev_fetchSuccess --> ui_nearbyStopsSheet([Nearest stops bottom sheet])
   ev_fetchSuccess --> ev_noStops["no nearby stops found for place"]
 
-  ui_nearbyStopsList --> ev_stopSelectedFromNearby["nearest stop selected"]
-  ui_nearbyStopsList --> ev_showAllClicked["show all nearby stops clicked"]
-
-  ev_stopSelectedFromNearby --> ui_fieldPopulated
-  ev_showAllClicked --> ui_allNearbyStops([All nearby stops view])
+  ui_nearbyStopsSheet --> ev_stopSelectedFromNearby["nearest stop selected"]
+  ui_nearbyStopsSheet --> ev_showAllClicked["show all nearby stops clicked"]
+  ui_nearbyStopsSheet --> ev_bottomSheetClosed["bottom sheet closed button clicked"]
 
   ev_fetchFailure --> ui_errorRetry([Error state with retry])
   ui_errorRetry --> ev_retryClicked["retry nearest stop fetch clicked"]
   ev_retryClicked --> ui_nearestStopFetch
 
-  ui_searchBottomSheet --> ev_bottomSheetClosed["bottom sheet closed button clicked"]
+  ev_recentClicked --> ui_fieldPopulated
+  ev_swapClicked --> ui_fieldPopulated
+  ev_noStops --> ui_fieldPopulated
+  ev_stopSelectedFromNearby --> ui_fieldPopulated
+  ev_showAllClicked --> ui_fieldPopulated
+
+  ui_fieldPopulated --> ui_readyToSearch{From & To set?}
+  ui_readyToSearch -->|Yes| ext_tripPlannerResults[Trip Planner Results Flow]
+  ui_readyToSearch -->|No| ui_fromToFields
   ev_bottomSheetClosed --> ui_fromToFields
 
-  ui_fieldPopulated --> ui_proceedToResults([Proceed to trip results])
+  %%chalo:diagram-link ext_universalSearch -> title:Universal Search Flow (Main Funnel)
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
   class ev_screenOpened,ev_fromClicked,ev_toClicked,ev_swapClicked,ev_recentClicked,ev_stopSelected,ev_placeSelected,ev_fetchSuccess,ev_fetchFailure,ev_noStops,ev_stopSelectedFromNearby,ev_showAllClicked,ev_retryClicked,ev_bottomSheetClosed event;
-  class ui_tripPlannerOpen,ui_fromToFields,ui_searchBottomSheet,ui_fieldPopulated,ui_nearestStopFetch,ui_nearbyStopsList,ui_allNearbyStops,ui_errorRetry,ui_proceedToResults ui;
+  class ui_tripPlannerOpen,ui_fromToFields,ui_fieldPopulated,ui_readyToSearch,ui_nearestStopFetch,ui_nearbyStopsSheet,ui_errorRetry ui;
+  class ext_universalSearch,ext_tripPlannerResults external;
 ```
 
 ## Universal Search Item Types (Result Click Detail)
