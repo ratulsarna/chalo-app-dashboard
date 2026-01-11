@@ -65,7 +65,7 @@
     "authentication": {
       "name": "Authentication",
       "description": "User authentication - login screen, OTP verification, Truecaller, logout, session management. Identity and access.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-11"
     },
     "home": {
       "name": "Home",

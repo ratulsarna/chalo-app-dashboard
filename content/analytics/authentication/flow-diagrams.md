@@ -4,7 +4,7 @@ These diagrams exist to help build funnels in analytics dashboards. Green nodes 
 
 Notes:
 - Authentication has two primary paths: **OTP-based login** (phone number) and **Truecaller login**
-- Users can skip login entirely via the "skip" button
+- Skip login exists in the UI, but no analytics event is emitted for it as of 2026-01-11.
 - Profile management events are logged post-authentication
 - `login successful` and `login failed` can be emitted from either the login options screen (Truecaller path) or OTP verification screen (OTP path)
 
@@ -37,7 +37,6 @@ flowchart TD
 
   ui_pathChoice -->|Phone number| ui_otpPath([OTP path])
   ui_pathChoice -->|Truecaller| ui_truecallerPath([Truecaller path])
-  ui_pathChoice -->|Skip| ev_skipLogin["login skip btn clicked"]
 
   ui_otpPath --> funnel_otp([OTP Login Funnel])
   ui_truecallerPath --> funnel_truecaller([Truecaller Login Funnel])
@@ -47,7 +46,6 @@ flowchart TD
 
   ev_loginSuccess1 --> ui_authenticated([User authenticated])
   ev_loginSuccess2 --> ui_authenticated
-  ev_skipLogin --> ui_guest([Guest mode - no auth])
 
   ui_authenticated --> ui_profileAccess([Profile management available])
 
@@ -55,8 +53,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_loginScreen,ev_skipLogin,ev_loginSuccess1,ev_loginSuccess2 event;
-  class ui_entry,ui_pathChoice,ui_otpPath,ui_truecallerPath,ui_authenticated,ui_guest,ui_profileAccess,funnel_otp,funnel_truecaller ui;
+  class ev_loginScreen,ev_loginSuccess1,ev_loginSuccess2 event;
+  class ui_entry,ui_pathChoice,ui_otpPath,ui_truecallerPath,ui_authenticated,ui_profileAccess,funnel_otp,funnel_truecaller ui;
 ```
 
 ## Funnel 1: OTP-based login (phone number)
@@ -108,10 +106,8 @@ flowchart TD
   ui_userSelectsTruecaller --> ev_uidFetchTry["login truecaller uid fetch try"]
 
   ev_uidFetchTry --> ui_uidFetch([Fetch Truecaller UID])
-  ui_uidFetch --> ev_uidFetchSuccess["login truecaller uid fetch success"]
   ui_uidFetch --> ev_uidFetchFailed["login truecaller uid fetch failed"]
-
-  ev_uidFetchSuccess --> ev_bottomSheetRendered["truecaller bottomsheet rendered for login"]
+  ui_uidFetch --> ev_bottomSheetRendered["truecaller bottomsheet rendered for login"]
 
   ev_bottomSheetRendered --> ui_truecallerAuth([User interacts with Truecaller UI])
   ui_truecallerAuth --> ev_continueWithTruecaller["continue with truecaller clicked"]
@@ -124,12 +120,12 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_screenOpen,ev_uidFetchTry,ev_uidFetchSuccess,ev_uidFetchFailed,ev_bottomSheetRendered,ev_continueWithTruecaller,ev_truecallerError,ev_loginSuccess,ev_loginFailed event;
+  class ev_screenOpen,ev_uidFetchTry,ev_uidFetchFailed,ev_bottomSheetRendered,ev_continueWithTruecaller,ev_truecallerError,ev_loginSuccess,ev_loginFailed event;
   class ui_loginScreen,ui_userSelectsTruecaller,ui_uidFetch,ui_truecallerAuth,ui_verifyTruecaller ui;
 ```
 
 ### Key metrics for Truecaller funnel:
-- **Availability**: `login truecaller uid fetch try` → `login truecaller uid fetch success` (Truecaller availability rate)
+- **Availability**: `login truecaller uid fetch try` → `truecaller bottomsheet rendered for login` (proxy for UID fetch success; there is no separate emitted UID-fetch-success event)
 - **Conversion rate**: `truecaller bottomsheet rendered for login` → `continue with truecaller clicked` → `login successful`
 - **Failure points**: Track `login truecaller uid fetch failed` (app not installed) vs `truecaller error callback` (user cancelled) vs `login failed` (verification failed)
 
@@ -187,27 +183,6 @@ flowchart TD
 - **Logout success**: Track `user profile logout result` with `loggedOutSuccessfully` attribute
 - **Account deletion intent**: `user profile delete clicked` → `user profile delete web url opened` (funnel drop-off indicates friction)
 
-## Skip login path
-
-```mermaid
-flowchart TD
-  ui_loginScreen([Login screen displayed]) --> ev_screenOpen["login screen displayed"]
-
-  ev_screenOpen --> ui_skipOption([User can skip login])
-  ui_skipOption --> ev_skipClicked["login skip btn clicked"]
-
-  ev_skipClicked --> ui_guestMode([Continue as guest - no authentication])
-
-  classDef event fill:#166534,stroke:#166534,color:#ffffff;
-  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
-
-  class ev_screenOpen,ev_skipClicked event;
-  class ui_loginScreen,ui_skipOption,ui_guestMode ui;
-```
-
-### Key metrics for skip login:
-- **Skip rate**: `login skip btn clicked` / `login screen displayed` (indicates authentication friction or value proposition issues)
-
 ## Property usage guide
 
 ### method property (login successful / login failed)
@@ -260,8 +235,7 @@ otp entered
 ### 4. Truecaller availability and conversion
 ```
 login truecaller uid fetch try
-  → login truecaller uid fetch success (Truecaller available)
-  → truecaller bottomsheet rendered for login
+  → truecaller bottomsheet rendered for login (Truecaller available / UID fetch succeeded)
   → continue with truecaller clicked
   → login successful
 ```

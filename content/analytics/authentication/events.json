@@ -7,6 +7,10 @@
       "type": "string",
       "description": "The country calling code selected for phone number-based login (e.g., +91 for India, +1 for US)."
     },
+    "isTrueCallerInstalled": {
+      "type": "boolean",
+      "description": "True when a Truecaller UID has been obtained in the login options flow (computed as uidForTruecaller != null)."
+    },
     "method": {
       "type": "string",
       "description": "Login/authentication method used by the user.",
@@ -19,9 +23,17 @@
       "type": "string",
       "description": "Human-readable reason for failure events (login failed, Truecaller error, profile edit error, etc.)."
     },
+    "isInvalidOtpEntered": {
+      "type": "boolean",
+      "description": "True when the OTP verification fails specifically due to an invalid OTP (LoginOtpEnterComponent only)."
+    },
     "otpRequestErrorMsg": {
       "type": "string",
       "description": "Specific error message when OTP request or resend fails."
+    },
+    "src": {
+      "type": "string",
+      "description": "Entry source that navigated into the login flow (Source.sourceName), sent as an event property key 'src' from LoginOptionsComponent."
     },
     "loggedOutSuccessfully": {
       "type": "boolean",
@@ -33,11 +45,11 @@
     },
     "initiallySelectedDate": {
       "type": "string",
-      "description": "The date initially selected in the date picker when the user opens the DOB field."
+      "description": "The initial DOB shown in the date picker when the user opens the DOB field (epoch millis as a string)."
     },
     "sessionLogout": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "boolean",
+      "description": "True when logout was user-triggered; false when session/logout is triggered automatically (sent as a boolean string)."
     },
     "url": {
       "type": "string",
@@ -56,12 +68,10 @@
         "login screen displayed",
         "login truecaller uid fetch try",
         "login truecaller uid fetch failed",
-        "login truecaller uid fetch success",
         "truecaller bottomsheet rendered for login",
         "truecaller error callback",
         "continue with truecaller clicked",
         "login continue btn clicked",
-        "login skip btn clicked",
         "otp sent",
         "login otp request failed",
         "login successful",
@@ -125,7 +135,20 @@
       "stage": "Login Screen",
       "source": "loginOptionsScreen",
       "description": "User confirms Truecaller login and proceeds with Truecaller authentication.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code currently selected on the login screen"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        }
+      ]
     },
     {
       "name": "login continue btn clicked",
@@ -137,6 +160,14 @@
         {
           "property": "countryCallingCode",
           "context": "Country calling code of the entered phone number"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
         }
       ]
     },
@@ -148,12 +179,28 @@
       "description": "Login verification failed with a specific reason.",
       "properties": [
         {
+          "property": "countryCallingCode",
+          "context": "Country calling code for the login attempt"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        },
+        {
           "property": "method",
           "context": "Authentication method attempted: 'otp' or 'trueCaller'"
         },
         {
           "property": "reason",
           "context": "Failure reason (e.g., 'Invalid otp entered', network error, etc.)"
+        },
+        {
+          "property": "isInvalidOtpEntered",
+          "context": "True when the failure is due to an invalid OTP (LoginOtpEnterComponent only)"
         }
       ]
     },
@@ -164,6 +211,18 @@
       "source": "loginOptionsScreen",
       "description": "API call to send OTP failed with an error.",
       "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code of the entered phone number"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        },
         {
           "property": "otpRequestErrorMsg",
           "context": "Error message from the OTP request API"
@@ -180,17 +239,17 @@
         {
           "property": "countryCallingCode",
           "context": "Current country calling code (default or user-selected)"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
         }
       ],
       "notes": "First event in the authentication flow. Triggered on component initialization."
-    },
-    {
-      "name": "login skip btn clicked",
-      "component": "LoginOptionsComponent",
-      "stage": "Login Screen",
-      "source": "loginOptionsScreen",
-      "description": "User chooses to skip the login flow and continue using the app without authentication.",
-      "properties": []
     },
     {
       "name": "login successful",
@@ -199,6 +258,18 @@
       "source": "loginOptionsScreen or loginOtpEnterScreen",
       "description": "User successfully completes authentication and is logged in.",
       "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code for the login attempt"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        },
         {
           "property": "method",
           "context": "Authentication method: 'otp' or 'trueCaller'"
@@ -212,15 +283,20 @@
       "stage": "Login Screen",
       "source": "loginOptionsScreen",
       "description": "Truecaller UID fetch failed or Truecaller is not available on the device.",
-      "properties": []
-    },
-    {
-      "name": "login truecaller uid fetch success",
-      "component": "LoginOptionsComponent",
-      "stage": "Login Screen",
-      "source": "loginOptionsScreen",
-      "description": "Truecaller UID successfully fetched and ready to show Truecaller UI.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code currently selected on the login screen"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        }
+      ]
     },
     {
       "name": "login truecaller uid fetch try",
@@ -228,7 +304,20 @@
       "stage": "Login Screen",
       "source": "loginOptionsScreen",
       "description": "User taps the Truecaller login option and the app attempts to fetch Truecaller UID.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code currently selected on the login screen"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        }
+      ]
     },
     {
       "name": "otp entered",
@@ -236,7 +325,12 @@
       "stage": "OTP Verification",
       "source": "loginOtpEnterScreen",
       "description": "User completes entering the OTP code and triggers verification.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code for the login attempt"
+        }
+      ]
     },
     {
       "name": "otp resent",
@@ -244,7 +338,12 @@
       "stage": "OTP Verification",
       "source": "loginOtpEnterScreen",
       "description": "OTP successfully resent to the user's phone number.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code for the login attempt"
+        }
+      ]
     },
     {
       "name": "otp sent",
@@ -256,6 +355,14 @@
         {
           "property": "countryCallingCode",
           "context": "Country calling code of the phone number"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
         }
       ],
       "notes": "Triggers navigation to OTP entry screen."
@@ -266,7 +373,12 @@
       "stage": "OTP Verification",
       "source": "loginOtpEnterScreen",
       "description": "User clicks the resend OTP button to request a new verification code.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code for the login attempt"
+        }
+      ]
     },
     {
       "name": "resend otp request failed",
@@ -275,6 +387,10 @@
       "source": "loginOtpEnterScreen",
       "description": "Resend OTP API call failed with an error.",
       "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code for the login attempt"
+        },
         {
           "property": "otpRequestErrorMsg",
           "context": "Error message from the resend OTP API"
@@ -287,7 +403,20 @@
       "stage": "Login Screen",
       "source": "loginOptionsScreen",
       "description": "Truecaller bottom sheet UI is displayed to the user for authentication.",
-      "properties": []
+      "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code currently selected on the login screen"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        }
+      ]
     },
     {
       "name": "truecaller error callback",
@@ -296,6 +425,18 @@
       "source": "loginOptionsScreen",
       "description": "Truecaller authentication resulted in an error callback with failure reason.",
       "properties": [
+        {
+          "property": "countryCallingCode",
+          "context": "Country calling code currently selected on the login screen"
+        },
+        {
+          "property": "isTrueCallerInstalled",
+          "context": "True when a Truecaller UID has been obtained in this session (LoginOptionsComponent only)"
+        },
+        {
+          "property": "src",
+          "context": "Entry source that navigated into login (Source.sourceName; LoginOptionsComponent only)"
+        },
         {
           "property": "reason",
           "context": "Truecaller error reason (e.g., user canceled, network error, etc.)"
@@ -374,7 +515,7 @@
       "properties": [
         {
           "property": "initiallySelectedDate",
-          "context": "The date initially shown in the date picker"
+          "context": "The initial DOB shown in the date picker (epoch millis as a string)"
         }
       ]
     },
