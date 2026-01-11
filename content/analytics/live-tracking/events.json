@@ -72,7 +72,7 @@
     },
     "userDistanceFromStop": {
       "type": "number",
-      "description": "Distance in meters from user's current location to the selected stop (if location permission granted)"
+      "description": "Distance in kilometers from user's current location to the selected stop (if location permission granted)"
     },
     "totalStops": {
       "type": "string",
@@ -351,8 +351,20 @@
     "errorCode": {
       "type": "string"
     },
+    "nativeAdAspectRatio": {
+      "type": "string",
+      "description": "Native ad media aspect ratio reported on load failure (if available)"
+    },
     "titoRideExpiryTimeInMillis": {
       "type": "string"
+    },
+    "missed tap out feedback items": {
+      "type": "string",
+      "description": "Selected feedback tags for missed tap-out (serialized list)"
+    },
+    "missed tap out feedback text": {
+      "type": "string",
+      "description": "User-entered feedback text for missed tap-out"
     },
     "hourOfEvent": {
       "type": "string"
@@ -411,6 +423,14 @@
     "dataTimestamp": {
       "type": "number",
       "description": "Debug: timestamp used for the snapshot/event gating."
+    },
+    "reference type": {
+      "type": "string",
+      "description": "Socket request reference type for RTS response events."
+    },
+    "url": {
+      "type": "string",
+      "description": "Socket base URL used for RTS connection setup."
     }
   },
   "stages": [
@@ -439,6 +459,9 @@
       "name": "Live Data Connection",
       "description": "WebSocket establishes connection to stream real-time vehicle locations and ETAs",
       "events": [
+        "crts config success",
+        "crts config failed",
+        "starting crts connection with cookies",
         "crts connect",
         "crts connect error",
         "crts connect timeout",
@@ -446,7 +469,8 @@
         "crts reconnect",
         "crts reconnect attempt",
         "crts reconnect error",
-        "crts reconnect failed"
+        "crts reconnect failed",
+        "crts response"
       ]
     },
     {
@@ -491,13 +515,6 @@
         "report problem submitted",
         "seat occupancy bottomsheet learn more clicked",
         "seat occupancy bottomsheet got it clicked"
-      ]
-    },
-    {
-      "name": "Service Status",
-      "description": "Service availability and disruption information displayed to user",
-      "events": [
-        "availability issue"
       ]
     },
     {
@@ -554,15 +571,6 @@
         },
         {
           "property": "stops position"
-        },
-        {
-          "property": "previousStopsId"
-        },
-        {
-          "property": "previousStopsName"
-        },
-        {
-          "property": "previousStopsPosition"
         }
       ]
     },
@@ -588,16 +596,16 @@
       "component": "RouteDetailsAnalyticsHelperImpl",
       "stage": "Live Tracking Display",
       "source": "route details screen",
-      "description": "Live route data fetched from backend (success or failure)",
+      "description": "Live route data fetched from backend (success or failure), includes route type flags",
       "properties": [
-        {
-          "property": "route id"
-        },
         {
           "property": "isSuccessful"
         },
         {
-          "property": "source"
+          "property": "isChaloBusRoute"
+        },
+        {
+          "property": "isAirportRoute"
         }
       ]
     },
@@ -845,27 +853,6 @@
         },
         {
           "property": "previousStopsPosition"
-        },
-        {
-          "property": "userDistanceFromStop"
-        }
-      ]
-    },
-    {
-      "name": "availability issue",
-      "component": "RouteDetailsAnalyticsHelperImpl",
-      "stage": "Service Status",
-      "source": "route details screen",
-      "description": "Service availability issue detected (limited service, off-duty, etc.)",
-      "properties": [
-        {
-          "property": "route id"
-        },
-        {
-          "property": "availability status"
-        },
-        {
-          "property": "offduty"
         }
       ]
     },
@@ -908,10 +895,49 @@
       ]
     },
     {
+      "name": "crts config success",
+      "component": "RealTimeSocketManagerImpl",
+      "stage": "Live Data Connection",
+      "source": "liveTrackingFramework",
+      "description": "RTS socket config fetched successfully",
+      "properties": [
+        {
+          "property": "network type"
+        }
+      ]
+    },
+    {
+      "name": "crts config failed",
+      "component": "RealTimeSocketManagerImpl",
+      "stage": "Live Data Connection",
+      "source": "liveTrackingFramework",
+      "description": "RTS socket config fetch failed",
+      "properties": [
+        {
+          "property": "reason"
+        },
+        {
+          "property": "network type"
+        }
+      ]
+    },
+    {
+      "name": "starting crts connection with cookies",
+      "component": "RealTimeSocketManagerImpl",
+      "stage": "Live Data Connection",
+      "source": "REALTIME_SOCKET_MANAGER",
+      "description": "Socket connection started with cookies enabled",
+      "properties": [
+        {
+          "property": "url"
+        }
+      ]
+    },
+    {
       "name": "crts connect",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket connection established successfully for real-time tracking",
       "properties": [
         {
@@ -933,7 +959,7 @@
       "name": "crts connect error",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket connection failed to establish",
       "properties": [
         {
@@ -958,7 +984,7 @@
       "name": "crts connect timeout",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket connection attempt timed out",
       "properties": [
         {
@@ -982,7 +1008,7 @@
       "name": "crts disconnect",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket connection disconnected",
       "properties": [
         {
@@ -1003,7 +1029,7 @@
       "name": "crts error",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket error occurred during connection",
       "properties": [
         {
@@ -1027,7 +1053,7 @@
       "name": "crts reconnect",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket reconnection successful",
       "properties": [
         {
@@ -1048,7 +1074,7 @@
       "name": "crts reconnect attempt",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket attempting to reconnect",
       "properties": [
         {
@@ -1069,7 +1095,7 @@
       "name": "crts reconnect error",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket reconnection attempt failed",
       "properties": [
         {
@@ -1093,7 +1119,7 @@
       "name": "crts reconnect failed",
       "component": "ChaloSocketClient",
       "stage": "Live Data Connection",
-      "source": "ChaloSocketClient",
+      "source": "liveTrackingFramework",
       "description": "WebSocket reconnection permanently failed after retries",
       "properties": [
         {
@@ -1107,6 +1133,21 @@
         },
         {
           "property": "time"
+        }
+      ]
+    },
+    {
+      "name": "crts response",
+      "component": "LiveTrackingDataManagerImpl",
+      "stage": "Live Data Connection",
+      "source": "liveTrackingFramework",
+      "description": "First RTS response received for a socket request reference",
+      "properties": [
+        {
+          "property": "time"
+        },
+        {
+          "property": "reference type"
         }
       ]
     },
@@ -1289,7 +1330,15 @@
       "component": "TitoRideDetailComponent",
       "stage": "Misc",
       "source": "Source.TITO_RIDE_DETAIL_SCREEN",
-      "properties": []
+      "properties": [
+        {
+          "property": "missed tap out feedback items"
+        },
+        {
+          "property": "missed tap out feedback text",
+          "context": "Only when user enters text"
+        }
+      ]
     },
     {
       "name": "mticket hook route details rendered",
@@ -1386,8 +1435,8 @@
       "name": "report problem clicked",
       "component": "RouteDetailsAnalyticsHelperImpl",
       "stage": "User Actions",
-      "source": "BusRouteFragment",
-      "description": "User clicked report problem to submit feedback",
+      "source": "route details screen",
+      "description": "User clicked report problem to submit feedback from route details",
       "properties": [
         {
           "property": "route id"
@@ -1406,7 +1455,7 @@
         },
         {
           "property": "problemSource",
-          "context": "Always 'BusRouteFragment'"
+          "context": "Always 'route details screen'"
         },
         {
           "property": "type"
@@ -1500,7 +1549,7 @@
       "name": "route details native ad load failed",
       "component": "RouteDetailsComponent",
       "stage": "Misc",
-      "source": "eventProperties = mutableMapOf(\n                        ATTRIBUTE_STOP_ID to stopId,\n                        AnalyticsEventConstants.ATTRIBUTE_ERROR_CODE to errorCode,\n                        AnalyticsEventConstants.ERROR_MESSAGE to (failedResult?.reason ?: \"null\")\n                    ).apply {\n                        if (failedResult is BindNativeAdResult.Failed.UnsupportedAspectRatio) {\n                            put(\n                                AnalyticsEventConstants.ATTRIBUTE_NATIVE_AD_ASPECT_RATIO,\n                                failedResult.adAspectRatio.toString()\n                            )\n                        }\n                    }",
+      "source": "route details screen",
       "properties": [
         {
           "property": "error message"
@@ -1510,6 +1559,10 @@
         },
         {
           "property": "stop id"
+        },
+        {
+          "property": "nativeAdAspectRatio",
+          "context": "Only when aspect ratio is available"
         }
       ]
     },
@@ -2007,7 +2060,10 @@
       {
         "label": "WebSocket Connection",
         "events": [
+          "crts config success / crts config failed",
+          "starting crts connection with cookies (if enabled)",
           "crts connect OR crts connect error",
+          "crts response (first RTS response)",
           "crts reconnect attempt (if connection drops)"
         ],
         "next": "Live Tracking Display"
@@ -2072,6 +2128,6 @@
         ]
       }
     ],
-    "notes": "Socket events (crts_*) run continuously in background throughout the session. Seat availability events only fire for premium/airport routes. Search events are optional if user enters route details directly from home/nearby stops."
+    "notes": "Socket config + connection events (crts_* plus config/handshake events) run continuously in background throughout the session; crts response fires on first RTS response per request. Seat availability events only fire for premium/airport routes. Search events are optional if user enters route details directly from home/nearby stops."
   }
 }

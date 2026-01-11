@@ -4,7 +4,7 @@ These diagrams exist to help build funnels in analytics dashboards. Green nodes 
 
 Notes:
 - The live tracking flow can start from multiple entry points: search, home screen, nearby stops, or deep links.
-- WebSocket connection events (`crts_*`) run continuously in the background throughout the tracking session.
+- WebSocket config + connection events (`crts_*`, plus config/handshake events) run continuously in the background throughout the tracking session.
 - Seat availability events only fire for premium/airport routes where seat occupancy data is available.
 - Search events are optional if user enters route details directly from home or nearby stops.
 
@@ -31,6 +31,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_routeDetailsOpen -> title:Route Details screen open & hooks
   ui_entry([User wants to track a bus]) --> ui_searchOrDirect{How did user navigate?}
 
   ui_searchOrDirect -->|Via Search| ev_searchOpen["search screen opened"]
@@ -54,6 +55,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_liveDataFetch -> title:Live data fetching & display
   ev_routeDetailsOpen["route details activity open"] --> ui_checkRouteType{Route type?}
 
   ev_routeDetailsOpen --> ui_nativeAd([Route details native ad load])
@@ -81,11 +83,18 @@ This flow runs in parallel with the main route details flow throughout the sessi
 
 ```mermaid
 flowchart TD
-  ui_socketInit([Component initializes WebSocket]) --> ev_connect["crts connect"]
+  ui_socketConfig([Fetch RTS socket config]) --> ev_configSuccess["crts config success"]
+  ui_socketConfig --> ev_configFailed["crts config failed"]
+
+  ev_configSuccess --> ui_socketInit([Initialize WebSocket])
+  ui_socketInit -->|Cookies enabled| ev_cookieConnect["starting crts connection with cookies"]
+  ev_cookieConnect --> ev_connect["crts connect"]
+  ui_socketInit --> ev_connect
   ui_socketInit --> ev_connectError["crts connect error"]
   ui_socketInit --> ev_connectTimeout["crts connect timeout"]
 
   ev_connect --> ui_connected([Connected, streaming data])
+  ui_connected --> ev_response["crts response"]
 
   ui_connected -->|Network drops| ev_disconnect["crts disconnect"]
   ui_connected -->|Error occurs| ev_error["crts error"]
@@ -106,14 +115,16 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_connect,ev_connectError,ev_connectTimeout,ev_disconnect,ev_error,ev_reconnectAttempt,ev_reconnect,ev_reconnectError,ev_reconnectFailed event;
-  class ui_socketInit,ui_connected ui;
+  class ev_configSuccess,ev_configFailed,ev_cookieConnect,ev_connect,ev_connectError,ev_connectTimeout,ev_response,ev_disconnect,ev_error,ev_reconnectAttempt,ev_reconnect,ev_reconnectError,ev_reconnectFailed event;
+  class ui_socketConfig,ui_socketInit,ui_connected ui;
 ```
 
 ## Live data fetching & display
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_stopSelection -> title:Stop selection funnel
+  %%chalo:diagram-link ui_userActions -> title:User action events (from route details)
   ui_liveDataFetch([Fetch live route data]) --> ev_routeDetailsFetched["Live route details fetched"]
 
   ev_routeDetailsFetched -->|Success| ui_displayData([Display buses on map & ETAs in list])
@@ -134,19 +145,23 @@ flowchart TD
   ev_seatBottomsheet --> ev_seatLearnMore["seat occupancy bottomsheet learn more clicked"]
 
   ui_displayData -->|User views all vehicles| ev_etaScreen["eta screen open"]
+  ui_displayData --> ui_stopSelection([Stop selection & destination changes])
+  ui_displayData --> ui_userActions([Route details actions])
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
   class ev_routeDetailsFetched,ev_etaFetch,ev_liveVehicleDetails,ev_liveEtaDetails,ev_seatStatus,ev_seatBottomsheet,ev_seatGotIt,ev_seatLearnMore,ev_etaScreen event;
-  class ui_liveDataFetch,ui_displayData,ui_etaLoop,ui_seatAvailLoop ui;
+  class ui_liveDataFetch,ui_displayData,ui_etaLoop,ui_seatAvailLoop,ui_stopSelection,ui_userActions ui;
 ```
 
 ## Stop selection funnel
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_routeDetailsOpen -> title:Route Details screen open & hooks
   ui_userWantsStop([User wants to select/change stop]) --> ui_selectionSource{How did user select?}
+  ui_initialDest([Short trip requires destination selection]) --> ev_destScreenOpen
 
   ui_selectionSource -->|From stop list| ev_routeStopSelected["Route stop selected"]
   ui_selectionSource -->|From map marker| ev_mapStopSelected["Route map stop selected"]
@@ -166,20 +181,23 @@ flowchart TD
   ev_destScreenOpen --> ev_destChanged["Route destination stop changed"]
   ev_destScreenOpen --> ev_destClosed["Route destination screen closed"]
 
+  ev_destChanged -->|First destination selection| ev_routeDetailsOpen["route details activity open"]
   ev_destChanged --> ui_etaUpdate
   ev_destClosed --> ui_etaUpdate
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_routeStopSelected,ev_mapStopSelected,ev_searchStopClick,ev_searchStopSelected,ev_disabledStop,ev_changeDestClick,ev_destScreenOpen,ev_destChanged,ev_destClosed event;
-  class ui_userWantsStop,ui_selectionSource,ui_searchStopUI,ui_etaUpdate ui;
+  class ev_routeStopSelected,ev_mapStopSelected,ev_searchStopClick,ev_searchStopSelected,ev_disabledStop,ev_changeDestClick,ev_destScreenOpen,ev_destChanged,ev_destClosed,ev_routeDetailsOpen event;
+  class ui_userWantsStop,ui_selectionSource,ui_searchStopUI,ui_etaUpdate,ui_initialDest ui;
 ```
 
 ## User action events (from route details)
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ext_checkout -> title:External: Checkout flow (Payment module)
+  %%chalo:diagram-link ext_premiumBooking -> title:External: Premium bus booking flow
   ui_routeDetails([Route details screen displayed]) --> ui_userAction{User action?}
 
   ui_userAction -->|Add to favorites| ev_favAdded["favorite added"]
@@ -271,22 +289,6 @@ flowchart TD
 
   class ev_titoRideOpen,ev_routeSuccess,ev_routeFailure,ev_retry,ev_vehicleNo,ev_markerClick,ev_back,ev_obStart,ev_obReplay,ev_obFinish,ev_obGotIt,ev_missedTapOutClick,ev_slideSubmit,ev_doneSheetOpen,ev_doneViewReceipt,ev_doneExit,ev_feedbackSubmit event;
   class ui_open,ui_routeFetch,ui_vehicleAvail,ui_onboarding,ui_missedTapOut ui;
-```
-
-## Service availability tracking
-
-```mermaid
-flowchart TD
-  ui_routeOpen([Route details opens]) --> ui_checkAvailability{Service availability?}
-
-  ui_checkAvailability -->|Limited/Unavailable| ev_availabilityIssue["availability issue"]
-  ui_checkAvailability -->|Normal| ui_normalOperation([Normal tracking])
-
-  classDef event fill:#166534,stroke:#166534,color:#ffffff;
-  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
-
-  class ev_availabilityIssue event;
-  class ui_routeOpen,ui_checkAvailability,ui_normalOperation ui;
 ```
 
 ## Complete funnel: Search → Track → Act
@@ -397,6 +399,14 @@ route details activity open
 **Conversion metrics:**
 - % of premium route views leading to seat reservations
 - Impact of seat availability on conversions
+
+## External: Checkout flow (Payment module)
+
+See `content/analytics/payment/flow-diagrams.md` for the full checkout/payment instrumentation.
+
+## External: Premium bus booking flow
+
+See `content/analytics/premium-bus-booking/flow-diagrams.md` for premium bus booking flow details.
 
 ### Funnel 5: Problem Reporting (Feedback)
 Measure user feedback submission rate.
