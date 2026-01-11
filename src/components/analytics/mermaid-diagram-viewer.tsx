@@ -280,10 +280,17 @@ export function MermaidDiagramViewer({
         stroke-width: 2px !important;
       }
       .analytics-diagram-link-node { cursor: pointer; }
+      .analytics-diagram-link-node rect,
+      .analytics-diagram-link-node polygon,
+      .analytics-diagram-link-node ellipse,
+      .analytics-diagram-link-node path {
+        stroke: #3b82f6 !important;
+        stroke-dasharray: 6 4 !important;
+      }
       .analytics-diagram-link-node:hover rect,
       .analytics-diagram-link-node:hover polygon,
       .analytics-diagram-link-node:hover path {
-        stroke-width: 2px !important;
+        stroke-width: 3px !important;
       }
     `;
     // Avoid accumulating multiple <style> tags if mermaid re-renders.
