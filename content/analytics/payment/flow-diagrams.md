@@ -54,16 +54,16 @@ flowchart TD
   ev_productFailed --> ev_postPaymentOpen
 
   ev_postPaymentOpen -->|Success| ev_detailsFetched["post payment mticket details fetched"]
-  ev_postPaymentOpen -->|Failure| ev_detailsNotAvailable["ticket details not available"]
+  ev_postPaymentOpen -->|Failure| ev_historyFailure["post payment history call use case failure"]
 
   ev_detailsFetched --> ev_checkoutFinished["checkout activity finished"]
-  ev_detailsNotAvailable --> ev_checkoutFinished
+  ev_historyFailure --> ev_checkoutFinished
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_mainScreenOpen,ev_paymentModeSelected,ev_paymentStatusResponse,ev_productSuccess,ev_productFailed,ev_postPaymentOpen,ev_detailsFetched,ev_detailsNotAvailable,ev_checkoutFinished event;
+  class ev_mainScreenOpen,ev_paymentModeSelected,ev_paymentStatusResponse,ev_productSuccess,ev_productFailed,ev_postPaymentOpen,ev_detailsFetched,ev_historyFailure,ev_checkoutFinished event;
   class ui_entry,ui_upiFlow,ui_cardFlow,ui_netbankingFlow,ui_walletFlow,ui_chaloPayFlow,ui_checkout ui;
 ```
 
@@ -76,10 +76,9 @@ flowchart TD
   ev_upiScreenOpen -->|Select UPI app| ev_installedUpiResult["installed upi app result"]
   ev_upiScreenOpen -->|Add UPI ID| ev_addUpiSelected["add upi id selected"]
 
-  ev_addUpiSelected --> ev_vpaSuccess["upi id entered successfully"]
-  ev_addUpiSelected --> ev_vpaFailure["upi id entered failure"]
+  ev_addUpiSelected -->|Valid VPA| ev_checkoutOpen["checkout screen opened"]
+  ev_addUpiSelected -->|Invalid VPA| ev_vpaFailure["upi id entered failure"]
 
-  ev_vpaSuccess --> ev_checkoutOpen["checkout screen opened"]
   ev_installedUpiResult --> ev_paymentStatus["payment status response"]
   ev_checkoutOpen --> ev_paymentStatus
 
@@ -87,7 +86,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_paymentModeSelected,ev_upiScreenOpen,ev_installedUpiResult,ev_addUpiSelected,ev_vpaSuccess,ev_vpaFailure,ev_checkoutOpen,ev_paymentStatus event;
+  class ev_paymentModeSelected,ev_upiScreenOpen,ev_installedUpiResult,ev_addUpiSelected,ev_vpaFailure,ev_checkoutOpen,ev_paymentStatus event;
 ```
 
 ## Funnel: Card payment method flow
@@ -96,7 +95,6 @@ flowchart TD
 flowchart TD
   ev_paymentModeSelected["Payment mode selected"] -->|mode=card| ev_cardScreenOpen["card screen opened"]
 
-  ev_cardScreenOpen --> ev_saveCard["save card details"]
   ev_cardScreenOpen --> ev_cardSubmitted["card details submitted"]
 
   ev_cardSubmitted --> ev_checkoutOpen["checkout screen opened"]
@@ -107,7 +105,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_paymentModeSelected,ev_cardScreenOpen,ev_saveCard,ev_cardSubmitted,ev_checkoutOpen,ev_razorpayLoaded,ev_paymentStatus event;
+  class ev_paymentModeSelected,ev_cardScreenOpen,ev_cardSubmitted,ev_checkoutOpen,ev_razorpayLoaded,ev_paymentStatus event;
 ```
 
 ## Funnel: Net Banking & Wallet flows
@@ -267,14 +265,9 @@ flowchart TD
   ev_postPaymentOpen -->|Success, super pass| ev_passFetched["post payment super pass details fetched"]
   ev_postPaymentOpen -->|Failure| ev_historyFailed["post payment history call use case failure"]
 
-  ev_postPaymentOpen -->|Details missing, mticket| ev_ticketNotAvailable["ticket details not available"]
-  ev_postPaymentOpen -->|Details missing, metro| ev_metroNotAvailable["metro ticket details not available"]
-  ev_postPaymentOpen -->|Details missing, ondc metro| ev_ondcMetroNotAvailable["ondc metro ticket details not available"]
-
   ev_mticketFetched --> ev_finished["checkout activity finished"]
   ev_passFetched --> ev_finished
   ev_historyFailed --> ev_finished
-  ev_ticketNotAvailable --> ev_finished
 
   ev_finished --> ev_navigateHome["checkout navigating to home screen"]
 
@@ -282,7 +275,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_postPaymentOpen,ev_mticketFetched,ev_passFetched,ev_historyFailed,ev_ticketNotAvailable,ev_metroNotAvailable,ev_ondcMetroNotAvailable,ev_finished,ev_navigateHome event;
+  class ev_postPaymentOpen,ev_mticketFetched,ev_passFetched,ev_historyFailed,ev_finished,ev_navigateHome event;
   class ui_paymentComplete ui;
 ```
 
@@ -337,9 +330,8 @@ flowchart TD
 **Alternative path (manual VPA entry):**
 1. `Payment mode selected` (filter: `mode` = "upi")
 2. `add upi id selected`
-3. `upi id entered successfully`
-4. `checkout screen opened`
-5. `payment status response` (filter: `response` = "SUCCESS")
+3. `checkout screen opened`
+4. `payment status response` (filter: `response` = "SUCCESS")
 
 **Drop-off analysis:**
 - `upi id entered failure` → VPA validation issues
@@ -481,7 +473,7 @@ Track `payment cancel dialog yes clicked` vs `payment cancel dialog no clicked` 
 ### Razorpay Failures
 
 Filter `*payment failed` events and analyze:
-- `error` - Error code
+- `errorCode` - Error code
 - `description` - Human-readable error
 - `source` - Error source (bank, network, etc.)
 - `step` - Step where failure occurred
@@ -490,9 +482,10 @@ Filter `*payment failed` events and analyze:
 ### Inai Failures
 
 Filter `*payment failed` events and analyze:
-- `code` - Error code
-- `message` - Error message
-- `vendor_response` - Bank/gateway response
+- `errorCode` - Error code
+- `transactionId` - Transaction id (when available)
+- `description` - Error description (when available)
+- `reason` - Error reason/type (when available)
 
 ### Juspay SDK Failures
 
@@ -507,7 +500,7 @@ Track these events for SDK issues:
 
 ## Funnel: Payment Reliability & Diagnostics
 
-These events help monitor payment module health (method fetch failures, UPI app detection issues, SDK management, eligibility/url failures, checkout ad load).
+These events help monitor payment module health (method fetch failures, SDK management, eligibility/url failures).
 
 ```mermaid
 flowchart TD
@@ -527,8 +520,6 @@ flowchart TD
   ev_appFetched --> ev_validMethods["valid payment methods created"]
   ev_validMethods --> ev_methodsOk["payment methods success response"]
 
-  ui_upi([UPI selection screen]) --> ui_upiCheck{Installed apps check}
-  ui_upiCheck -->|Failure| ev_upiCheckFail["installed upi app check failed"]
   ui_upi --> ev_upiMgmt["upi management clicked"]
 
   ui_juspay([Juspay SDK management]) --> ev_juspayResult["juspay sdk management result"]
@@ -536,13 +527,11 @@ flowchart TD
   ui_lazypay([Lazypay eligibility + url]) --> ev_lpEligibility["lpEligibility"]
   ui_lazypay --> ev_lpUrlFail["Lazypay url fetch error"]
 
-  ui_ads([Checkout native ad]) --> ev_nativeAdLoaded["checkout payment native ad loaded"]
-
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_methodsApiResp,ev_methodsApiModel,ev_appRazor,ev_appInai,ev_rzpApps,ev_appFetched,ev_validMethods,ev_methodsOk,ev_methodsFail,ev_upiCheckFail,ev_upiMgmt,ev_juspayResult,ev_lpEligibility,ev_lpUrlFail,ev_nativeAdLoaded event;
-  class ui_paymentInit,ui_methods,ui_provider,ui_upi,ui_upiCheck,ui_juspay,ui_lazypay,ui_ads ui;
+  class ev_methodsApiResp,ev_methodsApiModel,ev_appRazor,ev_appInai,ev_rzpApps,ev_appFetched,ev_validMethods,ev_methodsOk,ev_methodsFail,ev_upiMgmt,ev_juspayResult,ev_lpEligibility,ev_lpUrlFail event;
+  class ui_paymentInit,ui_methods,ui_provider,ui_upi,ui_juspay,ui_lazypay ui;
 ```
 
 ## Property Definitions for Funnel Filters

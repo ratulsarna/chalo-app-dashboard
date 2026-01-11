@@ -18,8 +18,8 @@
       ]
     },
     "preferred mode": {
-      "type": "boolean",
-      "description": "True if this is user's preferred payment mode."
+      "type": "string",
+      "description": "Either \"true\"/\"false\" (when selecting a mode) or a numeric count (when opening payment modes screen)."
     },
     "popular mode": {
       "type": "number",
@@ -46,8 +46,8 @@
       "description": "Human-readable display name of the payment app/method."
     },
     "top mode": {
-      "type": "boolean",
-      "description": "True if this is a top/featured payment mode."
+      "type": "string",
+      "description": "\"true\" or \"false\" (string)."
     },
     "checkoutFlowType": {
       "type": "string",
@@ -82,8 +82,8 @@
       "description": "Booking/transaction ID."
     },
     "passengerTypes": {
-      "type": "array",
-      "description": "JSON array of passenger types (e.g., [\"ADULT\", \"CHILD\"])."
+      "type": "string",
+      "description": "Passenger types serialized as a JSON array string (e.g., [\"ADULT\",\"CHILD\"])."
     },
     "fare": {
       "type": "string",
@@ -129,9 +129,13 @@
       "type": "string",
       "description": "Duration name for time-based products."
     },
-    "error": {
+    "errorCode": {
       "type": "string",
-      "description": "Error code from payment gateway (Razorpay/Inai)."
+      "description": "Payment failure code (provider-specific)."
+    },
+    "errorMessage": {
+      "type": "string",
+      "description": "Payment failure message (provider-specific)."
     },
     "description": {
       "type": "string",
@@ -145,21 +149,65 @@
       "type": "string",
       "description": "Reason for payment failure or status."
     },
-    "code": {
-      "type": "string",
-      "description": "Error code from Inai payment gateway."
-    },
-    "transaction_id": {
-      "type": "string",
-      "description": "Transaction ID from Inai."
-    },
-    "message": {
-      "type": "string",
-      "description": "Error message from Inai."
-    },
     "response": {
       "type": "string",
       "description": "Response status or data (e.g., \"SUCCESS\", \"FAILURE\")."
+    },
+    "transactionId": {
+      "type": "string",
+      "description": "Transaction identifier (provider-specific)."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Failure reason (provider-specific)."
+    },
+    "request": {
+      "type": "string",
+      "description": "Serialized request object (debug diagnostics)."
+    },
+    "result": {
+      "type": "string",
+      "description": "Serialized result payload (debug diagnostics)."
+    },
+    "action": {
+      "type": "string",
+      "description": "Action identifier (e.g., Juspay SDK action)."
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount in subcurrency units (paise)."
+    },
+    "paymentMethodOption": {
+      "type": "string",
+      "description": "Payment method option label/code for a request/action."
+    },
+    "referenceId": {
+      "type": "string",
+      "description": "Reference identifier (provider-specific)."
+    },
+    "upiId": {
+      "type": "string",
+      "description": "UPI ID selected/used in Juspay flow."
+    },
+    "bankCode": {
+      "type": "string",
+      "description": "Bank code for selected account (Juspay)."
+    },
+    "bankName": {
+      "type": "string",
+      "description": "Bank name for selected account (Juspay)."
+    },
+    "maskedAccountNumber": {
+      "type": "string",
+      "description": "Masked account number for selected account (Juspay)."
+    },
+    "isFlowApplicable": {
+      "type": "string",
+      "description": "\"true\" or \"false\" (string)."
+    },
+    "attempt": {
+      "type": "string",
+      "description": "Attempt counter (1-based, string)."
     },
     "isSuccess": {
       "type": "boolean",
@@ -184,14 +232,6 @@
     "preferredModeCount": {
       "type": "number",
       "description": "Debug: count of preferred modes computed for the user."
-    },
-    "vendor_response": {
-      "type": "string",
-      "description": "Vendor-specific response from Inai."
-    },
-    "type": {
-      "type": "string",
-      "description": "Error type from Inai."
     },
     "orderId": {
       "type": "string",
@@ -225,10 +265,6 @@
       "type": "number",
       "description": "Number of retries for fetching booking history after payment."
     },
-    "transactionAmount": {
-      "type": "number",
-      "description": "Transaction amount in subcurrency units (paise)."
-    },
     "chaloPayWalletState": {
       "type": "string",
       "description": "State of Chalo Pay wallet (\"active\", \"blocked\", \"inactive\").",
@@ -259,8 +295,8 @@
       "description": "Selected payment method identifier."
     },
     "lpEligibilityValue": {
-      "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "type": "boolean",
+      "description": "Whether LazyPay is eligible for the current user/method."
     }
   },
   "stages": [
@@ -272,13 +308,11 @@
         "Payment mode selected",
         "checkout upi list screen opened",
         "add upi id selected",
-        "upi id entered successfully",
         "upi id entered failure",
         "checkout wallet list screen opened",
         "Banking Screen Opened",
         "card screen opened",
-        "card details submitted",
-        "save card details"
+        "card details submitted"
       ]
     },
     {
@@ -312,8 +346,7 @@
         "payment cancel dialog no clicked",
         "custom checkout url page loaded",
         "installed upi app result",
-        "custom checkout url upi app result",
-        "installed upi app check failed"
+        "custom checkout url upi app result"
       ]
     },
     {
@@ -386,18 +419,8 @@
         "post payment mticket details fetched",
         "post payment super pass details fetched",
         "post payment history call use case failure",
-        "ticket details not available",
-        "metro ticket details not available",
-        "ondc metro ticket details not available",
         "checkout activity finished",
         "checkout navigating to home screen"
-      ]
-    },
-    {
-      "name": "Miscellaneous",
-      "description": "Other payment-related events.",
-      "events": [
-        "checkout payment native ad loaded"
       ]
     },
     {
@@ -557,7 +580,17 @@
       "stage": "Chalo Pay Wallet",
       "source": "mainPaymentScreen",
       "description": "User clicked confirm payment button in Chalo Pay bottomsheet.",
-      "properties": []
+      "properties": [
+        {
+          "property": "chaloPayWalletState"
+        },
+        {
+          "property": "chaloPayWalletBalance"
+        },
+        {
+          "property": "bottomsheetCTA"
+        }
+      ]
     },
     {
       "name": "chaloPayBottomsheetOpened",
@@ -583,7 +616,17 @@
       "stage": "Chalo Pay Wallet",
       "source": "mainPaymentScreen",
       "description": "User clicked recharge wallet button when insufficient balance.",
-      "properties": []
+      "properties": [
+        {
+          "property": "chaloPayWalletState"
+        },
+        {
+          "property": "chaloPayWalletBalance"
+        },
+        {
+          "property": "bottomsheetCTA"
+        }
+      ]
     },
     {
       "name": "chaloPayBottomsheetTncClicked",
@@ -591,7 +634,17 @@
       "stage": "Chalo Pay Wallet",
       "source": "mainPaymentScreen",
       "description": "User clicked on T&C link in Chalo Pay bottomsheet.",
-      "properties": []
+      "properties": [
+        {
+          "property": "chaloPayWalletState"
+        },
+        {
+          "property": "chaloPayWalletBalance"
+        },
+        {
+          "property": "bottomsheetCTA"
+        }
+      ]
     },
     {
       "name": "chaloPayItemClicked",
@@ -617,7 +670,7 @@
       "description": "Chalo Pay order creation failed.",
       "properties": [
         {
-          "property": "reason"
+          "property": "failureReason"
         }
       ]
     },
@@ -627,11 +680,8 @@
       "stage": "Chalo Pay Wallet",
       "source": "mainPaymentScreen",
       "description": "Chalo Pay order created successfully on backend.",
-      "properties": [
-        {
-          "property": "transactionAmount"
-        }
-      ]
+      "properties": [],
+      "notes": "Also includes product-specific properties from productEventProperties"
     },
     {
       "name": "chaloPayPaymentFailed",
@@ -641,9 +691,10 @@
       "description": "Chalo Pay wallet payment failed.",
       "properties": [
         {
-          "property": "reason"
+          "property": "failureReason"
         }
-      ]
+      ],
+      "notes": "Also includes product-specific properties from productEventProperties"
     },
     {
       "name": "chaloPayPaymentSuccess",
@@ -651,14 +702,7 @@
       "stage": "Chalo Pay Wallet",
       "source": "mainPaymentScreen",
       "description": "Chalo Pay wallet payment successful.",
-      "properties": [
-        {
-          "property": "transactionAmount"
-        },
-        {
-          "property": "chaloPayWalletBalance"
-        }
-      ],
+      "properties": [],
       "notes": "Also includes product-specific properties from productEventProperties"
     },
     {
@@ -675,14 +719,6 @@
       "stage": "Post-Payment",
       "source": "checkoutActivity",
       "description": "Navigating from checkout back to home screen.",
-      "properties": []
-    },
-    {
-      "name": "checkout payment native ad loaded",
-      "component": "PaymentMainComponent",
-      "stage": "Miscellaneous",
-      "source": "mainPaymentScreen",
-      "description": "Native advertisement loaded on payment screen.",
       "properties": []
     },
     {
@@ -813,10 +849,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "electricity bill payment successful",
@@ -830,18 +894,6 @@
         },
         {
           "property": "hourOfEvent"
-        }
-      ]
-    },
-    {
-      "name": "installed upi app check failed",
-      "component": "PaymentMainComponent",
-      "stage": "Checkout Processing",
-      "source": "mainPaymentScreen",
-      "description": "Failed to check for installed UPI apps on device.",
-      "properties": [
-        {
-          "property": "reason"
         }
       ]
     },
@@ -883,10 +935,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "instant ticket payment successful",
@@ -918,7 +998,23 @@
       "stage": "Juspay SDK",
       "source": "checkoutScreen",
       "description": "Juspay SDK action started (onboarding/payment/mandate).",
-      "properties": []
+      "properties": [
+        {
+          "property": "action"
+        },
+        {
+          "property": "paymentMethodOption",
+          "context": "When raised from a specific UI item"
+        },
+        {
+          "property": "amount",
+          "context": "When raised from OnBoardingAndPay action"
+        },
+        {
+          "property": "referenceId",
+          "context": "When raised from OnBoardingAndPay action"
+        }
+      ]
     },
     {
       "name": "juspay request creation failed",
@@ -929,6 +1025,9 @@
       "properties": [
         {
           "property": "reason"
+        },
+        {
+          "property": "request"
         }
       ]
     },
@@ -938,7 +1037,17 @@
       "stage": "Juspay SDK",
       "source": "checkoutScreen",
       "description": "Juspay SDK flow is applicable for this payment.",
-      "properties": []
+      "properties": [
+        {
+          "property": "isFlowApplicable"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "city"
+        }
+      ]
     },
     {
       "name": "juspay sdk initiate failed",
@@ -958,7 +1067,11 @@
       "stage": "Juspay SDK",
       "source": "checkoutScreen",
       "description": "Juspay SDK initialization requested.",
-      "properties": []
+      "properties": [
+        {
+          "property": "attempt"
+        }
+      ]
     },
     {
       "name": "juspay sdk management result",
@@ -966,7 +1079,11 @@
       "stage": "Juspay SDK",
       "source": "checkoutScreen",
       "description": "Juspay SDK mandate management operation result.",
-      "properties": []
+      "properties": [
+        {
+          "property": "status"
+        }
+      ]
     },
     {
       "name": "juspay sdk onboarding and pay result",
@@ -976,10 +1093,28 @@
       "description": "Juspay SDK onboarding and payment result received.",
       "properties": [
         {
-          "property": "juspayNoOfAccountsLinked"
+          "property": "status"
         },
         {
-          "property": "juspayLinkedAccountNames"
+          "property": "transaction id"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "referenceId"
+        },
+        {
+          "property": "upiId"
+        },
+        {
+          "property": "bankCode"
+        },
+        {
+          "property": "bankName"
+        },
+        {
+          "property": "maskedAccountNumber"
         }
       ]
     },
@@ -991,7 +1126,13 @@
       "description": "Juspay SDK operation failed.",
       "properties": [
         {
-          "property": "error"
+          "property": "action"
+        },
+        {
+          "property": "errorCode"
+        },
+        {
+          "property": "reason"
         }
       ]
     },
@@ -1003,7 +1144,7 @@
       "description": "Juspay SDK returned an error result.",
       "properties": [
         {
-          "property": "error"
+          "property": "reason"
         }
       ]
     },
@@ -1023,7 +1164,10 @@
       "description": "Error parsing Juspay SDK result object.",
       "properties": [
         {
-          "property": "error"
+          "property": "reason"
+        },
+        {
+          "property": "result"
         }
       ]
     },
@@ -1041,27 +1185,29 @@
       "stage": "Juspay SDK",
       "source": "checkoutScreen",
       "description": "Juspay SDK UPI session token received successfully.",
-      "properties": []
+      "properties": [
+        {
+          "property": "status"
+        },
+        {
+          "property": "juspayNoOfAccountsLinked"
+        },
+        {
+          "property": "juspayLinkedAccountNames"
+        }
+      ]
     },
     {
       "name": "lpEligibility",
       "component": "FilterValidPaymentMethodsUseCase",
       "stage": "Misc",
-      "source": "eventProperties = mapOf(AnalyticsEventConstants.ATTRIBUTE_ELIGIBILITY_VALUE to isLpEligible)",
-      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/domain/FilterValidPaymentMethodsUseCase.kt:25",
+      "source": "mainPaymentScreen",
+      "description": "LazyPay eligibility evaluated while building the payment methods list.",
       "properties": [
         {
           "property": "lpEligibilityValue"
         }
       ]
-    },
-    {
-      "name": "metro ticket details not available",
-      "component": "CheckoutPostPaymentComponent",
-      "stage": "Post-Payment",
-      "source": "postPaymentScreen",
-      "description": "Metro ticket details not available in post-payment response.",
-      "properties": []
     },
     {
       "name": "metro ticket payment failed",
@@ -1074,10 +1220,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "metro ticket payment successful",
@@ -1108,50 +1282,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error",
-          "context": "Razorpay error code OR Inai error code"
+          "property": "errorCode"
         },
         {
           "property": "description",
-          "context": "Razorpay only"
+          "context": "Razorpay/Inai only (when available)"
         },
         {
           "property": "source",
-          "context": "Razorpay only"
+          "context": "Razorpay only (when available)"
         },
         {
           "property": "step",
-          "context": "Razorpay only"
+          "context": "Razorpay only (when available)"
         },
         {
           "property": "reason",
-          "context": "Razorpay only"
+          "context": "Razorpay/Inai only (when available)"
         },
         {
-          "property": "code",
-          "context": "Inai only"
+          "property": "transactionId",
+          "context": "Inai only (when available)"
         },
         {
-          "property": "transaction_id",
-          "context": "Inai only"
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
         },
         {
-          "property": "message",
-          "context": "Inai only"
-        },
-        {
-          "property": "response",
-          "context": "Inai only"
-        },
-        {
-          "property": "vendor_response",
-          "context": "Inai only"
-        },
-        {
-          "property": "type",
-          "context": "Inai only"
+          "property": "url",
+          "context": "Custom URL only (when available)"
         }
-      ]
+      ],
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "mticket payment success",
@@ -1212,10 +1374,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "ncmc recharge payment successful",
@@ -1233,14 +1423,6 @@
       ]
     },
     {
-      "name": "ondc metro ticket details not available",
-      "component": "CheckoutPostPaymentComponent",
-      "stage": "Post-Payment",
-      "source": "postPaymentScreen",
-      "description": "ONDC metro ticket details not available in post-payment response.",
-      "properties": []
-    },
-    {
       "name": "ondc metro ticket payment failed",
       "component": "CheckoutAnalyticsHelper",
       "stage": "Payment Failure",
@@ -1251,10 +1433,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "ondc metro ticket payment successful",
@@ -1285,10 +1495,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "ondc ticket payment successful",
@@ -1319,10 +1557,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "online card recharge payment successful",
@@ -1413,22 +1679,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
         },
         {
-          "property": "description"
+          "property": "transactionId",
+          "context": "Inai only (when available)"
         },
         {
-          "property": "source"
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
         },
         {
-          "property": "step"
+          "property": "url",
+          "context": "Custom URL only (when available)"
         },
         {
-          "property": "reason"
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as mticket payment failed"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "payment cancel dialog no clicked",
@@ -1466,6 +1748,22 @@
         },
         {
           "property": "paymentProvider"
+        },
+        {
+          "property": "errorCode",
+          "context": "Inai/custom URL only (when available)"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Inai only (when available)"
         }
       ]
     },
@@ -1566,8 +1864,8 @@
       "name": "payment methods failed response",
       "component": "PaymentMainComponent",
       "stage": "Misc",
-      "source": "eventProperties = mapOf(AnalyticsEventConstants.ATTRIBUTE_REASON to paymentMethodsResult.error.description)",
-      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/ui/screen/payment/PaymentMainComponent.kt:2548",
+      "source": "mainPaymentScreen",
+      "description": "Payment methods fetch failed while loading the payment screen.",
       "properties": [
         {
           "property": "reason"
@@ -1578,8 +1876,8 @@
       "name": "payment methods success response",
       "component": "PaymentMainComponent",
       "stage": "Misc",
-      "source": "Unknown",
-      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/ui/screen/payment/PaymentMainComponent.kt:2464",
+      "source": "mainPaymentScreen",
+      "description": "Payment methods fetch succeeded while loading the payment screen.",
       "properties": []
     },
     {
@@ -1665,10 +1963,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "premium bus ticket payment successful",
@@ -1695,26 +2021,6 @@
       ]
     },
     {
-      "name": "save card details",
-      "component": "CheckoutCardComponent",
-      "stage": "Payment Method Selection",
-      "source": "cardDetailsScreen",
-      "description": "User toggled 'Save card details' checkbox.",
-      "properties": [
-        {
-          "property": "source"
-        }
-      ]
-    },
-    {
-      "name": "ticket details not available",
-      "component": "CheckoutPostPaymentComponent",
-      "stage": "Post-Payment",
-      "source": "postPaymentScreen",
-      "description": "M-Ticket details not available in post-payment response.",
-      "properties": []
-    },
-    {
       "name": "upi id entered failure",
       "component": "CheckoutAddUpiIdComponent",
       "stage": "Payment Method Selection",
@@ -1722,17 +2028,9 @@
       "description": "User entered an invalid UPI ID/VPA.",
       "properties": [
         {
-          "property": "source"
-        }
-      ]
-    },
-    {
-      "name": "upi id entered successfully",
-      "component": "CheckoutAddUpiIdComponent",
-      "stage": "Payment Method Selection",
-      "source": "upiScreen",
-      "description": "User successfully entered a valid UPI ID/VPA.",
-      "properties": [
+          "property": "reason",
+          "context": "UI error message shown to the user"
+        },
         {
           "property": "source"
         }
@@ -1742,8 +2040,8 @@
       "name": "upi management clicked",
       "component": "PaymentMainComponent",
       "stage": "Misc",
-      "source": "Unknown",
-      "description": "Auto-documented from code callsite: shared/checkout/src/commonMain/kotlin/app/chalo/checkout/ui/screen/payment/PaymentMainComponent.kt:1028",
+      "source": "mainPaymentScreen",
+      "description": "User clicked UPI account management (Juspay).",
       "properties": []
     },
     {
@@ -1757,10 +2055,38 @@
           "property": "hourOfEvent"
         },
         {
-          "property": "error"
+          "property": "errorCode"
+        },
+        {
+          "property": "transactionId",
+          "context": "Inai only (when available)"
+        },
+        {
+          "property": "errorMessage",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "url",
+          "context": "Custom URL only (when available)"
+        },
+        {
+          "property": "description",
+          "context": "Razorpay/Inai only (when available)"
+        },
+        {
+          "property": "source",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "step",
+          "context": "Razorpay only (when available)"
+        },
+        {
+          "property": "reason",
+          "context": "Razorpay/Inai only (when available)"
         }
       ],
-      "notes": "Similar error properties as other payment failures"
+      "notes": "Includes product-specific properties from productEventProperties when available."
     },
     {
       "name": "wallet load balance payment successful",
