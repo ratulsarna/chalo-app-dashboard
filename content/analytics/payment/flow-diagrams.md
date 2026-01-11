@@ -79,6 +79,7 @@ flowchart TD
   ev_paymentModeSelected["Payment mode selected"] -->|mode=upi| ev_upiScreenOpen["checkout upi list screen opened"]
 
   ev_upiScreenOpen -->|Select UPI app| ev_installedUpiResult["installed upi app result"]
+  ev_upiScreenOpen -->|Detection error| ev_upiCheckFailed["installed upi app check failed"]
   ev_upiScreenOpen -->|Add UPI ID| ev_addUpiSelected["add upi id selected"]
 
   ev_addUpiSelected -->|Valid VPA| ev_checkoutOpen["checkout screen opened"]
@@ -91,7 +92,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_paymentModeSelected,ev_upiScreenOpen,ev_installedUpiResult,ev_addUpiSelected,ev_vpaFailure,ev_checkoutOpen,ev_paymentStatus event;
+  class ev_paymentModeSelected,ev_upiScreenOpen,ev_installedUpiResult,ev_upiCheckFailed,ev_addUpiSelected,ev_vpaFailure,ev_checkoutOpen,ev_paymentStatus event;
 ```
 
 ## Funnel: Card payment method flow
@@ -340,6 +341,7 @@ flowchart TD
 
 **Drop-off analysis:**
 - `upi id entered failure` → VPA validation issues
+- `installed upi app check failed` → System error detecting UPI apps
 - `installed upi app result` with `isOperationCancelled` = "true" → User cancelled in UPI app
 
 ---
@@ -529,13 +531,12 @@ flowchart TD
 
   ui_juspay([Juspay SDK management]) --> ev_juspayResult["juspay sdk management result"]
 
-  ui_lazypay([Lazypay eligibility + url]) --> ev_lpEligibility["lpEligibility"]
-  ui_lazypay --> ev_lpUrlFail["Lazypay url fetch error"]
+  ui_lazypay([Lazypay url fetch]) --> ev_lpUrlFail["Lazypay url fetch error"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_methodsApiResp,ev_methodsApiModel,ev_appRazor,ev_appInai,ev_rzpApps,ev_appFetched,ev_validMethods,ev_methodsOk,ev_methodsFail,ev_upiMgmt,ev_juspayResult,ev_lpEligibility,ev_lpUrlFail event;
+  class ev_methodsApiResp,ev_methodsApiModel,ev_appRazor,ev_appInai,ev_rzpApps,ev_appFetched,ev_validMethods,ev_methodsOk,ev_methodsFail,ev_upiMgmt,ev_juspayResult,ev_lpUrlFail event;
   class ui_paymentInit,ui_methods,ui_provider,ui_upi,ui_juspay,ui_lazypay ui;
 ```
 
