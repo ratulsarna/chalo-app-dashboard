@@ -97,19 +97,36 @@ flowchart TD
   ev_openQrBtn --> ev_switchGotIt["BLE validation switch to qr got it clicked"]
   ev_switchGotIt --> ui_qrScreen([QR Validation Flow])
 
-  ui_interactions -->|Back pressed| ev_backShown["confirmation on backpress shown"]
+  ui_interactions -->|Back pressed| ev_backShown["exit chalo pay confirmation shown"]
   ev_backShown --> ui_confirmExit{Confirm exit?}
-  ui_confirmExit -->|Yes| ev_backYes["confirmation on backpress yes clicked"]
-  ui_confirmExit -->|No| ev_backNo["confirmation on backpress no clicked"]
+  ui_confirmExit -->|Yes| ev_backYes["exit chalo pay confirmation yes clicked"]
+  ui_confirmExit -->|No| ev_backNo["exit chalo pay confirmation no clicked"]
 
   ui_bleActive --> ui_validationResult{Validation result?}
 
   ui_validationResult -->|ACK received| ui_ackType{ACK data type?}
-  ui_ackType -->|Valid conductor| ev_conductorPunch["[product] trip punch"]
+  ui_ackType -->|Valid conductor| ui_conductorPunch([Product trip punch event])
   ui_ackType -->|Valid TITO tap-in| ev_titoTapIn["tito tapIn notif recv on conductor flow"]
   ui_ackType -->|Invalid data| ev_invalidAck["invalid ble validation ack data received"]
 
-  ev_conductorPunch --> ev_ackConsumed["ble validation ack data consumed"]
+  ui_conductorPunch --> ev_spPunch["superPass trip punch"]
+  ui_conductorPunch --> ev_mtPunch["mTicket trip punch"]
+  ui_conductorPunch --> ev_pbPunch["premium reserve ticket trip punched"]
+  ui_conductorPunch --> ev_itPunch["instant ticket trip punched"]
+  ui_conductorPunch --> ev_ondcPunch["ondc ticket trip punched"]
+  ui_conductorPunch --> ev_ondcMetroPunch["ondc metro ticket trip punched"]
+  ui_conductorPunch --> ev_metroPunch["metro ticket trip punched"]
+  ui_conductorPunch --> ev_qpPunch["chalo pay ticket punched"]
+
+  ev_spPunch --> ev_ackConsumed["ble validation ack data consumed"]
+  ev_mtPunch --> ev_ackConsumed
+  ev_pbPunch --> ev_ackConsumed
+  ev_itPunch --> ev_ackConsumed
+  ev_ondcPunch --> ev_ackConsumed
+  ev_ondcMetroPunch --> ev_ackConsumed
+  ev_metroPunch --> ev_ackConsumed
+  ev_qpPunch --> ev_ackConsumed
+
   ev_titoTapIn --> ev_ackConsumed
   ev_invalidAck --> ev_ackConsumed
 
@@ -121,8 +138,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_bottomSheetClicked,ev_helpClicked,ev_openQrBtn,ev_switchGotIt,ev_backShown,ev_backYes,ev_backNo,ev_conductorPunch,ev_titoTapIn,ev_invalidAck,ev_ackConsumed,ev_syncFailed event;
-  class ui_bleActive,ui_interactions,ui_confirmExit,ui_validationResult,ui_ackType,ui_syncResult,ui_qrScreen,ui_postValidation ui;
+  class ev_bottomSheetClicked,ev_helpClicked,ev_openQrBtn,ev_switchGotIt,ev_backShown,ev_backYes,ev_backNo,ev_spPunch,ev_mtPunch,ev_pbPunch,ev_itPunch,ev_ondcPunch,ev_ondcMetroPunch,ev_metroPunch,ev_qpPunch,ev_titoTapIn,ev_invalidAck,ev_ackConsumed,ev_syncFailed event;
+  class ui_bleActive,ui_interactions,ui_confirmExit,ui_validationResult,ui_ackType,ui_conductorPunch,ui_syncResult,ui_qrScreen,ui_postValidation ui;
 ```
 
 ## TITO Tap-In Polling Flow
@@ -197,21 +214,32 @@ flowchart TD
 flowchart TD
   ui_validation([Any validation type active]) --> ui_punchReceived{Punch notification?}
 
-  ui_punchReceived -->|Super Pass| ev_spPunch["superPass trip punch"]
-  ui_punchReceived -->|M-Ticket| ev_mtPunch["mTicket trip punch"]
-  ui_punchReceived -->|Instant Ticket| ev_itPunch["instant ticket trip punched"]
-  ui_punchReceived -->|Premium Bus| ev_pbPunch["premium reserve ticket trip punched"]
-  ui_punchReceived -->|ONDC Bus| ev_ondcPunch["ondc ticket trip punched"]
+  ui_punchReceived -->|Super Pass| ev_spPayload["superPass receipt payload"]
+  ev_spPayload --> ev_spPunch["superPass trip punch"]
+
+  ui_punchReceived -->|M-Ticket| ev_mtPayload["MTicketPunchedEvent receipt payload"]
+  ev_mtPayload --> ev_mtPunch["mTicket trip punch"]
+
+  ui_punchReceived -->|Instant Ticket| ev_itPayload["instantTicket receipt payload"]
+  ev_itPayload --> ev_itPunch["instant ticket trip punched"]
+
+  ui_punchReceived -->|Premium Bus| ev_pbPayload["premium reserve ticket receipt payload"]
+  ev_pbPayload --> ev_pbPunch["premium reserve ticket trip punched"]
+
+  ui_punchReceived -->|ONDC Bus| ev_ondcPayload["ondc ticket receipt payload"]
+  ev_ondcPayload --> ev_ondcPunch["ondc ticket trip punched"]
+
   ui_punchReceived -->|ONDC Metro| ev_ondcMetroPunch["ondc metro ticket trip punched"]
   ui_punchReceived -->|Metro| ev_metroPunch["metro ticket trip punched"]
-  ui_punchReceived -->|Quick Pay| ev_qpPunch["chalo pay ticket punched"]
+
+  ui_punchReceived -->|Quick Pay| ev_qpPayload["quickpay receipt payload"]
+  ev_qpPayload --> ev_qpPunch["chalo pay ticket punched"]
 
   ev_spPunch --> ui_postValidation([Post-Validation Screen])
   ev_mtPunch --> ui_postValidation
   ev_itPunch --> ui_postValidation
   ev_pbPunch --> ui_postValidation
-  ev_ondcPunch --> ev_ondcReceiptPayload["ondc ticket receipt payload"]
-  ev_ondcReceiptPayload --> ui_postValidation
+  ev_ondcPunch --> ui_postValidation
   ev_ondcMetroPunch --> ui_postValidation
   ev_metroPunch --> ui_postValidation
   ev_qpPunch --> ui_postValidation
@@ -220,7 +248,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_spPunch,ev_mtPunch,ev_itPunch,ev_pbPunch,ev_ondcPunch,ev_ondcReceiptPayload,ev_ondcMetroPunch,ev_metroPunch,ev_qpPunch event;
+  class ev_spPayload,ev_spPunch,ev_mtPayload,ev_mtPunch,ev_itPayload,ev_itPunch,ev_pbPayload,ev_pbPunch,ev_ondcPayload,ev_ondcPunch,ev_ondcMetroPunch,ev_metroPunch,ev_qpPayload,ev_qpPunch event;
   class ui_validation,ui_punchReceived,ui_postValidation ui;
 ```
 
@@ -228,9 +256,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ui_validationSuccess([Validation successful]) --> ev_postValOpen["Post validation screen opened"]
-
-  ev_postValOpen --> ui_userChoice{User action?}
+  ui_validationSuccess([Post-validation screen / bottom sheet]) --> ui_userChoice{User action?}
 
   ui_userChoice -->|View receipt| ev_viewReceipt["view receipt post validation clicked"]
   ev_viewReceipt --> ext_receiptScreen[Receipt/History Screen]
@@ -245,7 +271,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_postValOpen,ev_viewReceipt,ev_exit,ev_menuReceipt event;
+  class ev_viewReceipt,ev_exit,ev_menuReceipt event;
   class ui_validationSuccess,ui_userChoice,ui_exitFlow ui;
   class ext_receiptScreen external;
 ```
@@ -273,10 +299,10 @@ flowchart TD
   ui_bleActive --> ui_punchNotification{Punch received?}
   ui_qrActive --> ui_punchNotification
 
-  ui_punchNotification -->|Yes| ev_punch["[product] trip punch"]
-  ev_punch --> ev_postValOpen["Post validation screen opened"]
+  ui_punchNotification -->|Yes| ui_punch([Product trip punch event])
+  ui_punch --> ui_postValOpen([Post-validation screen / bottom sheet])
 
-  ev_postValOpen --> ui_postAction{User action?}
+  ui_postValOpen --> ui_postAction{User action?}
   ui_postAction -->|View receipt| ev_viewReceipt["view receipt post validation clicked"]
   ui_postAction -->|Exit| ev_exit["view receipt post validation clicked"]
 
@@ -284,8 +310,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_start,ev_bleOpen,ev_qrOpen,ev_permCheck,ev_qrFallback,ev_punch,ev_postValOpen,ev_viewReceipt,ev_exit event;
-  class ui_validationType,ui_permResult,ui_bleActive,ui_qrActive,ui_punchNotification,ui_postAction ui;
+  class ev_start,ev_bleOpen,ev_qrOpen,ev_permCheck,ev_qrFallback,ev_viewReceipt,ev_exit event;
+  class ui_validationType,ui_permResult,ui_bleActive,ui_qrActive,ui_punchNotification,ui_punch,ui_postValOpen,ui_postAction ui;
 ```
 
 ## Key Funnel Metrics to Track
@@ -301,14 +327,14 @@ flowchart TD
 1. `start product validation` → Entry
 2. `ble screen open` or `qr screen open` → Type selection
 3. `[product] trip punch` → Validation success
-4. `Post validation screen opened` → Confirmation
+4. Post-validation screen / bottom sheet (no explicit event today)
 5. `view receipt post validation clicked` → Receipt view or exit
 
 ### TITO Tap-In Funnel
 1. `ble screen open` (with validationFlowType = conductorOrUnifiedTapIn)
 2. `tito tapIn notif recv on conductor flow` → Tap-in received
 3. `ble validation ack data consumed` → Processed
-4. `Post validation screen opened` → Success
+4. Post-validation screen / bottom sheet (no explicit event today)
 
 ### QR Validation Engagement Funnel
 1. `qr screen open` → Entry

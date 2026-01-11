@@ -5,7 +5,7 @@
   "propertyDefinitions": {
     "productType": {
       "type": "string",
-      "description": "Product type being validated",
+      "description": "Product type being validated (exact values vary by product).",
       "values": [
         "superPass",
         "mTicket",
@@ -19,19 +19,51 @@
     },
     "productSubType": {
       "type": "string",
-      "description": "Product sub-type (e.g., magicPass, ridePass for super pass; specific ticket types for others)"
+      "description": "Product sub-type (exact values vary by product)."
+    },
+    "productSubtype": {
+      "type": "string",
+      "description": "Product subtype used by TwoWayBleCommPilot logger (note spelling differs from productSubType)."
     },
     "isSuperPass": {
       "type": "boolean",
-      "description": "Whether the product is a super pass"
+      "description": "Whether the product is a super pass."
+    },
+    "bookingId": {
+      "type": "string",
+      "description": "Booking ID for validation (used by some products/events)."
     },
     "passId": {
       "type": "string",
-      "description": "Pass/booking ID for the product being validated"
+      "description": "Pass/booking ID for validation (used by some products/events)."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Order ID for order-based products (instant ticket, metro, ONDC, Quick Pay, etc.)."
+    },
+    "productId": {
+      "type": "string",
+      "description": "Product ID present on receipt events for some products."
+    },
+    "isChaloPay": {
+      "type": "boolean",
+      "description": "Whether this is a Quick Pay (Chalo Pay) order."
+    },
+    "isInstantTicket": {
+      "type": "boolean",
+      "description": "Whether this is an Instant Ticket order."
+    },
+    "isPremiumReserveTicket": {
+      "type": "boolean",
+      "description": "Whether this is a Premium Reserve Ticket."
+    },
+    "isOndcTicketOrder": {
+      "type": "boolean",
+      "description": "Whether this is an ONDC ticket order."
     },
     "validationFlowType": {
       "type": "string",
-      "description": "Type of validation flow",
+      "description": "Type of validation flow (from ValidationProcessFlowDetails).",
       "values": [
         "conductorValidation",
         "conductorOrUnifiedTapIn",
@@ -41,25 +73,25 @@
     },
     "isBlePermissionGranted": {
       "type": "boolean",
-      "description": "Whether BLE permissions are granted"
+      "description": "Whether BLE permissions are granted."
     },
     "validationAckDataType": {
       "type": "string",
-      "description": "Type of ACK data received during validation",
+      "description": "Type of ACK data received during validation.",
       "values": [
         "conductorValidationAckData",
         "titoTapInAckData",
         "titoTapOutAckData",
-        "invalid_data"
+        "invalidData"
       ]
     },
     "wasTitoValidation": {
       "type": "boolean",
-      "description": "Whether the validation was TITO (tap-in-tap-out)"
+      "description": "True if the post-validation action happened after a TITO validation (note: some implementations may serialize this as a string)."
     },
     "notificationDeliveryMedium": {
       "type": "string",
-      "description": "Medium through which validation notification was delivered (GCM, BLE, Polling)",
+      "description": "Medium through which validation notification/ACK was delivered.",
       "values": [
         "GCM",
         "BLE",
@@ -68,635 +100,1143 @@
     },
     "routeName": {
       "type": "string",
-      "description": "Route name from receipt data"
+      "description": "Route name from receipt data."
     },
     "startStop": {
       "type": "string",
-      "description": "Start stop name from receipt"
+      "description": "Start stop name from receipt."
     },
     "endStop": {
       "type": "string",
-      "description": "End stop name from receipt"
+      "description": "End stop name from receipt."
     },
     "endStopId": {
       "type": "string",
-      "description": "End stop ID from receipt"
+      "description": "End stop ID from receipt."
     },
     "conductorId": {
       "type": "string",
-      "description": "Conductor ID from punch/receipt data"
+      "description": "Conductor ID from receipt data."
     },
     "vehicleNo": {
       "type": "string",
-      "description": "Vehicle number from receipt"
+      "description": "Vehicle number from receipt."
     },
     "activationTime": {
-      "type": "string",
-      "description": "Activation timestamp formatted as time string"
+      "type": "number",
+      "description": "Activation timestamp (usually epoch millis; some legacy events may send a formatted string under the same key)."
     },
     "punchTime": {
-      "type": "string",
-      "description": "Punch timestamp formatted as time string"
-    },
-    "punchTsInMillis": {
       "type": "number",
-      "description": "Punch timestamp in milliseconds"
+      "description": "Punch/validation timestamp (usually epoch millis/seconds; some legacy events may send a formatted string under the same key)."
     },
     "punch notification delay": {
       "type": "number",
-      "description": "Delay between punch time and notification received (milliseconds)"
-    },
-    "tapId": {
-      "type": "string",
-      "description": "Unique tap identifier for TITO validations"
-    },
-    "titoRideExpiryTimeInMillis": {
-      "type": "number",
-      "description": "TITO ride expiry timestamp in milliseconds"
-    },
-    "reason": {
-      "type": "string",
-      "description": "Reason for failure or invalid data"
-    },
-    "failureReason": {
-      "type": "string",
-      "description": "Detailed failure reason for syncing failures"
-    },
-    "rawData": {
-      "type": "string",
-      "description": "Raw data payload for debugging (invalid data scenarios)"
+      "description": "Delay between punch time and notification received (milliseconds)."
     },
     "isTripReceiptAvailable": {
       "type": "boolean",
-      "description": "Whether trip receipt is available"
+      "description": "Whether trip receipt is available."
     },
-    "numberOfTrips": {
+    "amount": {
       "type": "number",
-      "description": "Number of trips in the itinerary (for trip planner integration)"
+      "description": "Receipt amount for some products."
     },
-    "error": {
-      "type": "string",
-      "description": "Error message for failures"
+    "chalo pay trip amount": {
+      "type": "number",
+      "description": "Quick Pay trip amount as emitted on receipt events."
     },
     "payload": {
       "type": "string",
-      "description": "Auto-documented from code; validate semantics and expected values."
+      "description": "Receipt payload/debug payload (stringified)."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for failure/invalid data."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Detailed failure reason for syncing failures."
+    },
+    "rawData": {
+      "type": "string",
+      "description": "Raw data payload for debugging (invalid data scenarios)."
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message for failures."
+    },
+    "number of trips": {
+      "type": "number",
+      "description": "Number of trips in the itinerary (trip planner integration)."
+    },
+    "type": {
+      "type": "string",
+      "description": "Report problem type/category (exact values owned by report-problem feature)."
+    },
+    "problemSource": {
+      "type": "string",
+      "description": "Report problem source screen/module."
+    },
+    "fullName": {
+      "type": "string",
+      "description": "User full name added by some validation analytics managers."
+    },
+    "time": {
+      "type": "string",
+      "description": "Time string added by some validation analytics managers."
+    },
+    "date": {
+      "type": "string",
+      "description": "Date string added by some validation analytics managers."
+    },
+
+    "notification title": {
+      "type": "string",
+      "description": "TITO notification title (raw)."
+    },
+    "notificationSubtitle": {
+      "type": "string",
+      "description": "TITO notification subtitle/body (raw)."
+    },
+    "notif bookingId": {
+      "type": "string",
+      "description": "Booking/order ID as received in the TITO notification payload."
+    },
+    "notif productType": {
+      "type": "string",
+      "description": "Product type as received in the TITO notification payload."
+    },
+    "notif productSubtype": {
+      "type": "string",
+      "description": "Product subtype as received in the TITO notification payload."
+    },
+    "groupNo": {
+      "type": "number",
+      "description": "Group number from TITO notification payload."
+    },
+    "notif firstTimeValidScanTS": {
+      "type": "number",
+      "description": "First valid scan timestamp from TITO notification payload."
+    },
+    "notif activationTsInSec": {
+      "type": "number",
+      "description": "Activation timestamp (seconds) from TITO notification payload."
+    },
+    "notif routeId": {
+      "type": "string",
+      "description": "Route ID from TITO notification payload."
+    },
+    "notif stopId": {
+      "type": "string",
+      "description": "Stop ID from TITO notification payload."
+    },
+    "notif tripNo": {
+      "type": "string",
+      "description": "Trip number from TITO notification payload."
+    },
+    "notif waybillNo": {
+      "type": "number",
+      "description": "Waybill number from TITO notification payload."
+    },
+    "notif timeTakenToGetNotificationInSec": {
+      "type": "string",
+      "description": "Time taken to get notification in seconds (as emitted)."
+    },
+    "notif approxTimeTakenForNotificationDelivery": {
+      "type": "string",
+      "description": "Approx notification delivery time (as emitted)."
+    },
+    "notif tapinPunchTsInMillis": {
+      "type": "string",
+      "description": "Tap-in punch timestamp in millis (as emitted)."
+    },
+    "notif timeTakenFromPunchToAppNotifReceived": {
+      "type": "string",
+      "description": "Time from punch to notification received (as emitted)."
+    },
+    "notif walletId": {
+      "type": "string",
+      "description": "Wallet ID from TITO notification payload (Quick Pay only)."
+    },
+    "notif expiryTime": {
+      "type": "number",
+      "description": "Expiry time from TITO notification payload (Quick Pay only)."
+    },
+
+    "source": {
+      "type": "string",
+      "description": "Source (Source enum value) as emitted by TwoWayBleCommPilot logger."
+    },
+    "data": {
+      "type": "string",
+      "description": "BLE data (stringified) for TwoWayBleCommPilot events."
+    },
+    "dataTimestamp": {
+      "type": "number",
+      "description": "Timestamp for TwoWayBleCommPilot data transfer."
+    },
+    "communicationRange": {
+      "type": "string",
+      "description": "Communication range for TwoWayBleCommPilot events."
+    },
+    "setupTimeout": {
+      "type": "number",
+      "description": "Setup/transfer timeout for TwoWayBleCommPilot events."
+    },
+    "receivingDistance": {
+      "type": "string",
+      "description": "Receiving distance for TwoWayBleCommPilot events."
+    },
+    "connectionId": {
+      "type": "string",
+      "description": "Connection ID for TwoWayBleCommPilot events (note: some events also emit connectionId{n} keys)."
+    },
+    "waybillNo": {
+      "type": "string",
+      "description": "Waybill number extracted from TwoWayBleCommPilot data (when available)."
+    },
+    "etimTimestamp": {
+      "type": "string",
+      "description": "ETIM timestamp extracted from TwoWayBleCommPilot data (when available)."
+    },
+    "padding": {
+      "type": "string",
+      "description": "Padding extracted from TwoWayBleCommPilot data (when available)."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Failure reason (also used by TwoWayBleCommPilot)."
+    },
+    "timeSinceActModeBrCalled": {
+      "type": "number",
+      "description": "Time elapsed since start active mode broadcast called (TwoWayBleCommPilot)."
+    },
+    "timeSinceActModeBrFailed": {
+      "type": "number",
+      "description": "Time elapsed since start active mode broadcast failed (TwoWayBleCommPilot)."
+    },
+    "timeSinceActModeBrSuccess": {
+      "type": "number",
+      "description": "Time elapsed since start active mode broadcast success (TwoWayBleCommPilot)."
+    },
+    "timeSinceDupConnOpCalled": {
+      "type": "number",
+      "description": "Time elapsed since start duplex connection op called (TwoWayBleCommPilot)."
+    },
+    "timeSinceDupConnOpSuccess": {
+      "type": "number",
+      "description": "Time elapsed since start duplex connection op success (TwoWayBleCommPilot)."
+    },
+    "timeSinceDupConnOpFailed": {
+      "type": "number",
+      "description": "Time elapsed since start duplex connection op failed (TwoWayBleCommPilot)."
+    },
+    "timeSinceSendDataOnConnCalled": {
+      "type": "number",
+      "description": "Time elapsed since send data on connection called (TwoWayBleCommPilot)."
+    },
+    "timeSinceSendDataOnConnSuccess": {
+      "type": "number",
+      "description": "Time elapsed since send data on connection success (TwoWayBleCommPilot)."
+    },
+    "timeSinceSendDataOnConnFailed": {
+      "type": "number",
+      "description": "Time elapsed since send data on connection failed (TwoWayBleCommPilot)."
+    },
+    "timeSinceConnListUpdated": {
+      "type": "number",
+      "description": "Time elapsed since BLE connection list updated (TwoWayBleCommPilot)."
+    },
+    "timeSinceConnHistListUpdated": {
+      "type": "number",
+      "description": "Time elapsed since BLE connection history list updated (TwoWayBleCommPilot)."
+    },
+    "timeSinceDataReceivedOnConnection": {
+      "type": "number",
+      "description": "Time elapsed since BLE data received on connection (TwoWayBleCommPilot)."
+    },
+    "timeSinceStopBleValidationWithDelayCalled": {
+      "type": "number",
+      "description": "Time elapsed since stop BLE validation with delay called (TwoWayBleCommPilot)."
+    },
+    "timeSinceStopBleValidationSuccess": {
+      "type": "number",
+      "description": "Time elapsed since stop BLE validation success (TwoWayBleCommPilot)."
+    },
+    "timeSinceStopBleValidationFailed": {
+      "type": "number",
+      "description": "Time elapsed since stop BLE validation failed (TwoWayBleCommPilot)."
+    },
+    "timeSinceStopActiveModeBroadcastCalled": {
+      "type": "number",
+      "description": "Time elapsed since stop active mode broadcast called (TwoWayBleCommPilot)."
+    },
+    "timeSinceStopAllBleOpAndSOBlCalled": {
+      "type": "number",
+      "description": "Time elapsed since stop all BLE operations and switch off bluetooth called (TwoWayBleCommPilot)."
     }
   },
   "events": [
     {
-      "name": "BLE denial qr option shown",
-      "description": "QR alternative option shown after BLE permission denial",
+      "name": "start product validation",
+      "description": "Generic product validation started.",
+      "properties": [
+        "bookingId",
+        "productType",
+        "productSubType"
+      ],
+      "triggers": [
+        "Raised when user initiates validation for a product from summary/receipt screens."
+      ]
+    },
+    {
+      "name": "validation product not found",
+      "description": "Product not found when attempting validation.",
+      "properties": [
+        "productType",
+        "productSubType"
+      ],
+      "triggers": [
+        "Raised when validation is attempted but the product cannot be resolved."
+      ]
+    },
+
+    {
+      "name": "super pass fetched",
+      "description": "Super Pass validation product data fetched.",
       "properties": [
         "productType",
         "productSubType",
         "isSuperPass",
-        "passId"
+        "bookingId"
       ],
       "triggers": [
-        "BLE permissions denied, fallback QR option displayed"
+        "Raised when Super Pass product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE denial use qr clicked",
-      "description": "User chose to use QR after denying BLE permissions",
+      "name": "mticket fetched",
+      "description": "M-Ticket validation product data fetched.",
       "properties": [
         "productType",
         "productSubType",
         "isSuperPass",
-        "passId"
+        "bookingId"
       ],
       "triggers": [
-        "User taps 'Use QR' button after denying BLE"
+        "Raised when M-Ticket product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE permission check on validation initialization",
-      "description": "BLE permission status checked when validation screen initializes",
+      "name": "premium reserve ticket fetched",
+      "description": "Premium Reserve Ticket validation product data fetched.",
       "properties": [
+        "fullName",
+        "time",
+        "date",
         "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "isBlePermissionGranted"
+        "bookingId"
       ],
       "triggers": [
-        "BLE validation component initializes"
+        "Raised when Premium Reserve Ticket product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE permission denied",
-      "description": "User denied BLE permissions",
+      "name": "instant ticket fetched",
+      "description": "Instant Ticket validation product data fetched.",
       "properties": [
+        "fullName",
+        "time",
+        "date",
         "productType",
         "productSubType",
-        "isSuperPass",
-        "passId"
+        "orderId",
+        "activationTime",
+        "isInstantTicket"
       ],
       "triggers": [
-        "User denies BLE permissions via system dialog"
+        "Raised when Instant Ticket product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE permission granted",
-      "description": "User granted BLE permissions",
+      "name": "metro ticket fetched",
+      "description": "Metro ticket validation product data fetched.",
       "properties": [
+        "fullName",
+        "time",
+        "date",
         "productType",
         "productSubType",
-        "isSuperPass",
-        "passId"
+        "orderId",
+        "activationTime"
       ],
       "triggers": [
-        "User grants BLE permissions via system dialog"
+        "Raised when Metro ticket product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE permission rationale accepted",
-      "description": "User accepted BLE permission rationale",
+      "name": "ondc ticket fetched",
+      "description": "ONDC ticket validation product data fetched.",
       "properties": [
+        "fullName",
+        "time",
+        "date",
         "productType",
         "productSubType",
-        "isSuperPass",
-        "passId"
+        "orderId",
+        "activationTime",
+        "isOndcTicketOrder"
       ],
       "triggers": [
-        "User taps 'Allow' or 'Continue' on rationale screen"
+        "Raised when ONDC ticket product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE validation help btn clicked",
-      "description": "Help button clicked on BLE validation screen",
+      "name": "ondc metro ticket fetched",
+      "description": "ONDC metro ticket validation product data fetched.",
       "properties": [
+        "fullName",
+        "time",
+        "date",
         "productType",
         "productSubType",
-        "isSuperPass",
-        "passId"
+        "orderId",
+        "activationTime",
+        "isOndcTicketOrder"
       ],
       "triggers": [
-        "User taps help/info icon on BLE validation screen"
+        "Raised when ONDC metro ticket product validation data is fetched in validation flow."
       ]
     },
     {
-      "name": "BLE validation open qr btn clicked",
-      "description": "User opened QR alternative from BLE screen",
+      "name": "chalo pay order fetched",
+      "description": "Quick Pay (Chalo Pay) validation order fetched.",
       "properties": [
+        "fullName",
+        "time",
+        "date",
         "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
+        "orderId",
+        "activationTime",
+        "isChaloPay"
       ],
       "triggers": [
-        "User taps 'Open QR' button on BLE validation screen"
+        "Raised when Quick Pay product validation data is fetched in validation flow."
       ]
     },
-    {
-      "name": "BLE validation permission rationale screen opened",
-      "description": "Permission rationale/explainer screen shown",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
-      ],
-      "triggers": [
-        "System shows rationale before requesting BLE permissions"
-      ]
-    },
-    {
-      "name": "BLE validation permission settings screen opened",
-      "description": "Settings screen opened to enable BLE permissions",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
-      ],
-      "triggers": [
-        "User navigates to settings to enable BLE permissions"
-      ]
-    },
-    {
-      "name": "BLE validation switch to qr got it clicked",
-      "description": "User acknowledged switch to QR validation",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
-      ],
-      "triggers": [
-        "User taps 'Got it' on switch-to-QR dialog"
-      ]
-    },
-    {
-      "name": "Post validation screen opened",
-      "description": "Post-validation success screen shown",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
-      ],
-      "triggers": [
-        "Validation successful, post-validation screen displayed"
-      ]
-    },
-    {
-      "name": "activation duration expired dialog ok clicked",
-      "description": "OK clicked on activation duration expired dialog",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId"
-      ],
-      "triggers": [
-        "User taps 'OK' on activation duration expired dialog"
-      ]
-    },
-    {
-      "name": "activation duration expired dialog view summary clicked",
-      "description": "View summary clicked on activation duration expired dialog",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId"
-      ],
-      "triggers": [
-        "User taps 'View Summary' on activation duration expired dialog"
-      ]
-    },
-    {
-      "name": "ble bottom sheet clicked",
-      "description": "BLE validation bottom sheet clicked/expanded",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
-      ],
-      "triggers": [
-        "User interacts with product details bottom sheet on BLE screen"
-      ]
-    },
-    {
-      "name": "ble hardware not available on device",
-      "description": "BLE hardware not available on user's device",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId"
-      ],
-      "triggers": [
-        "Device doesn't support BLE hardware"
-      ]
-    },
+
     {
       "name": "ble screen open",
-      "description": "BLE validation screen opened",
+      "description": "BLE validation screen opened.",
       "properties": [
         "productType",
         "productSubType",
         "isSuperPass",
-        "passId",
-        "validationFlowType"
+        "bookingId",
+        "orderId",
+        "validationFlowType",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
       ],
       "triggers": [
-        "User navigates to BLE validation screen",
-        "Validation initiated for conductor flow",
-        "Validation initiated for TITO tap-in/tap-out"
-      ]
-    },
-    {
-      "name": "ble validation ack data consumed",
-      "description": "BLE validation ACK data successfully consumed (processed)",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "notificationDeliveryMedium",
-        "validationAckDataType"
-      ],
-      "triggers": [
-        "ACK data from BLE validation processed and consumed"
-      ],
-      "note": "Fired only once per validation to measure ACK success rates and delivery medium distribution"
-    },
-    {
-      "name": "chalo pay ticket punched",
-      "description": "Quick pay ticket punched",
-      "properties": [
-        "passId",
-        "productType",
-        "routeName",
-        "conductorId",
-        "punchTime",
-        "vehicleNo"
-      ],
-      "triggers": [
-        "Conductor punch notification received for quick pay"
-      ]
-    },
-    {
-      "name": "confirmation on backpress no clicked",
-      "description": "User cancelled exit on back press dialog",
-      "properties": [],
-      "triggers": [
-        "User taps 'No' to stay on validation screen"
-      ]
-    },
-    {
-      "name": "confirmation on backpress shown",
-      "description": "Confirmation dialog shown when user presses back during validation",
-      "properties": [],
-      "triggers": [
-        "User presses back button during active validation"
-      ]
-    },
-    {
-      "name": "confirmation on backpress yes clicked",
-      "description": "User confirmed exit on back press dialog",
-      "properties": [],
-      "triggers": [
-        "User taps 'Yes' to exit validation"
-      ]
-    },
-    {
-      "name": "instant ticket trip punched",
-      "description": "Instant ticket trip punched by conductor",
-      "properties": [
-        "passId",
-        "productType",
-        "productSubType",
-        "routeName",
-        "conductorId",
-        "punchTime",
-        "vehicleNo"
-      ],
-      "triggers": [
-        "Conductor punch notification received for instant ticket"
-      ]
-    },
-    {
-      "name": "invalid ble validation ack data received",
-      "description": "Invalid BLE validation ACK data received",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "reason",
-        "rawData",
-        "notificationDeliveryMedium"
-      ],
-      "triggers": [
-        "BLE validation received malformed or invalid ACK data"
-      ]
-    },
-    {
-      "name": "invalid tito tap in data received in polling",
-      "description": "Invalid TITO tap-in data received via polling",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "reason"
-      ],
-      "triggers": [
-        "Polling retrieved invalid/corrupted tap-in data"
-      ]
-    },
-    {
-      "name": "mTicket trip punch",
-      "description": "M-ticket trip punched by conductor",
-      "properties": [
-        "isTripReceiptAvailable",
-        "passId",
-        "productSubType",
-        "productType",
-        "routeName",
-        "startStop",
-        "endStop",
-        "endStopId",
-        "conductorId",
-        "punchTime",
-        "vehicleNo",
-        "punch notification delay"
-      ],
-      "triggers": [
-        "Conductor punch notification received for m-ticket"
-      ]
-    },
-    {
-      "name": "metro ticket trip punched",
-      "description": "Metro ticket trip punched",
-      "properties": [
-        "passId",
-        "productType",
-        "punchTime"
-      ],
-      "triggers": [
-        "Punch notification received for metro ticket"
-      ]
-    },
-    {
-      "name": "mpass activation duration expired dialog shown",
-      "description": "Activation duration expired dialog shown for super pass",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
-      ],
-      "triggers": [
-        "Super pass activation duration expired during validation"
-      ]
-    },
-    {
-      "name": "mticket qr code zoomed",
-      "description": "M-ticket QR code zoomed in (fullscreen)",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId"
-      ],
-      "triggers": [
-        "User taps to zoom mticket QR code"
-      ]
-    },
-    {
-      "name": "ondc metro ticket trip punched",
-      "description": "ONDC metro ticket trip punched",
-      "properties": [
-        "passId",
-        "productType",
-        "routeName",
-        "punchTime"
-      ],
-      "triggers": [
-        "Punch notification received for ONDC metro ticket"
-      ]
-    },
-    {
-      "name": "ondc ticket receipt payload",
-      "component": "OndcTicketProductValidationConfig",
-      "stage": "Misc",
-      "source": "this::class.simpleName ?: \"OndcTicketProductValidationConfig\"",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/ondc/validation/OndcTicketProductValidationConfig.kt:117",
-      "properties": [
-        {
-          "property": "payload"
-        }
-      ]
-    },
-    {
-      "name": "ondc ticket trip punched",
-      "description": "ONDC bus ticket trip punched",
-      "properties": [
-        "passId",
-        "productType",
-        "routeName",
-        "conductorId",
-        "punchTime",
-        "vehicleNo"
-      ],
-      "triggers": [
-        "Conductor punch notification received for ONDC bus ticket"
-      ]
-    },
-    {
-      "name": "premium reserve ticket trip punched",
-      "description": "Premium reserve ticket trip punched by conductor",
-      "properties": [
-        "passId",
-        "productType",
-        "routeName",
-        "conductorId",
-        "punchTime",
-        "vehicleNo"
-      ],
-      "triggers": [
-        "Conductor punch notification received for premium bus ticket"
+        "Raised when user enters BLE validation UI."
       ]
     },
     {
       "name": "qr screen open",
-      "description": "QR validation screen opened (legacy event name)",
+      "description": "QR validation screen opened.",
       "properties": [
         "productType",
         "productSubType",
         "isSuperPass",
-        "passId"
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
       ],
       "triggers": [
-        "User navigates to QR validation screen"
+        "Raised when user enters QR validation UI."
       ]
     },
+    {
+      "name": "ble hardware not available on device",
+      "description": "BLE hardware not available on user's device.",
+      "properties": [],
+      "triggers": [
+        "Raised when device does not support BLE hardware."
+      ]
+    },
+
+    {
+      "name": "BLE permission check on validation initialization",
+      "description": "BLE permission status checked when validation initializes.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "passId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isBlePermissionGranted",
+        "fullName",
+        "time",
+        "date",
+        "activationTime"
+      ],
+      "triggers": [
+        "Raised when validation checks BLE permission status."
+      ]
+    },
+    {
+      "name": "BLE permission granted",
+      "description": "User has granted BLE permissions.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised after permission update indicates BLE permission granted."
+      ]
+    },
+    {
+      "name": "BLE permission denied",
+      "description": "User has denied BLE permissions.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised after permission update indicates BLE permission denied."
+      ]
+    },
+    {
+      "name": "BLE validation permission rationale screen opened",
+      "description": "BLE permission rationale UI opened.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when BLE permission rationale screen is opened."
+      ]
+    },
+    {
+      "name": "BLE permission rationale accepted",
+      "description": "User accepted BLE permission rationale.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user proceeds from BLE permission rationale."
+      ]
+    },
+    {
+      "name": "BLE validation permission settings screen opened",
+      "description": "User opened system settings from BLE permission UI.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user opens permission settings from validation flow."
+      ]
+    },
+    {
+      "name": "BLE denial qr option shown",
+      "description": "QR fallback option shown after BLE permission denial.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when validation shows QR option due to BLE permission denial."
+      ]
+    },
+    {
+      "name": "BLE denial use qr clicked",
+      "description": "User chose to use QR after denying BLE permissions.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user selects QR fallback after BLE denial."
+      ]
+    },
+
+    {
+      "name": "ble bottom sheet clicked",
+      "description": "User clicked product/details bottom sheet on BLE validation screen.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user expands bottom sheet in BLE validation UI."
+      ]
+    },
+    {
+      "name": "BLE validation help btn clicked",
+      "description": "Help button clicked on BLE validation screen.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user clicks help from BLE validation UI."
+      ]
+    },
+    {
+      "name": "BLE validation open qr btn clicked",
+      "description": "User clicked to open QR from BLE validation screen.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user chooses to open QR from BLE validation UI."
+      ]
+    },
+    {
+      "name": "BLE validation switch to qr got it clicked",
+      "description": "User acknowledged switch-to-QR UI during BLE validation.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user clicks 'Got it' on switch-to-QR prompt."
+      ]
+    },
+
+    {
+      "name": "exit chalo pay confirmation shown",
+      "description": "Exit confirmation dialog shown (uses legacy Chalo Pay naming).",
+      "properties": [],
+      "triggers": [
+        "Raised when exit confirmation is shown on back press."
+      ]
+    },
+    {
+      "name": "exit chalo pay confirmation yes clicked",
+      "description": "User confirmed exit on back press (uses legacy Chalo Pay naming).",
+      "properties": [],
+      "triggers": [
+        "Raised when user confirms exit on back press."
+      ]
+    },
+    {
+      "name": "exit chalo pay confirmation no clicked",
+      "description": "User cancelled exit on back press (uses legacy Chalo Pay naming).",
+      "properties": [],
+      "triggers": [
+        "Raised when user cancels exit on back press."
+      ]
+    },
+
     {
       "name": "qr validation screen help button clicked",
-      "description": "Help button clicked on QR validation screen",
+      "description": "Help button clicked on QR validation screen.",
       "properties": [
         "productType",
-        "productSubType",
-        "passId"
+        "productSubType"
       ],
       "triggers": [
-        "User taps help icon on QR validation screen"
-      ]
-    },
-    {
-      "name": "qr validation screen trip planner failed",
-      "description": "Trip planner failed to fetch itinerary from QR screen",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId",
-        "error"
-      ],
-      "triggers": [
-        "Trip planner API call fails or returns error"
-      ]
-    },
-    {
-      "name": "qr validation screen trip planner success",
-      "description": "Trip planner successfully fetched itinerary from QR screen",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId",
-        "numberOfTrips"
-      ],
-      "triggers": [
-        "Trip planner API call succeeds, itinerary displayed"
+        "Raised when user taps help icon on QR validation UI."
       ]
     },
     {
       "name": "qr validation screen view journey button clicked",
-      "description": "View journey button clicked on QR validation screen",
+      "description": "View journey button clicked on QR validation screen.",
       "properties": [
         "productType",
-        "productSubType",
-        "passId"
+        "productSubType"
       ],
       "triggers": [
-        "User taps 'View Journey' to see trip details from QR screen"
+        "Raised when user taps 'View Journey' on QR validation UI."
       ]
     },
     {
-      "name": "report problem clicked v2",
-      "description": "Report problem clicked from validation screen",
+      "name": "qr validation screen trip planner success",
+      "description": "Trip planner call succeeded from QR validation screen.",
+      "properties": [
+        "number of trips"
+      ],
+      "triggers": [
+        "Raised when trip planner returns itineraries from QR validation flow."
+      ]
+    },
+    {
+      "name": "qr validation screen trip planner failed",
+      "description": "Trip planner call failed from QR validation screen.",
+      "properties": [
+        "error"
+      ],
+      "triggers": [
+        "Raised when trip planner fails from QR validation flow."
+      ]
+    },
+
+    {
+      "name": "mticket qr code zoomed",
+      "description": "M-Ticket QR zoomed/opened.",
       "properties": [
         "productType",
         "productSubType",
         "isSuperPass",
-        "passId",
-        "problemType",
-        "problemSource"
+        "bookingId"
       ],
       "triggers": [
-        "User taps report problem/help button on validation screen"
-      ]
-    },
-    {
-      "name": "simple qr validation zoom qr clicked",
-      "description": "Generic QR zoom clicked (for other product types)",
-      "properties": [
-        "productType",
-        "productSubType",
-        "passId"
-      ],
-      "triggers": [
-        "User taps to zoom QR code on validation screen"
-      ]
-    },
-    {
-      "name": "start product validation",
-      "description": "Generic product validation started",
-      "properties": [
-        "productType",
-        "passId"
-      ],
-      "triggers": [
-        "User initiates validation for any product"
+        "Raised when user opens zoomed QR for M-Ticket."
       ]
     },
     {
       "name": "super pass active qr zoomed screen opened",
-      "description": "Super pass QR code zoomed in (fullscreen)",
+      "description": "Super Pass active QR zoomed screen opened.",
       "properties": [
         "productType",
         "productSubType",
         "isSuperPass",
-        "passId"
+        "bookingId"
       ],
       "triggers": [
-        "User taps to zoom super pass QR code"
+        "Raised when user opens zoomed QR for active Super Pass."
       ]
     },
     {
+      "name": "simple qr validation zoom qr clicked",
+      "description": "Generic QR zoom clicked in validation flow (non Super Pass / non M-Ticket).",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user taps zoom on QR for supported products that use generic zoom event."
+      ]
+    },
+
+    {
+      "name": "report problem clicked v2",
+      "description": "Report problem clicked from validation flow.",
+      "properties": [
+        "type",
+        "problemSource",
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user taps report problem/help entry from validation flow."
+      ]
+    },
+
+    {
+      "name": "mpass activation duration expired dialog shown",
+      "description": "Product activation duration expired dialog shown in validation flow.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when validation detects product has expired and shows expiry dialog."
+      ]
+    },
+    {
+      "name": "activation duration expired dialog ok clicked",
+      "description": "User dismissed activation expiry dialog.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user clicks OK/Got It on expiry dialog."
+      ]
+    },
+    {
+      "name": "activation duration expired dialog view summary clicked",
+      "description": "User chose to view summary from activation expiry dialog.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user clicks View Summary/See Details on expiry dialog."
+      ]
+    },
+
+    {
+      "name": "tito tapIn notif recv on conductor flow",
+      "description": "TITO tap-in notification received during conductor/unified flow.",
+      "properties": [
+        "notificationDeliveryMedium",
+        "fullName",
+        "time",
+        "date",
+        "productType",
+        "productSubType",
+        "orderId",
+        "activationTime",
+        "isChaloPay",
+        "isOndcTicketOrder",
+        "notification title",
+        "notificationSubtitle",
+        "notif bookingId",
+        "notif productType",
+        "notif productSubtype",
+        "groupNo",
+        "notif firstTimeValidScanTS",
+        "notif activationTsInSec",
+        "notif routeId",
+        "notif stopId",
+        "notif tripNo",
+        "notif waybillNo",
+        "notif timeTakenToGetNotificationInSec",
+        "notif approxTimeTakenForNotificationDelivery",
+        "notif tapinPunchTsInMillis",
+        "notif timeTakenFromPunchToAppNotifReceived",
+        "notif walletId",
+        "notif expiryTime"
+      ],
+      "triggers": [
+        "Raised when a tap-in notification is received/processed during validation."
+      ]
+    },
+    {
+      "name": "tito tapin polling stopped due to notification received",
+      "description": "TITO tap-in polling stopped because a notification was received.",
+      "properties": [
+        "notificationDeliveryMedium",
+        "fullName",
+        "time",
+        "date",
+        "productType",
+        "productSubType",
+        "orderId",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder"
+      ],
+      "triggers": [
+        "Raised when polling stops due to notification delivery."
+      ]
+    },
+    {
+      "name": "valid tito tap in data received in polling",
+      "description": "Valid TITO tap-in data received via polling.",
+      "properties": [
+        "fullName",
+        "time",
+        "date",
+        "productType",
+        "productSubType",
+        "orderId",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "notification title",
+        "notificationSubtitle",
+        "notif bookingId",
+        "notif productType",
+        "notif productSubtype",
+        "groupNo",
+        "notif firstTimeValidScanTS",
+        "notif activationTsInSec",
+        "notif routeId",
+        "notif stopId",
+        "notif tripNo",
+        "notif waybillNo",
+        "notif timeTakenToGetNotificationInSec",
+        "notif approxTimeTakenForNotificationDelivery",
+        "notif tapinPunchTsInMillis",
+        "notif timeTakenFromPunchToAppNotifReceived",
+        "notif walletId",
+        "notif expiryTime"
+      ],
+      "triggers": [
+        "Raised when polling yields valid tap-in data."
+      ]
+    },
+    {
+      "name": "invalid tito tap in data received in polling",
+      "description": "Invalid TITO tap-in data received via polling.",
+      "properties": [
+        "reason",
+        "fullName",
+        "time",
+        "date",
+        "productType",
+        "productSubType",
+        "orderId",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder"
+      ],
+      "triggers": [
+        "Raised when polling yields invalid tap-in data."
+      ]
+    },
+
+    {
+      "name": "invalid ble validation ack data received",
+      "description": "Invalid BLE validation ACK data received.",
+      "properties": [
+        "reason",
+        "rawData",
+        "notificationDeliveryMedium",
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when BLE ACK contains invalid/unsupported data."
+      ]
+    },
+    {
+      "name": "ble validation ack data consumed",
+      "description": "BLE validation ACK data consumed (first medium distribution analysis).",
+      "properties": [
+        "notificationDeliveryMedium",
+        "validationAckDataType",
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when a validation ACK is consumed and attributed to a delivery medium."
+      ]
+    },
+    {
+      "name": "syncing post ble validation failed",
+      "description": "Syncing failed after BLE validation.",
+      "properties": [
+        "failureReason",
+        "reason",
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when post-validation sync step fails."
+      ]
+    },
+
+    {
+      "name": "view trip receipt from menu clicked",
+      "description": "User clicked 'View trip receipt' from menu on validation UI.",
+      "properties": [
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user uses the menu option to view receipt from validation."
+      ]
+    },
+    {
+      "name": "view receipt post validation clicked",
+      "description": "Post-validation action clicked (used for both 'View Receipt' and 'Exit/Done' in current code).",
+      "properties": [
+        "wasTitoValidation",
+        "productType",
+        "productSubType",
+        "isSuperPass",
+        "bookingId",
+        "orderId",
+        "fullName",
+        "time",
+        "date",
+        "activationTime",
+        "isChaloPay",
+        "isInstantTicket",
+        "isOndcTicketOrder",
+        "isPremiumReserveTicket"
+      ],
+      "triggers": [
+        "Raised when user clicks post-validation CTA (view receipt or exit)."
+      ]
+    },
+
+    {
       "name": "superPass trip punch",
-      "description": "Super pass trip punched by conductor",
+      "description": "Super Pass trip punched by conductor.",
       "properties": [
         "isTripReceiptAvailable",
         "passId",
@@ -713,162 +1253,745 @@
         "punch notification delay"
       ],
       "triggers": [
-        "Conductor punch notification received for super pass"
+        "Raised when Super Pass punch notification is received."
       ]
     },
     {
-      "name": "syncing post ble validation failed",
-      "description": "Post-BLE validation sync with backend failed",
+      "name": "mTicket trip punch",
+      "description": "M-Ticket trip punched by conductor.",
       "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
+        "isTripReceiptAvailable",
         "passId",
-        "failureReason"
-      ],
-      "triggers": [
-        "Backend sync failed after BLE validation completed"
-      ]
-    },
-    {
-      "name": "tito tapIn notif recv on conductor flow",
-      "description": "TITO tap-in notification received during conductor validation flow",
-      "properties": [
-        "productType",
         "productSubType",
-        "isSuperPass",
-        "passId",
-        "notificationDeliveryMedium",
-        "tapId",
+        "productType",
         "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId",
+        "activationTime",
+        "punchTime",
         "vehicleNo",
-        "punchTsInMillis"
+        "punch notification delay"
       ],
       "triggers": [
-        "Tap-in notification received while on conductor validation screen"
+        "Raised when M-Ticket punch notification is received."
       ]
     },
     {
-      "name": "tito tapin polling stopped due to notification received",
-      "description": "TITO tap-in polling stopped because notification was received",
+      "name": "premium reserve ticket trip punched",
+      "description": "Premium Reserve Ticket punched by conductor.",
       "properties": [
-        "productType",
+        "isTripReceiptAvailable",
+        "bookingId",
         "productSubType",
-        "isSuperPass",
-        "passId",
-        "notificationDeliveryMedium"
-      ],
-      "triggers": [
-        "Polling for tap-in stopped after receiving notification via GCM/BLE"
-      ]
-    },
-    {
-      "name": "valid tito tap in data received in polling",
-      "description": "Valid TITO tap-in data received via polling",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "tapId",
         "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId",
+        "punchTime",
         "vehicleNo",
-        "punchTsInMillis"
+        "punch notification delay"
       ],
       "triggers": [
-        "Polling successfully retrieved valid tap-in data"
+        "Raised when Premium Reserve Ticket punch notification is received."
       ]
     },
     {
-      "name": "validation product not found",
-      "description": "Product not found when attempting validation",
+      "name": "instant ticket trip punched",
+      "description": "Instant ticket punched by conductor.",
       "properties": [
-        "productType",
-        "passId"
+        "isInstantTicket",
+        "productId",
+        "punchTime",
+        "amount",
+        "vehicleNo",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId"
       ],
       "triggers": [
-        "Product data not available when validation attempted"
+        "Raised when Instant Ticket receipt/punch is received."
       ]
     },
     {
-      "name": "view receipt post validation clicked",
-      "description": "View receipt button clicked on post-validation screen",
+      "name": "metro ticket trip punched",
+      "description": "Metro ticket punched/validated.",
       "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "wasTitoValidation"
+        "productId",
+        "punchTime",
+        "amount",
+        "vehicleNo",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId"
       ],
       "triggers": [
-        "User taps 'View Receipt' after successful validation"
+        "Raised when Metro ticket receipt/punch is received."
       ]
     },
     {
-      "name": "view receipt post validation clicked",
-      "description": "Exit button clicked on post-validation screen",
+      "name": "ondc ticket trip punched",
+      "description": "ONDC bus ticket punched/validated.",
       "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId",
-        "wasTitoValidation"
+        "isOndcTicketOrder",
+        "productId",
+        "punchTime",
+        "amount",
+        "vehicleNo",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId"
       ],
       "triggers": [
-        "User taps 'Exit' or 'Done' after successful validation"
-      ],
-      "note": "This event shares the same name as 'view receipt post validation clicked' which is a data issue. The actual constant is EXIT_POST_VALIDATION_CLICKED but maps to the same string."
+        "Raised when ONDC ticket receipt/punch is received."
+      ]
     },
     {
-      "name": "view trip receipt from menu clicked",
-      "description": "View trip receipt clicked from menu on validation screen",
+      "name": "ondc metro ticket trip punched",
+      "description": "ONDC metro ticket punched/validated.",
       "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "passId"
+        "isOndcTicketOrder",
+        "productId",
+        "punchTime",
+        "amount",
+        "vehicleNo",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId"
       ],
       "triggers": [
-        "User accesses trip receipt from validation screen menu"
+        "Raised when ONDC metro ticket receipt/punch is received."
+      ]
+    },
+    {
+      "name": "chalo pay ticket punched",
+      "description": "Quick Pay (Chalo Pay) ticket punched/validated.",
+      "properties": [
+        "isChaloPay",
+        "productId",
+        "punchTime",
+        "chalo pay trip amount",
+        "vehicleNo",
+        "routeName",
+        "startStop",
+        "endStop",
+        "endStopId",
+        "conductorId"
+      ],
+      "triggers": [
+        "Raised when Quick Pay receipt/punch is received."
+      ]
+    },
+
+    {
+      "name": "superPass receipt payload",
+      "description": "Super Pass receipt payload captured (debug).",
+      "properties": [
+        "payload"
+      ],
+      "triggers": [
+        "Raised when Super Pass punch event payload is recorded for debugging."
+      ]
+    },
+    {
+      "name": "MTicketPunchedEvent receipt payload",
+      "description": "M-Ticket punch payload captured (debug).",
+      "properties": [
+        "payload"
+      ],
+      "triggers": [
+        "Raised when M-Ticket punch event payload is recorded for debugging."
+      ]
+    },
+    {
+      "name": "premium reserve ticket receipt payload",
+      "description": "Premium Reserve Ticket receipt payload captured (debug).",
+      "properties": [
+        "payload"
+      ],
+      "triggers": [
+        "Raised when Premium Reserve Ticket punch event payload is recorded for debugging."
+      ]
+    },
+    {
+      "name": "quickpay receipt payload",
+      "description": "Quick Pay receipt payload captured (debug).",
+      "properties": [
+        "payload"
+      ],
+      "triggers": [
+        "Raised when Quick Pay punch event receipt payload is recorded for debugging."
+      ]
+    },
+    {
+      "name": "instantTicket receipt payload",
+      "description": "Instant Ticket receipt payload captured (debug).",
+      "properties": [
+        "payload"
+      ],
+      "triggers": [
+        "Raised when Instant Ticket punch event receipt payload is recorded for debugging."
+      ]
+    },
+    {
+      "name": "ondc ticket receipt payload",
+      "description": "ONDC ticket receipt payload captured (debug).",
+      "properties": [
+        "payload"
+      ],
+      "triggers": [
+        "Raised when ONDC ticket punch event receipt payload is recorded for debugging."
+      ]
+    },
+
+    {
+      "name": "BLE advertisement sent",
+      "description": "TwoWayBleCommPilot: BLE advertisement sent.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "data",
+        "dataTimestamp",
+        "communicationRange",
+        "setupTimeout",
+        "receivingDistance",
+        "waybillNo",
+        "etimTimestamp",
+        "padding",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when active-mode advertising succeeds."
+      ]
+    },
+    {
+      "name": "BLE advertisement sending failed",
+      "description": "TwoWayBleCommPilot: BLE advertisement sending failed.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "failureReason",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when active-mode advertising fails."
+      ]
+    },
+    {
+      "name": "start active mode broadcast called",
+      "description": "TwoWayBleCommPilot: start active mode broadcast called.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when advertising start is invoked."
+      ]
+    },
+    {
+      "name": "start duplex connection op called",
+      "description": "TwoWayBleCommPilot: start duplex connection op called.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when duplex connection op starts."
+      ]
+    },
+    {
+      "name": "start duplex connection op success",
+      "description": "TwoWayBleCommPilot: start duplex connection op success.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "connectionId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when duplex connection op succeeds."
+      ]
+    },
+    {
+      "name": "start duplex connection op failed",
+      "description": "TwoWayBleCommPilot: start duplex connection op failed.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "failureReason",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when duplex connection op fails."
+      ]
+    },
+    {
+      "name": "send data on connection called",
+      "description": "TwoWayBleCommPilot: send data on connection called.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "connectionId",
+        "data",
+        "dataTimestamp",
+        "setupTimeout",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when sending data on connection starts."
+      ]
+    },
+    {
+      "name": "send data on connection success",
+      "description": "TwoWayBleCommPilot: send data on connection success.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "connectionId",
+        "dataTimestamp",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when sending data on connection succeeds."
+      ]
+    },
+    {
+      "name": "send data on connection failed",
+      "description": "TwoWayBleCommPilot: send data on connection failed.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "connectionId",
+        "failureReason",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when sending data on connection fails."
+      ]
+    },
+    {
+      "name": "ble connection list updated",
+      "description": "TwoWayBleCommPilot: BLE connection list updated.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when connection list changes."
+      ]
+    },
+    {
+      "name": "ble connection history list updated",
+      "description": "TwoWayBleCommPilot: BLE connection history list updated.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when connection history list changes."
+      ]
+    },
+    {
+      "name": "ble data received on connection",
+      "description": "TwoWayBleCommPilot: BLE data received on connection.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "connectionId",
+        "data",
+        "dataTimestamp",
+        "setupTimeout",
+        "receivingDistance",
+        "waybillNo",
+        "etimTimestamp",
+        "padding",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when BLE data is received."
+      ]
+    },
+    {
+      "name": "stop ble validation with delay called",
+      "description": "TwoWayBleCommPilot: stop BLE validation with delay called.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when stopping validation with delay is invoked."
+      ]
+    },
+    {
+      "name": "stop ble validation success",
+      "description": "TwoWayBleCommPilot: stop BLE validation success.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when stopping validation succeeds."
+      ]
+    },
+    {
+      "name": "stop ble validation failed",
+      "description": "TwoWayBleCommPilot: stop BLE validation failed.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "failureReason",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when stopping validation fails."
+      ]
+    },
+    {
+      "name": "stop active mode broadcast called",
+      "description": "TwoWayBleCommPilot: stop active mode broadcast called.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when stop advertising is invoked."
+      ]
+    },
+    {
+      "name": "stop all ble op and switch off bluetooth called",
+      "description": "TwoWayBleCommPilot: stop all BLE operations and switch off bluetooth called.",
+      "properties": [
+        "source",
+        "productType",
+        "productSubtype",
+        "bookingId",
+        "timeSinceActModeBrCalled",
+        "timeSinceActModeBrFailed",
+        "timeSinceActModeBrSuccess",
+        "timeSinceDupConnOpCalled",
+        "timeSinceDupConnOpSuccess",
+        "timeSinceDupConnOpFailed",
+        "timeSinceSendDataOnConnCalled",
+        "timeSinceSendDataOnConnSuccess",
+        "timeSinceSendDataOnConnFailed",
+        "timeSinceConnListUpdated",
+        "timeSinceConnHistListUpdated",
+        "timeSinceDataReceivedOnConnection",
+        "timeSinceStopBleValidationWithDelayCalled",
+        "timeSinceStopBleValidationSuccess",
+        "timeSinceStopBleValidationFailed",
+        "timeSinceStopActiveModeBroadcastCalled",
+        "timeSinceStopAllBleOpAndSOBlCalled"
+      ],
+      "triggers": [
+        "Raised by TwoWayBleCommPilotLogger when stop-all BLE operations is invoked."
       ]
     }
-  ],
-  "commonSources": [
-    "validationScreen",
-    "BLE validation",
-    "QR validation",
-    "tito flow"
-  ],
-  "notes": [
-    "Validation flow supports multiple products: Super Pass, M-Ticket, Instant Ticket, Premium Bus, ONDC Bus, ONDC Metro, Metro, Quick Pay",
-    "Three main validation types: BLE validation (conductor/TITO), QR validation (static/dynamic), Vehicle-based validation",
-    "TITO (Ticket-In-Ticket-Out) is a tap-in/tap-out validation system for pay-per-distance fares",
-    "Notification delivery can occur via GCM (push notification), BLE (direct Bluetooth), or Polling (periodic API calls)",
-    "BLE validation requires nearby devices and Bluetooth permissions",
-    "QR validation serves as fallback when BLE is unavailable or denied",
-    "Post-validation screens show success confirmation and allow viewing receipts",
-    "Product-specific analytics managers handle different event properties per product type",
-    "Conductor validation involves conductor punch notifications with receipt details",
-    "Trip planner integration available from QR validation screen for journey details"
-  ],
-  "stages": [
-    {
-      "name": "Misc",
-      "description": "Auto-added stage (validate grouping).",
-      "events": [
-        "ondc ticket receipt payload"
-      ]
-    }
-  ],
-  "diagram": {
-    "type": "sequence",
-    "steps": [
-      {
-        "label": "Additional events",
-        "events": [
-          "ondc ticket receipt payload"
-        ]
-      }
-    ]
-  }
+  ]
 }
+
