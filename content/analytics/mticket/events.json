@@ -186,6 +186,10 @@
     },
     "payload": {
       "type": "string"
+    },
+    "recent product mticket clicked": {
+      "type": "string",
+      "description": "Recent product identifier payload, formatted as \"recent product id <mticketId>\"."
     }
   },
   "stages": [
@@ -213,7 +217,6 @@
       "events": [
         "mticket pay button clicked",
         "mticket booking response received",
-        "cancel terms",
         "mticket payment success",
         "mticket payment failed",
         "post payment mticket details fetched"
@@ -262,9 +265,7 @@
         "mTicket trip punch",
         "Post validation screen opened",
         "view trip receipt from menu clicked",
-        "view receipt post validation clicked",
-        "exit post validation clicked",
-        "mTicket Trip Receipt Screen Opened"
+        "view receipt post validation clicked"
       ]
     },
     {
@@ -306,8 +307,7 @@
       "description": "Events that can fire from multiple places in the flow.",
       "events": [
         "report problem clicked v2",
-        "recent product mticket clicked",
-        "mticket summary details screen opened",
+        "recent product event in product selection activity",
         "mticket hook route details rendered",
         "mticket hook trip details rendered"
       ]
@@ -661,14 +661,6 @@
       "properties": []
     },
     {
-      "name": "cancel terms",
-      "component": "MTicketPassengerSelectionComponent",
-      "stage": "Order & Payment",
-      "source": "Source.MTICKET_SELECTION_ACTIVITY",
-      "description": "User declined the terms and conditions dialog.",
-      "properties": []
-    },
-    {
       "name": "exit chalo pay confirmation no clicked",
       "component": "MTicketValidationAnalyticsManager",
       "stage": "Back Press Confirmation",
@@ -691,31 +683,6 @@
       "source": "Validation screen source",
       "description": "User confirmed exit on back press dialog.",
       "properties": []
-    },
-    {
-      "name": "exit post validation clicked",
-      "component": "MTicketValidationAnalyticsManager",
-      "stage": "Validation Result",
-      "source": "Validation screen source",
-      "description": "User clicked exit on post-validation screen.",
-      "notes": "BUG: In KMP code, EXIT_POST_VALIDATION_CLICKED constant (AnalyticsEventConstants.kt:1848) incorrectly maps to 'view receipt post validation clicked' instead of 'exit post validation clicked'. This event is indistinguishable from 'view receipt post validation clicked' until the KMP bug is fixed.",
-      "properties": [
-        {
-          "property": "productType"
-        },
-        {
-          "property": "isSuperPass"
-        },
-        {
-          "property": "productSubType"
-        },
-        {
-          "property": "bookingId"
-        },
-        {
-          "property": "wasTitoValidation"
-        }
-      ]
     },
     {
       "name": "free rides info clicked",
@@ -1117,14 +1084,6 @@
       ]
     },
     {
-      "name": "mticket summary details screen opened",
-      "component": "TicketSummaryComponent",
-      "stage": "Global",
-      "source": "Summary screen source",
-      "description": "mTicket summary details screen opened.",
-      "properties": []
-    },
-    {
       "name": "post payment mticket details fetched",
       "component": "CheckoutAnalyticsHelper",
       "stage": "Order & Payment",
@@ -1213,12 +1172,17 @@
       ]
     },
     {
-      "name": "recent product mticket clicked",
-      "component": "Various",
+      "name": "recent product event in product selection activity",
+      "component": "ProductSelectionComponent",
       "stage": "Global",
-      "source": "Home/My Tickets screen",
-      "description": "User clicked on a recent mTicket product from home or my tickets.",
-      "properties": []
+      "source": "Source.PRODUCT_SELECTION_RECENT_PRODUCTS",
+      "description": "Recent products click event; mTicket clicks are logged via the \"recent product mticket clicked\" property.",
+      "properties": [
+        {
+          "property": "recent product mticket clicked",
+          "context": "Formatted as \"recent product id <mticketId>\""
+        }
+      ]
     },
     {
       "name": "report problem clicked v2",
@@ -1572,8 +1536,7 @@
         "label": "Post Validation",
         "events": [
           "Post validation screen opened",
-          "view receipt post validation clicked",
-          "exit post validation clicked"
+          "view receipt post validation clicked"
         ]
       },
       {

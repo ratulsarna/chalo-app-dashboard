@@ -33,6 +33,7 @@ The universal trip planner supports location-based trip planning with multiple t
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_resultClicked -> title:Universal Trip Planner: Result Click Branching
   ui_entry([App opens trip planner]) --> ev_opened["trip planner opened"]
 
   ev_opened --> ui_search([User enters locations])
@@ -41,7 +42,8 @@ flowchart TD
   ev_locationEntered --> ui_canSwap([User can swap locations])
   ui_canSwap --> ev_swap["tripPlanner swap button clicked"]
 
-  ev_locationEntered --> ev_getRoute["get route clicked"]
+  ev_locationEntered --> ev_proceed["trip planner proceed clicked"]
+  ev_proceed --> ev_getRoute["get route clicked"]
   ev_getRoute --> ev_responseReceived["trip planner response received"]
   ev_getRoute --> ev_responseError["trip planner response error"]
 
@@ -51,7 +53,6 @@ flowchart TD
   ui_resultsScreen --> ev_tabClicked["trip planner quick tab clicked"]
   ui_resultsScreen --> ev_timeEdit["trip planner time edit option clicked"]
   ui_resultsScreen --> ev_dateEdit["trip planner date edit option clicked"]
-  ui_resultsScreen --> ev_routeEdit["trip planner route edit option clicked"]
 
   ev_timeEdit --> ev_timeChanged["trip planner time changed"]
   ev_dateEdit --> ev_dateChanged["trip planner date changed"]
@@ -59,8 +60,8 @@ flowchart TD
   ui_resultsScreen --> ev_recentClicked["trip planner recent clicked"]
   ui_resultsScreen --> ev_resultClicked["trip planner result clicked"]
 
-  ev_resultClicked --> ev_proceed["trip planner proceed clicked"]
-  ev_proceed --> ev_tripDetailsActivityOpened["trip details activity opened"]
+  ev_resultClicked -->|Single bus leg| ext_routeDetails[Route Details flow]
+  ev_resultClicked -->|Multi-leg / non-bus| ev_tripDetailsActivityOpened["trip details activity opened"]
   ev_tripDetailsActivityOpened --> ev_detailsOpened["trip planner details page opened"]
 
   ev_detailsOpened --> ev_mticketHook["mticket hook trip details rendered"]
@@ -78,9 +79,9 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_opened,ev_locationEntered,ev_swap,ev_getRoute,ev_responseReceived,ev_responseError,ev_etaAvailability,ev_tabClicked,ev_timeEdit,ev_dateEdit,ev_routeEdit,ev_timeChanged,ev_dateChanged,ev_recentClicked,ev_resultClicked,ev_proceed,ev_tripDetailsActivityOpened,ev_detailsOpened,ev_mticketHook,ev_mapMarker,ev_buyProduct,ev_trackBus,ev_back,ev_hopRetry event;
+  class ev_opened,ev_locationEntered,ev_swap,ev_proceed,ev_getRoute,ev_responseReceived,ev_responseError,ev_etaAvailability,ev_tabClicked,ev_timeEdit,ev_dateEdit,ev_timeChanged,ev_dateChanged,ev_recentClicked,ev_resultClicked,ev_tripDetailsActivityOpened,ev_detailsOpened,ev_mticketHook,ev_mapMarker,ev_buyProduct,ev_trackBus,ev_back,ev_hopRetry event;
   class ui_entry,ui_search,ui_canSwap,ui_resultsScreen ui;
-  class ext_checkout,ext_tracking external;
+  class ext_routeDetails,ext_checkout,ext_tracking external;
 ```
 
 ## Stop-Based Trip Planner: Search → Stop Selection → Results
@@ -89,6 +90,7 @@ The stop-based trip planner focuses on stop-to-stop journey planning with nearby
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_resultsScreen -> title:Stop-Based Trip Planner: Results Interaction → Trip Details
   ui_entry([App opens stop-based search]) --> ev_searchOpened["stop trip planner search screen opened"]
 
   ev_searchOpened --> ev_fromClicked["stop trip planner search from clicked"]
@@ -117,14 +119,13 @@ flowchart TD
   ev_stopSelected --> ui_resultsScreen([Results screen])
   ev_nearestSelected --> ui_resultsScreen
   ev_showAll --> ui_resultsScreen
-
-  ui_resultsScreen --> ev_resultOpened["stop trip planner result opened"]
+  ev_recentClicked --> ui_resultsScreen
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_searchOpened,ev_fromClicked,ev_toClicked,ev_swapClicked,ev_recentClicked,ev_stopSelected,ev_placeSelected,ev_bottomSheetClosed,ev_nearestSuccess,ev_nearestFailure,ev_retryFetch,ev_nearestNoStops,ev_nearestSelected,ev_showAll,ev_resultOpened event;
+  class ev_searchOpened,ev_fromClicked,ev_toClicked,ev_swapClicked,ev_recentClicked,ev_stopSelected,ev_placeSelected,ev_bottomSheetClosed,ev_nearestSuccess,ev_nearestFailure,ev_retryFetch,ev_nearestNoStops,ev_nearestSelected,ev_showAll event;
   class ui_entry,ui_searchBottomSheet,ui_nearbyStopsFetch,ui_nearbyStopsSheet,ui_resultsScreen ui;
 ```
 
@@ -134,7 +135,8 @@ After stops are selected, users interact with trip results and view details.
 
 ```mermaid
 flowchart TD
-  ui_resultsScreen([Results screen]) --> ui_fetchResults([Fetch trip results])
+  ui_resultsScreen([Results screen]) --> ev_resultOpened["stop trip planner result opened"]
+  ev_resultOpened --> ui_fetchResults([Fetch trip results])
   ui_fetchResults --> ev_responseSuccess["stop trip planner response success"]
   ui_fetchResults --> ev_responseFailure["stop trip planner response failure"]
 
@@ -171,8 +173,31 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_responseSuccess,ev_responseFailure,ev_tryAgain,ev_tabClicked,ev_editClicked,ev_nearbyToggled,ev_refreshClicked,ev_toLocationClicked,ev_legClicked,ev_moreDetails,ev_tripDetailsActivityOpened,ev_detailsOpened,ev_mticketHook,ev_buyProduct,ev_trackBus,ev_backPressed event;
+  class ev_resultOpened,ev_responseSuccess,ev_responseFailure,ev_tryAgain,ev_tabClicked,ev_editClicked,ev_nearbyToggled,ev_refreshClicked,ev_toLocationClicked,ev_legClicked,ev_moreDetails,ev_tripDetailsActivityOpened,ev_detailsOpened,ev_mticketHook,ev_buyProduct,ev_trackBus,ev_backPressed event;
   class ui_resultsScreen,ui_fetchResults,ui_displayResults,ui_nearbyStopsSection,ui_refreshNudge ui;
+  class ext_routeDetails,ext_checkout,ext_tracking external;
+```
+
+## Universal Trip Planner: Result Click Branching
+
+```mermaid
+flowchart TD
+  ev_resultClicked["trip planner result clicked"] -->|Single bus leg| ext_routeDetails[Route Details flow]
+  ev_resultClicked -->|Multi-leg / non-bus| ev_tripDetailsActivityOpened["trip details activity opened"]
+  ev_tripDetailsActivityOpened --> ev_detailsOpened["trip planner details page opened"]
+
+  ev_detailsOpened --> ev_mticketHook["mticket hook trip details rendered"]
+  ev_detailsOpened --> ev_buyProduct["trip details buy product button clicked"]
+  ev_detailsOpened --> ev_trackBus["trip details track bus button clicked"]
+
+  ev_buyProduct --> ext_checkout[Checkout flow]
+  ev_trackBus --> ext_tracking[Live Tracking flow]
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
+
+  class ev_resultClicked,ev_tripDetailsActivityOpened,ev_detailsOpened,ev_mticketHook,ev_buyProduct,ev_trackBus event;
   class ext_routeDetails,ext_checkout,ext_tracking external;
 ```
 
@@ -182,11 +207,11 @@ flowchart TD
 ```
 trip planner opened
   → trip planner location entered
-    → get route clicked
+    → trip planner proceed clicked
+      → get route clicked
       → trip planner response received
         → trip planner result clicked
-          → trip planner proceed clicked
-            → trip planner details page opened
+          → trip planner details page opened
               → trip details buy product button clicked / trip details track bus button clicked
 ```
 

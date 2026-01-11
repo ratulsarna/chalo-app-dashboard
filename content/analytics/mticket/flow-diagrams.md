@@ -32,6 +32,11 @@ Use this diagram to build the primary mTicket purchase funnel from selection to 
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_bookScreenOpen -> title:Route & Stop Selection Flow
+  %%chalo:diagram-link ev_selectionScreenOpen -> title:Passenger Selection & Order Creation Flow
+  %%chalo:diagram-link external_checkout -> title:Payment Flow (Checkout Module)
+  %%chalo:diagram-link ev_activateScreenOpen -> title:Activation Flow
+  %%chalo:diagram-link ui_validationFlow -> title:Validation Flow - BLE vs QR Decision
   ui_start([User starts mTicket purchase]) --> ev_bookScreenOpen["book mticket screen opened"]
 
   ev_bookScreenOpen --> ev_freeRidesInfo["free rides info clicked"]
@@ -105,8 +110,7 @@ flowchart TD
 
   ui_payClicked -->|T&C not seen| ui_tncDialog([T&C dialog shown])
   ui_tncDialog -->|accept| ui_proceed([Proceed])
-  ui_tncDialog -->|decline| ev_cancelTerms["cancel terms"]
-  ui_tncDialog -->|dismiss| ev_termsCancel["terms cancel"]
+  ui_tncDialog -->|decline| ev_termsCancel["terms cancel"]
 
   ui_payClicked -->|T&C already seen| ui_proceed
   ui_proceed --> ev_payButtonClicked["mticket pay button clicked"]
@@ -121,7 +125,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_selectionScreenOpen,ev_fareFetched,ev_cancelTerms,ev_termsCancel,ev_payButtonClicked,ev_bookingResponse event;
+  class ev_selectionScreenOpen,ev_fareFetched,ev_termsCancel,ev_payButtonClicked,ev_bookingResponse event;
   class ui_fetchFare,ui_selectPassengers,ui_retryFare,ui_payClicked,ui_tncDialog,ui_proceed,ui_createOrder,ui_orderError ui;
   class external_checkout external;
 ```
@@ -171,8 +175,7 @@ flowchart TD
   ui_navigateActivation --> ev_activateScreenOpen["mticket activate screen opened"]
 
   ev_activateScreenOpen --> ui_fetchTicket([Fetch ticket data])
-  ui_fetchTicket --> ev_ticketFetched["mticket fetched"]
-  ev_ticketFetched --> ui_preActivationChecks([Pre-activation checks])
+  ui_fetchTicket --> ui_preActivationChecks([Pre-activation checks])
 
   ui_preActivationChecks -->|success| ui_activationConfirmDialog([Activation confirmation dialog])
   ui_activationConfirmDialog --> ui_confirmActivate([Confirm activate])
@@ -186,7 +189,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_activateScreenOpen,ev_ticketFetched,ev_activated event;
+  class ev_activateScreenOpen,ev_activated event;
   class ui_postPayment,ui_navigateActivation,ui_fetchTicket,ui_preActivationChecks,ui_activationConfirmDialog,ui_confirmActivate,ui_activationError,ui_validationFlow ui;
 ```
 
@@ -194,7 +197,11 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ev_activated["mticket activated"] --> ev_blePermCheck["BLE permission check on validation initialization"]
+  %%chalo:diagram-link ui_bleFlow -> title:BLE Validation Flow
+  %%chalo:diagram-link ui_qrFlow -> title:QR Validation Flow
+  ev_activated["mticket activated"] --> ev_mticketFetched["mticket fetched"]
+
+  ev_mticketFetched --> ev_blePermCheck["BLE permission check on validation initialization"]
 
   ev_blePermCheck -->|granted| ui_bleFlow([BLE validation flow])
   ev_blePermCheck -->|denied| ui_qrOption([QR option shown])
@@ -216,7 +223,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_activated,ev_blePermCheck,ev_bleRationaleOpen,ev_bleRationaleAccepted,ev_bleGranted,ev_bleDenied,ev_bleSettingsOpen,ev_bleDenialQrShown,ev_bleDenialUseQrClicked event;
+  class ev_activated,ev_mticketFetched,ev_blePermCheck,ev_bleRationaleOpen,ev_bleRationaleAccepted,ev_bleGranted,ev_bleDenied,ev_bleSettingsOpen,ev_bleDenialQrShown,ev_bleDenialUseQrClicked event;
   class ui_bleFlow,ui_qrOption,ui_requestPerm,ui_qrFlow ui;
 ```
 
@@ -224,6 +231,9 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_titoFlow -> title:TITO (Tap-In/Tap-Out) Validation Flow
+  %%chalo:diagram-link ui_qrFlow -> title:QR Validation Flow
+  %%chalo:diagram-link ev_postValidationOpen -> title:Post Validation Flow
   ui_bleFlow([BLE validation flow]) --> ev_bleScreenOpen["ble screen open"]
   ev_bleScreenOpen --> ui_waitValidation([Wait for conductor validation])
 
@@ -251,6 +261,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_postValidationOpen -> title:Post Validation Flow
   ui_qrFlow([QR validation flow]) --> ui_showQr([QR code displayed])
   ui_showQr --> ev_qrZoomed["mticket qr code zoomed"]
   ev_qrZoomed --> ev_simpleQrZoomClicked["simple qr validation zoom qr clicked"]
@@ -271,6 +282,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_postValidationOpen -> title:Post Validation Flow
   ev_activated["mticket activated"] --> ui_checkKeys([Check TITO encryption keys])
 
   ui_checkKeys -->|available| ev_keysAvailable["tito encryption keys available on mticket activation"]
@@ -311,6 +323,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_postValidationOpen -> title:Post Validation Flow
   ui_bleValidation([BLE validation in progress]) --> ui_receiveAck([BLE ack data received])
 
   ui_receiveAck -->|valid conductor receipt| ev_tripPunch["mTicket trip punch"]
@@ -340,7 +353,7 @@ flowchart TD
   ev_postValidationOpen["Post validation screen opened"] --> ui_viewOptions([User options])
 
   ui_viewOptions --> ev_viewReceipt["view receipt post validation clicked"]
-  ui_viewOptions --> ev_exitValidation["exit post validation clicked"]
+  ui_viewOptions --> ui_exitValidation([Exit clicked])
   ui_viewOptions --> ev_menuReceipt["view trip receipt from menu clicked"]
 
   ev_viewReceipt --> ui_receiptScreen([Trip receipt screen])
@@ -350,8 +363,26 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_postValidationOpen,ev_viewReceipt,ev_exitValidation,ev_menuReceipt event;
-  class ui_viewOptions,ui_receiptScreen ui;
+  class ev_postValidationOpen,ev_viewReceipt,ev_menuReceipt event;
+  class ui_viewOptions,ui_exitValidation,ui_receiptScreen ui;
+```
+
+## Notification & Sync Flow
+
+```mermaid
+flowchart TD
+  ui_backend([Backend punch notification]) --> ev_punchNotifReceived["mTicket punch notification received"]
+  ev_punchNotifReceived --> ev_punchNotifPosted["mTicket punch notification posted"]
+  ev_punchNotifPosted --> ui_notificationShown([System notification shown])
+
+  ui_syncJob([Background trip receipt sync]) --> ev_activationSync["sync mTicket activation timeStamp with backend"]
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
+
+  class ev_punchNotifReceived,ev_punchNotifPosted,ev_activationSync event;
+  class ui_backend,ui_notificationShown,ui_syncJob ui;
 ```
 
 ## Back Press Confirmation Flow (During Validation)
@@ -379,8 +410,8 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ui_home([Home screen]) --> ev_recentProductClicked["recent product mticket clicked"]
-  ev_recentProductClicked --> ev_activateScreenOpen["mticket activate screen opened"]
+  ui_home([Home screen]) --> ev_recentProductEvent["recent product event in product selection activity"]
+  ev_recentProductEvent --> ev_selectionScreenOpen["mticket selection screen opened"]
 
   ui_routeDetails([Route details screen]) --> ev_hookRouteDetails["mticket hook route details rendered"]
   ev_hookRouteDetails --> ev_bookScreenOpen["book mticket screen opened"]
@@ -389,14 +420,13 @@ flowchart TD
   ev_hookTripDetails --> ev_bookScreenOpen
 
   ui_myTickets([My tickets screen]) --> ui_ticketClicked([Existing mTicket selected])
-  ui_ticketClicked --> ev_summaryDetailsOpen["mticket summary details screen opened"]
-  ev_summaryDetailsOpen --> ev_activateScreenOpen
+  ui_ticketClicked --> ev_activateScreenOpen["mticket activate screen opened"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_recentProductClicked,ev_activateScreenOpen,ev_hookRouteDetails,ev_bookScreenOpen,ev_hookTripDetails,ev_summaryDetailsOpen event;
+  class ev_recentProductEvent,ev_selectionScreenOpen,ev_hookRouteDetails,ev_bookScreenOpen,ev_hookTripDetails,ev_activateScreenOpen event;
   class ui_home,ui_routeDetails,ui_tripPlanner,ui_myTickets,ui_ticketClicked ui;
 ```
 

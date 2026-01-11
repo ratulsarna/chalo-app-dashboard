@@ -112,11 +112,19 @@
     },
     "selected_time": {
       "type": "string",
-      "description": "Time selected by user for trip planning."
+      "description": "Deprecated: use timeDifferenceFromCurrentTime instead."
     },
     "selected_date": {
       "type": "string",
-      "description": "Date selected by user for trip planning."
+      "description": "Deprecated: use dateDifferenceFromCurrentDate instead."
+    },
+    "timeDifferenceFromCurrentTime": {
+      "type": "number",
+      "description": "Minutes difference between selected time and current time."
+    },
+    "dateDifferenceFromCurrentDate": {
+      "type": "number",
+      "description": "Days difference between selected date and current date."
     },
     "itinerary_count_with_eta": {
       "type": "number",
@@ -241,6 +249,7 @@
       "name": "Trip Search & Results",
       "description": "Making trip planner API calls, fetching results, handling errors.",
       "events": [
+        "trip planner proceed clicked",
         "get route clicked",
         "trip planner response received",
         "trip planner response error",
@@ -259,7 +268,6 @@
         "stop trip planner result tab clicked",
         "trip planner time edit option clicked",
         "trip planner date edit option clicked",
-        "trip planner route edit option clicked",
         "trip planner time changed",
         "trip planner date changed",
         "trip planner result clicked",
@@ -274,7 +282,6 @@
       "name": "Trip Details",
       "description": "Viewing detailed trip information, proceeding to purchase or tracking.",
       "events": [
-        "trip planner proceed clicked",
         "trip details activity opened",
         "trip planner details page opened",
         "mticket hook trip details rendered",
@@ -598,14 +605,6 @@
       "properties": []
     },
     {
-      "name": "trip planner route edit option clicked",
-      "component": "TripPlannerResultsComponent",
-      "stage": "Results Interaction",
-      "source": "Source.TRIP_PLANNER",
-      "description": "Route edit option clicked to change search locations.",
-      "properties": []
-    },
-    {
       "name": "trip planner time changed",
       "component": "TripPlannerResultsComponent",
       "stage": "Results Interaction",
@@ -613,8 +612,8 @@
       "description": "Time successfully changed by user.",
       "properties": [
         {
-          "property": "selected_time",
-          "context": "New time selected"
+          "property": "timeDifferenceFromCurrentTime",
+          "context": "Minutes from now"
         }
       ]
     },
@@ -626,8 +625,8 @@
       "description": "Date successfully changed by user.",
       "properties": [
         {
-          "property": "selected_date",
-          "context": "New date selected"
+          "property": "dateDifferenceFromCurrentDate",
+          "context": "Days from now"
         }
       ]
     },
@@ -781,9 +780,9 @@
     {
       "name": "trip planner proceed clicked",
       "component": "TripPlannerResultsComponent",
-      "stage": "Trip Details",
+      "stage": "Trip Search & Results",
       "source": "Source.TRIP_PLANNER",
-      "description": "Proceed button clicked to view trip details.",
+      "description": "Proceed button clicked to initiate trip search.",
       "properties": []
     },
     {
@@ -829,8 +828,22 @@
       "description": "M-ticket purchase hook rendered on trip details screen.",
       "properties": [
         {
-          "property": "product_type",
-          "context": "Type of product available"
+          "property": "is_logged_in"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "agency_name"
+        },
+        {
+          "property": "route_id"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
         }
       ]
     },
@@ -997,6 +1010,7 @@
       {
         "label": "Trip Search",
         "events": [
+          "trip planner proceed clicked",
           "get route clicked",
           "trip planner response received",
           "stop trip planner response success"
