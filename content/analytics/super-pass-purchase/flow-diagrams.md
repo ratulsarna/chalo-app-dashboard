@@ -31,32 +31,35 @@ This funnel helps PMs build “selection → purchase” funnels (everything bef
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_purchaseActivityOpen -> title:Entry → start destination (what funnel should branch on)
   ui_productSelection([Product selection]) --> ev_productSelectionOpen["product selection activity open"]
   ev_productSelectionOpen --> ev_configFetched["configuration fetched"]
 
-  ev_productSelectionOpen --> ev_recentEvent["recent product event in product selection activity"]
-  ev_recentEvent --> ev_recentSuperPass["recent product super pass clicked"]
+  ev_productSelectionOpen --> ev_recentSuperPass["recent product super pass clicked"]
+  ev_recentSuperPass --> ev_purchaseActivityOpen["superPassPurchaseActivity open"]
 
   ev_configFetched --> ev_productSelected["product selected"]
   ev_productSelected --> ui_passSelection([Pass selection])
   ui_passSelection --> ev_passSelectionOpen["pass selection screen opened"]
+  ui_passSelection --> ev_bookPass["book pass screen opened"]
 
-  ev_passSelectionOpen --> ev_subCategoryOpen["subCategory selection screen opened"]
+  ev_passSelectionOpen -->|if sub-category flow| ev_subCategoryOpen["subCategory selection screen opened"]
   ev_subCategoryOpen --> ev_subCategorySelected["subCategory selected"]
 
-  ev_subCategorySelected --> ev_pageSelected["page selected"]
+  ev_passSelectionOpen -->|category tab change| ev_categorySelected["category selected"]
+  ev_subCategorySelected --> ev_categorySelected
+  ev_categorySelected --> ev_pageSelected["page selected"]
   ev_pageSelected --> ev_duration["duration selection"]
   ev_duration --> ev_passDetails["pass details selected"]
 
-  ev_passDetails --> ev_bookPass["book pass screen opened"]
-  ev_bookPass --> ev_purchaseActivityOpen["superPassPurchaseActivity open"]
+  ev_passDetails --> ev_purchaseActivityOpen
 
-  ev_passSelectionOpen -->|renew blocked| ev_renewError["renew error dialog shown"]
+  ev_recentSuperPass -->|renew blocked| ev_renewError["renew error dialog shown"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_productSelectionOpen,ev_configFetched,ev_recentEvent,ev_recentSuperPass,ev_productSelected,ev_passSelectionOpen,ev_subCategoryOpen,ev_subCategorySelected,ev_pageSelected,ev_duration,ev_passDetails,ev_bookPass,ev_purchaseActivityOpen,ev_renewError event;
+  class ev_productSelectionOpen,ev_configFetched,ev_recentSuperPass,ev_productSelected,ev_passSelectionOpen,ev_bookPass,ev_subCategoryOpen,ev_subCategorySelected,ev_categorySelected,ev_pageSelected,ev_duration,ev_passDetails,ev_purchaseActivityOpen,ev_renewError event;
   class ui_productSelection,ui_passSelection ui;
 ```
 
@@ -65,6 +68,10 @@ Use `superPassPurchase startDestination assigned` and its `start destination` pr
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_confirmationBranch -> title:Funnel: confirmation → order creation → success (no verification required)
+  %%chalo:diagram-link ui_userDetailsBranch -> title:Funnel: proof submission → verification status (verification required)
+  %%chalo:diagram-link ui_passengerSelectionBranch -> title:Funnel: smart passenger selection (optional entry path)
+  %%chalo:diagram-link ui_proofsOverviewBranch -> title:Proof upload instrumentation (granular funnel)
   ui_boot([Shared view model boots]) --> ev_activityOpen["superPassPurchaseActivity open"]
   ev_activityOpen --> ev_startDestinationAssigned["superPassPurchase startDestination assigned"]
 
@@ -87,6 +94,7 @@ flowchart TD
 ## Funnel: confirmation → order creation → success (no verification required)
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_confirmation -> title:Confirmation screen side-paths (optional instrumentation)
   ui_confirmation([Confirmation screen]) --> ev_confirmPaymentOpen["confirm payment screen open"]
   ev_confirmPaymentOpen --> ev_confirmPayClicked["mPass confirm purchase pay btn clicked"]
   ev_confirmPayClicked --> ev_makePaymentClicked["make payment clicked"]
@@ -114,6 +122,8 @@ flowchart TD
 ## Funnel: proof submission → verification status (verification required)
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_proofsOverviewOpen -> title:Proof upload instrumentation (granular funnel)
+  %%chalo:diagram-link ui_confirmationVerification -> title:Confirmation screen side-paths (optional instrumentation)
   ui_userDetails([User details, if required]) --> ev_basicUserDetailsOpen["basic user details screen open"]
   ui_userDetails --> ev_nameOpen["superPass enter user name screen open"]
   ev_basicUserDetailsOpen --> ev_basicNext["basic user details next clicked"]
@@ -143,6 +153,7 @@ flowchart TD
 ## Funnel: smart passenger selection (optional entry path)
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_userDetails -> title:Funnel: proof submission → verification status (verification required)
   ui_passengerSelection([Passenger selection screen]) --> ev_smartSelectionOpen["smart passenger selection screen open"]
   ev_smartSelectionOpen --> ev_newPassengerSelected["smartPassengerSelection screen new passenger selected"]
   ev_smartSelectionOpen --> ev_existingPassengerSelected["smartPassengerSelection screen passenger selected"]
@@ -164,7 +175,6 @@ flowchart TD
   ev_proofsOverviewOpen -->|overview| ev_downloadSampleFormClicked["download sample form clicked"]
 
   ev_addPhotoClicked --> ui_proofUpload([Proof upload screen])
-  ui_proofUpload -->|upload| ev_downloadSampleFormClicked
   ui_proofUpload --> ev_sampleZoomed["sample proof image zoomed"]
   ui_proofUpload --> ev_uploadProofClicked["upload proof button clicked"]
   ev_uploadProofClicked --> ev_permissionRequested["camera permission requested"]
@@ -172,7 +182,7 @@ flowchart TD
   ui_proofUpload --> ev_watchTutorial["watch tutorial video clicked"]
 
   ev_proofsOverviewOpen -->|overview| ev_permissionDeniedDialog["camera permission denied dialog displayed"]
-  ui_proofUpload -->|upload| ev_permissionDeniedDialog
+  ev_uploadProofClicked -->|permission denied| ev_permissionDeniedDialog
 
   ev_proofsOverviewOpen --> ev_uploadedZoomed["uploaded proof zoomed"]
   ev_proofsOverviewOpen --> ev_cancelUpload["cancel proof image upload clicked"]

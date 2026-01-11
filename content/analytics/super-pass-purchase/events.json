@@ -211,6 +211,10 @@
     "categoryId": {
       "type": "string"
     },
+    "categoryName": {
+      "type": "string",
+      "description": "Category tab name selected in pass selection."
+    },
     "numDays": {
       "type": "string"
     },
@@ -417,6 +421,7 @@
       "description": "Auto-added stage (validate grouping).",
       "events": [
         "book pass screen opened",
+        "category selected",
         "duration selection",
         "page selected",
         "pass details selected",
@@ -700,6 +705,30 @@
       "properties": [
         {
           "property": "proofId"
+        }
+      ]
+    },
+    {
+      "name": "category selected",
+      "component": "PassSelectionComponent",
+      "stage": "Misc",
+      "source": "",
+      "description": "Raised when the user switches the category tab/page in pass selection.",
+      "properties": [
+        {
+          "property": "categoryName"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "isSuperPass"
+        },
+        {
+          "property": "previousScreen"
         }
       ]
     },
