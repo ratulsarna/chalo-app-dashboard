@@ -131,8 +131,6 @@ async function runCodexUpdater({
     HOME: process.env.HOME,
     USER: process.env.USER,
     TMPDIR: process.env.TMPDIR,
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
   };
   const env = Object.fromEntries(Object.entries(rawEnv).filter(([, v]) => v !== undefined));
 
