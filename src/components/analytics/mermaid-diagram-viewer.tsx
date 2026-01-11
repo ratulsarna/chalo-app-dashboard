@@ -284,19 +284,17 @@ export function MermaidDiagramViewer({
       .analytics-diagram-link-node polygon,
       .analytics-diagram-link-node ellipse,
       .analytics-diagram-link-node path {
-        /* High-contrast, zoom-friendly affordance for "click to open sub-diagram" nodes. */
-        stroke: #22d3ee !important; /* cyan-400 */
-        stroke-width: 4px !important;
-        stroke-dasharray: 10 6 !important;
+        /* Zoom-friendly affordance for "click to open sub-diagram" nodes (no glow). */
+        stroke: #60a5fa !important; /* blue-400 */
+        stroke-width: 3px !important;
+        stroke-dasharray: 8 5 !important;
         vector-effect: non-scaling-stroke !important;
-        filter: drop-shadow(0 0 2px rgba(34, 211, 238, 0.9)) drop-shadow(0 0 10px rgba(34, 211, 238, 0.35));
       }
       .analytics-diagram-link-node:hover rect,
       .analytics-diagram-link-node:hover polygon,
       .analytics-diagram-link-node:hover ellipse,
       .analytics-diagram-link-node:hover path {
-        stroke-width: 5px !important;
-        filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.95)) drop-shadow(0 0 14px rgba(34, 211, 238, 0.45));
+        stroke-width: 4px !important;
       }
     `;
     // Avoid accumulating multiple <style> tags if mermaid re-renders.
