@@ -100,7 +100,7 @@
     "history": {
       "name": "History",
       "description": "Booking and transaction history - past bookings, receipts, ride feedback, booking cancellation. Historical records. Ticket summary.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-11"
     },
     "help": {
       "name": "Help",

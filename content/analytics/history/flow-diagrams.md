@@ -82,10 +82,12 @@ flowchart TD
   ui_userAction -->|Taps Use Now| ev_useNow["product use now button clicked"]
   ui_userAction -->|Opens menu → View Summary| ev_viewSummary["product menu view summary clicked"]
   ui_userAction -->|Taps Renew| ev_renewBtn["renew btn clicked"]
+  ui_userAction -->|Cash payment pending| ev_cashPay["open super pass cash payment web page"]
   ui_userAction -->|Taps promotional card| ev_cardClick["tickets page card item clicked"]
 
   ev_viewSummary --> ui_ticketSummary([Ticket Summary Screen])
   ev_cardClick --> ext_regularBusTab[Regular Bus Tab]
+  ev_cashPay --> ext_cashPay[Cash payment web page]
 
   ev_useNow --> ui_notificationCheck{Notification permission?}
   ui_notificationCheck -->|Granted| ev_notifGranted["notification permission granted"]
@@ -120,9 +122,9 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_cardRendered,ev_useNow,ev_viewSummary,ev_renewBtn,ev_cardClick,ev_notifGranted,ev_notifDenied,ev_explainerRendered,ev_explainerEnable,ev_explainerSkip,ev_activationConfirm,ev_activationFailed,ev_activationFailedClose,ev_renewError,ev_renewPositive,ev_renewNegative event;
+  class ev_cardRendered,ev_useNow,ev_viewSummary,ev_renewBtn,ev_cashPay,ev_cardClick,ev_notifGranted,ev_notifDenied,ev_explainerRendered,ev_explainerEnable,ev_explainerSkip,ev_activationConfirm,ev_activationFailed,ev_activationFailedClose,ev_renewError,ev_renewPositive,ev_renewNegative event;
   class ui_userAction,ui_ticketSummary,ui_notificationCheck,ui_explainerAction,ui_activation,ui_activationResult,ui_renewCheck,ui_renewAction ui;
-  class ext_regularBusTab,ext_settings,ext_validation,ext_superPassPurchase,ext_explorePlans external;
+  class ext_regularBusTab,ext_cashPay,ext_settings,ext_validation,ext_superPassPurchase,ext_explorePlans external;
 ```
 
 ## Funnel: View Summary → Ticket Summary (Data Fetch → Actions)
@@ -375,8 +377,8 @@ The `renew btn clicked` event includes comprehensive super pass metadata:
 - `isSuperPass` (always true)
 - `passId`, `productId`, `productName`
 - `categoryId`, `fareMappingId`
-- `status`, `verificationFlag`, `verificationExpiryTime`, `expiryTime`
-- `paymentMode`, `transactionId`, `startDate`
+- `pass status`, `verificationFlag`, `verificationExpiryTime`, `expiry time`
+- `paymentMode`, `transaction id`, `startDate`
 - `isRenewFromProductStatusCard` (boolean flag)
 
 ### Hook Events

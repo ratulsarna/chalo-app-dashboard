@@ -123,9 +123,9 @@
       "type": "string",
       "description": "Fare mapping identifier from pass configuration"
     },
-    "status": {
+    "pass status": {
       "type": "string",
-      "description": "Pass/ticket status (ACTIVE, EXPIRED, etc.)"
+      "description": "Pass status (e.g., ACTIVE, EXPIRED). Key emitted as `pass status`."
     },
     "verificationFlag": {
       "type": "string",
@@ -135,21 +135,169 @@
       "type": "string",
       "description": "Formatted verification expiry date"
     },
-    "expiryTime": {
-      "type": "string",
-      "description": "Formatted pass/ticket expiry date"
-    },
     "paymentMode": {
       "type": "string",
       "description": "Payment method used for purchase"
     },
-    "transactionId": {
+    "transaction id": {
       "type": "string",
       "description": "Transaction identifier"
     },
     "startDate": {
       "type": "string",
       "description": "Formatted pass/ticket start date"
+    },
+    "date": {
+      "type": "string",
+      "description": "Current date at event time (formatted string)."
+    },
+    "time": {
+      "type": "string",
+      "description": "Current time at event time (formatted string)."
+    },
+    "fare": {
+      "type": "number",
+      "description": "Fare / payable amount."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Product config ID (used in some Super Pass events; differs from `productId` in some contexts)."
+    },
+    "product user name": {
+      "type": "string",
+      "description": "Super Pass user full name."
+    },
+    "product user phone": {
+      "type": "string",
+      "description": "Super Pass user phone number."
+    },
+    "num Days": {
+      "type": "string",
+      "description": "Number of days for the pass (serialized to string)."
+    },
+    "last activation time stamp": {
+      "type": "number",
+      "description": "Last activation timestamp for the pass."
+    },
+    "ss total trip count": {
+      "type": "number",
+      "description": "Total trips allowed for a ride-based Super Pass."
+    },
+    "total trip count available": {
+      "type": "number",
+      "description": "Remaining total trips available for a ride-based Super Pass."
+    },
+    "ss daily trip count": {
+      "type": "number",
+      "description": "Max trips per day for a ride-based Super Pass."
+    },
+    "ss daily trip count available": {
+      "type": "number",
+      "description": "Remaining trips available for today for a ride-based Super Pass."
+    },
+    "ss max trip price": {
+      "type": "number",
+      "description": "Max price per trip for a ride-based Super Pass."
+    },
+    "previous ride activation time stamps": {
+      "type": "string",
+      "description": "JSON-encoded list chunks of previous ride activation timestamps. Note: emitted as dynamic keys suffixed with `_0`, `_10`, etc."
+    },
+    "previous ride activation time stamps size": {
+      "type": "number",
+      "description": "Count of previous ride activation timestamps available."
+    },
+    "lat": {
+      "type": "number",
+      "description": "User latitude at event time (when available)."
+    },
+    "long": {
+      "type": "number",
+      "description": "User longitude at event time (when available)."
+    },
+    "referenceId": {
+      "type": "string",
+      "description": "Cash payment reference ID (when applicable)."
+    },
+    "pendingFare": {
+      "type": "string",
+      "description": "Pending fare/amount for cash payment (serialized)."
+    },
+    "productCity": {
+      "type": "string",
+      "description": "Product city for a Super Pass configuration."
+    },
+    "productAgency": {
+      "type": "string",
+      "description": "Product agency for a Super Pass configuration."
+    },
+    "errorTitle": {
+      "type": "string",
+      "description": "Error title shown to user (when applicable)."
+    },
+    "attribute error reason": {
+      "type": "string",
+      "description": "Error reason/message string (property key emitted as `attribute error reason`)."
+    },
+    "userId": {
+      "type": "string",
+      "description": "User identifier."
+    },
+    "passengerTypes": {
+      "type": "string",
+      "description": "JSON array of passenger types and counts (stringified)."
+    },
+    "expiryDate": {
+      "type": "string",
+      "description": "Formatted expiry date."
+    },
+    "city": {
+      "type": "string",
+      "description": "City name."
+    },
+    "agency": {
+      "type": "string",
+      "description": "Agency name."
+    },
+    "upTripRouteId": {
+      "type": "string",
+      "description": "Up-trip route ID for an mTicket."
+    },
+    "upTripStartStopId": {
+      "type": "string",
+      "description": "Up-trip start stop ID for an mTicket."
+    },
+    "upTripEndStopId": {
+      "type": "string",
+      "description": "Up-trip end stop ID for an mTicket."
+    },
+    "isFreeRide": {
+      "type": "string",
+      "description": "Boolean string indicating if this is a free ride (`true`/`false`)."
+    },
+    "selectedRating": {
+      "type": "number",
+      "description": "Selected star rating."
+    },
+    "maxRating": {
+      "type": "number",
+      "description": "Max possible star rating."
+    },
+    "selectedFeedbackTags": {
+      "type": "string",
+      "description": "Selected feedback tags (stringified list)."
+    },
+    "textFeedback": {
+      "type": "string",
+      "description": "Free-text feedback submitted by the user."
+    },
+    "punchTsInMillis": {
+      "type": "number",
+      "description": "Punch timestamp in milliseconds."
+    },
+    "feedbackSubmittedTsMillis": {
+      "type": "number",
+      "description": "Feedback submitted timestamp in milliseconds."
     },
     "rideCount": {
       "type": "number"
@@ -164,7 +312,8 @@
       "type": "string"
     },
     "expiry time": {
-      "type": "string"
+      "type": "string",
+      "description": "Expiry time. Usually a formatted date string; in some activation contexts may be an epoch millis number."
     },
     "reason": {
       "type": "string"
@@ -250,6 +399,10 @@
         "product activation failed bottomsheet positive cta clicked",
         "activate merged flow screen opened",
         "activation button clicked",
+        "BLE permission denied",
+        "mticket activate screen opened",
+        "mticket activated",
+        "pass activated",
         "super pass menu view summary clicked",
         "super pass updated",
         "view trip receipt button clicked"
@@ -261,7 +414,8 @@
       "events": [
         "renew error bottomsheet shown",
         "renew error bottomsheet positive cta clicked",
-        "renew error bottomsheet negative cta clicked"
+        "renew error bottomsheet negative cta clicked",
+        "open super pass cash payment web page"
       ]
     },
     {
@@ -292,8 +446,7 @@
         "renew disabled product error dialog rendered",
         "ride card cta click",
         "ride receipt screen opened",
-        "view trip history btn clicked",
-        "pass activated"
+        "view trip history btn clicked"
       ]
     },
     {
@@ -316,7 +469,8 @@
       "name": "Pass Summary",
       "description": "Auto-added stage (validate grouping).",
       "events": [
-        "pass summary screen opened"
+        "pass summary screen opened",
+        "validation product not found"
       ]
     }
   ],
@@ -373,6 +527,140 @@
       "properties": [
         {
           "property": "passId"
+        },
+        {
+          "property": "lat"
+        },
+        {
+          "property": "long"
+        },
+        {
+          "property": "product user name"
+        },
+        {
+          "property": "product user phone"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "num Days"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "last activation time stamp"
+        },
+        {
+          "property": "ss total trip count"
+        },
+        {
+          "property": "total trip count available"
+        },
+        {
+          "property": "ss daily trip count"
+        },
+        {
+          "property": "ss daily trip count available"
+        },
+        {
+          "property": "ss max trip price"
+        },
+        {
+          "property": "previous ride activation time stamps"
+        },
+        {
+          "property": "previous ride activation time stamps size"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
+    },
+    {
+      "name": "BLE permission denied",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "Source.ACTIVATE_MERGE_FLOW_FRAGMENT.sourceName or \"ActivateSuperPassFragment\"",
+      "description": "Bluetooth permission was denied while trying to start product activation/validation flow.",
+      "properties": []
+    },
+    {
+      "name": "mticket activate screen opened",
+      "component": "ProductActivationComponent",
+      "stage": "Product Activation",
+      "source": "dataState.value.source?.sourceName ?: Source.ACTIVATE_MTICKET_SCREEN.sourceName",
+      "description": "mTicket activation screen is opened from Product Activation flow.",
+      "properties": []
+    },
+    {
+      "name": "mticket activated",
+      "component": "ActivateProductIfRequiredUseCase",
+      "stage": "Product Activation",
+      "source": "\"\"",
+      "description": "mTicket activation succeeded and activation metadata is emitted.",
+      "properties": [
+        {
+          "property": "userId"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "bookingId",
+          "context": "mTicket booking id"
+        },
+        {
+          "property": "passengerTypes"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "expiryDate"
+        },
+        {
+          "property": "city"
+        },
+        {
+          "property": "agency"
+        },
+        {
+          "property": "upTripRouteId"
+        },
+        {
+          "property": "upTripStartStopId"
+        },
+        {
+          "property": "upTripEndStopId"
+        },
+        {
+          "property": "isFreeRide"
         }
       ]
     },
@@ -509,6 +797,10 @@
           "property": "bookingId"
         },
         {
+          "property": "passId",
+          "context": "Used when invoice download is triggered from Pass Summary"
+        },
+        {
           "property": "errorMessage"
         }
       ]
@@ -522,6 +814,10 @@
       "properties": [
         {
           "property": "bookingId"
+        },
+        {
+          "property": "passId",
+          "context": "Used when invoice download is triggered from Pass Summary"
         }
       ]
     },
@@ -568,9 +864,73 @@
     {
       "name": "pass activated",
       "component": "ActivateProductIfRequiredUseCase",
-      "stage": "Misc",
+      "stage": "Product Activation",
       "source": "\"\"",
-      "properties": []
+      "properties": [
+        {
+          "property": "product user name"
+        },
+        {
+          "property": "product user phone"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "num Days"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "last activation time stamp"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "ss total trip count"
+        },
+        {
+          "property": "total trip count available"
+        },
+        {
+          "property": "ss daily trip count"
+        },
+        {
+          "property": "ss daily trip count available"
+        },
+        {
+          "property": "ss max trip price"
+        },
+        {
+          "property": "previous ride activation time stamps"
+        },
+        {
+          "property": "previous ride activation time stamps size"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
     },
     {
       "name": "pass ride history data fetch",
@@ -597,6 +957,21 @@
         },
         {
           "property": "passRequestType"
+        }
+      ]
+    },
+    {
+      "name": "validation product not found",
+      "component": "PassSummaryComponent",
+      "stage": "Pass Summary",
+      "source": "Source.PASS_SUMMARY_SCREEN",
+      "description": "Pass Summary attempted to start validation, but could not resolve a validation product from the booking/pass data.",
+      "properties": [
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
         }
       ]
     },
@@ -633,6 +1008,12 @@
         },
         {
           "property": "productSubType"
+        },
+        {
+          "property": "errorTitle"
+        },
+        {
+          "property": "attribute error reason"
         }
       ]
     },
@@ -886,7 +1267,7 @@
       "component": "MyTicketsComponent",
       "stage": "Renewal Flow",
       "source": "Source.MY_TICKETS_SCREEN_TAB",
-      "description": "User taps renew button for a super pass (from either card action or status banner). Includes full pass metadata.",
+      "description": "User taps renew/book-again CTA. For Super Pass renewals, includes full pass metadata; for some Premium Bus bookings, includes booking + product identifiers only.",
       "properties": [
         {
           "property": "isSuperPass",
@@ -894,6 +1275,10 @@
         },
         {
           "property": "passId"
+        },
+        {
+          "property": "bookingId",
+          "context": "Used for Premium Bus renew/book-again case"
         },
         {
           "property": "productType"
@@ -914,7 +1299,7 @@
           "property": "productName"
         },
         {
-          "property": "status"
+          "property": "pass status"
         },
         {
           "property": "verificationFlag"
@@ -923,13 +1308,13 @@
           "property": "verificationExpiryTime"
         },
         {
-          "property": "expiryTime"
+          "property": "expiry time"
         },
         {
           "property": "paymentMode"
         },
         {
-          "property": "transactionId"
+          "property": "transaction id"
         },
         {
           "property": "startDate"
@@ -937,6 +1322,27 @@
         {
           "property": "isRenewFromProductStatusCard",
           "context": "True if triggered from product status card banner"
+        }
+      ]
+    },
+    {
+      "name": "open super pass cash payment web page",
+      "component": "MyTicketsComponent",
+      "stage": "Renewal Flow",
+      "source": "Source.MY_TICKETS_SCREEN_TAB",
+      "description": "User opens the Super Pass cash-payment web page for a pending Super Pass application with cash payment.",
+      "properties": [
+        {
+          "property": "referenceId"
+        },
+        {
+          "property": "pendingFare"
+        },
+        {
+          "property": "productCity"
+        },
+        {
+          "property": "productAgency"
         }
       ]
     },
@@ -1020,7 +1426,7 @@
           "property": "productName"
         },
         {
-          "property": "status"
+          "property": "pass status"
         },
         {
           "property": "verificationFlag"
@@ -1029,13 +1435,13 @@
           "property": "verificationExpiryTime"
         },
         {
-          "property": "expiryTime"
+          "property": "expiry time"
         },
         {
           "property": "paymentMode"
         },
         {
-          "property": "transactionId"
+          "property": "transaction id"
         },
         {
           "property": "startDate"
@@ -1085,14 +1491,64 @@
       "component": "ChaloRideFeedbackCollectionHelper",
       "stage": "Ride Feedback",
       "source": "source",
-      "properties": []
+      "properties": [
+        {
+          "property": "selectedRating"
+        },
+        {
+          "property": "maxRating"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "punchTsInMillis"
+        },
+        {
+          "property": "feedbackSubmittedTsMillis"
+        }
+      ]
     },
     {
       "name": "ride feedback submitted",
       "component": "ChaloRideFeedbackCollectionHelper",
       "stage": "Ride Feedback",
       "source": "source",
-      "properties": []
+      "properties": [
+        {
+          "property": "selectedRating"
+        },
+        {
+          "property": "maxRating"
+        },
+        {
+          "property": "selectedFeedbackTags"
+        },
+        {
+          "property": "textFeedback"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "punchTsInMillis"
+        },
+        {
+          "property": "feedbackSubmittedTsMillis"
+        }
+      ]
     },
     {
       "name": "ride receipt screen opened",
@@ -1165,14 +1621,142 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "PASS_ACTIVATION_SOURCE_NAME",
-      "properties": []
+      "properties": [
+        {
+          "property": "product user name"
+        },
+        {
+          "property": "product user phone"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "num Days"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "last activation time stamp"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "ss total trip count"
+        },
+        {
+          "property": "total trip count available"
+        },
+        {
+          "property": "ss daily trip count"
+        },
+        {
+          "property": "ss daily trip count available"
+        },
+        {
+          "property": "ss max trip price"
+        },
+        {
+          "property": "previous ride activation time stamps"
+        },
+        {
+          "property": "previous ride activation time stamps size"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
     },
     {
       "name": "super pass updated",
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "Source.ACTIVATE_SUPER_PASS_FRAGMENT",
-      "properties": []
+      "properties": [
+        {
+          "property": "product user name"
+        },
+        {
+          "property": "product user phone"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "num Days"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "passId"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "last activation time stamp"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "ss total trip count"
+        },
+        {
+          "property": "total trip count available"
+        },
+        {
+          "property": "ss daily trip count"
+        },
+        {
+          "property": "ss daily trip count available"
+        },
+        {
+          "property": "ss max trip price"
+        },
+        {
+          "property": "previous ride activation time stamps"
+        },
+        {
+          "property": "previous ride activation time stamps size"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
     },
     {
       "name": "ticket summary screen help button clicked",
@@ -1318,7 +1902,77 @@
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
       "source": "PASS_ACTIVATION_SOURCE_NAME",
-      "properties": []
+      "properties": [
+        {
+          "property": "passId"
+        },
+        {
+          "property": "lat"
+        },
+        {
+          "property": "long"
+        },
+        {
+          "property": "product user name"
+        },
+        {
+          "property": "product user phone"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "startDate"
+        },
+        {
+          "property": "num Days"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "transaction id"
+        },
+        {
+          "property": "last activation time stamp"
+        },
+        {
+          "property": "ss total trip count"
+        },
+        {
+          "property": "total trip count available"
+        },
+        {
+          "property": "ss daily trip count"
+        },
+        {
+          "property": "ss daily trip count available"
+        },
+        {
+          "property": "ss max trip price"
+        },
+        {
+          "property": "previous ride activation time stamps"
+        },
+        {
+          "property": "previous ride activation time stamps size"
+        },
+        {
+          "property": "isSuperPass"
+        }
+      ]
     }
   ],
   "diagram": {
