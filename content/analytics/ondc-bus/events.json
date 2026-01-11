@@ -9,8 +9,7 @@
     },
     "flowType": {
       "type": "string",
-      "description": "Flow type identifier; these events always log `ONDC` for ONDC bus tickets.",
-      "values": ["ONDC"]
+      "description": "Flow type identifier (route selection uses StopBasedRouteSelectionFlowType.ONDC.toString(); fare details uses FareDetailsScreenType.ONDCTicket.eventAttributeName)."
     },
     "totalResults": {
       "type": "number",
@@ -18,19 +17,19 @@
     },
     "type": {
       "type": "string",
-      "description": "Type of error or failure category."
+      "description": "Type of error or failure category (also used for report-problem type)."
     },
     "reason": {
       "type": "string",
       "description": "Human-readable failure description when operations fail."
     },
     "invalidResponse": {
-      "type": "string",
-      "description": "Raw invalid response data for debugging fare fetch failures."
+      "type": "boolean",
+      "description": "True when the fare response payload is considered invalid."
     },
     "amount": {
-      "type": "number",
-      "description": "Ticket fare amount before discounts."
+      "type": "string",
+      "description": "Ticket fare amount (stringified)."
     },
     "bookingId": {
       "type": "string",
@@ -53,12 +52,12 @@
       "description": "Current status of the ticket (ACTIVE, EXPIRED, USED, etc.)."
     },
     "fare": {
-      "type": "number",
-      "description": "Final fare paid for the ticket."
+      "type": "string",
+      "description": "Final fare paid for the ticket (stringified)."
     },
     "passengerCount": {
-      "type": "number",
-      "description": "Number of passengers for this booking."
+      "type": "string",
+      "description": "Number of passengers for this booking (stringified)."
     },
     "refundInfoStatus": {
       "type": "string",
@@ -92,6 +91,14 @@
       "type": "string",
       "description": "Transaction identifier for payment processing."
     },
+    "transactionId": {
+      "type": "string",
+      "description": "Checkout transaction id."
+    },
+    "bookingDate": {
+      "type": "string",
+      "description": "Booking date string passed into checkout analytics."
+    },
     "historyCallRetryCount": {
       "type": "number",
       "description": "Number of retry attempts for fetching ticket details post-payment."
@@ -119,6 +126,14 @@
     "activationTime": {
       "type": "number",
       "description": "Epoch milliseconds when the ticket was activated."
+    },
+    "selectedSeatCount": {
+      "type": "number",
+      "description": "Selected seat count (when available)."
+    },
+    "selectedSeatNumbers": {
+      "type": "string",
+      "description": "Comma-separated seat numbers (when available)."
     },
     "productId": {
       "type": "string",
@@ -148,9 +163,21 @@
       "type": "string",
       "description": "Ending stop identifier from receipt."
     },
-    "problemType": {
+    "route id": {
       "type": "string",
-      "description": "Category of problem reported."
+      "description": "Route identifier for selected route."
+    },
+    "from stop id": {
+      "type": "string",
+      "description": "Origin stop id for route selection."
+    },
+    "to stop id": {
+      "type": "string",
+      "description": "Destination stop id for route selection."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Raw receipt payload string for ONDC punch events."
     },
     "problemSource": {
       "type": "string",
@@ -163,7 +190,8 @@
       "description": "User searches for routes between origin and destination stops for ONDC bus booking.",
       "events": [
         "stop based stop selection screen route result success",
-        "stop based stop selection screen route result failure"
+        "stop based stop selection screen route result failure",
+        "stop based stop selection screen route result item click"
       ]
     },
     {
@@ -175,19 +203,6 @@
         "fare details final amount bottomsheet tnc clicked",
         "find my ticket fare fare details pay button clicked",
         "ondc ticket fare fetch failure"
-      ]
-    },
-    {
-      "name": "Order Creation",
-      "description": "Backend creates ONDC booking and order before payment processing.",
-      "events": [
-        "confirm screen opened",
-        "pay button clicked",
-        "confirm final fare fetch success",
-        "confirm final fare fetch failed",
-        "order api success",
-        "order api failure",
-        "retry button clicked"
       ]
     },
     {
@@ -217,7 +232,6 @@
       "name": "Validation - QR",
       "description": "QR code based validation flow for ONDC tickets.",
       "events": [
-        "qr screen open",
         "simple qr validation zoom qr clicked"
       ]
     },
@@ -225,6 +239,7 @@
       "name": "Receipt & Punch",
       "description": "Trip receipt display and punch event tracking.",
       "events": [
+        "ondc ticket receipt payload",
         "ondc ticket trip punched",
         "ondc ticket view receipt clicked",
         "view trip receipt from menu clicked"
@@ -234,9 +249,6 @@
       "name": "Global",
       "description": "Events that can fire from multiple places throughout the flow.",
       "events": [
-        "exit chalo pay confirmation shown",
-        "exit chalo pay confirmation yes clicked",
-        "exit chalo pay confirmation no clicked",
         "report problem clicked v2"
       ]
     }
@@ -244,10 +256,10 @@
   "events": [
     {
       "name": "stop based stop selection screen route result success",
-      "component": "MetroLandingScreenComponent",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route Search",
-      "source": "stopBasedRouteSelectionFragment",
-      "description": "Route search succeeded and returned results for ONDC bus booking between selected stops.",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
+      "description": "Route search succeeded for ONDC bus booking between selected stops (includes 0-results case).",
       "properties": [
         {
           "property": "totalResults",
@@ -255,20 +267,42 @@
         },
         {
           "property": "flowType",
-          "context": "Always 'ONDC' for ONDC bus flow"
+          "context": "StopBasedRouteSelectionFlowType.ONDC.toString()"
         }
       ]
     },
     {
       "name": "stop based stop selection screen route result failure",
-      "component": "MetroLandingScreenComponent",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
       "stage": "Route Search",
-      "source": "stopBasedRouteSelectionFragment",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
       "description": "Route search failed for ONDC bus booking.",
       "properties": [
         {
           "property": "flowType",
-          "context": "Always 'ONDC' for ONDC bus flow"
+          "context": "StopBasedRouteSelectionFlowType.ONDC.toString()"
+        }
+      ]
+    },
+    {
+      "name": "stop based stop selection screen route result item click",
+      "component": "StopBasedRouteSearchForProductPurchaseComponent",
+      "stage": "Route Search",
+      "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
+      "description": "User selected a route from the ONDC route results list.",
+      "properties": [
+        {
+          "property": "route id"
+        },
+        {
+          "property": "from stop id"
+        },
+        {
+          "property": "to stop id"
+        },
+        {
+          "property": "flowType",
+          "context": "StopBasedRouteSelectionFlowType.ONDC.toString()"
         }
       ]
     },
@@ -276,7 +310,7 @@
       "name": "find my ticket fare fare details screen opened",
       "component": "FareDetailsComponent",
       "stage": "Fare Details",
-      "source": "InstantTicketFareDetailsFragment",
+      "source": "Source.INSTANT_TICKET_FARE_DETAILS_FRAGMENT",
       "description": "Fare details screen opened showing ONDC ticket fare breakdown and passenger details.",
       "properties": [
         {
@@ -285,7 +319,13 @@
         },
         {
           "property": "flowType",
-          "context": "Always 'ONDC' for ONDC bus flow"
+          "context": "FareDetailsScreenType.ONDCTicket.eventAttributeName (ondcTicket)"
+        },
+        {
+          "property": "selectedSeatCount"
+        },
+        {
+          "property": "selectedSeatNumbers"
         }
       ]
     },
@@ -293,7 +333,7 @@
       "name": "fare details final amount bottomsheet continue click",
       "component": "FareDetailsComponent",
       "stage": "Fare Details",
-      "source": "InstantTicketFareDetailsFragment",
+      "source": "Source.INSTANT_TICKET_FARE_DETAILS_FRAGMENT",
       "description": "User clicked continue on the final fare amount bottom sheet.",
       "properties": [
         {
@@ -302,7 +342,7 @@
         },
         {
           "property": "flowType",
-          "context": "Always 'ONDC' for ONDC bus flow"
+          "context": "FareDetailsScreenType.ONDCTicket.eventAttributeName (ondcTicket)"
         }
       ]
     },
@@ -310,12 +350,12 @@
       "name": "fare details final amount bottomsheet tnc clicked",
       "component": "FareDetailsComponent",
       "stage": "Fare Details",
-      "source": "InstantTicketFareDetailsFragment",
+      "source": "Source.INSTANT_TICKET_FARE_DETAILS_FRAGMENT",
       "description": "User clicked on Terms & Conditions link from fare details screen.",
       "properties": [
         {
           "property": "flowType",
-          "context": "Always 'ONDC' for ONDC bus flow"
+          "context": "FareDetailsScreenType.ONDCTicket.eventAttributeName (ondcTicket)"
         }
       ]
     },
@@ -323,7 +363,7 @@
       "name": "find my ticket fare fare details pay button clicked",
       "component": "FareDetailsComponent",
       "stage": "Fare Details",
-      "source": "InstantTicketFareDetailsFragment",
+      "source": "Source.INSTANT_TICKET_FARE_DETAILS_FRAGMENT",
       "description": "User clicked the pay button on fare details screen to proceed to checkout.",
       "properties": [
         {
@@ -332,16 +372,17 @@
         },
         {
           "property": "flowType",
-          "context": "Always 'ONDC' for ONDC bus flow"
+          "context": "FareDetailsScreenType.ONDCTicket.eventAttributeName (ondcTicket)"
         }
-      ]
+      ],
+      "notes": "Includes passenger-count properties keyed by passenger type id."
     },
     {
       "name": "ondc ticket fare fetch failure",
       "component": "FetchMobileTicketFareUseCase",
       "stage": "Fare Details",
-      "source": "fareDetailsFetchUseCase",
-      "description": "ONDC ticket fare fetch failed due to API error or invalid response.",
+      "source": "Source.FARE_DETAILS_FETCH_USECASE",
+      "description": "ONDC ticket fare fetch failed due to an exception during fare fetch.",
       "properties": [
         {
           "property": "type",
@@ -358,95 +399,30 @@
       ]
     },
     {
-      "name": "confirm screen opened",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "Booking confirmation screen opened showing final booking details before payment.",
-      "properties": []
-    },
-    {
-      "name": "pay button clicked",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "User clicked pay button on confirmation screen to create order.",
-      "properties": [
-        {
-          "property": "passengerCount",
-          "context": "Number of passengers"
-        },
-        {
-          "property": "fare",
-          "context": "Total fare amount"
-        }
-      ]
-    },
-    {
-      "name": "confirm final fare fetch success",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "Final fare fetch succeeded before order creation.",
-      "properties": []
-    },
-    {
-      "name": "confirm final fare fetch failed",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "Final fare fetch failed before order creation.",
-      "properties": [
-        {
-          "property": "reason",
-          "context": "Failure reason"
-        }
-      ]
-    },
-    {
-      "name": "order api success",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "ONDC booking order created successfully via API.",
-      "properties": [
-        {
-          "property": "orderId",
-          "context": "Backend order ID"
-        }
-      ]
-    },
-    {
-      "name": "order api failure",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "ONDC booking order creation failed.",
-      "properties": [
-        {
-          "property": "reason",
-          "context": "Error message"
-        }
-      ]
-    },
-    {
-      "name": "retry button clicked",
-      "component": "ConfirmBookingScreenComponent",
-      "stage": "Order Creation",
-      "source": "confirmBookingScreen",
-      "description": "User clicked retry button after order creation failure.",
-      "properties": []
-    },
-    {
       "name": "ondc ticket payment successful",
       "component": "CheckoutAnalyticsHelper",
       "stage": "Payment",
-      "source": "Product-specific source",
+      "source": "Source.ONDC_FARE_DETAILS_SCREEN",
       "description": "Payment completed successfully for ONDC bus ticket.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
+        {
+          "property": "transactionId",
+          "context": "Checkout transaction id"
+        },
+        {
+          "property": "bookingDate",
+          "context": "Booking date passed into checkout"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "amount",
+          "context": "Order amount"
+        },
         {
           "property": "paymentId",
           "context": "Payment transaction ID"
@@ -465,12 +441,27 @@
       "name": "ondc ticket payment failed",
       "component": "CheckoutAnalyticsHelper",
       "stage": "Payment",
-      "source": "Product-specific source",
+      "source": "Source.ONDC_FARE_DETAILS_SCREEN",
       "description": "Payment failed for ONDC bus ticket.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
+        {
+          "property": "transactionId",
+          "context": "Checkout transaction id"
+        },
+        {
+          "property": "bookingDate",
+          "context": "Booking date passed into checkout"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "amount",
+          "context": "Order amount"
+        },
         {
           "property": "hourOfEvent",
           "context": "Hour of day when payment failed"
@@ -485,7 +476,7 @@
       "name": "post payment history call use case failure",
       "component": "CheckoutPostPaymentComponent",
       "stage": "Payment",
-      "source": "postPaymentScreen",
+      "source": "Source.ONDC_FARE_DETAILS_SCREEN",
       "description": "Failed to fetch ticket details after payment completion.",
       "properties": [
         {
@@ -506,11 +497,8 @@
       "name": "ondc booking confirmed",
       "component": "ProductBookingSuccessComponent",
       "stage": "Booking Success",
-      "source": "ProductBookingSuccessFragment",
+      "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT",
       "description": "ONDC bus ticket booking confirmed and ticket generated successfully.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
         {
           "property": "bookingId",
@@ -554,11 +542,8 @@
       "name": "ondc ticket fetched",
       "component": "OndcTicketValidationAnalyticManager",
       "stage": "Ticket Display",
-      "source": "Various sources",
-      "description": "ONDC ticket data fetched and displayed to user for validation.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
+      "source": "Source.SIMPLE_QR_VALIDATION_SCREEN",
+      "description": "ONDC ticket data fetched during QR validation initialization.",
       "properties": [
         {
           "property": "fullName",
@@ -587,30 +572,10 @@
         {
           "property": "activationTime",
           "context": "Activation timestamp"
-        }
-      ]
-    },
-    {
-      "name": "qr screen open",
-      "component": "OndcTicketValidationAnalyticManager",
-      "stage": "Validation - QR",
-      "source": "Various sources",
-      "description": "QR validation screen opened for ONDC ticket.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
-      "properties": [
-        {
-          "property": "orderId",
-          "context": "Order ID"
         },
         {
-          "property": "productType",
-          "context": "Product type"
-        },
-        {
-          "property": "productSubType",
-          "context": "Product sub-type"
+          "property": "isOndcTicketOrder",
+          "context": "true"
         }
       ]
     },
@@ -618,11 +583,8 @@
       "name": "simple qr validation zoom qr clicked",
       "component": "OndcTicketValidationAnalyticManager",
       "stage": "Validation - QR",
-      "source": "Various sources",
+      "source": "qr validation fragment",
       "description": "User zoomed into QR code for better scanning.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
         {
           "property": "orderId",
@@ -635,6 +597,22 @@
         {
           "property": "productSubType",
           "context": "Product sub-type"
+        },
+        {
+          "property": "isOndcTicketOrder",
+          "context": "true"
+        }
+      ]
+    },
+    {
+      "name": "ondc ticket receipt payload",
+      "component": "OndcTicketProductValidationConfig",
+      "stage": "Receipt & Punch",
+      "source": "OndcTicketProductValidationConfig",
+      "description": "Raw receipt payload captured from ONDC punch notification.",
+      "properties": [
+        {
+          "property": "payload"
         }
       ]
     },
@@ -642,11 +620,8 @@
       "name": "ondc ticket trip punched",
       "component": "OndcTicketValidationAnalyticManager",
       "stage": "Receipt & Punch",
-      "source": "Various sources",
+      "source": "qr validation fragment",
       "description": "ONDC ticket trip punched/validated by conductor with full receipt details.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
         {
           "property": "productId",
@@ -683,6 +658,10 @@
         {
           "property": "endStopId",
           "context": "End stop ID"
+        },
+        {
+          "property": "isOndcTicketOrder",
+          "context": "true"
         }
       ]
     },
@@ -690,11 +669,8 @@
       "name": "ondc ticket view receipt clicked",
       "component": "OndcTicketValidationAnalyticManager",
       "stage": "Receipt & Punch",
-      "source": "Various sources",
+      "source": "qr validation fragment",
       "description": "User clicked to view trip receipt for ONDC ticket.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
         {
           "property": "productId",
@@ -731,6 +707,10 @@
         {
           "property": "endStopId",
           "context": "End stop ID"
+        },
+        {
+          "property": "isOndcTicketOrder",
+          "context": "true"
         }
       ]
     },
@@ -738,62 +718,49 @@
       "name": "view trip receipt from menu clicked",
       "component": "OndcTicketValidationAnalyticManager",
       "stage": "Receipt & Punch",
-      "source": "SOURCE_VALIDATION_SCREEN",
+      "source": "AnalyticsEventConstants.SOURCE_VALIDATION_SCREEN",
       "description": "User clicked to view trip receipt from the menu on validation screen.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
+        {
+          "property": "fullName",
+          "context": "Passenger name"
+        },
+        {
+          "property": "time",
+          "context": "Event time"
+        },
+        {
+          "property": "date",
+          "context": "Event date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
         {
           "property": "orderId",
           "context": "Order ID"
         },
         {
-          "property": "productType",
-          "context": "Product type"
+          "property": "activationTime"
         },
         {
-          "property": "productSubType",
-          "context": "Product sub-type"
+          "property": "isOndcTicketOrder",
+          "context": "true"
         }
       ]
-    },
-    {
-      "name": "exit chalo pay confirmation shown",
-      "component": "OndcTicketValidationAnalyticManager",
-      "stage": "Global",
-      "source": "Various sources",
-      "description": "Confirmation dialog shown when user pressed back button during validation.",
-      "properties": []
-    },
-    {
-      "name": "exit chalo pay confirmation yes clicked",
-      "component": "OndcTicketValidationAnalyticManager",
-      "stage": "Global",
-      "source": "Various sources",
-      "description": "User confirmed back navigation from validation screen.",
-      "properties": []
-    },
-    {
-      "name": "exit chalo pay confirmation no clicked",
-      "component": "OndcTicketValidationAnalyticManager",
-      "stage": "Global",
-      "source": "Various sources",
-      "description": "User cancelled back navigation and stayed on validation screen.",
-      "properties": []
     },
     {
       "name": "report problem clicked v2",
       "component": "OndcTicketValidationAnalyticManager",
       "stage": "Global",
-      "source": "SOURCE_VALIDATION_SCREEN",
+      "source": "",
       "description": "User clicked report problem from validation screen.",
-      "autoProperties": [
-        "isOndcTicketOrder"
-      ],
       "properties": [
         {
-          "property": "problemType",
+          "property": "type",
           "context": "Category of problem"
         },
         {
@@ -801,16 +768,33 @@
           "context": "Source screen identifier"
         },
         {
+          "property": "fullName",
+          "context": "Passenger name"
+        },
+        {
+          "property": "time",
+          "context": "Event time"
+        },
+        {
+          "property": "date",
+          "context": "Event date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
           "property": "orderId",
           "context": "Order ID"
         },
         {
-          "property": "productType",
-          "context": "Product type"
+          "property": "activationTime"
         },
         {
-          "property": "productSubType",
-          "context": "Product sub-type"
+          "property": "isOndcTicketOrder",
+          "context": "true"
         }
       ]
     }
@@ -822,17 +806,17 @@
         "label": "Route Search",
         "events": [
           "stop based stop selection screen route result success",
-          "stop based stop selection screen route result failure"
+          "stop based stop selection screen route result failure",
+          "stop based stop selection screen route result item click"
         ],
         "next": "Fare Details"
       },
       {
-        "label": "Fare Details & Order Creation",
+        "label": "Fare Details & Booking",
         "events": [
           "find my ticket fare fare details screen opened",
           "find my ticket fare fare details pay button clicked",
-          "order api success",
-          "order api failure"
+          "fare details final amount bottomsheet continue click"
         ],
         "next": "Payment"
       },
@@ -849,7 +833,6 @@
         "label": "Ticket Display & QR Validation",
         "events": [
           "ondc ticket fetched",
-          "qr screen open",
           "simple qr validation zoom qr clicked"
         ],
         "next": "Receipt"
@@ -857,11 +840,12 @@
       {
         "label": "Receipt & Punch",
         "events": [
+          "ondc ticket receipt payload",
           "ondc ticket trip punched",
           "ondc ticket view receipt clicked"
         ]
       }
     ],
-    "notes": "ONDC bus tickets use QR-based validation only. Conductor scans QR code and ticket punch receipt is delivered via push notification. Global events (report problem, back press confirmation) can fire from multiple locations throughout the flow."
+    "notes": "ONDC bus tickets use QR-based validation only. Conductor scans QR code and ticket punch receipt is delivered via push notification. Report-problem events can fire from the validation screen."
   }
 }
