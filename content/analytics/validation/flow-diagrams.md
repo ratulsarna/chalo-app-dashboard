@@ -32,6 +32,9 @@ flowchart LR
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_bleBranch -> title:BLE Validation Flow - Permission Check
+  %%chalo:diagram-link ui_qrBranch -> title:QR Validation Flow
+  %%chalo:diagram-link ui_vehicleBranch -> title:Vehicle-Based Validation (QR Scanner)
   ui_entry([User initiates validation]) --> ev_start["start product validation"]
 
   ev_start --> ui_checkProduct{Product found?}
@@ -39,68 +42,95 @@ flowchart TD
 
   ui_checkProduct -->|Yes| ui_validationType{Validation type?}
 
-  ui_validationType -->|BLE required| ui_bleBranch([BLE Validation Flow])
-  ui_validationType -->|QR only| ui_qrBranch([QR Validation Flow])
-  ui_validationType -->|Vehicle scanner| ui_vehicleBranch([Vehicle-Based Flow])
+  ui_validationType -->|Vehicle-based (ONDC/Metro)| ui_vehicleBranch([Vehicle-Based Validation (QR Scanner)])
+  ui_validationType -->|Static QR (Metro/ONDC)| ui_qrBranch([QR Validation Flow])
+  ui_validationType -->|BLE-capable products| ui_bleGate{Bluetooth available + BLE validation enabled?}
+
+  ui_bleGate -->|No, hardware unavailable| ev_hwNotAvailable["ble hardware not available on device"]
+  ui_bleGate -->|No, BLE disabled| ui_qrBranch
+  ev_hwNotAvailable --> ui_qrBranch
+
+  ui_bleGate -->|Yes| ui_bleBranch([BLE Validation Flow])
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_start,ev_notFound event;
-  class ui_entry,ui_checkProduct,ui_validationType,ui_bleBranch,ui_qrBranch,ui_vehicleBranch ui;
+  class ev_start,ev_notFound,ev_hwNotAvailable event;
+  class ui_entry,ui_checkProduct,ui_validationType,ui_bleGate,ui_bleBranch,ui_qrBranch,ui_vehicleBranch ui;
 ```
 
 ## BLE Validation Flow - Permission Check
 
 ```mermaid
 flowchart TD
-  ui_bleInit([BLE validation component init]) --> ev_bleOpen["ble screen open"]
-  ev_bleOpen --> ui_hwCheck{BLE hardware available?}
-  ui_hwCheck -->|No| ev_hwNotAvailable["ble hardware not available on device"]
-  ev_hwNotAvailable --> ui_qrFallback([QR Validation Flow])
-  ui_hwCheck -->|Yes| ev_permCheck["BLE permission check on validation initialization"]
+  %% Note: In code today, product fetch + permission check events are raised before `ble screen open`.
+  %%chalo:diagram-link ui_qrFallback -> title:QR Validation Flow
+  ui_bleInit([BLE validation component init]) --> ui_productData{Product data available?}
 
-  ev_permCheck --> ui_hasPermission{Has BLE permission?}
+  ui_productData -->|Yes| ui_productType{Product type?}
+  ui_productType -->|Super Pass| ev_spFetched["superPass fetched"]
+  ui_productType -->|M-Ticket| ev_mtFetched["mTicket fetched"]
+  ui_productType -->|Instant Ticket| ev_itFetched["instant ticket fetched"]
+  ui_productType -->|Premium Bus| ev_pbFetched["premium reserve ticket fetched"]
+  ui_productType -->|ONDC Bus| ev_ondcFetched["ondc ticket fetched"]
+  ui_productType -->|ONDC Metro| ev_ondcMetroFetched["ondc metro ticket fetched"]
+  ui_productType -->|Metro| ev_metroFetched["metro ticket fetched"]
+  ui_productType -->|Quick Pay| ev_qpFetched["quick pay ticket fetched"]
+
+  ev_spFetched --> ev_permCheck["BLE permission check on validation initialization"]
+  ev_mtFetched --> ev_permCheck
+  ev_itFetched --> ev_permCheck
+  ev_pbFetched --> ev_permCheck
+  ev_ondcFetched --> ev_permCheck
+  ev_ondcMetroFetched --> ev_permCheck
+  ev_metroFetched --> ev_permCheck
+  ev_qpFetched --> ev_permCheck
+
+  ui_productData -->|No| ev_bleOpen["ble screen open"]
+  ev_permCheck --> ev_bleOpen
+  ev_bleOpen --> ui_hasPermission{Has BLE permission?}
 
   ui_hasPermission -->|Yes, granted| ev_granted["BLE permission granted"]
   ev_granted --> ui_bleValidation([Active BLE Validation])
 
   ui_hasPermission -->|No, denied| ev_denied["BLE permission denied"]
-  ev_denied --> ev_rationaleScreen["BLE validation permission rationale screen opened"]
+  ev_denied --> ev_qrOptionShown["BLE denial qr option shown"]
+  ev_qrOptionShown --> ev_rationaleScreen["BLE validation permission rationale screen opened"]
 
   ev_rationaleScreen --> ui_userChoice{User action?}
   ui_userChoice -->|Accept rationale| ev_rationaleAccepted["BLE permission rationale accepted"]
   ui_userChoice -->|Open settings| ev_settingsOpen["BLE validation permission settings screen opened"]
-
-  ui_userChoice -->|Deny again| ev_qrOptionShown["BLE denial qr option shown"]
-  ev_qrOptionShown --> ev_useQrClicked["BLE denial use qr clicked"]
-  ev_useQrClicked --> ui_qrFallback([QR Validation Flow])
+  ui_userChoice -->|Switch to QR| ui_qrFallback([QR Validation Flow])
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_bleOpen,ev_hwNotAvailable,ev_permCheck,ev_granted,ev_denied,ev_rationaleScreen,ev_rationaleAccepted,ev_settingsOpen,ev_qrOptionShown,ev_useQrClicked event;
-  class ui_bleInit,ui_hwCheck,ui_hasPermission,ui_userChoice,ui_bleValidation,ui_qrFallback ui;
+  class ev_bleOpen,ev_spFetched,ev_mtFetched,ev_itFetched,ev_pbFetched,ev_ondcFetched,ev_ondcMetroFetched,ev_metroFetched,ev_qpFetched,ev_permCheck,ev_granted,ev_denied,ev_rationaleScreen,ev_rationaleAccepted,ev_settingsOpen,ev_qrOptionShown event;
+  class ui_bleInit,ui_productData,ui_productType,ui_hasPermission,ui_userChoice,ui_bleValidation,ui_qrFallback ui;
 ```
 
 ## BLE Validation Flow - Active Validation
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_qrScreen -> title:QR Validation Flow
   ui_bleActive([BLE validation active]) --> ui_interactions{User interaction?}
 
   ui_interactions -->|View details| ev_bottomSheetClicked["ble bottom sheet clicked"]
   ui_interactions -->|Help button| ev_helpClicked["BLE validation help btn clicked"]
-  ui_interactions -->|Switch to QR| ev_openQrBtn["BLE validation open qr btn clicked"]
-  ev_openQrBtn --> ev_switchGotIt["BLE validation switch to qr got it clicked"]
-  ev_switchGotIt --> ui_qrScreen([QR Validation Flow])
+  ev_helpClicked --> ui_switchToQr([Switch to QR explainer])
+  ui_switchToQr -->|Use QR| ev_openQrBtn["BLE validation open qr btn clicked"]
+  ev_openQrBtn --> ui_qrScreen([QR Validation Flow])
+  ui_switchToQr -->|Got it| ev_switchGotIt["BLE validation switch to qr got it clicked"]
+  ev_switchGotIt --> ui_bleActive
 
-  ui_interactions -->|Back pressed| ev_backShown["exit chalo pay confirmation shown"]
-  ev_backShown --> ui_confirmExit{Confirm exit?}
-  ui_confirmExit -->|Yes| ev_backYes["exit chalo pay confirmation yes clicked"]
-  ui_confirmExit -->|No| ev_backNo["exit chalo pay confirmation no clicked"]
+  ui_bleActive --> ui_activationExpiry{Activation expired?}
+  ui_activationExpiry -->|Yes| ev_expiredShown["mpass activation duration expired dialog shown"]
+  ev_expiredShown --> ui_expiredAction{User action?}
+  ui_expiredAction -->|OK| ev_expiredOk["activation duration expired dialog ok clicked"]
+  ui_expiredAction -->|View summary| ev_expiredSummary["activation duration expired dialog view summary clicked"]
 
   ui_bleActive --> ui_validationResult{Validation result?}
 
@@ -138,8 +168,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_bottomSheetClicked,ev_helpClicked,ev_openQrBtn,ev_switchGotIt,ev_backShown,ev_backYes,ev_backNo,ev_spPunch,ev_mtPunch,ev_pbPunch,ev_itPunch,ev_ondcPunch,ev_ondcMetroPunch,ev_metroPunch,ev_qpPunch,ev_titoTapIn,ev_invalidAck,ev_ackConsumed,ev_syncFailed event;
-  class ui_bleActive,ui_interactions,ui_confirmExit,ui_validationResult,ui_ackType,ui_conductorPunch,ui_syncResult,ui_qrScreen,ui_postValidation ui;
+  class ev_bottomSheetClicked,ev_helpClicked,ev_openQrBtn,ev_switchGotIt,ev_expiredShown,ev_expiredOk,ev_expiredSummary,ev_spPunch,ev_mtPunch,ev_pbPunch,ev_itPunch,ev_ondcPunch,ev_ondcMetroPunch,ev_metroPunch,ev_qpPunch,ev_titoTapIn,ev_invalidAck,ev_ackConsumed,ev_syncFailed event;
+  class ui_bleActive,ui_interactions,ui_switchToQr,ui_activationExpiry,ui_expiredAction,ui_validationResult,ui_ackType,ui_conductorPunch,ui_syncResult,ui_qrScreen,ui_postValidation ui;
 ```
 
 ## TITO Tap-In Polling Flow
@@ -174,16 +204,12 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ui_qrInit([QR validation screen init]) --> ev_qrOpen["qr screen open"]
-
-  ev_qrOpen --> ui_qrActive([QR code displayed])
+  %% Note: there is no "QR screen open" analytics event raised by the current QR validation component.
+  ui_qrInit([QR validation screen init]) --> ui_qrActive([QR code displayed])
 
   ui_qrActive --> ui_userAction{User action?}
 
-  ui_userAction -->|Zoom QR| ui_productType{Product type?}
-  ui_productType -->|Super Pass| ev_spQrZoom["super pass active qr zoomed screen opened"]
-  ui_productType -->|M-Ticket| ev_mtQrZoom["mticket qr code zoomed"]
-  ui_productType -->|Other| ev_genericQrZoom["simple qr validation zoom qr clicked"]
+  ui_userAction -->|Zoom QR| ev_qrZoom["simple qr validation zoom qr clicked"]
 
   ui_userAction -->|Help button| ev_qrHelp["qr validation screen help button clicked"]
   ui_userAction -->|View journey| ev_viewJourney["qr validation screen view journey button clicked"]
@@ -195,8 +221,8 @@ flowchart TD
   ui_userAction -->|Report problem| ev_reportProblem["report problem clicked v2"]
 
   ui_qrActive --> ui_durationCheck{Activation duration?}
-  ui_durationCheck -->|Expired| ev_durationExpired["mpass activation duration expired dialog shown"]
-  ev_durationExpired --> ui_expiredAction{User action?}
+  ui_durationCheck -->|Expired| ui_expiredDialog([Activation duration expired dialog])
+  ui_expiredDialog --> ui_expiredAction{User action?}
   ui_expiredAction -->|OK| ev_expiredOk["activation duration expired dialog ok clicked"]
   ui_expiredAction -->|View summary| ev_expiredSummary["activation duration expired dialog view summary clicked"]
 
@@ -204,8 +230,28 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_qrOpen,ev_spQrZoom,ev_mtQrZoom,ev_genericQrZoom,ev_qrHelp,ev_viewJourney,ev_tripSuccess,ev_tripFailed,ev_reportProblem,ev_durationExpired,ev_expiredOk,ev_expiredSummary event;
-  class ui_qrInit,ui_qrActive,ui_userAction,ui_productType,ui_tripPlannerResult,ui_durationCheck,ui_expiredAction ui;
+  class ev_qrZoom,ev_qrHelp,ev_viewJourney,ev_tripSuccess,ev_tripFailed,ev_reportProblem,ev_expiredOk,ev_expiredSummary event;
+  class ui_qrInit,ui_qrActive,ui_userAction,ui_tripPlannerResult,ui_durationCheck,ui_expiredDialog,ui_expiredAction ui;
+```
+
+## Vehicle-Based Validation (QR Scanner)
+
+```mermaid
+flowchart TD
+  %% Note: QR scanner validation does not emit analytics events today.
+  ui_scannerInit([QR scanner validation init]) --> ui_scannerReady([QR scanner ready])
+  ui_scannerReady --> ui_userAction{User action?}
+  ui_userAction -->|Validate details| ui_validate([Validate ONDC ticket + fetch receipt])
+  ui_validate --> ui_result{Validation result?}
+  ui_result -->|Success| ui_receipt([Receipt screen])
+  ui_result -->|Failed| ui_error([Validation failed bottom sheet])
+  ui_error --> ui_retry([Retry validate])
+  ui_retry --> ui_validate
+
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
+
+  class ui_scannerInit,ui_scannerReady,ui_userAction,ui_validate,ui_result,ui_receipt,ui_error,ui_retry ui;
 ```
 
 ## Conductor Punch Notifications
@@ -282,19 +328,28 @@ Use this diagram to understand the high-level funnel structure across all valida
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_bleActive -> title:BLE Validation Flow - Active Validation
+  %%chalo:diagram-link ui_qrActive -> title:QR Validation Flow
+  %%chalo:diagram-link ui_vehicleFlow -> title:Vehicle-Based Validation (QR Scanner)
+  %%chalo:diagram-link ui_postValOpen -> title:Post-Validation Success Screen
   ev_start["start product validation"] --> ui_validationType{Validation type?}
 
-  ui_validationType -->|BLE| ev_bleOpen["ble screen open"]
-  ui_validationType -->|QR| ev_qrOpen["qr screen open"]
+  ui_validationType -->|Vehicle-based| ui_vehicleFlow([QR scanner validation])
+  ui_validationType -->|Static QR| ui_qrActive([QR validation screen])
+  ui_validationType -->|BLE-capable| ui_bleGate{Bluetooth available + BLE validation enabled?}
 
-  ev_bleOpen --> ev_permCheck["BLE permission check on validation initialization"]
-  ev_permCheck --> ui_permResult{Permission granted?}
+  ui_bleGate -->|No, hardware unavailable| ev_hwNotAvailable["ble hardware not available on device"]
+  ui_bleGate -->|No, BLE disabled| ui_qrActive
+  ev_hwNotAvailable --> ui_qrActive
+
+  %% In code today, `BLE permission check...` is raised before `ble screen open`.
+  ui_bleGate -->|Yes| ev_permCheck["BLE permission check on validation initialization"]
+  ev_permCheck --> ev_bleOpen["ble screen open"]
+  ev_bleOpen --> ui_permResult{Permission granted?}
 
   ui_permResult -->|Yes| ui_bleActive([BLE validation active])
   ui_permResult -->|No| ev_qrFallback["BLE denial qr option shown"]
-  ev_qrFallback --> ev_qrOpen
-
-  ev_qrOpen --> ui_qrActive([QR validation active])
+  ev_qrFallback --> ui_qrActive
 
   ui_bleActive --> ui_punchNotification{Punch received?}
   ui_qrActive --> ui_punchNotification
@@ -310,22 +365,22 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_start,ev_bleOpen,ev_qrOpen,ev_permCheck,ev_qrFallback,ev_viewReceipt,ev_exit event;
-  class ui_validationType,ui_permResult,ui_bleActive,ui_qrActive,ui_punchNotification,ui_punch,ui_postValOpen,ui_postAction ui;
+  class ev_start,ev_bleOpen,ev_permCheck,ev_qrFallback,ev_hwNotAvailable,ev_viewReceipt,ev_exit event;
+  class ui_validationType,ui_bleGate,ui_permResult,ui_bleActive,ui_qrActive,ui_vehicleFlow,ui_punchNotification,ui_punch,ui_postValOpen,ui_postAction ui;
 ```
 
 ## Key Funnel Metrics to Track
 
 ### Permission Funnel (BLE validation)
 1. `ble screen open` → Entry point
-2. `BLE permission check on validation initialization` → Permission check
+2. `BLE permission check on validation initialization` → Permission check (raised before `ble screen open` today)
 3. `BLE permission granted` / `BLE permission denied` → Permission decision
 4. `BLE denial qr option shown` → Fallback trigger
-5. `qr screen open` → Fallback completion
+5. (No QR screen open event today) → QR fallback screen shown
 
 ### Validation Success Funnel (Any product)
 1. `start product validation` → Entry
-2. `ble screen open` or `qr screen open` → Type selection
+2. `ble screen open` or (no QR screen open event) → Type selection
 3. `[product] trip punch` → Validation success
 4. Post-validation screen / bottom sheet (no explicit event today)
 5. `view receipt post validation clicked` → Receipt view or exit
@@ -337,7 +392,7 @@ flowchart TD
 4. Post-validation screen / bottom sheet (no explicit event today)
 
 ### QR Validation Engagement Funnel
-1. `qr screen open` → Entry
+1. (No QR screen open event today) → Entry
 2. `simple qr validation zoom qr clicked` → Engagement
 3. `qr validation screen view journey button clicked` → Journey interest
 4. `qr validation screen trip planner success` → Journey fetched
@@ -346,8 +401,9 @@ flowchart TD
 ### Error/Fallback Funnel
 1. `BLE permission denied` → Permission issue
 2. `BLE denial qr option shown` → Fallback offered
-3. `BLE denial use qr clicked` → Fallback accepted
-4. `qr screen open` → Alternative path
+3. `BLE validation permission settings screen opened` → Settings attempt
+4. `ble hardware not available on device` → Hardware fallback
+5. (No QR screen open event today) → Alternative path
 
 ### Product-Specific Funnels
 Filter by `productType` property to analyze:

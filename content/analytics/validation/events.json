@@ -546,24 +546,6 @@
       ]
     },
     {
-      "name": "qr screen open",
-      "description": "QR validation screen opened.",
-      "properties": [
-        "productType",
-        "productSubType",
-        "isSuperPass",
-        "bookingId",
-        "orderId",
-        "isChaloPay",
-        "isInstantTicket",
-        "isOndcTicketOrder",
-        "isPremiumReserveTicket"
-      ],
-      "triggers": [
-        "Raised when user enters QR validation UI."
-      ]
-    },
-    {
       "name": "ble hardware not available on device",
       "description": "BLE hardware not available on user's device.",
       "properties": [],
@@ -1994,4 +1976,3 @@
     }
   ]
 }
-
