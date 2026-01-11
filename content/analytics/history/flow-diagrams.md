@@ -86,8 +86,8 @@ flowchart TD
   ui_userAction -->|Cash payment pending| ev_cashPay["open super pass cash payment web page"]
   ui_userAction -->|Taps promotional card| ev_cardClick["tickets page card item clicked"]
 
-  ev_viewSummary --> ui_ticketSummary([Ticket Summary Screen (tickets)])
-  ev_viewSummary --> ui_passSummary([Pass Summary Screen (passes)])
+  ev_viewSummary --> ui_ticketSummary(["Ticket Summary Screen (tickets)"])
+  ev_viewSummary --> ui_passSummary(["Pass Summary Screen (passes)"])
   ev_cardClick --> ext_regularBusTab[Regular Bus Tab]
   ev_cashPay --> ext_cashPay[Cash payment web page]
 
