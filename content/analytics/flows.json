@@ -37,10 +37,10 @@
       "description": "Instant ticket purchase - quick ticket buying flow with fare details and summary.",
       "lastAudited": "2026-01-10"
     },
-    "quick-pay": {
-      "name": "Quick Pay",
-      "description": "Wallet-based fare payment on bus - enter amount, wallet deduction, on-bus validation. Pay-as-you-go for regular buses.",
-      "lastAudited": "2026-01-10"
+    "chalo-wallet": {
+      "name": "Chalo Wallet & Quick Pay",
+      "description": "Chalo Wallet operations (balance, load money, transactions, KYC, migration) plus Quick Pay / Chalo Pay wallet payments and validation.",
+      "lastAudited": "2026-01-11"
     },
     "card": {
       "name": "Card",
@@ -90,11 +90,6 @@
     "validation": {
       "name": "Validation",
       "description": "Ticket/pass validation across all products - BLE scanning, QR codes, tap-in/out, conductor validation, punch notifications.",
-      "lastAudited": "2026-01-11"
-    },
-    "wallet": {
-      "name": "Wallet",
-      "description": "Chalo Wallet operations - balance viewing, load money/recharge, transaction history, Quick Pay ticket purchase (ChaloPayV2 & V3), wallet access/KYC, minimum KYC flow, wallet migration. Includes background wallet sync.",
       "lastAudited": "2026-01-11"
     },
     "history": {

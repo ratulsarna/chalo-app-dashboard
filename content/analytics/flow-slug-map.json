@@ -18,10 +18,9 @@
   "ondc-bus": "ondc-bus",
   "payment": "payment",
   "premium-bus-booking": "premium-bus",
-  "quick-pay": "quick-pay",
   "search": "search",
   "super-pass-purchase": "super-pass",
   "trip-planner": "trip-planner",
   "validation": "validation",
-  "wallet": "wallet"
+  "chalo-wallet": "chalo-wallet"
 }
