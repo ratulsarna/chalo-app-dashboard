@@ -303,7 +303,8 @@ export function MermaidDiagramViewer({
     // Avoid accumulating multiple <style> tags if mermaid re-renders.
     svgEl.querySelectorAll("style[data-analytics-style='1']").forEach((n) => n.remove());
     style.setAttribute("data-analytics-style", "1");
-    svgEl.prepend(style);
+    // Append so our overrides win against Mermaid's internal styles (which often come in <style> tags).
+    svgEl.append(style);
 
     const linkKeys = diagramLinks?.byNodeId ? new Set(Object.keys(diagramLinks.byNodeId)) : null;
     const nodes = Array.from(svgEl.querySelectorAll<SVGGElement>("g.node"));
