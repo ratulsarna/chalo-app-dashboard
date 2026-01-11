@@ -26,6 +26,13 @@ function propertyAnchorId(propertyKey: string) {
   return `prop-${encodeURIComponent(propertyKey)}`;
 }
 
+function safeId(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export default async function AnalyticsFlowDetailPage({
   params,
   searchParams,
@@ -49,6 +56,9 @@ export default async function AnalyticsFlowDetailPage({
   const propertyRows = Object.entries(flow.propertyDefinitions).sort(([a], [b]) =>
     a.localeCompare(b),
   );
+  const tabBaseId = `flow-tabs-${safeId(flow.slug) || "default"}`;
+  const tabTriggerId = (value: string) => `${tabBaseId}-trigger-${value}`;
+  const tabContentId = (value: string) => `${tabBaseId}-content-${value}`;
 
   const flowIssues = (flow.issues ?? []).slice().sort((a, b) => {
     if (a.level !== b.level) return a.level === "error" ? -1 : 1;
@@ -108,13 +118,42 @@ export default async function AnalyticsFlowDetailPage({
 
       <Tabs key={defaultTab} defaultValue={defaultTab} className="space-y-4">
         <TabsList className="w-fit justify-start">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="events">Events</TabsTrigger>
-          <TabsTrigger value="properties">Properties</TabsTrigger>
-          <TabsTrigger value="docs">Docs</TabsTrigger>
+          <TabsTrigger
+            value="overview"
+            id={tabTriggerId("overview")}
+            aria-controls={tabContentId("overview")}
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger
+            value="events"
+            id={tabTriggerId("events")}
+            aria-controls={tabContentId("events")}
+          >
+            Events
+          </TabsTrigger>
+          <TabsTrigger
+            value="properties"
+            id={tabTriggerId("properties")}
+            aria-controls={tabContentId("properties")}
+          >
+            Properties
+          </TabsTrigger>
+          <TabsTrigger
+            value="docs"
+            id={tabTriggerId("docs")}
+            aria-controls={tabContentId("docs")}
+          >
+            Docs
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent
+          value="overview"
+          id={tabContentId("overview")}
+          aria-labelledby={tabTriggerId("overview")}
+          className="space-y-6"
+        >
           <Card className="min-w-0">
             <CardHeader>
               <CardTitle className="text-base">Flow diagram</CardTitle>
@@ -134,11 +173,21 @@ export default async function AnalyticsFlowDetailPage({
           </Card>
         </TabsContent>
 
-        <TabsContent value="events" className="space-y-6">
+        <TabsContent
+          value="events"
+          id={tabContentId("events")}
+          aria-labelledby={tabTriggerId("events")}
+          className="space-y-6"
+        >
           <FlowEvents flowSlug={flow.slug} occurrences={flowOccurrences} />
         </TabsContent>
 
-        <TabsContent value="properties" className="space-y-6">
+        <TabsContent
+          value="properties"
+          id={tabContentId("properties")}
+          aria-labelledby={tabTriggerId("properties")}
+          className="space-y-6"
+        >
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Property definitions</CardTitle>
@@ -186,7 +235,12 @@ export default async function AnalyticsFlowDetailPage({
           </Card>
         </TabsContent>
 
-        <TabsContent value="docs" className="space-y-6">
+        <TabsContent
+          value="docs"
+          id={tabContentId("docs")}
+          aria-labelledby={tabTriggerId("docs")}
+          className="space-y-6"
+        >
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Flow docs</CardTitle>

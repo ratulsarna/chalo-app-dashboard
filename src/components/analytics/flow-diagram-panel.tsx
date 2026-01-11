@@ -45,6 +45,13 @@ function normalizeNodeLabelKey(raw: string) {
   return raw.replace(/\s+/g, " ").trim();
 }
 
+function safeId(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function resolveDiagramIdByTitle(blocks: MermaidBlockMeta[], targetTitle: string) {
   const targetKey = normalizeDiagramHeading(targetTitle);
   const matches = blocks.filter((b) => normalizeDiagramHeading(b.title) === targetKey);
@@ -65,6 +72,20 @@ export function FlowDiagramPanel({
   initialDiagramParam?: string | null;
   className?: string;
 }) {
+  const baseId = React.useMemo(
+    () => `flow-diagram-${safeId(flowSlug) || "default"}`,
+    [flowSlug],
+  );
+  const diagramMenuTriggerId = `${baseId}-diagram-trigger`;
+  const diagramMenuContentId = `${baseId}-diagram-content`;
+  const expandSheetTriggerId = `${baseId}-expand-trigger`;
+  const expandSheetContentId = `${baseId}-expand-content`;
+  const expandSheetTitleId = `${baseId}-expand-title`;
+  const occurrencesSheetContentId = `${baseId}-occurrences-content`;
+  const occurrencesSheetTitleId = `${baseId}-occurrences-title`;
+  const occurrenceMenuTriggerId = `${baseId}-occurrence-trigger`;
+  const occurrenceMenuContentId = `${baseId}-occurrence-content`;
+
   const [diagramParam, setDiagramParam] = React.useState<string | null>(initialDiagramParam);
 
   const blocks = React.useMemo(() => extractMermaidBlocks(diagramMarkdown), [diagramMarkdown]);
@@ -201,6 +222,8 @@ export function FlowDiagramPanel({
                 size="sm"
                 className="min-w-0 flex-1 shrink justify-between gap-2 sm:max-w-[560px]"
                 aria-label="Select diagram"
+                id={diagramMenuTriggerId}
+                aria-controls={diagramMenuContentId}
               >
                 <span className="truncate">
                   {selected.title}
@@ -209,7 +232,12 @@ export function FlowDiagramPanel({
                 <ChevronDownIcon className="size-4 shrink-0 opacity-70" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-[min(520px,calc(100vw-2rem))]">
+            <DropdownMenuContent
+              id={diagramMenuContentId}
+              aria-labelledby={diagramMenuTriggerId}
+              align="start"
+              className="w-[min(520px,calc(100vw-2rem))]"
+            >
               <DropdownMenuRadioGroup value={selected.id} onValueChange={setDiagram}>
                 {blocks
                   .filter((b) => b.kind !== "visual-key")
@@ -238,15 +266,26 @@ export function FlowDiagramPanel({
 
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="shrink-0 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="shrink-0 gap-2"
+                id={expandSheetTriggerId}
+                aria-controls={expandSheetContentId}
+              >
                 <Maximize2Icon className="size-4" />
                 Expand
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full p-0 sm:max-w-6xl">
+            <SheetContent
+              id={expandSheetContentId}
+              aria-labelledby={expandSheetTitleId}
+              side="right"
+              className="w-full p-0 sm:max-w-6xl"
+            >
               <div className="flex h-full flex-col">
                 <SheetHeader className="border-b px-6 py-4">
-                  <SheetTitle className="text-base">
+                  <SheetTitle id={expandSheetTitleId} className="text-base">
                     {selected.title}
                   </SheetTitle>
                 </SheetHeader>
@@ -283,10 +322,16 @@ export function FlowDiagramPanel({
           if (!v) setOpenEventName(null);
         }}
       >
-        <SheetContent className="w-full p-0 sm:max-w-xl">
+        <SheetContent
+          id={occurrencesSheetContentId}
+          aria-labelledby={occurrencesSheetTitleId}
+          className="w-full p-0 sm:max-w-xl"
+        >
           <div className="flex h-full flex-col">
             <SheetHeader className="border-b pb-3 pr-12">
-              <SheetTitle className="break-words">{openEventName ?? ""}</SheetTitle>
+              <SheetTitle id={occurrencesSheetTitleId} className="break-words">
+                {openEventName ?? ""}
+              </SheetTitle>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <Badge variant="secondary" className="tabular-nums">
                   {matches.length} {matches.length === 1 ? "occurrence" : "occurrences"} in this flow
@@ -337,7 +382,13 @@ export function FlowDiagramPanel({
                     <p className="text-xs text-muted-foreground">Occurrence</p>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="w-full justify-between">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full justify-between"
+                          id={occurrenceMenuTriggerId}
+                          aria-controls={occurrenceMenuContentId}
+                        >
                           <span className="truncate">
                             {selectedOccurrence
                               ? occurrenceLabel(
@@ -349,7 +400,12 @@ export function FlowDiagramPanel({
                           <ChevronDownIcon className="size-4 shrink-0 opacity-70" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-[min(520px,calc(100vw-2rem))]">
+                      <DropdownMenuContent
+                        id={occurrenceMenuContentId}
+                        aria-labelledby={occurrenceMenuTriggerId}
+                        align="start"
+                        className="w-[min(520px,calc(100vw-2rem))]"
+                      >
                         <DropdownMenuRadioGroup
                           value={openOccurrenceId ?? ""}
                           onValueChange={(v) => setOpenOccurrenceId(v)}
