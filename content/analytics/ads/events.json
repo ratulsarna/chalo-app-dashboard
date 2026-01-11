@@ -29,14 +29,8 @@
       "description": "Time taken to load the native inline ad in milliseconds."
     },
     "nativeAdAspectRatio": {
-      "type": "string",
-      "description": "Media aspect ratio category for native ads.",
-      "values": [
-        "landscape",
-        "square",
-        "portrait",
-        "unknown"
-      ]
+      "type": "number",
+      "description": "Native ad media aspect ratio (width/height) as a float. Optional; may be missing or 0 when unknown."
     },
     "nativeAdLoadSource": {
       "type": "string",
@@ -48,7 +42,7 @@
     },
     "nativeAdAdditionalData": {
       "type": "string",
-      "description": "Additional ad metadata in JSON format (optional, added by component layer)."
+      "description": "Additional ad metadata string (optional) added by component layer; currently a comma-separated `key:value` list."
     },
     "hasVideo": {
       "type": "boolean",
@@ -73,6 +67,42 @@
     "responseId": {
       "type": "string",
       "description": "Google Ad Manager response ID for the ad request."
+    },
+    "[Adjust]Network": {
+      "type": "string",
+      "description": "Adjust attribution network."
+    },
+    "[Adjust]Campaign": {
+      "type": "string",
+      "description": "Adjust attribution campaign."
+    },
+    "[Adjust]Adgroup": {
+      "type": "string",
+      "description": "Adjust attribution adgroup."
+    },
+    "[Adjust]Creative": {
+      "type": "string",
+      "description": "Adjust attribution creative."
+    },
+    "[Adjust]TrackerName": {
+      "type": "string",
+      "description": "Adjust attribution tracker name."
+    },
+    "[Adjust]ReferrerDeviceId": {
+      "type": "string",
+      "description": "Referrer device ID parsed from Adjust click label (when present)."
+    },
+    "[Adjust]ReferrerMobileNumber": {
+      "type": "string",
+      "description": "Referrer mobile number parsed from Adjust click label (when present)."
+    },
+    "[Adjust]ReferredMobileNumber": {
+      "type": "string",
+      "description": "Referred (current user) mobile number."
+    },
+    "[Adjust]ReferredDeviceId": {
+      "type": "string",
+      "description": "Referred (current user) device ID."
     }
   },
   "stages": [
@@ -100,8 +130,8 @@
       ]
     },
     {
-      "name": "Misc",
-      "description": "Auto-added stage (validate grouping).",
+      "name": "Adjust Attribution Callbacks",
+      "description": "Adjust SDK callbacks received by the app (used for attribution diagnostics).",
       "events": [
         "Adjust Attribution Received",
         "Adjust Label Info Received"
@@ -112,16 +142,64 @@
     {
       "name": "Adjust Attribution Received",
       "component": "AdjustManagerImpl",
-      "stage": "Misc",
+      "stage": "Adjust Attribution Callbacks",
       "source": "Source.ADJUST.sourceName",
-      "properties": []
+      "description": "Fired when Adjust attribution callback is received and added to super properties.",
+      "properties": [
+        {
+          "property": "[Adjust]Network",
+          "context": "Attribution network from Adjust."
+        },
+        {
+          "property": "[Adjust]Campaign",
+          "context": "Attribution campaign from Adjust."
+        },
+        {
+          "property": "[Adjust]Adgroup",
+          "context": "Attribution adgroup from Adjust."
+        },
+        {
+          "property": "[Adjust]Creative",
+          "context": "Attribution creative from Adjust."
+        },
+        {
+          "property": "[Adjust]TrackerName",
+          "context": "Attribution tracker name from Adjust."
+        },
+        {
+          "property": "[Adjust]ReferrerDeviceId",
+          "context": "Referrer device ID parsed from clickLabel (optional)."
+        },
+        {
+          "property": "[Adjust]ReferrerMobileNumber",
+          "context": "Referrer mobile number parsed from clickLabel (optional)."
+        }
+      ]
     },
     {
       "name": "Adjust Label Info Received",
       "component": "AdjustManagerImpl",
-      "stage": "Misc",
+      "stage": "Adjust Attribution Callbacks",
       "source": "Source.ADJUST.sourceName",
-      "properties": []
+      "description": "Fired when Adjust clickLabel is parsed into referrer/referred fields.",
+      "properties": [
+        {
+          "property": "[Adjust]ReferrerDeviceId",
+          "context": "Referrer device ID parsed from clickLabel (optional)."
+        },
+        {
+          "property": "[Adjust]ReferrerMobileNumber",
+          "context": "Referrer mobile number parsed from clickLabel (optional)."
+        },
+        {
+          "property": "[Adjust]ReferredMobileNumber",
+          "context": "Current user mobile number."
+        },
+        {
+          "property": "[Adjust]ReferredDeviceId",
+          "context": "Current device ID."
+        }
+      ]
     },
     {
       "name": "banner ad clicked",
@@ -278,7 +356,7 @@
         },
         {
           "property": "nativeAdAspectRatio",
-          "context": "Media aspect ratio."
+          "context": "Native ad media aspect ratio (width/height) as a float."
         },
         {
           "property": "screen",
@@ -312,7 +390,7 @@
         },
         {
           "property": "nativeAdAspectRatio",
-          "context": "Media aspect ratio."
+          "context": "Native ad media aspect ratio (width/height) as a float."
         },
         {
           "property": "screen",
@@ -346,7 +424,7 @@
         },
         {
           "property": "nativeAdAspectRatio",
-          "context": "Media aspect ratio (landscape/square/portrait/unknown), optional."
+          "context": "Native ad media aspect ratio (width/height) as a float. Optional; may be missing or 0 when unknown."
         },
         {
           "property": "nativeAdLoadSource",
@@ -354,7 +432,7 @@
         },
         {
           "property": "nativeAdAdditionalData",
-          "context": "Additional ad metadata JSON, optional, added by component layer."
+          "context": "Additional ad metadata string (optional) added by component layer; currently a comma-separated `key:value` list."
         }
       ],
       "notes": "sendToPlotline is false; frequency is Always."
@@ -384,7 +462,7 @@
         },
         {
           "property": "nativeAdAspectRatio",
-          "context": "Media aspect ratio."
+          "context": "Native ad media aspect ratio (width/height) as a float."
         },
         {
           "property": "screen",
@@ -434,7 +512,7 @@
         },
         {
           "property": "nativeAdAspectRatio",
-          "context": "Media aspect ratio."
+          "context": "Native ad media aspect ratio (width/height) as a float."
         },
         {
           "property": "screen",
@@ -491,7 +569,7 @@
         ]
       },
       {
-        "label": "Additional events",
+        "label": "Adjust Attribution Callbacks",
         "events": [
           "Adjust Attribution Received",
           "Adjust Label Info Received"

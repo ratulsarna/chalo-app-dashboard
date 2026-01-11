@@ -43,6 +43,18 @@ flowchart TD
   class ui_adjust ui;
 ```
 
+### Adjust Attribution Attributes by Event
+
+```mermaid
+flowchart TD
+  ev_attribution["Adjust Attribution Received<br/>─────────────<br/>[Adjust]Network<br/>[Adjust]Campaign<br/>[Adjust]Adgroup<br/>[Adjust]Creative<br/>[Adjust]TrackerName<br/>[Adjust]ReferrerDeviceId (optional)<br/>[Adjust]ReferrerMobileNumber (optional)"]
+
+  ev_labelInfo["Adjust Label Info Received<br/>─────────────<br/>[Adjust]ReferrerDeviceId (optional)<br/>[Adjust]ReferrerMobileNumber (optional)<br/>[Adjust]ReferredMobileNumber<br/>[Adjust]ReferredDeviceId"]
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  class ev_attribution,ev_labelInfo event;
+```
+
 ## Ad Placements Overview
 
 The app uses two types of ads across four placements:
@@ -90,15 +102,15 @@ flowchart TD
 flowchart TD
   ev_requested["native inline ad requested<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>screen"]
 
-  ev_loaded["native inline ad loaded<br/>─────────────<br/>screen<br/>adUnitId<br/>placement (default)<br/>nativeAdLoadTime<br/>nativeAdAspectRatio<br/>nativeAdLoadSource (direct/prefetch)<br/>nativeAdAdditionalData"]
+  ev_loaded["native inline ad loaded<br/>─────────────<br/>screen<br/>adUnitId<br/>placement (default)<br/>nativeAdLoadTime<br/>nativeAdAspectRatio (ratio)<br/>nativeAdLoadSource (direct/prefetch)<br/>nativeAdAdditionalData"]
 
-  ev_rendered["native inline ad rendered<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio<br/>screen"]
+  ev_rendered["native inline ad rendered<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio (ratio)<br/>screen"]
 
-  ev_impression["native inline ad impression<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio<br/>screen"]
+  ev_impression["native inline ad impression<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio (ratio)<br/>screen"]
 
-  ev_clicked["native inline ad clicked<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio<br/>screen"]
+  ev_clicked["native inline ad clicked<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio (ratio)<br/>screen"]
 
-  ev_paidImpression["native inline ad paid impression<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio<br/>screen<br/>valueMicros<br/>currencyCode<br/>precision<br/>responseId"]
+  ev_paidImpression["native inline ad paid impression<br/>─────────────<br/>adUnitId<br/>placement (default)<br/>hasVideo<br/>nativeAdLoadSource<br/>nativeAdAspectRatio (ratio)<br/>screen<br/>valueMicros<br/>currencyCode<br/>precision<br/>responseId"]
 
   ev_requested --> ev_loaded
   ev_loaded --> ev_rendered
@@ -188,7 +200,7 @@ native inline ad requested
 **Segmentation:**
 - By `screen` (route details vs checkout payment methods)
 - By `nativeAdLoadSource` (direct vs prefetch)
-- By `nativeAdAspectRatio` (landscape vs square vs portrait)
+- By `nativeAdAspectRatio` (ratio buckets; e.g., `>= 1.6` ≈ landscape)
 - By `hasVideo` (video ads vs non-video ads)
 
 ### Banner Ad Performance Funnel
@@ -247,7 +259,7 @@ Metrics:
 
 2. **Native ads have unique attributes**:
    - `nativeAdLoadSource`: Distinguish direct loads vs prefetched ads
-   - `nativeAdAspectRatio`: Segment by media format
+   - `nativeAdAspectRatio`: Raw aspect ratio float (bucket in dashboards if needed)
    - `hasVideo`: Identify video vs static ads
    - `nativeAdAdditionalData`: Optional custom metadata from components
 
