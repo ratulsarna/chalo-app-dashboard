@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const MIN_VISIBLE_MS = 450;
 const MAX_VISIBLE_MS = 1800;
 
 export function RouteProgress() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -29,7 +28,7 @@ export function RouteProgress() {
       if (hideTimeout) clearTimeout(hideTimeout);
       if (maxTimeout) clearTimeout(maxTimeout);
     };
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   return (
     <div
