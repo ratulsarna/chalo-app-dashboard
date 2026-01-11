@@ -330,7 +330,7 @@ UPSTREAM_REPO_PATH=/home/ratul/Developer/chalo/chalo-app-kmp
 UPSTREAM_BRANCH=main
 CODEX_MODEL=gpt-5.2
 CODEX_REASONING_EFFORT=high
-OPENAI_API_KEY=...redacted...
+# Codex CLI is assumed to be authenticated/configured for the `ratul` user on this VPS.
 ```
 
 Check status/logs:
@@ -419,7 +419,7 @@ At end of implementation, the following entrypoints must exist:
 - `gh` is installed and authenticated for `ratulsarna/chalo-app-dashboard`.
 - Codex CLI is installed/configured and can be run non-interactively by the service user.
 - The Codex invocation used by the updater can force `gpt-5.2` and `model_reasoning_effort=high` (verify via `codex --help` / `codex config` during implementation).
-- The service user has API credentials available for the Codex model provider (e.g., `OPENAI_API_KEY` for `model_provider=openai`).
+- The service user can run `codex exec` non-interactively (Codex CLI already authenticated/configured on this VPS).
 
 ## Plan Revision Notes
 
