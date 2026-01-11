@@ -31,11 +31,12 @@ export default async function AnalyticsFlowDetailPage({
   searchParams,
 }: {
   params: Promise<{ flowSlug: string }>;
-  searchParams?: Promise<{ tab?: string | string[] }>;
+  searchParams?: Promise<{ tab?: string | string[]; diagram?: string | string[] }>;
 }) {
   const { flowSlug } = await params;
-  const { tab: rawTab } = (await searchParams) ?? {};
+  const { tab: rawTab, diagram: rawDiagram } = (await searchParams) ?? {};
   const tabParam = Array.isArray(rawTab) ? rawTab[0] : rawTab;
+  const diagramParam = Array.isArray(rawDiagram) ? rawDiagram[0] : rawDiagram;
   const tab = (tabParam ?? "").toLowerCase();
   const defaultTab =
     tab === "events" || tab === "properties" || tab === "docs" ? tab : "overview";
@@ -124,6 +125,7 @@ export default async function AnalyticsFlowDetailPage({
                   flowSlug={flow.slug}
                   diagramMarkdown={flow.diagramMarkdown}
                   occurrences={flowOccurrences}
+                  initialDiagramParam={diagramParam ?? null}
                 />
               ) : (
                 <p className="text-sm text-muted-foreground">No diagram file found.</p>
