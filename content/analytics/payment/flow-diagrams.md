@@ -30,6 +30,11 @@ flowchart LR
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ui_upiFlow -> title:Funnel: UPI payment method flow
+  %%chalo:diagram-link ui_cardFlow -> title:Funnel: Card payment method flow
+  %%chalo:diagram-link ui_netbankingFlow -> title:Funnel: Net Banking & Wallet flows
+  %%chalo:diagram-link ui_walletFlow -> title:Funnel: Net Banking & Wallet flows
+  %%chalo:diagram-link ui_chaloPayFlow -> title:Funnel: Chalo Pay wallet flow
   ui_entry([User initiates payment from product screen]) --> ev_mainScreenOpen["Payment Modes Screen opened"]
 
   ev_mainScreenOpen --> ev_paymentModeSelected["Payment mode selected"]

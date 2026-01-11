@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
 import { extractMermaidBlocks, pickDefaultMermaidBlock, type MermaidBlockMeta } from "@/lib/analytics/diagram-markdown";
+import { extractNodeLabelsFromMermaid, normalizeDiagramHeading, parseDiagramLinkDirectives } from "@/lib/analytics/diagram-links";
 import { MermaidDiagramViewer } from "@/components/analytics/mermaid-diagram-viewer";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -39,6 +40,17 @@ async function copyToClipboard(text: string) {
   } catch {
     // Ignore clipboard errors (e.g., insecure context).
   }
+}
+
+function normalizeNodeLabelKey(raw: string) {
+  return raw.replace(/\s+/g, " ").trim();
+}
+
+function resolveDiagramIdByTitle(blocks: MermaidBlockMeta[], targetTitle: string) {
+  const targetKey = normalizeDiagramHeading(targetTitle);
+  const matches = blocks.filter((b) => normalizeDiagramHeading(b.title) === targetKey);
+  if (matches.length === 1) return matches[0]?.id ?? null;
+  return null;
 }
 
 export function FlowDiagramPanel({
@@ -78,11 +90,63 @@ export function FlowDiagramPanel({
     [blocks, selectedId],
   );
 
+  const diagramLinks = React.useMemo(() => {
+    if (!selected) return null;
+
+    const directives = parseDiagramLinkDirectives(selected.code);
+    if (directives.length === 0) return null;
+
+    const labelsByNodeId = extractNodeLabelsFromMermaid(selected.code);
+
+    const byNodeId: Record<string, string> = {};
+    const byLabel: Record<string, string> = {};
+    const labelToDiagram = new Map<string, string | null>();
+
+    for (const d of directives) {
+      const diagramId = resolveDiagramIdByTitle(blocks, d.targetTitle);
+      if (!diagramId) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn(
+            `[FlowDiagramPanel] Unresolved diagram-link target title: "${d.targetTitle}" (nodeId: ${d.nodeId})`,
+          );
+        }
+        continue;
+      }
+
+      byNodeId[d.nodeId] = diagramId;
+
+      const label = labelsByNodeId.get(d.nodeId);
+      if (!label) continue;
+      const key = normalizeNodeLabelKey(label);
+      if (key.length === 0) continue;
+
+      const prev = labelToDiagram.get(key);
+      if (prev === undefined) labelToDiagram.set(key, diagramId);
+      else if (prev !== diagramId) labelToDiagram.set(key, null);
+    }
+
+    for (const [labelKey, diagramId] of labelToDiagram.entries()) {
+      if (!diagramId) continue;
+      byLabel[labelKey] = diagramId;
+    }
+
+    return { byNodeId, byLabel };
+  }, [blocks, selected]);
+
   const setDiagram = React.useCallback(
     (id: string) => {
       const next = new URLSearchParams(searchParams.toString());
       next.set("diagram", id);
       router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+    },
+    [pathname, router, searchParams],
+  );
+
+  const pushDiagram = React.useCallback(
+    (id: string) => {
+      const next = new URLSearchParams(searchParams.toString());
+      next.set("diagram", id);
+      router.push(`${pathname}?${next.toString()}`, { scroll: false });
     },
     [pathname, router, searchParams],
   );
@@ -180,6 +244,8 @@ export function FlowDiagramPanel({
                   <MermaidDiagramViewer
                     code={selected.code}
                     onEventClick={onEventClick}
+                    diagramLinks={diagramLinks ?? undefined}
+                    onDiagramLinkClick={(diagramId) => pushDiagram(diagramId)}
                     className="h-[calc(100vh-9.5rem)]"
                   />
                 </div>
@@ -196,6 +262,8 @@ export function FlowDiagramPanel({
       <MermaidDiagramViewer
         code={selected.code}
         onEventClick={onEventClick}
+        diagramLinks={diagramLinks ?? undefined}
+        onDiagramLinkClick={(diagramId) => pushDiagram(diagramId)}
         className="h-[420px]"
       />
 
