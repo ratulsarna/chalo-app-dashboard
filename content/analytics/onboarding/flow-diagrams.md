@@ -7,6 +7,7 @@ Notes:
 - There are two city selection implementations: old flow (CitySelectionComponent) and new flow (CityLocationSelectionComponent) - both emit some events with the same name but different source values
 - User properties (deviceId, isNotifPermGranted, migrationRequired, firstSeen) are set during splash screen but are not analytics events
 - System location permission prompt responses also emit `access location event` (via LocationPermissionCallbackHandler)
+- **App Migration flow** is triggered for users upgrading from NonKMP to KMP app version - this mandatory step syncs product history before allowing access to home screen
 
 Visual key:
 - Green solid boxes: analytics events (exact strings from `events.json`)
@@ -67,7 +68,14 @@ flowchart TD
   ev_citySelected2 --> ui_checkDiscontinued
 
   ui_checkDiscontinued -->|Discontinued| ui_discontinuedFlow([City Discontinued Flow])
-  ui_checkDiscontinued -->|Active| ui_homeScreen([Navigate to Home])
+  ui_checkDiscontinued -->|Active| ui_checkMigration([Check migration required?])
+
+  ui_checkMigration -->|Required| ui_migrationFlow([App Migration Flow])
+  ui_checkMigration -->|Not required| ui_homeScreen([Navigate to Home])
+
+  ui_migrationFlow --> ev_migrationOpen["app migration screen opened"]
+  ev_migrationOpen --> ev_migrationSuccess["app migration history call success"]
+  ev_migrationSuccess --> ui_homeScreen
 
   ui_discontinuedFlow --> ev_cityDiscontinued["city discontinued screen displayed"]
   ev_cityDiscontinued --> ev_changeCity["city discontinued change city clicked"]
@@ -80,8 +88,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_firstScreen,ev_appOpen,ev_langScreenDisplay,ev_langContinue,ev_langChanged,ev_cityLocScreenOpen,ev_cityScreenDisplay,ev_citySelected1,ev_citySelected2,ev_cityDiscontinued,ev_changeCity,ev_newHome,ev_tabHome event;
-  class ui_appLaunch,ui_checkLanguage,ui_languageFlow,ui_checkLogin,ui_checkCity,ui_cityFlow,ui_newOrOld,ui_newCityFlow,ui_oldCityFlow,ui_checkDiscontinued,ui_discontinuedFlow,ui_homeScreen ui;
+  class ev_firstScreen,ev_appOpen,ev_langScreenDisplay,ev_langContinue,ev_langChanged,ev_cityLocScreenOpen,ev_cityScreenDisplay,ev_citySelected1,ev_citySelected2,ev_cityDiscontinued,ev_changeCity,ev_migrationOpen,ev_migrationSuccess,ev_newHome,ev_tabHome event;
+  class ui_appLaunch,ui_checkLanguage,ui_languageFlow,ui_checkLogin,ui_checkCity,ui_cityFlow,ui_newOrOld,ui_newCityFlow,ui_oldCityFlow,ui_checkDiscontinued,ui_discontinuedFlow,ui_checkMigration,ui_migrationFlow,ui_homeScreen ui;
   class ext_loginFlow external;
 ```
 
@@ -309,6 +317,62 @@ flowchart TD
   class ui_checkCity,ui_isDiscontinued,ui_home,ui_showChangeOption,ui_userChange,ui_citySelection ui;
 ```
 
+## Funnel: App Migration (NonKMP → KMP)
+
+This flow handles mandatory product history synchronization for users migrating from the old (NonKMP) app version to the new KMP version. It is triggered when `mandatoryFirstHistoryCallGuard.requireMandatoryHistoryCall()` returns true.
+
+```mermaid
+flowchart TD
+  ui_splashCheck([Splash: Check migration required]) --> ui_migrationRequired([Migration Required?])
+
+  ui_migrationRequired -->|Yes| ev_screenOpened["app migration screen opened"]
+  ui_migrationRequired -->|No| ui_home([Navigate to Home])
+
+  ev_screenOpened --> ui_startMigration([Start Migration with Auto-Retry])
+
+  ui_startMigration --> ui_attemptMigration([Attempt History Sync])
+  ui_attemptMigration -->|Success| ev_historySuccess["app migration history call success"]
+  ui_attemptMigration -->|Failure| ui_checkRetry([Check Retry Limits])
+
+  ui_checkRetry -->|Can retry| ui_backoff([Apply Backoff Delay])
+  ui_backoff --> ui_attemptMigration
+
+  ui_checkRetry -->|Exhausted| ev_historyFailed["app migration history call failed"]
+  ev_historyFailed --> ui_errorScreen([Show Error Screen])
+
+  ui_errorScreen --> ui_userRetry([User Clicks Retry])
+  ui_userRetry --> ev_retryClicked["app migration retry clicked"]
+  ev_retryClicked --> ui_startMigration
+
+  ev_historySuccess --> ui_home
+
+  classDef event fill:#166534,stroke:#166534,color:#ffffff;
+  classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
+
+  class ev_screenOpened,ev_historySuccess,ev_historyFailed,ev_retryClicked event;
+  class ui_splashCheck,ui_migrationRequired,ui_startMigration,ui_attemptMigration,ui_checkRetry,ui_backoff,ui_errorScreen,ui_userRetry,ui_home ui;
+```
+
+### App Migration Retry Strategy
+
+- **Backoff**: Circular exponential (2s → 4s → 8s → 2s...)
+- **Max attempts**: 15
+- **Max duration**: 120 seconds
+- **Min loader time**: 3 seconds (prevents UI flashing)
+
+### Key metrics for App Migration funnel:
+- **Success rate**: `app migration screen opened` → `app migration history call success`
+- **Retry rate**: Count of `app migration retry clicked` events indicates users hitting error state
+- **Failure analysis**: `app migration history call failed` with `attempt` and `errorMessage` properties to identify patterns
+
+### Properties:
+| Event | Property | Description |
+|-------|----------|-------------|
+| `app migration history call success` | `requireHistoryCall` | Boolean indicating if history call was still required |
+| `app migration history call success` | `attempt` | Number of attempts before success |
+| `app migration history call failed` | `attempt` | Total attempts made before failure |
+| `app migration history call failed` | `errorMessage` | Error description for debugging |
+
 ## Event Source Comparison: Old vs New City Selection
 
 This table helps identify which city selection flow is being used based on the source property:
@@ -364,10 +428,15 @@ flowchart LR
 2. **Flow Branching**:
    - Language selection occurs only for first-time users or users who haven't set language
    - City selection has two implementations - filter by `source` property to identify which flow
+   - App migration occurs only for users upgrading from NonKMP to KMP version
 3. **Permission Funnels**: Track the new flow's permission journey using the three refusal events
 4. **Completion Markers**:
    - Language selection completes with `language screen continue clicked`
    - City selection completes with `city selected` (check source to identify flow)
+   - App migration completes with `app migration history call success`
    - Onboarding completes with `new home screen rendered` or `tab based homescreen rendered`
-5. **Error Tracking**: Use `city fetch from location failed` with `reason` property to diagnose city detection issues
+5. **Error Tracking**:
+   - Use `city fetch from location failed` with `reason` property to diagnose city detection issues
+   - Use `app migration history call failed` with `errorMessage` property to diagnose migration failures
 6. **Deprecated Flow Detection**: Events with `CITY_SELECTION_FRAGMENT` source indicate old flow usage
+7. **Migration Health**: Track `app migration retry clicked` volume to identify migration reliability issues
