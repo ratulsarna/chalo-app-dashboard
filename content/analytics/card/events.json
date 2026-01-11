@@ -15,9 +15,17 @@
       "type": "string",
       "description": "Card number attribute (alternate naming in some contexts)."
     },
+    "card no": {
+      "type": "string",
+      "description": "NCMC card number attribute (legacy key with spaces)."
+    },
     "kitNo": {
       "type": "string",
       "description": "Kit number for NCMC cards."
+    },
+    "kit no": {
+      "type": "string",
+      "description": "NCMC kit number attribute (legacy key with spaces)."
     },
     "cardType": {
       "type": "string",
@@ -91,6 +99,10 @@
       "type": "number",
       "description": "Amount selected for recharge."
     },
+    "recharge amount": {
+      "type": "string",
+      "description": "Recharge amount attribute used by NCMC flows (legacy key with spaces; value is stringified)."
+    },
     "rechargeStatus": {
       "type": "string",
       "description": "Status of the recharge operation."
@@ -144,8 +156,8 @@
       "description": "Status of payment (success, failed, pending)."
     },
     "amount": {
-      "type": "number",
-      "description": "Generic amount field."
+      "type": "string",
+      "description": "Generic amount field (often stringified in KMP)."
     },
     "ocr recharge delay copy": {
       "type": "string",
@@ -168,20 +180,20 @@
       "description": "Reason for recharge configuration fetch failure."
     },
     "online recharge balance": {
-      "type": "number",
-      "description": "Online recharge balance for NCMC card."
+      "type": "string",
+      "description": "Online recharge balance for NCMC card (stringified in KMP NCMC flows)."
     },
     "ncmc recharge mode": {
       "type": "string",
       "description": "Mode of NCMC recharge (online/offline)."
     },
     "offlineBalance": {
-      "type": "number",
-      "description": "Offline balance on NCMC card."
+      "type": "string",
+      "description": "Offline balance on NCMC card (stringified in KMP tap flow)."
     },
     "topUpAmount": {
-      "type": "number",
-      "description": "Amount topped up in tap operation."
+      "type": "string",
+      "description": "Amount topped up in tap operation (stringified in KMP tap flow)."
     },
     "rrn": {
       "type": "string",
@@ -229,9 +241,9 @@
       "name": "Home & Navigation",
       "description": "Entry points from home screen and navigation drawer.",
       "events": [
-        "home screen chalo card option clicked",
-        "ocr card payments homescreen drawer clicked",
-        "ocr homescreen card recharge card"
+        "ocr homescreen card recharge card",
+        "ocr tutorial bottomsheet displayed",
+        "ocr tutorial bottomsheet next clicked"
       ]
     },
     {
@@ -278,9 +290,9 @@
         "chalo card recharge config fetch failed",
         "chalo card recharge proceed btn clicked",
         "ocr recharge amount error",
-        "terms dialog open",
-        "accept terms",
-        "cancel terms",
+        "terms and conditions open",
+        "terms accept",
+        "terms cancel",
         "ocr order created",
         "ocr order creation failed",
         "chalo card recharge error action btn clicked",
@@ -329,8 +341,7 @@
         "ncmc load balance next clicked",
         "ncmc tnc accepted loading",
         "ncmc offline recharge success",
-        "ncmc recharge api error",
-        "ncmc add online from offline flow"
+        "ncmc recharge api error"
       ]
     },
     {
@@ -350,7 +361,6 @@
       "events": [
         "card screen opened",
         "card details submitted",
-        "save card details",
         "online card recharge payment successful",
         "online card recharge payment failed",
         "ncmc recharge payment successful",
@@ -363,29 +373,118 @@
       "events": [
         "chalo card transaction notification received"
       ]
-    },
-    {
-      "name": "Misc",
-      "description": "Auto-added stage (validate grouping).",
-      "events": [
-        "terms and conditions open"
-      ]
     }
   ],
   "events": [
     {
-      "name": "accept terms",
+      "name": "terms accept",
       "component": "ChaloCardRechargeAmountComponent",
       "stage": "Chalo Card Recharge Amount",
       "source": "chalo card recharge enter amount screen",
-      "description": "User accepts terms and conditions."
+      "description": "User accepts terms and conditions.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "isCardRechargeEnabled"
+        },
+        {
+          "property": "rechargeLimit"
+        },
+        {
+          "property": "cardType"
+        },
+        {
+          "property": "cardIssuedOn"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "isCardBlocked"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "isActive"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "cardAgency"
+        },
+        {
+          "property": "cardCity"
+        }
+      ],
+      "notes": "Event name is `AnalyticsEventConstants.ACCEPT_TERMS` (`terms accept`). Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()`."
     },
     {
-      "name": "cancel terms",
+      "name": "terms cancel",
       "component": "ChaloCardRechargeAmountComponent",
       "stage": "Chalo Card Recharge Amount",
       "source": "chalo card recharge enter amount screen",
-      "description": "User cancels terms and conditions dialog."
+      "description": "User cancels terms and conditions dialog.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "isCardRechargeEnabled"
+        },
+        {
+          "property": "rechargeLimit"
+        },
+        {
+          "property": "cardType"
+        },
+        {
+          "property": "cardIssuedOn"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "isCardBlocked"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "isActive"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "cardAgency"
+        },
+        {
+          "property": "cardCity"
+        }
+      ],
+      "notes": "Event name is `AnalyticsEventConstants.CANCEL_TERMS` (`terms cancel`). Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "card details submitted",
@@ -406,7 +505,19 @@
       "component": "ChaloCardInfoComponent",
       "stage": "Chalo Card Info",
       "source": "chalo card info screen",
-      "description": "User taps the buy new card button."
+      "description": "User taps the buy new card button.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
+        }
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties."
     },
     {
       "name": "chalo card enter recharge amount screen opened",
@@ -419,27 +530,78 @@
           "property": "cardNumber"
         },
         {
-          "property": "cardBalance"
+          "property": "isCardRechargeEnabled"
         },
         {
           "property": "rechargeLimit"
+        },
+        {
+          "property": "cardType"
+        },
+        {
+          "property": "cardIssuedOn"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "isCardBlocked"
         }
       ],
-      "notes": "Includes all card details properties."
+      "notes": "Properties are derived from `ChaloCardDetails.addAnalyticsEventPropertiesToMap()` (passed from caller)."
     },
     {
       "name": "chalo card info active pass card clicked",
       "component": "ChaloCardInfoComponent",
       "stage": "Chalo Card Info",
       "source": "chalo card info screen",
-      "description": "User taps on the active pass card to view details."
+      "description": "User taps on the active pass card to view details.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
+        },
+        {
+          "property": "chaloCardPassName"
+        },
+        {
+          "property": "expiryTime"
+        },
+        {
+          "property": "remainingTrips"
+        },
+        {
+          "property": "maxPricePerTrip"
+        },
+        {
+          "property": "maxTripsPerDay"
+        }
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties."
     },
     {
       "name": "chalo card info add money clicked",
       "component": "ChaloCardInfoComponent",
       "stage": "Chalo Card Info",
       "source": "chalo card info screen",
-      "description": "User taps the add money button to start recharge flow."
+      "description": "User taps the add money button to start recharge flow.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "cardBalance"
+        }
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties."
     },
     {
       "name": "chalo card info fetch failed",
@@ -449,10 +611,20 @@
       "description": "Failed to fetch card information.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
+        },
+        {
           "property": "chaloCardInfoFetchFailedReason",
           "context": "Failure reason enum."
         }
-      ]
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties plus `chaloCardInfoFetchFailedReason`."
     },
     {
       "name": "chalo card info fetch failed",
@@ -462,10 +634,20 @@
       "description": "Card info fetch failed on recharge amount screen.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "chaloCardInfoFetchFailedReason",
           "context": "Failure reason enum."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `chaloCardInfoFetchFailedReason`."
     },
     {
       "name": "chalo card info fetch success",
@@ -478,10 +660,48 @@
           "property": "cardNumber"
         },
         {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
+        },
+        {
+          "property": "isCardRechargeEnabled"
+        },
+        {
+          "property": "rechargeLimit"
+        },
+        {
           "property": "cardBalance"
         },
         {
           "property": "cardType"
+        },
+        {
+          "property": "cardIssuedOn"
+        },
+        {
+          "property": "isCardBlocked"
+        },
+        {
+          "property": "chaloCardPassName",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "expiryTime",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "remainingTrips",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "maxPricePerTrip",
+          "context": "If active pass exists."
+        },
+        {
+          "property": "maxTripsPerDay",
+          "context": "If active pass exists."
         }
       ],
       "notes": "Includes all card details properties plus active pass properties if applicable."
@@ -491,21 +711,54 @@
       "component": "ChaloCardRechargeAmountComponent",
       "stage": "Chalo Card Recharge Amount",
       "source": "chalo card recharge enter amount screen",
-      "description": "Card info fetched successfully on recharge amount screen."
+      "description": "Card info fetched successfully on recharge amount screen.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        }
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "chalo card info link card tut link btn clicked",
       "component": "ChaloCardInfoComponent",
       "stage": "Chalo Card Info",
       "source": "chalo card info screen",
-      "description": "User taps the link card tutorial link."
+      "description": "User taps the link card tutorial link.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        }
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties."
     },
     {
       "name": "chalo card info link card tut link btn clicked",
       "component": "ChaloCardRechargeAmountComponent",
       "stage": "Chalo Card Recharge Amount",
       "source": "chalo card recharge enter amount screen",
-      "description": "User taps link card tutorial link from recharge screen."
+      "description": "User taps link card tutorial link from recharge screen.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        }
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "chalo card info screen opened",
@@ -516,6 +769,12 @@
       "properties": [
         {
           "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
         },
         {
           "property": "isCardRechargeEnabled"
@@ -562,7 +821,16 @@
       "component": "ChaloCardInfoComponent",
       "stage": "Chalo Card Info",
       "source": "chalo card info screen",
-      "description": "User taps to view transaction history."
+      "description": "User taps to view transaction history.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        }
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties."
     },
     {
       "name": "chalo card linking failed",
@@ -572,6 +840,12 @@
       "description": "Card linking operation failed.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "activationCode"
+        },
+        {
           "property": "cardLinkingErrorReason",
           "context": "Error reason from DataFetchOperationErrorReason or LinkChaloCardFailureReason."
         },
@@ -579,14 +853,24 @@
           "property": "errorCode",
           "context": "Error code if available."
         }
-      ]
+      ],
+      "notes": "Properties are derived from `ChaloCardLinkViewState.toAnalyticsPropertiesMap()` plus the failure-reason fields."
     },
     {
       "name": "chalo card linking screen opened",
       "component": "ChaloCardLinkCardComponent",
       "stage": "Chalo Card Linking",
       "source": "Various (passed from caller)",
-      "description": "Card linking screen opens for user to enter activation code."
+      "description": "Card linking screen opens for user to enter activation code.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "activationCode"
+        }
+      ],
+      "notes": "Properties are derived from `ChaloCardLinkViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "chalo card recharge config fetch failed",
@@ -596,10 +880,20 @@
       "description": "Failed to fetch recharge configuration.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "chaloCardRechargeConfigFetchFailedReason",
           "context": "Configuration fetch failure reason."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `chaloCardRechargeConfigFetchFailedReason`."
     },
     {
       "name": "chalo card recharge error action btn clicked",
@@ -609,17 +903,39 @@
       "description": "User taps error action button.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "errorReason",
           "context": "Error reason that triggered the action."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `errorReason`."
     },
     {
       "name": "chalo card recharge proceed btn clicked",
       "component": "ChaloCardRechargeAmountComponent",
       "stage": "Chalo Card Recharge Amount",
       "source": "chalo card recharge enter amount screen",
-      "description": "User taps proceed button with entered recharge amount."
+      "description": "User taps proceed button with entered recharge amount.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        }
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "chalo card transaction clicked",
@@ -710,62 +1026,96 @@
       "component": "ChaloCardLinkCardComponent",
       "stage": "Chalo Card Linking",
       "source": "chalo card linking screen",
-      "description": "User submits the card activation code to link card."
+      "description": "User submits the card activation code to link card.",
+      "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "activationCode"
+        }
+      ],
+      "notes": "Properties are derived from `ChaloCardLinkViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "chalocard linking success",
       "component": "ChaloCardLinkCardComponent",
       "stage": "Chalo Card Linking",
       "source": "chalo card linking screen",
-      "description": "Card linked successfully."
-    },
-    {
-      "name": "home screen chalo card option clicked",
-      "component": "HomeScreen",
-      "stage": "Home & Navigation",
-      "source": "homeScreen",
-      "description": "User taps a card option on the home screen.",
+      "description": "Card linked successfully.",
       "properties": [
         {
-          "property": "card option",
-          "context": "Which card option was clicked."
+          "property": "cardNumber"
+        },
+        {
+          "property": "activationCode"
         }
-      ]
-    },
-    {
-      "name": "ncmc add online from offline flow",
-      "component": "OfflineCardRechargeComponent",
-      "stage": "NCMC Offline Recharge",
-      "source": "ncmc offline balance recharge screen",
-      "description": "User navigates to add online money from offline recharge flow."
+      ],
+      "notes": "Properties are derived from `ChaloCardLinkViewState.toAnalyticsPropertiesMap()`."
     },
     {
       "name": "ncmc load balance next clicked",
-      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
-      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
-      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "component": "NCMCOnlineRechargeComponent",
+      "stage": "NCMC Online Recharge",
+      "source": "ncmc online recharge screen",
       "description": "User taps next after entering recharge amount.",
       "properties": [
         {
-          "property": "rechargeAmount",
-          "context": "Amount to recharge."
+          "property": "online recharge balance",
+          "context": "Online recharge balance (in subcurrency)."
         },
         {
-          "property": "cardNo"
+          "property": "card no",
+          "context": "NCMC card number."
         },
         {
-          "property": "kitNo"
+          "property": "kit no",
+          "context": "Kit number."
         },
         {
           "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount",
+          "context": "Recharge amount (in subcurrency)."
         }
-      ]
+      ],
+      "notes": "Properties are derived from `NCMCOnlineRechargeViewState.toAnalyticsParamsMap()`; note that NCMC uses spaced keys like `card no` and `recharge amount`."
+    },
+    {
+      "name": "ncmc load balance next clicked",
+      "component": "OfflineCardRechargeComponent",
+      "stage": "NCMC Offline Recharge",
+      "source": "ncmc offline balance recharge screen",
+      "description": "User taps next after entering recharge amount.",
+      "properties": [
+        {
+          "property": "online recharge balance",
+          "context": "Online recharge balance (in subcurrency)."
+        },
+        {
+          "property": "card no",
+          "context": "NCMC card number."
+        },
+        {
+          "property": "kit no",
+          "context": "Kit number."
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount",
+          "context": "Recharge amount (in subcurrency)."
+        }
+      ],
+      "notes": "Properties are derived from `OfflineCardRechargeViewState.toAnalyticsParamsMap()`; note that NCMC uses spaced keys like `card no` and `recharge amount`."
     },
     {
       "name": "ncmc load balance view created",
-      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
-      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
-      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "component": "NCMCOnlineRechargeComponent",
+      "stage": "NCMC Online Recharge",
+      "source": "ncmc online recharge screen",
       "description": "NCMC load balance screen view created.",
       "properties": [
         {
@@ -773,25 +1123,78 @@
           "context": "Online recharge balance (for online flow)."
         },
         {
-          "property": "cardNo",
+          "property": "card no",
           "context": "NCMC card number."
         },
         {
-          "property": "kitNo",
+          "property": "kit no",
           "context": "Kit number."
         },
         {
           "property": "ncmc recharge mode",
           "context": "Mode: 'online' or 'offline'."
+        },
+        {
+          "property": "recharge amount",
+          "context": "Recharge amount (in subcurrency)."
         }
-      ]
+      ],
+      "notes": "Properties are derived from `NCMCOnlineRechargeViewState.toAnalyticsParamsMap()`; note that NCMC uses spaced keys like `card no` and `recharge amount`."
+    },
+    {
+      "name": "ncmc load balance view created",
+      "component": "OfflineCardRechargeComponent",
+      "stage": "NCMC Offline Recharge",
+      "source": "ncmc offline balance recharge screen",
+      "description": "NCMC load balance screen view created.",
+      "properties": [
+        {
+          "property": "online recharge balance",
+          "context": "Online recharge balance (for online flow)."
+        },
+        {
+          "property": "card no",
+          "context": "NCMC card number."
+        },
+        {
+          "property": "kit no",
+          "context": "Kit number."
+        },
+        {
+          "property": "ncmc recharge mode",
+          "context": "Mode: 'online' or 'offline'."
+        },
+        {
+          "property": "recharge amount",
+          "context": "Recharge amount (in subcurrency)."
+        }
+      ],
+      "notes": "Properties are derived from `OfflineCardRechargeViewState.toAnalyticsParamsMap()`; note that NCMC uses spaced keys like `card no` and `recharge amount`."
     },
     {
       "name": "ncmc offline recharge success",
       "component": "OfflineCardRechargeComponent",
       "stage": "NCMC Offline Recharge",
       "source": "ncmc offline balance recharge screen",
-      "description": "NCMC offline recharge successful."
+      "description": "NCMC offline recharge successful.",
+      "properties": [
+        {
+          "property": "online recharge balance"
+        },
+        {
+          "property": "card no"
+        },
+        {
+          "property": "kit no"
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount"
+        }
+      ],
+      "notes": "Properties are derived from `OfflineCardRechargeViewState.toAnalyticsParamsMap()`."
     },
     {
       "name": "ncmc online recharge completed",
@@ -808,23 +1211,84 @@
       "description": "NCMC online recharge order created successfully.",
       "properties": [
         {
+          "property": "online recharge balance"
+        },
+        {
+          "property": "card no"
+        },
+        {
+          "property": "kit no"
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount"
+        },
+        {
           "property": "orderId",
           "context": "Backend order ID."
         }
-      ]
+      ],
+      "notes": "Properties are derived from `NCMCOnlineRechargeViewState.toAnalyticsParamsMap()` plus `orderId`."
     },
     {
       "name": "ncmc recharge api error",
-      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
-      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
-      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
+      "component": "NCMCOnlineRechargeComponent",
+      "stage": "NCMC Online Recharge",
+      "source": "ncmc online recharge screen",
       "description": "NCMC recharge API call failed.",
       "properties": [
+        {
+          "property": "online recharge balance"
+        },
+        {
+          "property": "card no"
+        },
+        {
+          "property": "kit no"
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount"
+        },
         {
           "property": "failureReason",
           "context": "Error message from API."
         }
-      ]
+      ],
+      "notes": "Properties are derived from `NCMCOnlineRechargeViewState.toAnalyticsParamsMap()` plus `failureReason`."
+    },
+    {
+      "name": "ncmc recharge api error",
+      "component": "OfflineCardRechargeComponent",
+      "stage": "NCMC Offline Recharge",
+      "source": "ncmc offline balance recharge screen",
+      "description": "NCMC recharge API call failed.",
+      "properties": [
+        {
+          "property": "online recharge balance"
+        },
+        {
+          "property": "card no"
+        },
+        {
+          "property": "kit no"
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount"
+        },
+        {
+          "property": "failureReason",
+          "context": "Error message from API."
+        }
+      ],
+      "notes": "Properties are derived from `OfflineCardRechargeViewState.toAnalyticsParamsMap()` plus `failureReason`."
     },
     {
       "name": "ncmc recharge payment failed",
@@ -922,24 +1386,69 @@
     },
     {
       "name": "ncmc tnc accepted loading",
-      "component": "NCMCOnlineRechargeComponent / OfflineCardRechargeComponent",
-      "stage": "NCMC Online Recharge / NCMC Offline Recharge",
-      "source": "ncmc online recharge screen / ncmc offline balance recharge screen",
-      "description": "User accepts terms and conditions, proceeding to order creation."
+      "component": "NCMCOnlineRechargeComponent",
+      "stage": "NCMC Online Recharge",
+      "source": "ncmc online recharge screen",
+      "description": "User accepts terms and conditions, proceeding to order creation.",
+      "properties": [
+        {
+          "property": "online recharge balance"
+        },
+        {
+          "property": "card no"
+        },
+        {
+          "property": "kit no"
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount"
+        }
+      ],
+      "notes": "Properties are derived from `NCMCOnlineRechargeViewState.toAnalyticsParamsMap()`."
+    },
+    {
+      "name": "ncmc tnc accepted loading",
+      "component": "OfflineCardRechargeComponent",
+      "stage": "NCMC Offline Recharge",
+      "source": "ncmc offline balance recharge screen",
+      "description": "User accepts terms and conditions, proceeding to order creation.",
+      "properties": [
+        {
+          "property": "online recharge balance"
+        },
+        {
+          "property": "card no"
+        },
+        {
+          "property": "kit no"
+        },
+        {
+          "property": "ncmc recharge mode"
+        },
+        {
+          "property": "recharge amount"
+        }
+      ],
+      "notes": "Properties are derived from `OfflineCardRechargeViewState.toAnalyticsParamsMap()`."
     },
     {
       "name": "no linked chalo card found",
       "component": "ChaloCardInfoComponent",
       "stage": "Chalo Card Info",
       "source": "chalo card info screen",
-      "description": "User has no linked Chalo Card."
-    },
-    {
-      "name": "ocr card payments homescreen drawer clicked",
-      "component": "NavigationDrawer",
-      "stage": "Home & Navigation",
-      "source": "navigationDrawer",
-      "description": "User taps the card recharge option in the home screen drawer."
+      "description": "User has no linked Chalo Card.",
+      "properties": [
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
+        }
+      ],
+      "notes": "Raised via `AnalyticsEventConstants.NO_LINKED_CHALO_CARD_FOUND`. Card details may be unavailable; `maskedCardNumber` can be empty."
     },
     {
       "name": "ocr card validity checked",
@@ -990,6 +1499,15 @@
       "description": "Recharge order created successfully.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "orderId",
           "context": "Backend order ID."
         },
@@ -997,7 +1515,8 @@
           "property": "chaloOrderId",
           "context": "Chalo order ID."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `orderId` and `chaloOrderId`."
     },
     {
       "name": "ocr order creation failed",
@@ -1007,10 +1526,20 @@
       "description": "Order creation failed.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "failureReason",
           "context": "Failure message from backend."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `failureReason`."
     },
     {
       "name": "ocr payment success activity open",
@@ -1020,6 +1549,15 @@
       "description": "Payment success screen opens after successful recharge payment.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "cardTransactionId",
           "context": "Transaction ID for the recharge."
         },
@@ -1027,7 +1565,8 @@
           "property": "ocr recharge delay copy",
           "context": "Copy text about recharge delay."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `cardTransactionId` and `ocr recharge delay copy`."
     },
     {
       "name": "ocr payment success ok clicked",
@@ -1037,9 +1576,19 @@
       "description": "User taps OK on payment success screen.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "cardTransactionId"
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `cardTransactionId`."
     },
     {
       "name": "ocr payment success recharge details clicked",
@@ -1049,9 +1598,19 @@
       "description": "User taps to view recharge details from payment success screen.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
+        {
           "property": "cardTransactionId"
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `cardTransactionId`."
     },
     {
       "name": "ocr payment summary activity open",
@@ -1060,6 +1619,15 @@
       "source": "chalo card recharge enter amount screen",
       "description": "Payment summary screen opens with transaction details.",
       "properties": [
+        {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "configId"
+        },
         {
           "property": "cardTransactionId"
         },
@@ -1079,7 +1647,8 @@
           "property": "amount",
           "context": "Recharge amount."
         }
-      ]
+      ],
+      "notes": "Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus payment/recharge summary fields."
     },
     {
       "name": "ocr recharge amount error",
@@ -1116,42 +1685,93 @@
       "description": "User taps refresh to reload card information.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "passDescription"
+        },
+        {
           "property": "refreshChaloCardInfoSource",
           "context": "Source that triggered the refresh."
         }
-      ]
-    },
-    {
-      "name": "save card details",
-      "component": "CheckoutComponent",
-      "stage": "Checkout Payment (Card)",
-      "source": "cardDetailsScreen",
-      "description": "User opts to save card details for future use."
+      ],
+      "notes": "Includes the standard `ChaloCardInfoViewState.toAnalyticsPropertiesMap()` properties plus `refreshChaloCardInfoSource`."
     },
     {
       "name": "terms and conditions open",
-      "component": "ChaloCardRechargeAmountComponent",
-      "stage": "Misc",
-      "source": "Source.CHALO_CARD_RECHARGE_ENTER_AMOUNT_SCREEN",
-      "description": "Auto-documented from code callsite: shared/home/src/commonMain/kotlin/app/chalo/ncmc/ui/cardrechargeamount/ChaloCardRechargeAmountComponent.kt:286",
-      "properties": [
-        {
-          "property": "rechargeAmount"
-        }
-      ]
-    },
-    {
-      "name": "terms dialog open",
       "component": "ChaloCardRechargeAmountComponent",
       "stage": "Chalo Card Recharge Amount",
       "source": "chalo card recharge enter amount screen",
       "description": "Terms and conditions dialog shown before order creation.",
       "properties": [
         {
+          "property": "cardNumber"
+        },
+        {
+          "property": "maskedCardNumber"
+        },
+        {
+          "property": "isCardRechargeEnabled"
+        },
+        {
+          "property": "rechargeLimit"
+        },
+        {
+          "property": "cardType"
+        },
+        {
+          "property": "cardIssuedOn"
+        },
+        {
+          "property": "cardBalance"
+        },
+        {
+          "property": "isCardBlocked"
+        },
+        {
+          "property": "configId"
+        },
+        {
+          "property": "productName"
+        },
+        {
+          "property": "isActive"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "cardAgency"
+        },
+        {
+          "property": "cardCity"
+        },
+        {
           "property": "rechargeAmount",
-          "context": "Amount user wants to recharge."
+          "context": "Amount user wants to recharge (in subcurrency)."
         }
-      ]
+      ],
+      "notes": "Raised via `AnalyticsEventConstants.TERMS_DIALOG_OPEN` (event name is `terms and conditions open`). Includes recharge amount view-state properties from `ChaloCardRechargeAmountViewState.toAnalyticsPropertiesMap()` plus `rechargeAmount`."
+    },
+    {
+      "name": "ocr tutorial bottomsheet displayed",
+      "component": "HomeScreenAnalyticsHelperImpl",
+      "stage": "Home & Navigation",
+      "source": "home screen",
+      "description": "Online card recharge tutorial bottomsheet displayed."
+    },
+    {
+      "name": "ocr tutorial bottomsheet next clicked",
+      "component": "HomeScreenAnalyticsHelperImpl",
+      "stage": "Home & Navigation",
+      "source": "home screen",
+      "description": "User clicks next on online card recharge tutorial bottomsheet."
     },
     {
       "name": "uvik intent hash creation failed",
@@ -1170,13 +1790,6 @@
   "diagram": {
     "type": "multi-path",
     "notes": "Card flow has multiple independent paths: Chalo Card management (link/recharge/transactions), NCMC online/offline recharge, and NCMC tap operations. Users can enter from home screen or drawer and follow different paths based on card type.",
-    "steps": [
-      {
-        "label": "Additional events",
-        "events": [
-          "terms and conditions open"
-        ]
-      }
-    ]
+    "steps": []
   }
 }

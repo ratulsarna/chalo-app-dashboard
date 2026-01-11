@@ -45,7 +45,7 @@
     "card": {
       "name": "Card",
       "description": "Physical card operations - Chalo Card linking/recharge, NCMC balance/recharge, card transactions, OCR scanning, tap operations.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-11"
     },
     "bills": {
       "name": "Bills",

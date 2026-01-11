@@ -31,13 +31,12 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-  ui_home([Home screen]) --> ev_homeCardOption["home screen chalo card option clicked"]
-  ui_drawer([Navigation drawer]) --> ev_drawerRecharge["ocr card payments homescreen drawer clicked"]
-  ui_home --> ev_homeRechargeCard["ocr homescreen card recharge card"]
+  ui_home([Home screen]) --> ev_homeRechargeCard["ocr homescreen card recharge card"]
+  ev_homeRechargeCard --> ev_tutorialShown["ocr tutorial bottomsheet displayed"]
+  ev_tutorialShown --> ev_tutorialNext["ocr tutorial bottomsheet next clicked"]
 
-  ev_homeCardOption --> ui_branch([Card type selection])
-  ev_drawerRecharge --> ui_branch
-  ev_homeRechargeCard --> ui_branch
+  ev_homeRechargeCard --> ui_branch([Card type selection])
+  ev_tutorialNext --> ui_branch
 
   ui_branch -->|Chalo Card| ui_chaloCardBranch([Chalo Card flow])
   ui_branch -->|NCMC Card| ui_ncmcBranch([NCMC flow])
@@ -45,8 +44,8 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_homeCardOption,ev_drawerRecharge,ev_homeRechargeCard event;
-  class ui_home,ui_drawer,ui_branch,ui_chaloCardBranch,ui_ncmcBranch ui;
+  class ev_homeRechargeCard,ev_tutorialShown,ev_tutorialNext event;
+  class ui_home,ui_branch,ui_chaloCardBranch,ui_ncmcBranch ui;
 ```
 
 ## Funnel: Chalo Card info → link or recharge
@@ -113,12 +112,10 @@ flowchart TD
 
   ev_cardInfoSuccess --> ev_proceedClicked["chalo card recharge proceed btn clicked"]
   ev_proceedClicked --> ev_amountError["ocr recharge amount error"]
-  ev_proceedClicked --> ev_termsOpen["terms dialog open"]
+  ev_proceedClicked --> ev_termsOpen["terms and conditions open"]
 
-  ev_termsOpen --> ev_termsAndConditionsOpen["terms and conditions open"]
-
-  ev_termsOpen --> ev_acceptTerms["accept terms"]
-  ev_termsOpen --> ev_cancelTerms["cancel terms"]
+  ev_termsOpen --> ev_acceptTerms["terms accept"]
+  ev_termsOpen --> ev_cancelTerms["terms cancel"]
 
   ev_acceptTerms --> ev_orderCreated["ocr order created"]
   ev_acceptTerms --> ev_orderFailed["ocr order creation failed"]
@@ -137,7 +134,7 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_cardDetailsNext,ev_validityCheck,ev_amountScreenOpen,ev_cardInfoSuccess,ev_cardInfoFailed,ev_configFailed,ev_proceedClicked,ev_amountError,ev_termsOpen,ev_termsAndConditionsOpen,ev_acceptTerms,ev_cancelTerms,ev_orderCreated,ev_orderFailed,ev_paymentSuccessOpen,ev_successOk,ev_successDetails,ev_summaryOpen,ev_errorAction event;
+  class ev_cardDetailsNext,ev_validityCheck,ev_amountScreenOpen,ev_cardInfoSuccess,ev_cardInfoFailed,ev_configFailed,ev_proceedClicked,ev_amountError,ev_termsOpen,ev_acceptTerms,ev_cancelTerms,ev_orderCreated,ev_orderFailed,ev_paymentSuccessOpen,ev_successOk,ev_successDetails,ev_summaryOpen,ev_errorAction event;
   class ui_enterCard,ui_rechargeAmount ui;
   class ext_checkout external;
 ```
@@ -199,12 +196,10 @@ flowchart TD
   ev_tncAccepted --> ev_offlineSuccess["ncmc offline recharge success"]
   ev_tncAccepted --> ev_apiError["ncmc recharge api error"]
 
-  ev_viewCreated --> ev_addOnline["ncmc add online from offline flow"]
-
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_viewCreated,ev_nextClicked,ev_tncAccepted,ev_offlineSuccess,ev_apiError,ev_addOnline event;
+  class ev_viewCreated,ev_nextClicked,ev_tncAccepted,ev_offlineSuccess,ev_apiError event;
   class ui_ncmcOffline ui;
 ```
 
@@ -233,7 +228,6 @@ flowchart TD
 flowchart TD
   ui_checkout([Checkout flow]) --> ev_cardScreenOpen["card screen opened"]
   ev_cardScreenOpen --> ev_cardSubmitted["card details submitted"]
-  ev_cardSubmitted --> ev_saveCard["save card details"]
 
   ev_cardSubmitted --> ui_paymentResult([Payment processing])
   ui_paymentResult -->|Chalo Card| ev_chaloSuccess["online card recharge payment successful"]
@@ -244,7 +238,7 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_cardScreenOpen,ev_cardSubmitted,ev_saveCard,ev_chaloSuccess,ev_chaloFailed,ev_ncmcSuccess,ev_ncmcFailed event;
+  class ev_cardScreenOpen,ev_cardSubmitted,ev_chaloSuccess,ev_chaloFailed,ev_ncmcSuccess,ev_ncmcFailed event;
   class ui_checkout,ui_paymentResult ui;
 ```
 
