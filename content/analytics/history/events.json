@@ -445,8 +445,7 @@
         "product status button clicked",
         "renew disabled product error dialog rendered",
         "ride card cta click",
-        "ride receipt screen opened",
-        "view trip history btn clicked"
+        "ride receipt screen opened"
       ]
     },
     {
@@ -1881,23 +1880,6 @@
       ]
     },
     {
-      "name": "view trip history btn clicked",
-      "component": "MyTicketsComponent",
-      "stage": "Misc",
-      "source": "Source.MY_TICKETS_SCREEN_TAB",
-      "properties": [
-        {
-          "property": "bookingId"
-        },
-        {
-          "property": "productSubType"
-        },
-        {
-          "property": "productType"
-        }
-      ]
-    },
-    {
       "name": "view trip receipt button clicked",
       "component": "ProductActivationComponent",
       "stage": "Product Activation",
@@ -2075,8 +2057,7 @@
           "product status button clicked",
           "renew disabled product error dialog rendered",
           "ride card cta click",
-          "ride receipt screen opened",
-          "view trip history btn clicked"
+          "ride receipt screen opened"
         ]
       },
       {

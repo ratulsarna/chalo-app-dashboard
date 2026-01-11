@@ -49,8 +49,6 @@ flowchart TD
   ui_hasActiveBookings -->|No bookings at all| ev_emptyPage["empty tickets page rendered"]
   ui_hasExpiredBookings -->|No bookings at all| ev_emptyPage
 
-  ev_activePage --> ev_cardRendered["tickets page card item rendered"]
-  ev_expiredPage --> ev_cardRendered
   ev_emptyActive --> ev_cardRendered
   ev_emptyExpired --> ev_cardRendered
   ev_emptyPage --> ev_cardRendered
@@ -58,7 +56,6 @@ flowchart TD
   ev_activePage --> ui_multiDevice{Multi-device user?}
   ui_multiDevice -->|Yes| ev_reclaimShown["reclaim card shown"]
 
-  ev_activePage --> ev_hookRendered["tickets page hook rendered"]
   ev_emptyActive --> ev_hookRendered
   ev_emptyExpired --> ev_hookRendered
   ev_emptyPage --> ev_hookRendered
@@ -69,6 +66,10 @@ flowchart TD
 
   class ev_activeTab,ev_expiredTab,ev_activePage,ev_expiredPage,ev_emptyActive,ev_emptyExpired,ev_emptyPage,ev_cardRendered,ev_reclaimShown,ev_hookRendered event;
   class ui_screenOpen,ui_tabSelect,ui_hasActiveBookings,ui_hasExpiredBookings,ui_multiDevice ui;
+
+  %%chalo:diagram-link ev_cardRendered -> title:Funnel: Product Card Interactions -> Use/View/Renew
+  %%chalo:diagram-link ev_hookRendered -> title:Funnel: Promotional Hooks -> Purchase Flow
+  %%chalo:diagram-link ev_reclaimShown -> title:Funnel: Product Reclaim (Multi-Device)
 ```
 
 ## Funnel: Product Card Interactions → Use/View/Renew
@@ -80,12 +81,13 @@ flowchart TD
   ev_cardRendered["tickets page card item rendered"] --> ui_userAction{User action}
 
   ui_userAction -->|Taps Use Now| ev_useNow["product use now button clicked"]
-  ui_userAction -->|Opens menu → View Summary| ev_viewSummary["product menu view summary clicked"]
+  ui_userAction -->|Opens menu -> View Summary| ev_viewSummary["product menu view summary clicked"]
   ui_userAction -->|Taps Renew| ev_renewBtn["renew btn clicked"]
   ui_userAction -->|Cash payment pending| ev_cashPay["open super pass cash payment web page"]
   ui_userAction -->|Taps promotional card| ev_cardClick["tickets page card item clicked"]
 
-  ev_viewSummary --> ui_ticketSummary([Ticket Summary Screen])
+  ev_viewSummary --> ui_ticketSummary([Ticket Summary Screen (tickets)])
+  ev_viewSummary --> ui_passSummary([Pass Summary Screen (passes)])
   ev_cardClick --> ext_regularBusTab[Regular Bus Tab]
   ev_cashPay --> ext_cashPay[Cash payment web page]
 
@@ -109,6 +111,7 @@ flowchart TD
   ui_activationResult -->|Success| ext_validation[Validation Flow]
 
   ev_renewBtn --> ui_renewCheck{Can renew?}
+  ui_renewCheck -->|Not renewable| ev_productSelection["product selection activity launched"]
   ui_renewCheck -->|Error/blocked| ev_renewError["renew error bottomsheet shown"]
   ui_renewCheck -->|Success| ext_superPassPurchase[Super Pass Purchase Flow]
 
@@ -117,14 +120,18 @@ flowchart TD
   ui_renewAction -->|Negative CTA| ev_renewNegative["renew error bottomsheet negative cta clicked"]
 
   ev_renewPositive --> ext_explorePlans[Explore Plans]
+  ev_productSelection --> ext_productPurchase[Product Selection / Purchase Flow]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_cardRendered,ev_useNow,ev_viewSummary,ev_renewBtn,ev_cashPay,ev_cardClick,ev_notifGranted,ev_notifDenied,ev_explainerRendered,ev_explainerEnable,ev_explainerSkip,ev_activationConfirm,ev_activationFailed,ev_activationFailedClose,ev_renewError,ev_renewPositive,ev_renewNegative event;
-  class ui_userAction,ui_ticketSummary,ui_notificationCheck,ui_explainerAction,ui_activation,ui_activationResult,ui_renewCheck,ui_renewAction ui;
-  class ext_regularBusTab,ext_cashPay,ext_settings,ext_validation,ext_superPassPurchase,ext_explorePlans external;
+  class ev_cardRendered,ev_useNow,ev_viewSummary,ev_renewBtn,ev_cashPay,ev_cardClick,ev_notifGranted,ev_notifDenied,ev_explainerRendered,ev_explainerEnable,ev_explainerSkip,ev_activationConfirm,ev_activationFailed,ev_activationFailedClose,ev_renewError,ev_renewPositive,ev_renewNegative,ev_productSelection event;
+  class ui_userAction,ui_ticketSummary,ui_passSummary,ui_notificationCheck,ui_explainerAction,ui_activation,ui_activationResult,ui_renewCheck,ui_renewAction ui;
+  class ext_regularBusTab,ext_cashPay,ext_settings,ext_validation,ext_superPassPurchase,ext_explorePlans,ext_productPurchase external;
+
+  %%chalo:diagram-link ui_ticketSummary -> title:Funnel: View Summary -> Ticket Summary (Data Fetch -> Actions)
+  %%chalo:diagram-link ui_passSummary -> title:Funnel: View Summary -> Pass Summary -> Trip Receipt
 ```
 
 ## Funnel: View Summary → Ticket Summary (Data Fetch → Actions)
@@ -172,6 +179,9 @@ flowchart TD
 
   class ev_viewSummary,ev_open,ev_productOk,ev_productFail,ev_receiptOk,ev_receiptFail,ev_help,ev_invoiceOk,ev_invoiceFail,ev_banner,ev_startValidation,ev_startPremium,ev_bookAgain,ev_fullImageClose,ev_activationFailed event;
   class ui_entry,ui_bookingResolved,ui_receiptFetch,ui_actions,ui_invoice,ui_bannerType,ui_validation,ui_premium,ui_purchase,ui_activationResult ui;
+
+  %%chalo:diagram-link ui_validation -> title:Validation flow
+  %%chalo:diagram-link ui_premium -> title:Premium bus activation flow
 ```
 External modules referenced here:
 - Validation: `docs/analytics/validation/`
@@ -294,8 +304,8 @@ This funnel covers pass summary and trip receipt discovery from a booking.
 ```mermaid
 flowchart TD
   ev_viewSummary["product menu view summary clicked"] --> ev_passSummary["pass summary screen opened"]
-  ev_passSummary --> ev_viewTripHistory["view trip history btn clicked"]
-  ev_viewTripHistory --> ev_receiptOpen["ride receipt screen opened"]
+  ev_passSummary --> ui_tripHistory([User taps Trip History])
+  ui_tripHistory --> ev_receiptOpen["ride receipt screen opened"]
   ev_receiptOpen --> ev_passRideHistoryFetch["pass ride history data fetch"]
 
   ev_receiptOpen --> ev_rideCardCta["ride card cta click"]
@@ -303,7 +313,8 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_viewSummary,ev_passSummary,ev_viewTripHistory,ev_receiptOpen,ev_passRideHistoryFetch,ev_rideCardCta event;
+  class ev_viewSummary,ev_passSummary,ev_receiptOpen,ev_passRideHistoryFetch,ev_rideCardCta event;
+  class ui_tripHistory ui;
 ```
 
 ## Funnel: Activation Merge (Super Pass)
@@ -330,6 +341,9 @@ flowchart TD
 
   class ev_activationBtn,ev_mergeOpen,ev_updated,ev_passActivated,ev_viewTripReceipt,ev_superPassViewSummary,ev_passSummary,ev_receiptOpen event;
   class ui_activation,ui_mergeResult ui;
+
+  %%chalo:diagram-link ev_passSummary -> title:Funnel: View Summary -> Pass Summary -> Trip Receipt
+  %%chalo:diagram-link ev_receiptOpen -> title:Funnel: View Summary -> Pass Summary -> Trip Receipt
 ```
 
 ## Funnel: Ride Feedback
