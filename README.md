@@ -35,6 +35,18 @@ pnpm dev
 
 The Convex CLI writes `NEXT_PUBLIC_CONVEX_URL` and `CONVEX_DEPLOYMENT` into `.env.local`.
 
+### Login auth (optional)
+
+If you want a login page with a static username/password, set:
+
+```bash
+AUTH_USERNAME=your-username
+AUTH_PASSWORD=your-password
+AUTH_SECRET=a-long-random-string
+```
+
+When all three are set, the app requires sign-in for all routes. If any are missing, auth is disabled.
+
 ### Developing on a VPS
 
 If you run `pnpm dev` on a remote VPS, open it locally via an SSH tunnel:
