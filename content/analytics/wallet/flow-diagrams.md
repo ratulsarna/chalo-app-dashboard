@@ -6,6 +6,7 @@ Notes:
 - Wallet flow has multiple entry points: direct wallet access, Quick Pay from various screens, and ChaloPayV3 integration.
 - Background wallet sync happens independently to keep balance updated.
 - KYC flows can be triggered from wallet access checks.
+- As of this audit, there are no dedicated analytics events for the initial *click* that opens Wallet from Home/Menu; funnels should start at `wallet balance fragment opened` (or the onboarding CTA event).
 
 Visual key:
 - Green solid boxes: analytics events (exact strings from `events.json`)
@@ -26,26 +27,19 @@ flowchart LR
   class ext external;
 ```
 
-## Funnel: Wallet Entry Points (access wallet)
+## Funnel: Wallet Onboarding (Profile → Wallet)
 
 ```mermaid
 flowchart TD
-  ui_homeScreen([Home screen / Menu]) --> ev_chaloWalletClicked["chalo wallet clicked"]
-  ui_homeScreen --> ev_walletIconMenuClicked["wallet icon menu clicked"]
-
-  ev_chaloWalletClicked --> ui_onboardingCheck{First time?}
-  ev_walletIconMenuClicked --> ui_onboardingCheck
-
-  ui_onboardingCheck -->|Yes| ev_onboardingShown["wallet onBoarding bottom sheet positive button clicked"]
-  ui_onboardingCheck -->|No| ev_balanceOpen["wallet balance fragment opened"]
-
-  ev_onboardingShown --> ev_balanceOpen
+  ui_profile([Profile screen]) --> ui_intro([ChaloPay intro bottom sheet])
+  ui_intro --> ev_onboardingCta["wallet onBoarding bottom sheet positive button clicked"]
+  ev_onboardingCta --> ev_balanceOpen["wallet balance fragment opened"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_chaloWalletClicked,ev_walletIconMenuClicked,ev_onboardingShown,ev_balanceOpen event;
-  class ui_homeScreen,ui_onboardingCheck ui;
+  class ev_onboardingCta,ev_balanceOpen event;
+  class ui_profile,ui_intro ui;
 ```
 
 ## Entry → Wallet Balance View (main entry point)
@@ -79,20 +73,18 @@ flowchart TD
 
   ev_suggestedAmountClicked --> ev_nextClicked["wallet load balance fragment next button clicked"]
 
+  ev_nextClicked --> ev_syncFailed["load money wallet sync failed"]
   ev_nextClicked --> ev_orderSuccess["load money wallet recharge order success"]
   ev_nextClicked --> ev_orderFailed["load money wallet recharge order failed"]
 
   ev_orderSuccess --> ext_checkout[Checkout payment flow]
-  ext_checkout --> ev_syncFailed["load money wallet sync failed"]
-  ext_checkout --> ev_successContinue["wallet amount added continue clicked event"]
-
-  ev_successContinue --> ui_success([Return to wallet])
+  ext_checkout --> ui_success([Return to wallet])
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_addMoneyClicked,ev_loadBalanceOpen,ev_bannerRendered2,ev_suggestedAmountClicked,ev_nextClicked,ev_orderSuccess,ev_orderFailed,ev_syncFailed,ev_successContinue event;
+  class ev_addMoneyClicked,ev_loadBalanceOpen,ev_bannerRendered2,ev_suggestedAmountClicked,ev_nextClicked,ev_syncFailed,ev_orderSuccess,ev_orderFailed event;
   class ui_success ui;
   class ext_checkout external;
 ```
@@ -149,15 +141,11 @@ flowchart TD
   ui_kycStart([KYC required - start flow]) --> ev_detailsOpen["min kyc detail opened"]
 
   ev_detailsOpen --> ev_proceedClicked["min kyc detail proceed button clicked"]
-  ev_proceedClicked --> ev_nameEntered["min kyc detail name entered"]
-  ev_nameEntered --> ev_radioClicked["min kyc detail radio button clicked"]
-  ev_radioClicked --> ev_nextClicked["min kyc detail next button clicked"]
-
-  ev_nextClicked --> ev_otpOpen["min kyc otp fragment opened"]
-  ev_nextClicked --> ev_userRegisteredShown["min kyc user registered bottom sheet opened"]
+  ev_proceedClicked --> ev_otpOpen["min kyc otp fragment opened"]
 
   ev_otpOpen --> ev_otpResend["min kyc otp resend sms clicked"]
   ev_otpOpen --> ev_otpProceed["min kyc otp proceed button clicked"]
+  ev_otpOpen --> ev_userRegisteredShown["min kyc user registered bottom sheet opened"]
 
   ev_otpProceed --> ev_otpSuccess["min kyc otp success"]
   ev_otpProceed --> ev_otpFailure["min kyc otp failure"]
@@ -174,7 +162,7 @@ flowchart TD
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_detailsOpen,ev_proceedClicked,ev_nameEntered,ev_radioClicked,ev_nextClicked,ev_otpOpen,ev_otpResend,ev_otpProceed,ev_otpSuccess,ev_otpFailure,ev_activationFailed,ev_errorShown,ev_errorCtaClicked,ev_userRegisteredShown event;
+  class ev_detailsOpen,ev_proceedClicked,ev_otpOpen,ev_otpResend,ev_otpProceed,ev_otpSuccess,ev_otpFailure,ev_activationFailed,ev_errorShown,ev_errorCtaClicked,ev_userRegisteredShown event;
   class ui_kycStart,ui_activated ui;
 ```
 
@@ -195,7 +183,11 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  ui_quickPayEntry([Quick Pay entry point]) --> ev_tripAmountOpen["chalo pay trip amount fragment opened"]
+  ui_payForTicket([Pay For Ticket screen]) --> ev_payForTicketOpen["pay for ticket screen opened"]
+  ev_payForTicketOpen --> ev_quickPayCardClicked["chalo pay card clicked"]
+
+  ev_quickPayCardClicked --> ui_quickPayEntry([Quick Pay entry point])
+  ui_quickPayEntry --> ev_tripAmountOpen["chalo pay trip amount fragment opened"]
 
   ev_tripAmountOpen --> ev_historyClicked["chalo pay trip amount fragment chalo pay history clicked"]
   ev_tripAmountOpen --> ev_tripNextClicked["chalo pay trip amount fragment next button clicked"]
@@ -209,23 +201,17 @@ flowchart TD
   ev_bottomSheetNextClicked --> ev_prerequisitesFailed["chalo pay prerequisites failed"]
   ev_bottomSheetNextClicked --> ev_orderCreated["chalo pay order created"]
 
-  ev_orderCreated --> ev_summaryOpen["chalo pay summary screen opened"]
-
-  ev_summaryOpen --> ev_cardClicked["chalo pay card clicked"]
-  ev_summaryOpen --> ev_ticketClicked["chalo pay ticket clicked"]
-
-  ev_ticketClicked --> ev_ticketPunched["chalo pay ticket punched"]
-  ev_ticketPunched --> ev_punchReceived["chalo pay punch received"]
-
-  ev_summaryOpen --> ev_viewReceiptClicked["chalo pay view receipt clicked"]
-  ev_viewReceiptClicked --> ev_receiptShown["chalo pay receipt shown"]
-  ev_receiptShown --> ev_receiptOpened["chalo pay receipt opened"]
+  ev_orderCreated --> ui_postPurchase([Post-purchase / validation])
+  ui_postPurchase --> ev_ticketPunched["chalo pay ticket punched"]
+  ui_postPurchase --> ev_punchReceived["chalo pay punch received"]
+  ui_postPurchase --> ev_receiptShown["chalo pay receipt shown"]
+  ev_receiptShown --> ev_viewReceiptClicked["chalo pay view receipt clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
-  class ev_tripAmountOpen,ev_historyClicked,ev_tripNextClicked,ev_tripNextFailed,ev_bottomSheetOpen,ev_rechargeClicked,ev_bottomSheetNextClicked,ev_prerequisitesFailed,ev_orderCreated,ev_summaryOpen,ev_cardClicked,ev_ticketClicked,ev_ticketPunched,ev_punchReceived,ev_viewReceiptClicked,ev_receiptShown,ev_receiptOpened event;
-  class ui_quickPayEntry ui;
+  class ev_payForTicketOpen,ev_quickPayCardClicked,ev_tripAmountOpen,ev_historyClicked,ev_tripNextClicked,ev_tripNextFailed,ev_bottomSheetOpen,ev_rechargeClicked,ev_bottomSheetNextClicked,ev_prerequisitesFailed,ev_orderCreated,ev_ticketPunched,ev_punchReceived,ev_receiptShown,ev_viewReceiptClicked event;
+  class ui_payForTicket,ui_quickPayEntry,ui_postPurchase ui;
 ```
 
 ## Funnel: ChaloPayV3 (alternative entry point)
@@ -292,11 +278,10 @@ flowchart TD
 
 ## Key Funnel Recommendations
 
-### Wallet Entry & Onboarding Funnel
+### Wallet Onboarding Funnel (Profile)
 ```
-chalo wallet clicked (or) wallet icon menu clicked
-  → wallet onBoarding bottom sheet positive button clicked (first time users)
-    → wallet balance fragment opened
+wallet onBoarding bottom sheet positive button clicked
+  → wallet balance fragment opened
 ```
 
 ### Core Wallet Usage Funnel
@@ -313,20 +298,18 @@ wallet load balance enter amount fragment opened [with kycDone property]
     → wallet load balance fragment next button clicked
       → load money wallet recharge order success
         → [Checkout payment flow]
-          → wallet amount added continue clicked event
-            → Return to wallet
+          → Return to wallet (no wallet-specific analytics event)
 ```
 
 ### Quick Pay Ticket Purchase Funnel
 ```
-chalo pay trip amount fragment opened
-  → chalo pay trip amount fragment next button clicked
-    → chalo pay bottom sheet fragment opened
-      → chalo pay bottom sheet fragment next button clicked
-        → chalo pay order created
-          → chalo pay summary screen opened
-            → chalo pay ticket clicked
-              → chalo pay ticket punched
+pay for ticket screen opened
+  → chalo pay card clicked
+    → chalo pay trip amount fragment opened
+      → chalo pay trip amount fragment next button clicked
+        → chalo pay bottom sheet fragment opened
+          → chalo pay bottom sheet fragment next button clicked
+            → chalo pay order created
 ```
 
 ### Wallet Activation Funnel (with error handling)
@@ -335,7 +318,7 @@ process wallet access status [walletStatus = REQUIRES_KYC]
   → wallet access bottom sheet opened
     → activate wallet clicked
       → min kyc detail opened
-        → min kyc detail next button clicked
+        → min kyc detail proceed button clicked
           → min kyc otp fragment opened
             → min kyc otp proceed button clicked
               → min kyc otp success (or) min kyc otp failure

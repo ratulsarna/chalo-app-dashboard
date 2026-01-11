@@ -95,7 +95,7 @@
     "wallet": {
       "name": "Wallet",
       "description": "Chalo Wallet operations - balance viewing, load money/recharge, transaction history, Quick Pay ticket purchase (ChaloPayV2 & V3), wallet access/KYC, minimum KYC flow, wallet migration. Includes background wallet sync.",
-      "lastAudited": "2026-01-09"
+      "lastAudited": "2026-01-11"
     },
     "history": {
       "name": "History",

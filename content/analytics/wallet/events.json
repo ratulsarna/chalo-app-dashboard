@@ -25,15 +25,15 @@
       ]
     },
     "walletLoadAmount": {
-      "type": "number",
+      "type": "string",
       "description": "Amount entered by user to load into wallet."
     },
     "loadSuggestedAmount": {
-      "type": "string",
-      "description": "Comma-separated list of suggested amounts shown to the user."
+      "type": "array",
+      "description": "List of suggested denominations shown to the user."
     },
     "wallet suggested amount": {
-      "type": "number",
+      "type": "string",
       "description": "Specific suggested denomination selected by the user."
     },
     "kycDone": {
@@ -54,7 +54,7 @@
     },
     "wallet balance transaction title": {
       "type": "string",
-      "description": "Product name or title of the transaction (for CHALO_PAY transactions)."
+      "description": "Transaction title, but currently overwritten by transaction status due to a constants typo (see code bug notes)."
     },
     "wallet balance transaction date": {
       "type": "string",
@@ -67,16 +67,6 @@
         "QUICK_PAY",
         "LOAD_MONEY",
         "CHALO_PAY"
-      ]
-    },
-    "wallet balance transaction status": {
-      "type": "string",
-      "description": "Status of the transaction.",
-      "values": [
-        "SUCCESS",
-        "FAILED",
-        "PROCESSING",
-        "RECLAIMABLE"
       ]
     },
     "wallet balance orderId": {
@@ -140,7 +130,7 @@
       "description": "Name of the error that occurred during wallet migration."
     },
     "chalo pay bottom sheet amount": {
-      "type": "number",
+      "type": "string",
       "description": "Amount being paid through Quick Pay bottom sheet."
     },
     "chalo pay bottom sheet wallet balance left": {
@@ -148,7 +138,7 @@
       "description": "Remaining wallet balance after the Quick Pay transaction."
     },
     "chalo pay trip amount": {
-      "type": "number",
+      "type": "string",
       "description": "Amount entered for the Quick Pay trip."
     },
     "chalo pay trip amount fragment next button clicked failure message": {
@@ -172,21 +162,103 @@
       "description": "State of the wallet in ChaloPayV3 flow."
     },
     "chaloPayWalletBalance": {
-      "type": "number",
+      "type": "string",
       "description": "Wallet balance in ChaloPayV3 flow."
     },
     "bottomsheetCTA": {
       "type": "string",
       "description": "CTA action triggered from the ChaloPayV3 bottom sheet."
+    },
+    "failureReason": {
+      "type": "string",
+      "description": "Failure reason message (typically from backend / SDK)."
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Order ID for Quick Pay / wallet-related orders."
+    },
+    "activationTime": {
+      "type": "number",
+      "description": "Activation timestamp (epoch millis) for Quick Pay order."
+    },
+    "payload": {
+      "type": "string",
+      "description": "Raw payload string captured for debugging/diagnostics."
+    },
+    "isChaloPay": {
+      "type": "boolean",
+      "description": "Whether the validation/receipt event corresponds to a Quick Pay (Chalo Pay) order."
+    },
+    "productId": {
+      "type": "string",
+      "description": "Product ID (Quick Pay order/product identifier) used in validation/receipt flows."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Product type identifier."
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type identifier."
+    },
+    "punchTime": {
+      "type": "number",
+      "description": "Punch timestamp (epoch millis) for validation."
+    },
+    "vehicleNo": {
+      "type": "string",
+      "description": "Vehicle number associated with the trip."
+    },
+    "route name": {
+      "type": "string",
+      "description": "Route name for the Quick Pay trip receipt."
+    },
+    "startStop": {
+      "type": "string",
+      "description": "Start stop name for the trip."
+    },
+    "endStop": {
+      "type": "string",
+      "description": "End stop name for the trip."
+    },
+    "conductorId": {
+      "type": "string",
+      "description": "Conductor identifier from receipt/validation."
+    },
+    "endStopId": {
+      "type": "string",
+      "description": "End stop ID from receipt/validation."
+    },
+    "userId": {
+      "type": "string",
+      "description": "User identifier (currently phone number for Min KYC flows)."
+    },
+    "referenceNumber": {
+      "type": "string",
+      "description": "Reference number for Min KYC OTP / registration."
+    },
+    "errorBottomSheetCtaType": {
+      "type": "string",
+      "description": "CTA type shown on the Min KYC error bottom sheet."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Failure reason (Min KYC activation failed)."
+    },
+    "isInvalidOtpEntered": {
+      "type": "string",
+      "description": "Whether the entered OTP was invalid (stringified boolean)."
+    },
+    "is foreground": {
+      "type": "boolean",
+      "description": "Whether the app was in foreground when the event was raised."
     }
   },
   "stages": [
     {
-      "name": "Wallet Entry Points",
-      "description": "Various entry points to access wallet functionality from home screen, menu, and other locations.",
+      "name": "Wallet Onboarding",
+      "description": "Wallet/ChaloPay intro prompt entry and CTA to open wallet.",
       "events": [
-        "chalo wallet clicked",
-        "wallet icon menu clicked",
         "wallet onBoarding bottom sheet positive button clicked"
       ]
     },
@@ -204,22 +276,21 @@
     },
     {
       "name": "Load Money Flow",
-      "description": "User loads money into wallet by entering amount, selecting suggested denominations, completing payment, and seeing success confirmation.",
+      "description": "User loads money into wallet: enter amount, pick denomination, proceed, place recharge order, sync failures.",
       "events": [
         "wallet load balance enter amount fragment opened",
+        "wallet banner rendered",
+        "wallet banner clicked",
         "wallet suggested amount clicked",
         "wallet load balance fragment next button clicked",
         "load money wallet recharge order success",
         "load money wallet recharge order failed",
-        "load money wallet sync failed",
-        "wallet banner rendered",
-        "wallet banner clicked",
-        "wallet amount added continue clicked event"
+        "load money wallet sync failed"
       ]
     },
     {
       "name": "All Transactions View",
-      "description": "User views all historical wallet transactions and clicks on specific transactions for details.",
+      "description": "User views transaction history and clicks on specific transactions.",
       "events": [
         "wallet all transaction fragment opened",
         "wallet all transaction event clicked"
@@ -250,13 +321,10 @@
     },
     {
       "name": "Minimum KYC",
-      "description": "Minimum KYC flow for wallet activation - name entry, radio button selection, OTP verification, and error/success states.",
+      "description": "Minimum KYC flow for wallet activation - details screen, OTP verification, error/success states.",
       "events": [
         "min kyc detail opened",
         "min kyc detail proceed button clicked",
-        "min kyc detail name entered",
-        "min kyc detail radio button clicked",
-        "min kyc detail next button clicked",
         "min kyc otp fragment opened",
         "min kyc otp resend sms clicked",
         "min kyc otp proceed button clicked",
@@ -270,8 +338,11 @@
     },
     {
       "name": "Quick Pay (ChaloPayV2)",
-      "description": "Quick Pay ticket purchase flow - trip amount entry, bottom sheet confirmation, order creation, and ticket usage.",
+      "description": "Quick Pay purchase and post-purchase events (trip amount, bottom sheet confirmation, order creation, punch/receipt).",
       "events": [
+        "pay for ticket screen opened",
+        "find fare card clicked",
+        "chalo pay card clicked",
         "chalo pay trip amount fragment opened",
         "chalo pay trip amount fragment next button clicked",
         "chalo pay trip amount fragment next button clicked failure",
@@ -281,14 +352,11 @@
         "chalo pay bottom sheet recharge button clicked",
         "chalo pay prerequisites failed",
         "chalo pay order created",
-        "chalo pay summary screen opened",
-        "chalo pay card clicked",
-        "chalo pay ticket clicked",
-        "chalo pay ticket punched",
+        "quickpay receipt payload",
         "chalo pay punch received",
-        "chalo pay view receipt clicked",
+        "chalo pay ticket punched",
         "chalo pay receipt shown",
-        "chalo pay receipt opened"
+        "chalo pay view receipt clicked"
       ]
     },
     {
@@ -315,513 +383,72 @@
         "wallet sync worker result",
         "wallet sync result"
       ]
-    },
-    {
-      "name": "Misc",
-      "description": "Auto-added stage (validate grouping).",
-      "events": [
-        "find fare card clicked"
-      ]
     }
   ],
   "events": [
     {
-      "name": "activate wallet clicked",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "User clicked button to activate wallet.",
+      "name": "wallet onBoarding bottom sheet positive button clicked",
+      "component": "ProfileScreenComponent",
+      "stage": "Wallet Onboarding",
+      "source": "profile screen (ChaloPay intro bottom sheet)",
+      "description": "User clicked the CTA on the ChaloPay/Wallet intro bottom sheet shown from Profile screen.",
       "properties": []
     },
     {
-      "name": "auto reclaim for wallet migration",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "Automatic wallet reclaim attempted during migration.",
+      "name": "wallet balance fragment opened",
+      "component": "WalletBalanceComponent",
+      "stage": "Wallet Balance View",
+      "source": "app.chalo.wallet.ui.mainbalance.WalletBalanceComponent",
+      "description": "Main wallet balance screen opened, showing current balance and recent transactions.",
+      "properties": []
+    },
+    {
+      "name": "wallet banner rendered",
+      "component": "WalletBalanceComponent, WalletLoadBalanceEnterAmountComponent",
+      "stage": "Wallet Balance View",
+      "source": "wallet screen components",
+      "description": "Promotional banner rendered on wallet screens (Wallet Balance and Load Money).",
       "properties": [
         {
-          "property": "isSuccessful",
-          "context": "Whether auto reclaim succeeded"
+          "property": "wallet banner url",
+          "context": "Image URL of the banner"
         },
         {
-          "property": "error name",
-          "context": "Error name if reclaim failed"
+          "property": "wallet banner deeplink",
+          "context": "Deeplink URL for banner click action"
         }
       ]
     },
     {
-      "name": "chalo pay bottom sheet fragment next button clicked",
-      "component": "QuickPayBottomSheetHelper",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User confirmed Quick Pay payment from bottom sheet.",
-      "properties": [
-        {
-          "property": "chalo pay bottom sheet amount",
-          "context": "Amount being paid"
-        },
-        {
-          "property": "chalo pay bottom sheet wallet balance left",
-          "context": "Remaining balance after payment"
-        }
-      ]
-    },
-    {
-      "name": "chalo pay bottom sheet fragment opened",
-      "component": "QuickPayBottomSheetHelper",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay confirmation bottom sheet opened.",
+      "name": "wallet banner clicked",
+      "component": "WalletBalanceComponent, WalletLoadBalanceEnterAmountComponent",
+      "stage": "Wallet Balance View",
+      "source": "wallet screen components",
+      "description": "User clicked promotional banner on wallet screens (Wallet Balance and Load Money).",
       "properties": []
     },
     {
-      "name": "chalo pay bottom sheet recharge button clicked",
-      "component": "QuickPayBottomSheetHelper",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User clicked recharge button from Quick Pay bottom sheet due to insufficient balance.",
+      "name": "wallet balance add money clicked",
+      "component": "WalletBalanceComponent",
+      "stage": "Wallet Balance View",
+      "source": "app.chalo.wallet.ui.mainbalance.WalletBalanceComponent",
+      "description": "User clicked on 'Add Money' button to load balance.",
       "properties": []
     },
     {
-      "name": "chalo pay card clicked",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User clicked on Quick Pay ticket card.",
+      "name": "wallet balance see all transaction clicked",
+      "component": "WalletBalanceComponent",
+      "stage": "Wallet Balance View",
+      "source": "app.chalo.wallet.ui.mainbalance.WalletBalanceComponent",
+      "description": "User clicked 'See All' to view complete transaction history.",
       "properties": []
-    },
-    {
-      "name": "chalo pay order created",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay order successfully created.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay prerequisites failed",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay prerequisites check failed (insufficient balance, wallet not active, etc.).",
-      "properties": []
-    },
-    {
-      "name": "chalo pay punch received",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Punch confirmation received from conductor device.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay receipt opened",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay receipt screen fully opened.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay receipt shown",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay receipt displayed to user.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay summary screen opened",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay ticket summary screen opened after successful payment.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay ticket clicked",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User clicked on the Quick Pay ticket to view details or activate.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay ticket punched",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay ticket was validated/punched on the bus.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay trip amount fragment chalo pay history clicked",
-      "component": "QuickpayTripAmountComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User clicked to view Quick Pay history.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay trip amount fragment next button clicked",
-      "component": "QuickpayTripAmountComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User clicked next after entering trip amount.",
-      "properties": [
-        {
-          "property": "chalo pay trip amount",
-          "context": "Amount entered for trip"
-        }
-      ]
-    },
-    {
-      "name": "chalo pay trip amount fragment next button clicked failure",
-      "component": "QuickpayTripAmountComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Next button click failed with validation error.",
-      "properties": [
-        {
-          "property": "chalo pay trip amount fragment next button clicked failure message",
-          "context": "Error message for failure"
-        }
-      ]
-    },
-    {
-      "name": "chalo pay trip amount fragment opened",
-      "component": "QuickpayTripAmountComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "Quick Pay trip amount entry screen opened.",
-      "properties": []
-    },
-    {
-      "name": "chalo pay view receipt clicked",
-      "component": "PayForTicketComponent",
-      "stage": "Quick Pay (ChaloPayV2)",
-      "source": "quick pay components",
-      "description": "User clicked to view Quick Pay receipt.",
-      "properties": []
-    },
-    {
-      "name": "chalo wallet clicked",
-      "component": "HomeScreenComponent or other entry points",
-      "stage": "Wallet Entry Points",
-      "source": "various sources",
-      "description": "User clicked on wallet icon or button from home screen or other locations to access wallet.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayBottomsheetConfirmPaymentClicked",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "User confirmed payment in ChaloPayV3 bottom sheet.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayBottomsheetOpened",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "ChaloPayV3 bottom sheet opened.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayBottomsheetRechargeClicked",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "User clicked recharge button in ChaloPayV3 bottom sheet.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayBottomsheetTncClicked",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "User clicked Terms & Conditions in ChaloPayV3 bottom sheet.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayItemClicked",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "User clicked on ChaloPayV3 item.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayItemRendered",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "ChaloPayV3 item rendered in UI.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayOrderCreationFailed",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "ChaloPayV3 order creation failed.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayOrderCreationSuccess",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "ChaloPayV3 order created successfully.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayPaymentFailed",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "ChaloPayV3 payment failed.",
-      "properties": []
-    },
-    {
-      "name": "chaloPayPaymentSuccess",
-      "component": "ChaloPayV3Component",
-      "stage": "ChaloPayV3",
-      "source": "chalo pay v3 components",
-      "description": "ChaloPayV3 payment completed successfully.",
-      "properties": []
-    },
-    {
-      "name": "find fare card clicked",
-      "component": "PayForTicketComponent",
-      "stage": "Misc",
-      "source": "Source.PAY_FOR_TICKET_SCREEN",
-      "properties": []
-    },
-    {
-      "name": "full kyc know more clicked",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "User clicked 'Know More' for full KYC information.",
-      "properties": []
-    },
-    {
-      "name": "load money wallet recharge order failed",
-      "component": "WalletLoadBalanceEnterAmountComponent",
-      "stage": "Load Money Flow",
-      "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
-      "description": "Recharge order creation failed.",
-      "properties": [
-        {
-          "property": "rechargeOrderFailureReason",
-          "context": "Reason for order creation failure"
-        }
-      ]
-    },
-    {
-      "name": "load money wallet recharge order success",
-      "component": "WalletLoadBalanceEnterAmountComponent",
-      "stage": "Load Money Flow",
-      "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
-      "description": "Recharge order successfully created on the backend.",
-      "properties": [
-        {
-          "property": "walletLoadAmount",
-          "context": "Amount for which order was created"
-        }
-      ]
-    },
-    {
-      "name": "load money wallet sync failed",
-      "component": "WalletLoadBalanceEnterAmountComponent",
-      "stage": "Load Money Flow",
-      "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
-      "description": "Wallet balance sync failed after payment completion.",
-      "properties": [
-        {
-          "property": "walletSyncFailureReason",
-          "context": "Reason for wallet sync failure"
-        }
-      ]
-    },
-    {
-      "name": "min kyc activation failed",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "Wallet activation failed after minimum KYC completion.",
-      "properties": []
-    },
-    {
-      "name": "min kyc detail name entered",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User entered their name in minimum KYC flow.",
-      "properties": [
-        {
-          "property": "min kyc name",
-          "context": "Name entered by user"
-        }
-      ]
-    },
-    {
-      "name": "min kyc detail next button clicked",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User clicked next button after entering KYC details.",
-      "properties": []
-    },
-    {
-      "name": "min kyc detail opened",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "Minimum KYC detail entry screen opened.",
-      "properties": []
-    },
-    {
-      "name": "min kyc detail proceed button clicked",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User clicked proceed button in KYC details screen.",
-      "properties": []
-    },
-    {
-      "name": "min kyc detail radio button clicked",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User clicked radio button in KYC details.",
-      "properties": []
-    },
-    {
-      "name": "min kyc error bottom sheet cta clicked",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User clicked on CTA button in the minimum KYC error bottom sheet.",
-      "properties": []
-    },
-    {
-      "name": "min kyc error bottom sheet opened",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "Error bottom sheet displayed when minimum KYC flow encounters an error.",
-      "properties": []
-    },
-    {
-      "name": "min kyc otp failure",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "OTP verification failed.",
-      "properties": [
-        {
-          "property": "min kyc otp failure",
-          "context": "Reason for OTP failure"
-        }
-      ]
-    },
-    {
-      "name": "min kyc otp fragment opened",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "OTP verification screen opened for minimum KYC.",
-      "properties": []
-    },
-    {
-      "name": "min kyc otp proceed button clicked",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User clicked proceed after entering OTP.",
-      "properties": []
-    },
-    {
-      "name": "min kyc otp resend sms clicked",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "User clicked to resend OTP SMS.",
-      "properties": []
-    },
-    {
-      "name": "min kyc otp success",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "OTP verification successful for minimum KYC.",
-      "properties": []
-    },
-    {
-      "name": "min kyc user registered bottom sheet opened",
-      "component": "MinKycComponent",
-      "stage": "Minimum KYC",
-      "source": "min kyc component",
-      "description": "Bottom sheet displayed when user is already registered with minimum KYC.",
-      "properties": []
-    },
-    {
-      "name": "post device id for wallet migration",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "Device ID posted for wallet migration process.",
-      "properties": [
-        {
-          "property": "isSuccessful",
-          "context": "Whether posting device ID succeeded"
-        }
-      ]
-    },
-    {
-      "name": "process wallet access status",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "Wallet access status check and processing result.",
-      "properties": [
-        {
-          "property": "walletStatus",
-          "context": "Current wallet status (USER_NOT_LOGGED_IN, DOES_NOT_EXIST, REQUIRES_KYC, MIN_KYC_PENDING, BLOCKED, REQUIRES_BACKEND_RECLAIM, ACTIVE)"
-        }
-      ]
-    },
-    {
-      "name": "refresh wallet clicked",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "User clicked refresh to update wallet status.",
-      "properties": []
-    },
-    {
-      "name": "wallet access bottom sheet opened",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "Wallet access information bottom sheet displayed.",
-      "properties": [
-        {
-          "property": "walletAccessBottomSheetType",
-          "context": "Type of access bottom sheet shown"
-        }
-      ]
     },
     {
       "name": "wallet all transaction event clicked",
       "component": "WalletBalanceComponent, WalletAllTransactionsComponent",
-      "stage": "Wallet Balance View, All Transactions View",
+      "stage": "All Transactions View",
       "source": "wallet transaction components",
-      "description": "User clicked on a specific transaction to view details.",
+      "description": "User clicked on a specific transaction to view details (can be from Wallet Balance list or All Transactions list).",
       "properties": [
         {
           "property": "clicked transaction id",
@@ -829,7 +456,7 @@
         },
         {
           "property": "wallet balance transaction title",
-          "context": "Product name for CHALO_PAY transactions"
+          "context": "Currently overwritten by transaction status due to a constants typo; title is not reliably available."
         },
         {
           "property": "wallet balance transaction date",
@@ -838,10 +465,6 @@
         {
           "property": "wallet balance transaction type",
           "context": "QUICK_PAY, LOAD_MONEY, or CHALO_PAY"
-        },
-        {
-          "property": "wallet balance transaction status",
-          "context": "SUCCESS, FAILED, PROCESSING, or RECLAIMABLE"
         },
         {
           "property": "wallet balance orderId",
@@ -858,87 +481,6 @@
       ]
     },
     {
-      "name": "wallet all transaction fragment opened",
-      "component": "WalletAllTransactionsComponent",
-      "stage": "All Transactions View",
-      "source": "app.chalo.wallet.ui.alltransactions.WalletAllTransactionsComponent",
-      "description": "Complete transaction history screen opened.",
-      "properties": []
-    },
-    {
-      "name": "wallet amount added continue clicked event",
-      "component": "WalletLoadBalanceSuccessComponent",
-      "stage": "Load Money Flow",
-      "source": "wallet load balance success component",
-      "description": "User clicked continue button on wallet amount added success screen.",
-      "properties": []
-    },
-    {
-      "name": "wallet balance add money clicked",
-      "component": "WalletBalanceComponent",
-      "stage": "Wallet Balance View",
-      "source": "app.chalo.wallet.ui.mainbalance.WalletBalanceComponent",
-      "description": "User clicked on 'Add Money' button to load balance.",
-      "properties": []
-    },
-    {
-      "name": "wallet balance fragment opened",
-      "component": "WalletBalanceComponent",
-      "stage": "Wallet Balance View",
-      "source": "app.chalo.wallet.ui.mainbalance.WalletBalanceComponent",
-      "description": "Main wallet balance screen opened, showing current balance and recent transactions.",
-      "properties": []
-    },
-    {
-      "name": "wallet balance see all transaction clicked",
-      "component": "WalletBalanceComponent",
-      "stage": "Wallet Balance View",
-      "source": "app.chalo.wallet.ui.mainbalance.WalletBalanceComponent",
-      "description": "User clicked 'See All' to view complete transaction history.",
-      "properties": []
-    },
-    {
-      "name": "wallet banner clicked",
-      "component": "WalletBalanceComponent, WalletLoadBalanceEnterAmountComponent",
-      "stage": "Wallet Balance View, Load Money Flow",
-      "source": "wallet screen components",
-      "description": "User clicked on promotional banner in wallet screens.",
-      "properties": []
-    },
-    {
-      "name": "wallet banner rendered",
-      "component": "WalletBalanceComponent, WalletLoadBalanceEnterAmountComponent",
-      "stage": "Wallet Balance View, Load Money Flow",
-      "source": "wallet screen components",
-      "description": "Promotional banner rendered on wallet screens with URL and deeplink.",
-      "properties": [
-        {
-          "property": "wallet banner url",
-          "context": "Image URL of the banner"
-        },
-        {
-          "property": "wallet banner deeplink",
-          "context": "Deeplink URL for banner click action"
-        }
-      ]
-    },
-    {
-      "name": "wallet blocked know more clicked",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "User clicked 'Know More' when wallet is blocked.",
-      "properties": []
-    },
-    {
-      "name": "wallet icon menu clicked",
-      "component": "MenuComponent",
-      "stage": "Wallet Entry Points",
-      "source": "menu component",
-      "description": "User clicked on wallet icon from navigation menu.",
-      "properties": []
-    },
-    {
       "name": "wallet load balance enter amount fragment opened",
       "component": "WalletLoadBalanceEnterAmountComponent",
       "stage": "Load Money Flow",
@@ -948,6 +490,19 @@
         {
           "property": "kycDone",
           "context": "Whether KYC is completed"
+        }
+      ]
+    },
+    {
+      "name": "wallet suggested amount clicked",
+      "component": "WalletLoadBalanceEnterAmountComponent",
+      "stage": "Load Money Flow",
+      "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
+      "description": "User selected a suggested denomination amount.",
+      "properties": [
+        {
+          "property": "wallet suggested amount",
+          "context": "Selected suggested amount value"
         }
       ]
     },
@@ -969,56 +524,50 @@
       ]
     },
     {
-      "name": "wallet load money clicked",
-      "component": "WalletAccessManagerImpl",
-      "stage": "Wallet Access & KYC",
-      "source": "wallet access base fragment",
-      "description": "User clicked load money from access bottom sheet.",
-      "properties": []
-    },
-    {
-      "name": "wallet onBoarding bottom sheet positive button clicked",
-      "component": "WalletOnboardingComponent",
-      "stage": "Wallet Entry Points",
-      "source": "wallet onboarding component",
-      "description": "User clicked positive button (e.g., 'Get Started') on wallet onboarding bottom sheet.",
-      "properties": []
-    },
-    {
-      "name": "wallet suggested amount clicked",
+      "name": "load money wallet recharge order success",
       "component": "WalletLoadBalanceEnterAmountComponent",
       "stage": "Load Money Flow",
       "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
-      "description": "User selected a suggested denomination amount.",
+      "description": "Recharge order successfully created on the backend.",
       "properties": [
         {
-          "property": "wallet suggested amount",
-          "context": "Selected suggested amount value"
+          "property": "walletLoadAmount",
+          "context": "Amount for which order was created"
         }
       ]
     },
     {
-      "name": "wallet sync result",
-      "component": "WalletSyncWorker",
-      "stage": "Background Sync",
-      "source": "WalletSyncWorker",
-      "description": "Wallet sync operation result.",
-      "properties": []
+      "name": "load money wallet recharge order failed",
+      "component": "WalletLoadBalanceEnterAmountComponent",
+      "stage": "Load Money Flow",
+      "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
+      "description": "Recharge order creation failed.",
+      "properties": [
+        {
+          "property": "rechargeOrderFailureReason",
+          "context": "Reason for order creation failure"
+        }
+      ]
     },
     {
-      "name": "wallet sync worker result",
-      "component": "WalletSyncWorker",
-      "stage": "Background Sync",
-      "source": "WalletSyncWorker",
-      "description": "Background wallet sync worker completed with result.",
-      "properties": []
+      "name": "load money wallet sync failed",
+      "component": "WalletLoadBalanceEnterAmountComponent",
+      "stage": "Load Money Flow",
+      "source": "app.chalo.wallet.ui.loadbalance.WalletLoadBalanceEnterAmountComponent",
+      "description": "Wallet balance sync failed after payment completion.",
+      "properties": [
+        {
+          "property": "walletSyncFailureReason",
+          "context": "Reason for wallet sync failure"
+        }
+      ]
     },
     {
-      "name": "wallet sync worker started",
-      "component": "WalletSyncWorker",
-      "stage": "Background Sync",
-      "source": "WalletSyncWorker",
-      "description": "Background wallet sync worker started.",
+      "name": "wallet all transaction fragment opened",
+      "component": "WalletAllTransactionsComponent",
+      "stage": "All Transactions View",
+      "source": "app.chalo.wallet.ui.alltransactions.WalletAllTransactionsComponent",
+      "description": "Complete transaction history screen opened.",
       "properties": []
     },
     {
@@ -1061,6 +610,785 @@
           "context": "Payment mode used"
         }
       ]
+    },
+    {
+      "name": "process wallet access status",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "Wallet access status check and processing result.",
+      "properties": [
+        {
+          "property": "walletStatus",
+          "context": "Current wallet status (USER_NOT_LOGGED_IN, DOES_NOT_EXIST, REQUIRES_KYC, MIN_KYC_PENDING, BLOCKED, REQUIRES_BACKEND_RECLAIM, ACTIVE)"
+        }
+      ]
+    },
+    {
+      "name": "wallet access bottom sheet opened",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "Wallet access information bottom sheet displayed.",
+      "properties": [
+        {
+          "property": "walletAccessBottomSheetType",
+          "context": "Type of access bottom sheet shown"
+        }
+      ]
+    },
+    {
+      "name": "activate wallet clicked",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "User clicked button to activate wallet.",
+      "properties": []
+    },
+    {
+      "name": "wallet load money clicked",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "User clicked load money from access bottom sheet.",
+      "properties": []
+    },
+    {
+      "name": "refresh wallet clicked",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "User clicked refresh to update wallet status.",
+      "properties": []
+    },
+    {
+      "name": "wallet blocked know more clicked",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "User clicked 'Know More' when wallet is blocked.",
+      "properties": []
+    },
+    {
+      "name": "full kyc know more clicked",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "User clicked 'Know More' for full KYC information.",
+      "properties": []
+    },
+    {
+      "name": "post device id for wallet migration",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "Device ID posted for wallet migration process.",
+      "properties": [
+        {
+          "property": "isSuccessful",
+          "context": "Whether posting device ID succeeded"
+        }
+      ]
+    },
+    {
+      "name": "auto reclaim for wallet migration",
+      "component": "WalletAccessManagerImpl",
+      "stage": "Wallet Access & KYC",
+      "source": "wallet access base fragment",
+      "description": "Automatic wallet reclaim attempted during migration.",
+      "properties": [
+        {
+          "property": "isSuccessful",
+          "context": "Whether auto reclaim succeeded"
+        },
+        {
+          "property": "error name",
+          "context": "Error name if reclaim failed"
+        }
+      ]
+    },
+    {
+      "name": "min kyc detail opened",
+      "component": "MinKycComponent",
+      "stage": "Minimum KYC",
+      "source": "min kyc component",
+      "description": "Minimum KYC detail entry screen opened.",
+      "properties": []
+    },
+    {
+      "name": "min kyc detail proceed button clicked",
+      "component": "MinKycDetailsComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycdetails.MinKycDetailsComponent",
+      "description": "User clicked proceed button in KYC details screen.",
+      "properties": [
+        {
+          "property": "min kyc name",
+          "context": "Name entered by the user."
+        }
+      ]
+    },
+    {
+      "name": "min kyc otp fragment opened",
+      "component": "MinKycComponent",
+      "stage": "Minimum KYC",
+      "source": "min kyc component",
+      "description": "OTP verification screen opened for minimum KYC.",
+      "properties": []
+    },
+    {
+      "name": "min kyc otp resend sms clicked",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "User clicked to resend OTP SMS.",
+      "properties": [
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        }
+      ]
+    },
+    {
+      "name": "min kyc otp proceed button clicked",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "User clicked proceed after entering OTP.",
+      "properties": [
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        }
+      ]
+    },
+    {
+      "name": "min kyc otp success",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "OTP verification successful for minimum KYC.",
+      "properties": [
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        }
+      ]
+    },
+    {
+      "name": "min kyc otp failure",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "OTP verification failed.",
+      "properties": [
+        {
+          "property": "min kyc otp failure",
+          "context": "OTP failure message."
+        },
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        }
+      ]
+    },
+    {
+      "name": "min kyc activation failed",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "Wallet activation failed after minimum KYC completion.",
+      "properties": [
+        {
+          "property": "reason",
+          "context": "Failure reason message."
+        },
+        {
+          "property": "isInvalidOtpEntered",
+          "context": "Whether invalid OTP was entered (stringified boolean)."
+        }
+      ]
+    },
+    {
+      "name": "min kyc error bottom sheet opened",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "Error bottom sheet displayed when minimum KYC flow encounters an error.",
+      "properties": [
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        },
+        {
+          "property": "errorBottomSheetCtaType",
+          "context": "CTA type shown on the error bottom sheet."
+        }
+      ]
+    },
+    {
+      "name": "min kyc error bottom sheet cta clicked",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "User clicked on CTA button in the minimum KYC error bottom sheet.",
+      "properties": [
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        }
+      ]
+    },
+    {
+      "name": "min kyc user registered bottom sheet opened",
+      "component": "MinKycOtpComponent",
+      "stage": "Minimum KYC",
+      "source": "app.chalo.kyc.min.ui.minkycotp.MinKycOtpComponent",
+      "description": "Bottom sheet displayed when user is already registered with minimum KYC.",
+      "properties": [
+        {
+          "property": "userId",
+          "context": "User identifier (currently phone number)."
+        },
+        {
+          "property": "referenceNumber",
+          "context": "Reference number for OTP flow."
+        }
+      ]
+    },
+    {
+      "name": "pay for ticket screen opened",
+      "component": "PayForTicketComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "app.chalo.quickpay.ui.payforticket.PayForTicketComponent",
+      "description": "Pay For Ticket landing screen opened (entry point that can lead to Quick Pay or Find Fare).",
+      "properties": []
+    },
+    {
+      "name": "find fare card clicked",
+      "component": "PayForTicketComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "Source.PAY_FOR_TICKET_SCREEN",
+      "properties": []
+    },
+    {
+      "name": "chalo pay card clicked",
+      "component": "PayForTicketComponent, QuickpayTripAmountComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "pay for ticket / quick pay screens",
+      "description": "User clicked the Chalo Pay (Quick Pay) card (entry CTA).",
+      "properties": []
+    },
+    {
+      "name": "chalo pay trip amount fragment opened",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "Quick Pay trip amount entry screen opened.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay trip amount fragment next button clicked",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "User clicked next after entering trip amount.",
+      "properties": [
+        {
+          "property": "chalo pay trip amount",
+          "context": "Amount entered for trip"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay trip amount fragment next button clicked failure",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "Next button click failed with validation error.",
+      "properties": [
+        {
+          "property": "chalo pay trip amount fragment next button clicked failure message",
+          "context": "Error message for failure"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay trip amount fragment chalo pay history clicked",
+      "component": "QuickpayTripAmountComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "User clicked to view Quick Pay history.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay bottom sheet fragment opened",
+      "component": "QuickPayBottomSheetHelper",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "Quick Pay confirmation bottom sheet opened.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay bottom sheet fragment next button clicked",
+      "component": "QuickPayBottomSheetHelper",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "User confirmed Quick Pay payment from bottom sheet.",
+      "properties": [
+        {
+          "property": "chalo pay bottom sheet amount",
+          "context": "Amount being paid"
+        },
+        {
+          "property": "chalo pay bottom sheet wallet balance left",
+          "context": "Remaining balance after payment"
+        }
+      ]
+    },
+    {
+      "name": "chalo pay bottom sheet recharge button clicked",
+      "component": "QuickPayBottomSheetHelper",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "User clicked recharge button from Quick Pay bottom sheet due to insufficient balance.",
+      "properties": [
+        {
+          "property": "chalo pay bottom sheet amount",
+          "context": "Amount shown in bottom sheet."
+        },
+        {
+          "property": "chalo pay bottom sheet wallet balance left",
+          "context": "Wallet balance left (when available)."
+        }
+      ]
+    },
+    {
+      "name": "chalo pay prerequisites failed",
+      "component": "PayForTicketComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "Quick Pay prerequisites check failed (insufficient balance, wallet not active, etc.).",
+      "properties": []
+    },
+    {
+      "name": "chalo pay order created",
+      "component": "CreateQuickPayOrderUsecase",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "app.chalo.wallet.domain.CreateQuickPayOrderUsecase",
+      "description": "Quick Pay order created and persisted locally; wallet sync work is started.",
+      "properties": [
+        {
+          "property": "orderId",
+          "context": "Generated Quick Pay order ID."
+        },
+        {
+          "property": "chalo pay trip amount",
+          "context": "Trip amount for the order."
+        },
+        {
+          "property": "activationTime",
+          "context": "Order activation timestamp (epoch millis)."
+        },
+        {
+          "property": "walletBalance",
+          "context": "Wallet balance at time of order creation."
+        }
+      ]
+    },
+    {
+      "name": "quickpay receipt payload",
+      "component": "QuickPayTicketProductValidationConfig",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "app.chalo.quickpay.validation.QuickPayTicketProductValidationConfig",
+      "description": "Quick Pay receipt payload captured when processing punch notifications (debug/diagnostic).",
+      "properties": [
+        {
+          "property": "payload",
+          "context": "Serialized receipt payload string."
+        }
+      ]
+    },
+    {
+      "name": "chalo pay punch received",
+      "component": "PayForTicketComponent",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "quick pay components",
+      "description": "Punch confirmation received from conductor device.",
+      "properties": []
+    },
+    {
+      "name": "chalo pay ticket punched",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "validation (receipt data)",
+      "description": "Quick Pay ticket punched (validated) event.",
+      "properties": [
+        {
+          "property": "isChaloPay",
+          "context": "Always true for these events."
+        },
+        {
+          "property": "productId",
+          "context": "Quick Pay product/order ID."
+        },
+        {
+          "property": "punchTime",
+          "context": "Punch timestamp."
+        },
+        {
+          "property": "chalo pay trip amount",
+          "context": "Trip amount from receipt (can be empty when missing)."
+        },
+        {
+          "property": "vehicleNo",
+          "context": "Vehicle number."
+        },
+        {
+          "property": "route name",
+          "context": "Route name."
+        },
+        {
+          "property": "startStop",
+          "context": "Trip start stop."
+        },
+        {
+          "property": "endStop",
+          "context": "Trip end stop."
+        },
+        {
+          "property": "conductorId",
+          "context": "Conductor identifier."
+        },
+        {
+          "property": "endStopId",
+          "context": "Trip end stop ID."
+        }
+      ]
+    },
+    {
+      "name": "chalo pay receipt shown",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "validation (receipt screen)",
+      "description": "Quick Pay receipt was shown to the user.",
+      "properties": [
+        {
+          "property": "productId",
+          "context": "Quick Pay product/order ID."
+        },
+        {
+          "property": "productType",
+          "context": "Product type."
+        },
+        {
+          "property": "productSubType",
+          "context": "Product sub-type."
+        },
+        {
+          "property": "isSuccessful",
+          "context": "Whether showing receipt succeeded."
+        }
+      ]
+    },
+    {
+      "name": "chalo pay view receipt clicked",
+      "component": "QuickPayTicketAnalyticsManagerValidation",
+      "stage": "Quick Pay (ChaloPayV2)",
+      "source": "validation (receipt data)",
+      "description": "User clicked to view Quick Pay receipt.",
+      "properties": [
+        {
+          "property": "isChaloPay",
+          "context": "Always true for these events."
+        },
+        {
+          "property": "productId",
+          "context": "Quick Pay product/order ID."
+        },
+        {
+          "property": "punchTime",
+          "context": "Punch timestamp."
+        },
+        {
+          "property": "chalo pay trip amount",
+          "context": "Trip amount from receipt (can be empty when missing)."
+        },
+        {
+          "property": "vehicleNo",
+          "context": "Vehicle number."
+        },
+        {
+          "property": "route name",
+          "context": "Route name."
+        },
+        {
+          "property": "startStop",
+          "context": "Trip start stop."
+        },
+        {
+          "property": "endStop",
+          "context": "Trip end stop."
+        },
+        {
+          "property": "conductorId",
+          "context": "Conductor identifier."
+        },
+        {
+          "property": "endStopId",
+          "context": "Trip end stop ID."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayItemRendered",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "ChaloPayV3 item rendered in UI.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet UI state (lowercased)."
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Wallet balance (stringified)."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayItemClicked",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "User clicked on ChaloPayV3 item.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet UI state (lowercased)."
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Wallet balance (stringified)."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetOpened",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "ChaloPayV3 bottom sheet opened.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet UI state (lowercased)."
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Wallet balance (stringified)."
+        },
+        {
+          "property": "bottomsheetCTA",
+          "context": "CTA action/state (lowercased)."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetTncClicked",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "User clicked Terms & Conditions in ChaloPayV3 bottom sheet.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet UI state (lowercased)."
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Wallet balance (stringified)."
+        },
+        {
+          "property": "bottomsheetCTA",
+          "context": "CTA action/state (lowercased)."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetConfirmPaymentClicked",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "User confirmed payment in ChaloPayV3 bottom sheet.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet UI state (lowercased)."
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Wallet balance (stringified)."
+        },
+        {
+          "property": "bottomsheetCTA",
+          "context": "CTA action/state (lowercased)."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayBottomsheetRechargeClicked",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "User clicked recharge button in ChaloPayV3 bottom sheet.",
+      "properties": [
+        {
+          "property": "chaloPayWalletState",
+          "context": "Wallet UI state (lowercased)."
+        },
+        {
+          "property": "chaloPayWalletBalance",
+          "context": "Wallet balance (stringified)."
+        },
+        {
+          "property": "bottomsheetCTA",
+          "context": "CTA action/state (lowercased)."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayOrderCreationSuccess",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "ChaloPayV3 order created successfully.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayOrderCreationFailed",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "ChaloPayV3 order creation failed.",
+      "properties": [
+        {
+          "property": "failureReason",
+          "context": "Failure reason."
+        }
+      ]
+    },
+    {
+      "name": "chaloPayPaymentSuccess",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "ChaloPayV3 payment completed successfully.",
+      "properties": []
+    },
+    {
+      "name": "chaloPayPaymentFailed",
+      "component": "ChaloPayV3Component",
+      "stage": "ChaloPayV3",
+      "source": "chalo pay v3 components",
+      "description": "ChaloPayV3 payment failed.",
+      "properties": [
+        {
+          "property": "failureReason",
+          "context": "Failure reason."
+        }
+      ]
+    },
+    {
+      "name": "wallet sync worker started",
+      "component": "WalletSyncWorker",
+      "stage": "Background Sync",
+      "source": "WalletSyncWorker",
+      "description": "Background wallet sync worker started.",
+      "properties": []
+    },
+    {
+      "name": "wallet sync worker result",
+      "component": "WalletSyncWorker",
+      "stage": "Background Sync",
+      "source": "WalletSyncWorker",
+      "description": "Background wallet sync worker completed with result.",
+      "properties": [
+        {
+          "property": "isSuccessful",
+          "context": "Whether sync succeeded."
+        },
+        {
+          "property": "error name",
+          "context": "Failure reason enum name (empty on success)."
+        },
+        {
+          "property": "walletId",
+          "context": "Wallet ID (empty when unavailable)."
+        },
+        {
+          "property": "is foreground",
+          "context": "Foreground state at time of event."
+        },
+        {
+          "property": "walletBalance",
+          "context": "Wallet remaining balance (empty when unavailable)."
+        }
+      ]
+    },
+    {
+      "name": "wallet sync result",
+      "component": "WalletSyncWorker",
+      "stage": "Background Sync",
+      "source": "WalletSyncWorker",
+      "description": "Wallet sync operation result.",
+      "properties": [
+        {
+          "property": "isSuccessful",
+          "context": "Whether sync succeeded."
+        },
+        {
+          "property": "error name",
+          "context": "Failure reason enum name (empty on success)."
+        },
+        {
+          "property": "walletId",
+          "context": "Wallet ID (empty when unavailable)."
+        },
+        {
+          "property": "walletBalance",
+          "context": "Wallet remaining balance (empty when unavailable)."
+        },
+        {
+          "property": "walletStatus",
+          "context": "Cached wallet status (empty when unavailable)."
+        }
+      ]
     }
   ],
   "diagram": {
@@ -1101,8 +1429,7 @@
           "chalo pay trip amount fragment next button clicked",
           "chalo pay bottom sheet fragment opened",
           "chalo pay bottom sheet fragment next button clicked",
-          "chalo pay order created",
-          "chalo pay summary screen opened"
+          "chalo pay order created"
         ]
       },
       {
@@ -1118,8 +1445,6 @@
         "label": "Minimum KYC",
         "events": [
           "min kyc detail opened",
-          "min kyc detail name entered",
-          "min kyc detail next button clicked",
           "min kyc otp fragment opened",
           "min kyc otp proceed button clicked",
           "min kyc otp success"
