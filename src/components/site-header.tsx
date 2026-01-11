@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE_NAME, isAuthEnabled, verifyAuthCookie } from "@/lib/auth";
 
-export function SiteHeader() {
-  const authEnabled = Boolean(
-    process.env.AUTH_USERNAME && process.env.AUTH_PASSWORD && process.env.AUTH_SECRET,
-  );
+export async function SiteHeader() {
+  const authEnabled = isAuthEnabled();
+  let isSignedIn = false;
+
+  if (authEnabled) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+    isSignedIn = await verifyAuthCookie(token);
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
@@ -18,7 +25,12 @@ export function SiteHeader() {
           <Button asChild variant="ghost" size="sm">
             <Link href="/analytics">Analytics</Link>
           </Button>
-          {authEnabled ? (
+          {authEnabled && !isSignedIn ? (
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/login">Sign in</Link>
+            </Button>
+          ) : null}
+          {authEnabled && isSignedIn ? (
             <Button asChild variant="ghost" size="sm">
               <Link href="/api/logout">Sign out</Link>
             </Button>
