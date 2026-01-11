@@ -46,6 +46,11 @@ flowchart TD
 
   class ev_homeRechargeCard,ev_tutorialShown,ev_tutorialNext event;
   class ui_home,ui_branch,ui_chaloCardBranch,ui_ncmcBranch ui;
+
+  %%chalo:diagram-link ui_chaloCardBranch -> title:Funnel: Chalo Card info → link or recharge
+  %%chalo:diagram-link ui_ncmcBranch -> title:Funnel: NCMC online recharge
+  %%chalo:diagram-link ui_ncmcBranch -> title:Funnel: NCMC offline recharge
+  %%chalo:diagram-link ui_ncmcBranch -> title:Funnel: NCMC tap operations (NFC)
 ```
 
 ## Funnel: Chalo Card info → link or recharge
@@ -75,6 +80,10 @@ flowchart TD
 
   class ev_screenOpen,ev_fetchSuccess,ev_fetchFailed,ev_noCard,ev_refreshClicked,ev_addMoney,ev_showTransactions,ev_activePassClicked,ev_buyCard,ev_linkTutorial event;
   class ui_cardInfo,ui_rechargeFlow,ui_transactionsFlow,ui_linkingFlow ui;
+
+  %%chalo:diagram-link ui_rechargeFlow -> title:Funnel: Chalo Card recharge → payment → success
+  %%chalo:diagram-link ui_transactionsFlow -> title:Funnel: Card transactions history
+  %%chalo:diagram-link ui_linkingFlow -> title:Funnel: Chalo Card linking
 ```
 
 ## Funnel: Chalo Card linking
@@ -94,6 +103,8 @@ flowchart TD
 
   class ev_linkingOpen,ev_proceedClicked,ev_linkSuccess,ev_linkFailed event;
   class ui_linking,ui_cardInfo ui;
+
+  %%chalo:diagram-link ui_cardInfo -> title:Funnel: Chalo Card info → link or recharge
 ```
 
 ## Funnel: Chalo Card recharge → payment → success
@@ -109,6 +120,9 @@ flowchart TD
   ev_amountScreenOpen --> ev_cardInfoSuccess["chalo card info fetch success"]
   ev_amountScreenOpen --> ev_cardInfoFailed["chalo card info fetch failed"]
   ev_amountScreenOpen --> ev_configFailed["chalo card recharge config fetch failed"]
+
+  ev_amountScreenOpen --> ev_linkTutorial["chalo card info link card tut link btn clicked"]
+  ev_linkTutorial --> ui_linkingFlow([Card linking flow])
 
   ev_cardInfoSuccess --> ev_proceedClicked["chalo card recharge proceed btn clicked"]
   ev_proceedClicked --> ev_amountError["ocr recharge amount error"]
@@ -128,15 +142,20 @@ flowchart TD
 
   ev_successDetails --> ev_summaryOpen["ocr payment summary activity open"]
 
-  ev_orderFailed --> ev_errorAction["chalo card recharge error action btn clicked"]
+  ev_cardInfoFailed --> ui_rechargeError([Recharge data error])
+  ev_configFailed --> ui_rechargeError
+  ui_rechargeError --> ev_errorAction["chalo card recharge error action btn clicked"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_cardDetailsNext,ev_validityCheck,ev_amountScreenOpen,ev_cardInfoSuccess,ev_cardInfoFailed,ev_configFailed,ev_proceedClicked,ev_amountError,ev_termsOpen,ev_acceptTerms,ev_cancelTerms,ev_orderCreated,ev_orderFailed,ev_paymentSuccessOpen,ev_successOk,ev_successDetails,ev_summaryOpen,ev_errorAction event;
-  class ui_enterCard,ui_rechargeAmount ui;
+  class ev_cardDetailsNext,ev_validityCheck,ev_amountScreenOpen,ev_cardInfoSuccess,ev_cardInfoFailed,ev_configFailed,ev_linkTutorial,ev_proceedClicked,ev_amountError,ev_termsOpen,ev_acceptTerms,ev_cancelTerms,ev_orderCreated,ev_orderFailed,ev_paymentSuccessOpen,ev_successOk,ev_successDetails,ev_summaryOpen,ev_errorAction event;
+  class ui_enterCard,ui_rechargeAmount,ui_rechargeError,ui_linkingFlow ui;
   class ext_checkout external;
+
+  %%chalo:diagram-link ui_linkingFlow -> title:Funnel: Chalo Card linking
+  %%chalo:diagram-link ext_checkout -> title:Checkout payment events (shared across card types)
 ```
 
 ## Funnel: Card transactions history
@@ -183,6 +202,8 @@ flowchart TD
   class ev_viewCreated,ev_nextClicked,ev_tncAccepted,ev_orderCreated,ev_apiError,ev_paymentSuccess,ev_paymentFailed,ev_completed event;
   class ui_ncmcOnline ui;
   class ext_checkout external;
+
+  %%chalo:diagram-link ext_checkout -> title:Checkout payment events (shared across card types)
 ```
 
 ## Funnel: NCMC offline recharge
@@ -282,4 +303,12 @@ flowchart TD
 
   class ui_entry,ui_cardType,ui_chaloInfo,ui_chaloActions,ui_ncmcActions,ui_success ui;
   class flow_linking,flow_chaloRecharge,flow_transactions,flow_ncmcOnline,flow_ncmcOffline,flow_tap,flow_checkout flow;
+
+  %%chalo:diagram-link flow_linking -> title:Funnel: Chalo Card linking
+  %%chalo:diagram-link flow_chaloRecharge -> title:Funnel: Chalo Card recharge → payment → success
+  %%chalo:diagram-link flow_transactions -> title:Funnel: Card transactions history
+  %%chalo:diagram-link flow_ncmcOnline -> title:Funnel: NCMC online recharge
+  %%chalo:diagram-link flow_ncmcOffline -> title:Funnel: NCMC offline recharge
+  %%chalo:diagram-link flow_tap -> title:Funnel: NCMC tap operations (NFC)
+  %%chalo:diagram-link flow_checkout -> title:Checkout payment events (shared across card types)
 ```
