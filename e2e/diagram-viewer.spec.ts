@@ -113,6 +113,32 @@ test("clicking a sub-flow node navigates to the sub-diagram (same flow)", async 
   await expect(selector).toContainText(/Main payment flow/i);
 });
 
+test("authentication flow: clicking a funnel node navigates to the funnel diagram", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${BASE_URL}/analytics/flows/authentication`, { waitUntil: "networkidle" });
+
+  const selector = page.getByRole("button", { name: "Select diagram" }).first();
+  await expect(selector).toBeVisible();
+
+  // Select the overview structure diagram (where the funnel nodes exist).
+  await selector.click();
+  await page.getByRole("menuitemradio", { name: /Overall authentication flow structure/i }).first().click();
+  await expect(selector).toContainText(/Overall authentication flow structure/i);
+
+  const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
+  await expect(viewer).toBeVisible();
+
+  const otpFunnelNode = viewer.locator("svg g.node", { hasText: "OTP Login Funnel" }).first();
+  await expect(otpFunnelNode).toBeVisible();
+  await otpFunnelNode.click();
+
+  await expect(selector).toContainText(/Funnel 1: OTP-based login/i);
+  await expect(page).toHaveURL(/\/analytics\/flows\/authentication\?[^#]*diagram=/);
+
+  await page.goBack();
+  await expect(selector).toContainText(/Overall authentication flow structure/i);
+});
+
 test("expand button stays within viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });

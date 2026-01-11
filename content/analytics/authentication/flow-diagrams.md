@@ -31,6 +31,9 @@ flowchart LR
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link funnel_otp -> title:Funnel 1: OTP-based login (phone number)
+  %%chalo:diagram-link funnel_truecaller -> title:Funnel 2: Truecaller login
+  %%chalo:diagram-link ui_profileAccess -> title:Funnel 3: User profile management (post-authentication)
   ui_entry([App requires login]) --> ev_loginScreen["login screen displayed"]
 
   ev_loginScreen -->|User chooses| ui_pathChoice([Authentication path choice])
