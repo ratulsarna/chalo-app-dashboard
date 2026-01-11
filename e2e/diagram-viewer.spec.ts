@@ -9,6 +9,18 @@ async function getScrollTop(page: Page) {
   });
 }
 
+function trackHydrationMismatches(page: Page) {
+  const matches: string[] = [];
+  page.on("console", (msg) => {
+    if (msg.type() !== "error") return;
+    const text = msg.text();
+    if (text.includes("hydrated but some attributes of the server rendered HTML didn't match")) {
+      matches.push(text);
+    }
+  });
+  return matches;
+}
+
 test("wheel-zoom on inline diagram does not scroll page", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
@@ -89,6 +101,7 @@ test("diagram selector switches diagrams", async ({ page }) => {
 
 test("clicking a sub-flow node navigates to the sub-diagram (same flow)", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
+  const hydrationMismatches = trackHydrationMismatches(page);
   await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
 
   const selector = page.getByRole("button", { name: "Select diagram" }).first();
@@ -111,6 +124,7 @@ test("clicking a sub-flow node navigates to the sub-diagram (same flow)", async 
 
   await page.goBack();
   await expect(selector).toContainText(/Main payment flow/i);
+  expect(hydrationMismatches).toEqual([]);
 });
 
 test("expand button stays within viewport", async ({ page }) => {

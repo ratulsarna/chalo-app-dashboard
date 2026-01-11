@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDownIcon, Maximize2Icon } from "lucide-react";
 import Link from "next/link";
 
@@ -57,19 +56,18 @@ export function FlowDiagramPanel({
   flowSlug,
   diagramMarkdown,
   occurrences,
+  initialDiagramParam = null,
   className,
 }: {
   flowSlug: string;
   diagramMarkdown: string;
   occurrences: AnalyticsEventOccurrence[];
+  initialDiagramParam?: string | null;
   className?: string;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [diagramParam, setDiagramParam] = React.useState<string | null>(initialDiagramParam);
 
   const blocks = React.useMemo(() => extractMermaidBlocks(diagramMarkdown), [diagramMarkdown]);
-  const diagramParam = searchParams.get("diagram");
   const selectedId = React.useMemo(
     () => getSelectedBlockId({ blocks, diagramParam }),
     [blocks, diagramParam],
@@ -135,24 +133,36 @@ export function FlowDiagramPanel({
 
   const setDiagram = React.useCallback(
     (id: string) => {
-      const next = new URLSearchParams(searchParams.toString());
-      next.set("diagram", id);
-      router.replace(`${pathname}?${next.toString()}`, { scroll: false });
+      const url = new URL(window.location.href);
+      url.searchParams.set("diagram", id);
+      window.history.replaceState({}, "", url);
+      setDiagramParam(id);
     },
-    [pathname, router, searchParams],
+    [],
   );
 
   const pushDiagram = React.useCallback(
     (id: string) => {
-      const next = new URLSearchParams(searchParams.toString());
-      next.set("diagram", id);
-      router.push(`${pathname}?${next.toString()}`, { scroll: false });
+      const url = new URL(window.location.href);
+      url.searchParams.set("diagram", id);
+      window.history.pushState({}, "", url);
+      setDiagramParam(id);
     },
-    [pathname, router, searchParams],
+    [],
   );
 
   const onEventClick = React.useCallback((eventName: string) => {
     setOpenEventName(eventName);
+  }, []);
+
+  React.useEffect(() => {
+    // Keep local state in sync with back/forward navigation.
+    function onPopState() {
+      const url = new URL(window.location.href);
+      setDiagramParam(url.searchParams.get("diagram"));
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
   React.useEffect(() => {
