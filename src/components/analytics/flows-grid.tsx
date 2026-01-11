@@ -33,7 +33,7 @@ export function FlowsGrid({ flows }: { flows: FlowCard[] }) {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Flows</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Pick a journey to see its funnel diagram, stages, and events.
+            Pick a journey to see its diagrams and events.
           </p>
         </div>
         <div className="sm:w-[320px]">
@@ -47,14 +47,17 @@ export function FlowsGrid({ flows }: { flows: FlowCard[] }) {
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         {filtered.map((flow) => (
-          <Link key={flow.slug} href={`/analytics/flows/${encodeURIComponent(flow.slug)}`}>
-            <Card className="h-full transition-colors hover:bg-accent/30">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <CardTitle className="truncate text-base">{flow.name}</CardTitle>
-                    <CardDescription className="mt-1 truncate">{flow.slug}</CardDescription>
-                  </div>
+          <Link
+            key={flow.slug}
+            href={`/analytics/flows/${encodeURIComponent(flow.slug)}`}
+            className="block h-full"
+          >
+            <Card className="h-full overflow-hidden transition-colors hover:bg-accent/30">
+              <CardHeader className="gap-2">
+                <div className="flex items-start gap-3">
+                  <CardTitle className="min-w-0 flex-1 line-clamp-2 text-base leading-snug">
+                    {flow.name}
+                  </CardTitle>
                   <div className="flex shrink-0 items-center gap-2">
                     {flow.issues && flow.issues.length > 0 ? (
                       <Badge
@@ -70,17 +73,10 @@ export function FlowsGrid({ flows }: { flows: FlowCard[] }) {
                     </Badge>
                   </div>
                 </div>
-                <div className="mt-3 space-y-2">
-                  <p className="line-clamp-2 text-sm text-muted-foreground">
-                    {flow.description ?? "No description available."}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">{flow.flowId}</Badge>
-                    {flow.lastAudited ? (
-                      <Badge variant="outline">audited {flow.lastAudited}</Badge>
-                    ) : null}
-                  </div>
-                </div>
+
+                <CardDescription className="line-clamp-2 text-sm text-muted-foreground">
+                  {flow.description ?? "No description available."}
+                </CardDescription>
               </CardHeader>
             </Card>
           </Link>
