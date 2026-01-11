@@ -302,6 +302,10 @@
       "type": "string",
       "description": "Error message text."
     },
+    "errorType": {
+      "type": "string",
+      "description": "Error type identifier."
+    },
     "errorCode": {
       "type": "string",
       "description": "Error code identifier."
@@ -1247,6 +1251,42 @@
       ]
     },
     {
+      "name": "pb trip details submitted",
+      "component": "PremiumBusStopSelectionComponent",
+      "stage": "Stop Selection",
+      "source": "Source.PREMIUM_BUS_STOP_SELECTION_SCREEN",
+      "description": "User taps proceed after entering trip details.",
+      "properties": [
+        {
+          "property": "searchSource"
+        },
+        {
+          "property": "sourceName"
+        },
+        {
+          "property": "sourceType"
+        },
+        {
+          "property": "sourceLat"
+        },
+        {
+          "property": "sourceLong"
+        },
+        {
+          "property": "destinationName"
+        },
+        {
+          "property": "destinationType"
+        },
+        {
+          "property": "destinationLat"
+        },
+        {
+          "property": "destinationLong"
+        }
+      ]
+    },
+    {
       "name": "pb explore available routes clicked",
       "component": "PremiumBusProductModificationReasonsComponent",
       "stage": "Misc",
@@ -1476,22 +1516,22 @@
     },
     {
       "name": "pb pass savings fetch failure",
-      "component": "PremiumBusSlotSelectionComponent",
-      "stage": "Slot Selection",
-      "source": "Slot selection screen",
-      "description": "Pass savings fetch failed.",
+      "component": "ChaloBusComponent",
+      "stage": "Home & Campaign",
+      "source": "Source.CHALO_BUS_SCREEN_TAB",
+      "description": "Pass savings fetch failed on the Chalo Bus tab.",
       "properties": [
         {
-          "property": "errorMsg"
+          "property": "errorType"
         }
       ]
     },
     {
       "name": "pb pass savings fetch success",
-      "component": "PremiumBusSlotSelectionComponent",
-      "stage": "Slot Selection",
-      "source": "Slot selection screen",
-      "description": "Pass savings information fetched successfully.",
+      "component": "ChaloBusComponent",
+      "stage": "Home & Campaign",
+      "source": "Source.CHALO_BUS_SCREEN_TAB",
+      "description": "Pass savings information fetched successfully on the Chalo Bus tab.",
       "properties": [
         {
           "property": "newPassSavings"
@@ -1506,10 +1546,10 @@
     },
     {
       "name": "pb pass savings info btn clicked",
-      "component": "PremiumBusSlotSelectionComponent",
-      "stage": "Slot Selection",
-      "source": "Slot selection screen",
-      "description": "Pass savings info button clicked.",
+      "component": "ChaloBusComponent",
+      "stage": "Home & Campaign",
+      "source": "Source.CHALO_BUS_SCREEN_TAB",
+      "description": "Pass savings info button clicked on the Chalo Bus tab.",
       "properties": [
         {
           "property": "faqsSize"
@@ -1848,14 +1888,6 @@
       "properties": []
     },
     {
-      "name": "premium bus explore available routes clicked",
-      "component": "PremiumBusSlotSelectionComponent",
-      "stage": "Slot Selection",
-      "source": "Slot selection screen",
-      "description": "Explore available routes clicked.",
-      "properties": []
-    },
-    {
       "name": "premium bus order creation failed",
       "component": "Checkout flow",
       "stage": "Payment & Confirmation",
@@ -1998,14 +2030,6 @@
           "property": "selectedSeatIds"
         }
       ]
-    },
-    {
-      "name": "premium bus view all slots clicked",
-      "component": "PremiumBusSlotSelectionComponent",
-      "stage": "Slot Selection",
-      "source": "Slot selection screen",
-      "description": "View all slots clicked.",
-      "properties": []
     },
     {
       "name": "product hook product selection screen clicked",
