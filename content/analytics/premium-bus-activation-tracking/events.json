@@ -1,0 +1,1068 @@
+{
+  "flowId": "premium_bus_activation_tracking",
+  "flowName": "Premium Bus — Activation & Tracking",
+  "description": "Analytics map for post-booking premium bus experience: activation, live tracking, cancellation, receipts, and acknowledgment cards.",
+  "propertyDefinitions": {
+    "bookingId": {
+      "type": "string",
+      "description": "Unique booking identifier assigned after successful booking creation."
+    },
+    "passId": {
+      "type": "string",
+      "description": "Pass/subscription identifier for pass-based bookings."
+    },
+    "tripId": {
+      "type": "string",
+      "description": "Specific trip identifier for the selected slot."
+    },
+    "routeId": {
+      "type": "string",
+      "description": "Route identifier for the premium bus service."
+    },
+    "configId": {
+      "type": "string",
+      "description": "Product configuration identifier."
+    },
+    "fromStopId": {
+      "type": "string",
+      "description": "Pickup stop identifier."
+    },
+    "fromStopName": {
+      "type": "string",
+      "description": "Pickup stop name."
+    },
+    "toStopId": {
+      "type": "string",
+      "description": "Drop stop identifier."
+    },
+    "toStopName": {
+      "type": "string",
+      "description": "Drop stop name."
+    },
+    "pickupStopId": {
+      "type": "string",
+      "description": "Alias for fromStopId used in some contexts."
+    },
+    "pickupStopName": {
+      "type": "string",
+      "description": "Alias for fromStopName used in some contexts."
+    },
+    "dropStopId": {
+      "type": "string",
+      "description": "Alias for toStopId used in some contexts."
+    },
+    "dropStopName": {
+      "type": "string",
+      "description": "Alias for toStopName used in some contexts."
+    },
+    "pickUpId": {
+      "type": "string",
+      "description": "OD pair pickup stop ID (used in stop selection)."
+    },
+    "pickUpName": {
+      "type": "string",
+      "description": "OD pair pickup stop name."
+    },
+    "dropId": {
+      "type": "string",
+      "description": "OD pair drop stop ID (used in stop selection)."
+    },
+    "dropName": {
+      "type": "string",
+      "description": "OD pair drop stop name."
+    },
+    "sourceName": {
+      "type": "string",
+      "description": "Source location name entered by user."
+    },
+    "sourceType": {
+      "type": "string",
+      "description": "Type of source location (e.g., place, address)."
+    },
+    "sourceLat": {
+      "type": "number",
+      "description": "Source location latitude."
+    },
+    "sourceLong": {
+      "type": "number",
+      "description": "Source location longitude."
+    },
+    "destinationName": {
+      "type": "string",
+      "description": "Destination location name entered by user."
+    },
+    "destinationType": {
+      "type": "string",
+      "description": "Type of destination location."
+    },
+    "destinationLat": {
+      "type": "number",
+      "description": "Destination location latitude."
+    },
+    "destinationLong": {
+      "type": "number",
+      "description": "Destination location longitude."
+    },
+    "flowType": {
+      "type": "string",
+      "description": "Type of booking flow.",
+      "values": [
+        "fresh booking",
+        "user reschedule",
+        "pass-based",
+        "bulk booking"
+      ]
+    },
+    "flow": {
+      "type": "string",
+      "description": "Flow token used in some contexts to identify the journey type."
+    },
+    "attributionType": {
+      "type": "string",
+      "description": "Attribution type for deeplinks (if applicable)."
+    },
+    "selectedSlotTripId": {
+      "type": "string",
+      "description": "Trip ID of the selected slot."
+    },
+    "selectedSlotTime": {
+      "type": "string",
+      "description": "Departure time of the selected slot."
+    },
+    "selectedSlotArrivalTime": {
+      "type": "string",
+      "description": "Arrival time of the selected slot."
+    },
+    "selectedSlotSeatAvailable": {
+      "type": "number",
+      "description": "Number of seats available in the selected slot."
+    },
+    "selectedSlotRouteId": {
+      "type": "string",
+      "description": "Route ID of the selected slot."
+    },
+    "slotTime": {
+      "type": "string",
+      "description": "Slot departure time."
+    },
+    "slotFromStopTime": {
+      "type": "string",
+      "description": "Time at which the slot departs from the pickup stop."
+    },
+    "slotTripStartTime": {
+      "type": "string",
+      "description": "Trip start time for the slot."
+    },
+    "nextAvailableTimeSlot": {
+      "type": "string",
+      "description": "Next available time slot if current selection is full."
+    },
+    "numberOfActiveSlots": {
+      "type": "number",
+      "description": "Total number of active slots across all days."
+    },
+    "numberOfSoldOutSlots": {
+      "type": "number",
+      "description": "Total number of sold out slots across all days."
+    },
+    "currentDayActiveSlotCount": {
+      "type": "number",
+      "description": "Number of active slots for the currently selected day."
+    },
+    "currentDaySoldOutSlotCount": {
+      "type": "number",
+      "description": "Number of sold out slots for the currently selected day."
+    },
+    "selectedSection": {
+      "type": "string",
+      "description": "Selected date section/tab in slot selection screen."
+    },
+    "isAnySlotAvailable": {
+      "type": "boolean",
+      "description": "Whether any slot is available for booking."
+    },
+    "routesForSelectedOD": {
+      "type": "number",
+      "description": "Number of routes available for the selected OD pair."
+    },
+    "selectedSeatIds": {
+      "type": "array",
+      "description": "List of selected seat IDs."
+    },
+    "selectedSeatNumbers": {
+      "type": "array",
+      "description": "List of selected seat numbers."
+    },
+    "selectedSeatNums": {
+      "type": "array",
+      "description": "Alias for selectedSeatNumbers."
+    },
+    "selectedSeatId": {
+      "type": "string",
+      "description": "Individual selected seat ID."
+    },
+    "selectedSeatNum": {
+      "type": "string",
+      "description": "Individual selected seat number."
+    },
+    "selectedSeatType": {
+      "type": "string",
+      "description": "Type of selected seat (regular, reserved, etc.)."
+    },
+    "selectedSeatStatus": {
+      "type": "string",
+      "description": "Status of selected seat (available, unavailable, selected)."
+    },
+    "selectedSeatReservationType": {
+      "type": "string",
+      "description": "Reservation type for the seat (e.g., female-reserved)."
+    },
+    "selectedSeatX": {
+      "type": "number",
+      "description": "X coordinate of selected seat in layout."
+    },
+    "selectedSeatY": {
+      "type": "number",
+      "description": "Y coordinate of selected seat in layout."
+    },
+    "noOfSeatsSelected": {
+      "type": "number",
+      "description": "Count of seats selected by user."
+    },
+    "selectedSeatCount": {
+      "type": "number",
+      "description": "Alias for noOfSeatsSelected."
+    },
+    "totalSeats": {
+      "type": "number",
+      "description": "Total number of seats in the bus layout."
+    },
+    "availableSeats": {
+      "type": "number",
+      "description": "Number of available seats."
+    },
+    "unavailableSeats": {
+      "type": "number",
+      "description": "Number of unavailable seats."
+    },
+    "pbSeatSelectionFlowType": {
+      "type": "string",
+      "description": "Type of seat selection flow.",
+      "values": [
+        "fresh_booking",
+        "seat_change",
+        "bulk_booking"
+      ]
+    },
+    "numberOfCombinationsShown": {
+      "type": "number",
+      "description": "Number of OD combinations shown to user."
+    },
+    "firstMileWalkingTime": {
+      "type": "number",
+      "description": "Walking time from source to pickup stop (in minutes)."
+    },
+    "lastMileWalkingTime": {
+      "type": "number",
+      "description": "Walking time from drop stop to destination (in minutes)."
+    },
+    "combinedWalkingTime": {
+      "type": "number",
+      "description": "Total walking time for first and last mile."
+    },
+    "firstCombinationWalkingTime": {
+      "type": "number",
+      "description": "Walking time for the first suggested OD combination."
+    },
+    "firstCombinationPickUpId": {
+      "type": "string",
+      "description": "Pickup stop ID of first suggested combination."
+    },
+    "firstCombinationPickUpName": {
+      "type": "string",
+      "description": "Pickup stop name of first suggested combination."
+    },
+    "firstCombinationDropId": {
+      "type": "string",
+      "description": "Drop stop ID of first suggested combination."
+    },
+    "firstCombinationDropName": {
+      "type": "string",
+      "description": "Drop stop name of first suggested combination."
+    },
+    "searchSource": {
+      "type": "string",
+      "description": "Source of the search (e.g., home screen, deeplink)."
+    },
+    "rebookCardCount": {
+      "type": "number",
+      "description": "Number of rebook cards shown."
+    },
+    "errorMsg": {
+      "type": "string",
+      "description": "Error message text."
+    },
+    "errorCode": {
+      "type": "string",
+      "description": "Error code identifier."
+    },
+    "errorTitle": {
+      "type": "string",
+      "description": "Error title shown to user."
+    },
+    "previousScreen": {
+      "type": "string",
+      "description": "Previous screen identifier."
+    },
+    "isNewLandingScreen": {
+      "type": "boolean",
+      "description": "Whether the new landing screen design is shown."
+    },
+    "totalPassesCount": {
+      "type": "number",
+      "description": "Total number of passes available."
+    },
+    "supportedPassesCount": {
+      "type": "number",
+      "description": "Number of passes supported for current OD pair."
+    },
+    "selectedPurchaseOption": {
+      "type": "string",
+      "description": "Selected purchase option (ticket vs pass)."
+    },
+    "totalODPairs": {
+      "type": "number",
+      "description": "Total number of OD pairs available."
+    },
+    "selectedODPairPosition": {
+      "type": "number",
+      "description": "Position/index of selected OD pair."
+    },
+    "pbODPairListSize": {
+      "type": "number",
+      "description": "Size of OD pair list."
+    },
+    "isRescheduledODFound": {
+      "type": "boolean",
+      "description": "Whether the rescheduled booking's OD pair was found."
+    },
+    "activeAndVisibleProductSize": {
+      "type": "number",
+      "description": "Number of active and visible products."
+    },
+    "isSubcategoryAvailable": {
+      "type": "boolean",
+      "description": "Whether product subcategories are available."
+    },
+    "productType": {
+      "type": "string",
+      "description": "Product type.",
+      "values": [
+        "ticket",
+        "pass"
+      ]
+    },
+    "productSubType": {
+      "type": "string",
+      "description": "Product sub-type (e.g., valuePass, bulkBooking)."
+    },
+    "couponName": {
+      "type": "string",
+      "description": "Applied coupon name."
+    },
+    "effectiveFare": {
+      "type": "number",
+      "description": "Final effective fare after discounts."
+    },
+    "appliedRulesId": {
+      "type": "array",
+      "description": "List of applied discount/fare rule IDs."
+    },
+    "ticketStatus": {
+      "type": "string",
+      "description": "Status of the ticket/booking.",
+      "values": [
+        "active",
+        "expired",
+        "cancelled",
+        "upcoming"
+      ]
+    },
+    "pbAckCtaType": {
+      "type": "string",
+      "description": "Type of CTA clicked on acknowledgment screen.",
+      "values": [
+        "Details",
+        "Okay"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Verification/validation status."
+    },
+    "isPostBoardingFlow": {
+      "type": "boolean",
+      "description": "Whether tracking started after boarding."
+    },
+    "timeWhenScreenOpened": {
+      "type": "number",
+      "description": "Timestamp when activation screen opened (millis)."
+    },
+    "delayInFetchingEta": {
+      "type": "number",
+      "description": "Delay in fetching ETA after screen open (millis)."
+    },
+    "timeWhenEtaRenderedFirstTime": {
+      "type": "number",
+      "description": "Timestamp when ETA was first rendered (millis)."
+    },
+    "isFirstTimeEtaCame": {
+      "type": "boolean",
+      "description": "Whether this is the first time ETA was received."
+    },
+    "lastPacketReceivedTimeInMillis": {
+      "type": "number",
+      "description": "Timestamp of last tracking packet received."
+    },
+    "currentPacketReceivedTimeInMillis": {
+      "type": "number",
+      "description": "Timestamp of current tracking packet."
+    },
+    "timeDifferenceBetweenPacketsInMillis": {
+      "type": "number",
+      "description": "Time difference between consecutive tracking packets."
+    },
+    "isToggledOn": {
+      "type": "boolean",
+      "description": "Toggle state (for traffic view)."
+    },
+    "activeBookingActionType": {
+      "type": "string",
+      "description": "Type of action on active booking."
+    },
+    "activeBookingActionSubText": {
+      "type": "string",
+      "description": "Sub-text for active booking action."
+    },
+    "isActionAllowed": {
+      "type": "boolean",
+      "description": "Whether the action is allowed."
+    },
+    "premiumBusStackType": {
+      "type": "string",
+      "description": "Type of premium bus booking stack."
+    },
+    "cancellationReason": {
+      "type": "string",
+      "description": "Reason text for cancellation."
+    },
+    "cancellationReasonId": {
+      "type": "string",
+      "description": "Reason ID for cancellation."
+    },
+    "cancellationEligibilityCopy": {
+      "type": "string",
+      "description": "Eligibility copy shown on cancellation dialog."
+    },
+    "numberOfTrips": {
+      "type": "number",
+      "description": "Number of trips in bulk booking."
+    },
+    "numberOfTripsPerDay": {
+      "type": "number",
+      "description": "Number of trips per day in bulk booking."
+    },
+    "numberOfDaysInRange": {
+      "type": "number",
+      "description": "Number of days in date range for bulk booking."
+    },
+    "selectedWeekdays": {
+      "type": "array",
+      "description": "List of selected weekdays for bulk booking."
+    },
+    "numberOfSelectedWeekdays": {
+      "type": "number",
+      "description": "Count of selected weekdays."
+    },
+    "selectedStartDate": {
+      "type": "string",
+      "description": "Selected start date for bulk booking."
+    },
+    "selectedEndDate": {
+      "type": "string",
+      "description": "Selected end date for bulk booking."
+    },
+    "previousStartDate": {
+      "type": "string",
+      "description": "Previous start date before edit."
+    },
+    "previousEndDate": {
+      "type": "string",
+      "description": "Previous end date before edit."
+    },
+    "newStartDate": {
+      "type": "string",
+      "description": "New start date after edit."
+    },
+    "newEndDate": {
+      "type": "string",
+      "description": "New end date after edit."
+    },
+    "rideNumber": {
+      "type": "number",
+      "description": "Ride number in bulk booking sequence."
+    },
+    "typeOfSlot": {
+      "type": "string",
+      "description": "Type of slot (e.g., morning, evening)."
+    },
+    "numberOfSlotsShown": {
+      "type": "number",
+      "description": "Number of slots shown to user."
+    },
+    "numberOfSlotsWithLimitedAvailabilityShown": {
+      "type": "number",
+      "description": "Number of slots with limited availability."
+    },
+    "remainingTrips": {
+      "type": "number",
+      "description": "Remaining trips in pass."
+    },
+    "ridesLeft": {
+      "type": "number",
+      "description": "Remaining rides in pass."
+    },
+    "activeRides": {
+      "type": "number",
+      "description": "Number of active rides in pass."
+    },
+    "bookingCancelledRides": {
+      "type": "number",
+      "description": "Number of cancelled rides in pass."
+    },
+    "bookingUnderProcessRides": {
+      "type": "number",
+      "description": "Number of rides under processing."
+    },
+    "pastBookings": {
+      "type": "number",
+      "description": "Number of past bookings."
+    },
+    "isTicketAvailable": {
+      "type": "boolean",
+      "description": "Whether ticket is available for re-booking."
+    },
+    "dialogType": {
+      "type": "string",
+      "description": "Type of dialog shown."
+    },
+    "isBulkBookingPass": {
+      "type": "boolean",
+      "description": "Whether this is a bulk booking pass."
+    },
+    "newPurchaseFlow": {
+      "type": "boolean",
+      "description": "Whether new purchase flow is being used."
+    },
+    "passInfo": {
+      "type": "string",
+      "description": "Pass information summary."
+    },
+    "rollOverEligible": {
+      "type": "boolean",
+      "description": "Whether pass is eligible for rollover."
+    },
+    "daysLeftToExpiry": {
+      "type": "number",
+      "description": "Days remaining until pass expiry."
+    },
+    "routeName": {
+      "type": "string",
+      "description": "Name of the route."
+    },
+    "tripDate": {
+      "type": "string",
+      "description": "Date of the trip."
+    },
+    "days": {
+      "type": "array",
+      "description": "List of days (for bulk booking)."
+    },
+    "startTimeInMillis": {
+      "type": "number",
+      "description": "Start time in milliseconds."
+    },
+    "endTimeInMillis": {
+      "type": "number",
+      "description": "End time in milliseconds."
+    },
+    "imageUrl": {
+      "type": "string",
+      "description": "URL of pass/product image."
+    },
+    "newPassSavings": {
+      "type": "number",
+      "description": "New pass savings amount."
+    },
+    "oldPassSavings": {
+      "type": "number",
+      "description": "Old pass savings amount."
+    },
+    "isUpdated": {
+      "type": "boolean",
+      "description": "Whether savings were updated."
+    },
+    "faqsSize": {
+      "type": "number",
+      "description": "Number of FAQs available."
+    },
+    "advanceBookingDays": {
+      "type": "number",
+      "description": "Number of days in advance booking is allowed."
+    },
+    "defaultTimeDate": {
+      "type": "string",
+      "description": "Default time/date shown."
+    },
+    "inputTimeDate": {
+      "type": "string",
+      "description": "Time/date input by user."
+    },
+    "lastAssignedVehicleNumber": {
+      "type": "string",
+      "description": "Last assigned vehicle number."
+    },
+    "newAssignedVehicleNumber": {
+      "type": "string",
+      "description": "New assigned vehicle number."
+    },
+    "lastAssignedStopId": {
+      "type": "string",
+      "description": "Last assigned stop ID."
+    },
+    "newAssignedStopId": {
+      "type": "string",
+      "description": "New assigned stop ID."
+    },
+    "lastAssignedRouteId": {
+      "type": "string",
+      "description": "Last assigned route ID."
+    },
+    "newAssignedRouteID": {
+      "type": "string",
+      "description": "New assigned route ID."
+    },
+    "bookingMode": {
+      "type": "string",
+      "description": "Mode of booking (single, bulk)."
+    },
+    "tripDetails": {
+      "type": "string",
+      "description": "Trip details summary."
+    },
+    "route id": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "string"
+    }
+  },
+  "events": [
+    {
+      "name": "pb booking confirmed",
+      "component": "PBPreBookingConfirmationComponent / Checkout flow",
+      "stage": "Payment & Confirmation",
+      "source": "Booking confirmation",
+      "description": "Booking confirmed successfully after payment.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "routeId"
+        },
+        {
+          "property": "fromStopId"
+        },
+        {
+          "property": "toStopId"
+        },
+        {
+          "property": "tripDate"
+        }
+      ]
+    },
+    {
+      "name": "pb activation screen opened",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Ticket activation screen opened post-booking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb activation screen traffic view toggled",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Traffic view toggled on map.",
+      "properties": [
+        {
+          "property": "isToggledOn"
+        }
+      ]
+    },
+    {
+      "name": "pb active booking option item clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Activation screen",
+      "description": "Option item clicked from more options menu.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "activeBookingActionType"
+        },
+        {
+          "property": "activeBookingActionSubText"
+        },
+        {
+          "property": "isActionAllowed"
+        }
+      ]
+    },
+    {
+      "name": "pb active booking options clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Activation screen",
+      "description": "More options menu clicked on active booking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb booking cancellation successful",
+      "component": "Cancellation flow",
+      "stage": "Ticket Management",
+      "source": "Cancellation flow",
+      "description": "Booking cancelled successfully.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cancellationReason"
+        }
+      ]
+    },
+    {
+      "name": "pb first time eta rendered on activation screen",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "First time ETA rendered on activation screen.",
+      "properties": [
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "delayInFetchingEta"
+        },
+        {
+          "property": "timeWhenScreenOpened"
+        },
+        {
+          "property": "timeWhenEtaRenderedFirstTime"
+        }
+      ]
+    },
+    {
+      "name": "pb navigate directions clicked",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Navigate/directions button clicked.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb poor network or dead zone detected",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Poor network or dead zone detected during live tracking.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "isFirstTimeEtaCame"
+        },
+        {
+          "property": "lastPacketReceivedTimeInMillis"
+        },
+        {
+          "property": "currentPacketReceivedTimeInMillis"
+        },
+        {
+          "property": "timeDifferenceBetweenPacketsInMillis"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancel conf bottom sheet opened",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Cancellation flow",
+      "description": "Trip cancellation confirmation bottom sheet opened.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cancellationReason"
+        },
+        {
+          "property": "cancellationReasonId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation book another ride cta clicked",
+      "component": "Cancellation flow",
+      "stage": "Ticket Management",
+      "source": "Cancellation dialog",
+      "description": "Book another ride CTA clicked after cancellation.",
+      "properties": [
+        {
+          "property": "bookingId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation go back cta clicked",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Ticket Management",
+      "source": "Cancellation dialog",
+      "description": "Go back CTA clicked on cancellation confirmation.",
+      "properties": [
+        {
+          "property": "cancellationEligibilityCopy"
+        }
+      ]
+    },
+    {
+      "name": "pb trip cancellation okay cta clicked",
+      "component": "Cancellation flow",
+      "stage": "Ticket Management",
+      "source": "Cancellation dialog",
+      "description": "Okay CTA clicked to proceed with cancellation.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "cancellationReason"
+        },
+        {
+          "property": "cancellationReasonId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip polling response change",
+      "component": "FetchPremiumBusTripDetailsAndLiveEtaUseCase",
+      "stage": "Misc",
+      "source": "source",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "lastAssignedRouteId"
+        },
+        {
+          "property": "lastAssignedStopId"
+        },
+        {
+          "property": "lastAssignedVehicleNumber"
+        },
+        {
+          "property": "newAssignedRouteID"
+        },
+        {
+          "property": "newAssignedStopId"
+        },
+        {
+          "property": "newAssignedVehicleNumber"
+        }
+      ]
+    },
+    {
+      "name": "pb trip tracking ended for user",
+      "component": "NewPremiumBusReserveTicketActivationComponent / PremiumBusAnalyticsHelper",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Live trip tracking ended for user.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        }
+      ]
+    },
+    {
+      "name": "pb trip tracking started for user",
+      "component": "NewPremiumBusReserveTicketActivationComponent / PremiumBusAnalyticsHelper",
+      "stage": "Ticket Activation",
+      "source": "Activation screen",
+      "description": "Live trip tracking started for user.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "isPostBoardingFlow"
+        }
+      ]
+    },
+    {
+      "name": "pb value pass booking cancellation refund blocked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Misc",
+      "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "pb value pass booking cancellation upgrade CTA clicked",
+      "component": "NewPremiumBusReserveTicketActivationComponent",
+      "stage": "Activation",
+      "source": "Source.PREMIUM_RESERVE_TICKET_ACTIVATION_FRAGMENT.sourceName",
+      "properties": [
+        {
+          "property": "passId"
+        }
+      ]
+    },
+    {
+      "name": "pb verify ticket clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Activation screen",
+      "description": "Verify ticket button clicked.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "tripId"
+        },
+        {
+          "property": "status"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket ack cta clicked",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Home screen",
+      "description": "CTA clicked on premium bus acknowledgment card.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "pbAckCtaType"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket ack shown",
+      "component": "PremiumBusAnalyticsHelper",
+      "stage": "Ticket Management",
+      "source": "Home screen",
+      "description": "Premium bus ticket acknowledgment card shown on home screen.",
+      "properties": [
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "ticketStatus"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket fetched",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Misc",
+      "source": "source",
+      "properties": []
+    },
+    {
+      "name": "premium reserve ticket receipt payload",
+      "component": "PremiumReserveTicketValidationConfig",
+      "stage": "Misc",
+      "source": "this::class.simpleName.toString(",
+      "properties": [
+        {
+          "property": "payload"
+        }
+      ]
+    },
+    {
+      "name": "premium reserve ticket view receipt clicked",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Misc",
+      "source": "source",
+      "properties": []
+    },
+    {
+      "name": "premium reserve ticket punch received",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation",
+      "description": "Premium bus ticket punch received from backend."
+    },
+    {
+      "name": "premium reserve ticket trip punched",
+      "component": "PremiumReserveTicketValidationAnalyticsManager",
+      "stage": "Validation",
+      "source": "validation",
+      "description": "Premium bus ticket trip marked as punched."
+    }
+  ]
+}

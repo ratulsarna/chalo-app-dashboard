@@ -17,10 +17,20 @@
       "description": "Monthly/weekly passes for city buses - pass selection, passenger details, proof submission, verification, activation. Multi-ride passes.",
       "lastAudited": "2026-01-10"
     },
-    "premium-bus": {
-      "name": "Premium Bus",
-      "description": "Reserved premium bus booking - route selection, seat selection, slot booking, pre-booking, cancellation. AC/premium bus services.",
-      "lastAudited": "2026-01-10"
+    "premium-bus-activation-tracking": {
+      "name": "Premium Bus — Activation & Tracking",
+      "description": "Post-booking premium bus experience - activation screen, live tracking, cancellation, receipts, and acknowledgment cards.",
+      "lastAudited": "2026-01-11"
+    },
+    "premium-bus-booking": {
+      "name": "Premium Bus — Booking",
+      "description": "Premium bus booking conversion - trip details, pickup/drop, slot selection, seat selection, checkout/order creation, booking confirmation.",
+      "lastAudited": "2026-01-11"
+    },
+    "premium-bus-bulk-booking": {
+      "name": "Premium Bus — Bulk Booking & Manage Rides",
+      "description": "Premium bus manage rides + bulk booking (multi-ride) - eligibility checks, stop/slot selection, seat selection for multiple trips, confirmation, rebooking.",
+      "lastAudited": "2026-01-11"
     },
     "metro": {
       "name": "Metro",

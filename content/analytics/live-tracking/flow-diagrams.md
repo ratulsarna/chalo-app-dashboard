@@ -406,7 +406,10 @@ See `content/analytics/payment/flow-diagrams.md` for the full checkout/payment i
 
 ## External: Premium bus booking flow
 
-See `content/analytics/premium-bus-booking/flow-diagrams.md` for premium bus booking flow details.
+See:
+- `content/analytics/premium-bus-booking/flow-diagrams.md` (booking conversion)
+- `content/analytics/premium-bus-bulk-booking/flow-diagrams.md` (manage rides + bulk booking)
+- `content/analytics/premium-bus-activation-tracking/flow-diagrams.md` (post-booking activation + live tracking)
 
 ### Funnel 5: Problem Reporting (Feedback)
 Measure user feedback submission rate.

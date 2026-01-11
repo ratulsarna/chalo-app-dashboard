@@ -185,7 +185,7 @@ flowchart TD
 ```
 External modules referenced here:
 - Validation: `docs/analytics/validation/`
-- Premium bus activation: `docs/analytics/premium-bus-booking/`
+- Premium bus activation: `content/analytics/premium-bus-activation-tracking/`
 
 ## Funnel: Promotional Hooks → Purchase Flow
 
