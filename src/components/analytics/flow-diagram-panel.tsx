@@ -78,11 +78,6 @@ export function FlowDiagramPanel({
   );
   const diagramMenuTriggerId = `${baseId}-diagram-trigger`;
   const diagramMenuContentId = `${baseId}-diagram-content`;
-  const expandSheetTriggerId = `${baseId}-expand-trigger`;
-  const expandSheetContentId = `${baseId}-expand-content`;
-  const expandSheetTitleId = `${baseId}-expand-title`;
-  const occurrencesSheetContentId = `${baseId}-occurrences-content`;
-  const occurrencesSheetTitleId = `${baseId}-occurrences-title`;
   const occurrenceMenuTriggerId = `${baseId}-occurrence-trigger`;
   const occurrenceMenuContentId = `${baseId}-occurrence-content`;
 
@@ -270,24 +265,15 @@ export function FlowDiagramPanel({
                 variant="outline"
                 size="sm"
                 className="shrink-0 gap-2"
-                id={expandSheetTriggerId}
-                aria-controls={expandSheetContentId}
               >
                 <Maximize2Icon className="size-4" />
                 Expand
               </Button>
             </SheetTrigger>
-            <SheetContent
-              id={expandSheetContentId}
-              aria-labelledby={expandSheetTitleId}
-              side="right"
-              className="w-full p-0 sm:max-w-6xl"
-            >
+            <SheetContent side="right" className="w-full p-0 sm:max-w-6xl">
               <div className="flex h-full flex-col">
                 <SheetHeader className="border-b px-6 py-4">
-                  <SheetTitle id={expandSheetTitleId} className="text-base">
-                    {selected.title}
-                  </SheetTitle>
+                  <SheetTitle className="text-base">{selected.title}</SheetTitle>
                 </SheetHeader>
                 <div className="flex-1 p-6">
                   <MermaidDiagramViewer
@@ -322,16 +308,10 @@ export function FlowDiagramPanel({
           if (!v) setOpenEventName(null);
         }}
       >
-        <SheetContent
-          id={occurrencesSheetContentId}
-          aria-labelledby={occurrencesSheetTitleId}
-          className="w-full p-0 sm:max-w-xl"
-        >
+        <SheetContent className="w-full p-0 sm:max-w-xl">
           <div className="flex h-full flex-col">
             <SheetHeader className="border-b pb-3 pr-12">
-              <SheetTitle id={occurrencesSheetTitleId} className="break-words">
-                {openEventName ?? ""}
-              </SheetTitle>
+              <SheetTitle className="break-words">{openEventName ?? ""}</SheetTitle>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <Badge variant="secondary" className="tabular-nums">
                   {matches.length} {matches.length === 1 ? "occurrence" : "occurrences"} in this flow
