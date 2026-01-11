@@ -273,7 +273,7 @@
       "component": "MetroLandingScreenComponent",
       "stage": "ONDC Route Search",
       "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
-      "description": "ONDC route search returned results (including the 0-results case).",
+      "description": "ONDC route search returned 0 routes (no routes available).",
       "properties": [
         { "property": "totalResults" },
         { "property": "flowType", "context": "ondc" }

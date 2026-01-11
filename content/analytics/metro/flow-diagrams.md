@@ -20,6 +20,7 @@ flowchart LR
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
   class ev event;
   class ui ui;
@@ -32,23 +33,24 @@ This funnel covers the metro landing screen from screen open through station sel
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_proceedBtn -> title:Funnel: Confirm Booking to Order Creation
   ui_open([Open Metro landing]) --> ev_open["stop based metro landing screen opened"]
 
   ev_open --> ui_config{Fetch config}
   ui_config -->|Success| ev_cfgOk["metro config fetch success"]
   ui_config -->|Failure| ev_cfgFail["metro config fetch failed"]
 
-  ev_cfgOk --> ui_stations{Fetch station list}
-  ui_stations -->|Success| ev_stationsOk["metro all stations fetch success"]
-  ui_stations -->|Failure| ev_stationsFail["metro all stations fetch failed"]
-
-  ev_stationsOk --> ui_selectStops([Select stations])
+  ev_cfgOk --> ui_selectStops([Select stations])
 
   ui_selectStops --> ev_fromClick["from station clicked"]
-  ev_fromClick --> ev_stopSelectedFrom["metro stop selected"]
+  ev_fromClick --> ui_stations{Fetch station list (if needed)}
+  ui_stations -->|Success| ev_stationsOk["metro all stations fetch success"]
+  ui_stations -->|Failure| ev_stationsFail["metro all stations fetch failed"]
+  ev_stationsOk -->|stopType=FROM| ev_stopSelectedFrom["metro stop selected"]
 
   ui_selectStops --> ev_toClick["to station clicked"]
-  ev_toClick --> ev_stopSelectedTo["metro stop selected"]
+  ev_toClick --> ui_stations
+  ev_stationsOk -->|stopType=TO| ev_stopSelectedTo["metro stop selected"]
 
   ui_selectStops --> ev_swap["swap button clicked"]
   ui_selectStops --> ev_recentTrip["recent stop based trip clicked"]
@@ -77,9 +79,11 @@ This funnel covers the ONDC route search result events emitted during ONDC metro
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ext_ondcFare -> title:Instant Ticket Purchase Flow (ONDC metro fare details)
   ui_search([Search ONDC metro routes]) --> ui_results{Route search result}
 
-  ui_results -->|Success / No routes| ev_routesOk["stop based stop selection screen route result success"]
+  ui_results -->|No routes| ev_routesOk["stop based stop selection screen route result success"]
+  ui_results -->|Routes available| ext_ondcFare[ONDC fare details (instant ticket flow)]
   ui_results -->|Failure| ev_routesFail["stop based stop selection screen route result failure"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
@@ -87,6 +91,7 @@ flowchart TD
 
   class ev_routesOk,ev_routesFail event;
   class ui_search,ui_results ui;
+  class ext_ondcFare external;
 ```
 
 ## Funnel: Confirm Booking to Order Creation
@@ -95,6 +100,7 @@ This funnel covers the booking confirmation screen through payment initiation.
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ext_checkout -> title:Funnel: Payment to Booking Success
   ui_confirmScreen([Confirm booking screen]) --> ev_confirmOpen["confirm screen opened"]
 
   ev_confirmOpen --> ui_finalFare{Fetch final fare}
@@ -126,6 +132,8 @@ This funnel covers payment completion and booking confirmation.
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_bookingConfirmed -> title:Funnel: Ticket Validation - QR Flow
+  %%chalo:diagram-link ev_ondcBookingConfirmed -> title:Funnel: Ticket Validation - QR Flow
   ext_checkout[Checkout flow] --> ui_paymentResult{Payment result}
 
   ui_paymentResult -->|Success| ev_paymentOk["metro ticket payment successful"]
@@ -196,11 +204,15 @@ End-to-end funnel for the complete metro booking journey using static QR validat
 
 ```mermaid
 flowchart TD
+  %%chalo:diagram-link ev_landingOpen -> title:Funnel: Landing Screen to Fare Discovery
+  %%chalo:diagram-link ev_confirmOpen -> title:Funnel: Confirm Booking to Order Creation
+  %%chalo:diagram-link ext_checkout -> title:Funnel: Payment to Booking Success
+  %%chalo:diagram-link ev_ticketFetched -> title:Funnel: Ticket Validation - QR Flow
   ui_start([User opens metro]) --> ev_landingOpen["stop based metro landing screen opened"]
   ev_landingOpen --> ev_configOk["metro config fetch success"]
-  ev_configOk --> ev_stationsOk["metro all stations fetch success"]
-  ev_stationsOk --> ev_fromClick["from station clicked"]
-  ev_fromClick --> ev_stopFrom["metro stop selected"]
+  ev_configOk --> ev_fromClick["from station clicked"]
+  ev_fromClick --> ev_stationsOk["metro all stations fetch success"]
+  ev_stationsOk --> ev_stopFrom["metro stop selected"]
   ev_stopFrom --> ev_toClick["to station clicked"]
   ev_toClick --> ev_stopTo["metro stop selected"]
   ev_stopTo --> ev_searchBtn["booking mode search button clicked"]
