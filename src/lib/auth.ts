@@ -1,8 +1,16 @@
 export const AUTH_COOKIE_NAME = "chalo_auth";
 
-const AUTH_USERNAME = process.env.AUTH_USERNAME;
-const AUTH_PASSWORD = process.env.AUTH_PASSWORD;
-const AUTH_SECRET = process.env.AUTH_SECRET;
+// Access env vars via functions to ensure they're read at runtime,
+// not captured at build time (critical for Edge Runtime in middleware).
+function getAuthUsername() {
+  return process.env.AUTH_USERNAME;
+}
+function getAuthPassword() {
+  return process.env.AUTH_PASSWORD;
+}
+function getAuthSecret() {
+  return process.env.AUTH_SECRET;
+}
 
 const encoder = new TextEncoder();
 
@@ -39,11 +47,11 @@ async function hmacSha256(secret: string, message: string) {
 }
 
 export function isAuthEnabled() {
-  return Boolean(AUTH_USERNAME && AUTH_PASSWORD && AUTH_SECRET);
+  return Boolean(getAuthUsername() && getAuthPassword() && getAuthSecret());
 }
 
 export async function verifyCredentials(username: string, password: string) {
-  return isAuthEnabled() && username === AUTH_USERNAME && password === AUTH_PASSWORD;
+  return isAuthEnabled() && username === getAuthUsername() && password === getAuthPassword();
 }
 
 export async function createAuthCookie(username: string) {
@@ -51,7 +59,7 @@ export async function createAuthCookie(username: string) {
     throw new Error("Auth is not configured.");
   }
   const payload = base64UrlEncodeString(username);
-  const signature = await hmacSha256(AUTH_SECRET as string, payload);
+  const signature = await hmacSha256(getAuthSecret() as string, payload);
   return `${payload}.${signature}`;
 }
 
@@ -71,6 +79,6 @@ export async function verifyAuthCookie(value: string | undefined | null) {
     return false;
   }
 
-  const expected = await hmacSha256(AUTH_SECRET as string, payload);
+  const expected = await hmacSha256(getAuthSecret() as string, payload);
   return expected === signature;
 }

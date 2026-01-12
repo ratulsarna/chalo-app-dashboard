@@ -32,7 +32,7 @@ export async function SiteHeader() {
           ) : null}
           {authEnabled && isSignedIn ? (
             <Button asChild variant="ghost" size="sm">
-              <Link href="/api/logout">Sign out</Link>
+              <Link href="/api/logout" prefetch={false}>Sign out</Link>
             </Button>
           ) : null}
         </nav>
