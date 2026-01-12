@@ -6,6 +6,10 @@ Notes:
 - Payment flows vary significantly based on product type (mticket, super pass, wallet, card recharge, bills, etc.)
 - Each product type has its own success/failure events (e.g., "mticket payment success", "pass booked")
 - Payment method selection determines which checkout flow is used (native UPI apps, Razorpay, Inai, Juspay, Chalo Pay wallet)
+- Event semantics matter for funnels:
+  - `mticket payment success` / `pass booked` / other product-specific `*payment successful*` events are raised on **payment provider SDK callback** (gateway-level success). These can occur **before** `payment status response`, and do not necessarily mean the backend booking was confirmed.
+  - `payment status response` is raised when the app polls backend for the order/payment status (values: `SUCCESS`/`FAILED`/`PENDING`/`UNKNOWN`).
+  - `checkout post payment screen opened` is the safest **business-confirmed success** indicator in this flow, because the app navigates to post-payment only after `payment status response` returns `SUCCESS` (Chalo Pay is a separate flow).
 
 Visual key:
 - Green solid boxes: analytics events (exact strings from `events.json`)
@@ -26,7 +30,7 @@ flowchart LR
   class ext external;
 ```
 
-## Main payment flow: Entry → Payment Method → Checkout → Success/Failure
+## Main payment flow: Entry → Payment Method → Checkout → (Gateway callback & Status polling) → Post-payment
 
 ```mermaid
 flowchart TD
@@ -50,13 +54,16 @@ flowchart TD
   ui_netbankingFlow --> ui_checkout
   ui_walletFlow --> ui_checkout
 
+  %% Two important signals happen around the payment attempt:
+  %% 1) Gateway callback events (SDK-level) can fire before status polling
+  %% 2) Status polling ("payment status response") is the backend-confirmed signal
+  ui_checkout --> ui_gatewayCallback([Payment provider SDK callback])
+  ui_gatewayCallback --> ev_gatewaySuccess["mticket payment success / pass booked / etc."]
+  ui_gatewayCallback --> ev_gatewayFailed["mticket payment failed / pass payment failed / etc."]
+
   ui_checkout --> ev_paymentStatusResponse["payment status response"]
-
-  ev_paymentStatusResponse -->|Success| ev_productSuccess["mticket payment success / pass booked / etc."]
-  ev_paymentStatusResponse -->|Failure| ev_productFailed["mticket payment failed / pass payment failed / etc."]
-
-  ev_productSuccess --> ev_postPaymentOpen["checkout post payment screen opened"]
-  ev_productFailed --> ev_postPaymentOpen
+  ev_paymentStatusResponse -->|response = SUCCESS| ev_postPaymentOpen["checkout post payment screen opened"]
+  ev_paymentStatusResponse -->|response != SUCCESS| ui_notConfirmed([PENDING / FAILED / UNKNOWN])
 
   ev_postPaymentOpen -->|Success| ev_detailsFetched["post payment mticket details fetched"]
   ev_postPaymentOpen -->|Failure| ev_historyFailure["post payment history call use case failure"]
@@ -68,8 +75,8 @@ flowchart TD
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_mainScreenOpen,ev_paymentModeSelected,ev_paymentStatusResponse,ev_productSuccess,ev_productFailed,ev_postPaymentOpen,ev_detailsFetched,ev_historyFailure,ev_checkoutFinished event;
-  class ui_entry,ui_upiFlow,ui_cardFlow,ui_netbankingFlow,ui_walletFlow,ui_chaloPayFlow,ui_checkout ui;
+  class ev_mainScreenOpen,ev_paymentModeSelected,ev_gatewaySuccess,ev_gatewayFailed,ev_paymentStatusResponse,ev_postPaymentOpen,ev_detailsFetched,ev_historyFailure,ev_checkoutFinished event;
+  class ui_entry,ui_upiFlow,ui_cardFlow,ui_netbankingFlow,ui_walletFlow,ui_chaloPayFlow,ui_checkout,ui_gatewayCallback,ui_notConfirmed ui;
 ```
 
 ## Funnel: UPI payment method flow
@@ -232,33 +239,35 @@ flowchart TD
 
   ev_orderStatus --> ev_paymentStatus["payment status response"]
 
-  ev_paymentStatus -->|Success| ev_productSuccess["Product-specific success event"]
-  ev_paymentStatus -->|Failure| ev_productFailed["Product-specific failure event"]
-  ev_paymentStatus -->|Cancelled| ev_cancelled["payment cancelled"]
+  %% Backend-confirmed status (recommended for "purchase success" funnels)
+  ev_paymentStatus -->|response = SUCCESS| ev_postPaymentOpen["checkout post payment screen opened"]
+  ev_paymentStatus -->|response != SUCCESS| ev_cancelled["payment cancelled / failed / pending / unknown"]
 
-  ev_productSuccess -->|mticket| ev_mticketSuccess["mticket payment success"]
-  ev_productSuccess -->|super pass| ev_passSuccess["pass booked"]
-  ev_productSuccess -->|wallet| ev_walletSuccess["wallet load balance payment successful"]
-  ev_productSuccess -->|card recharge| ev_cardSuccess["online card recharge payment successful"]
-  ev_productSuccess -->|electricity bill| ev_billSuccess["electricity bill payment successful"]
-  ev_productSuccess -->|ncmc| ev_ncmcSuccess["ncmc recharge payment successful"]
-  ev_productSuccess -->|instant ticket| ev_instantSuccess["instant ticket payment successful"]
-  ev_productSuccess -->|premium bus| ev_premiumSuccess["premium bus ticket payment successful"]
-  ev_productSuccess -->|ondc| ev_ondcSuccess["ondc ticket payment successful"]
-  ev_productSuccess -->|ondc metro| ev_ondcMetroSuccess["ondc metro ticket payment successful"]
-  ev_productSuccess -->|metro| ev_metroSuccess["metro ticket payment successful"]
+  %% Gateway callback events (SDK-level). These may occur before status polling.
+  ui_paymentSubmitted --> ui_gatewayCallback([Payment provider SDK callback])
+  ui_gatewayCallback --> ev_mticketSuccess["mticket payment success"]
+  ui_gatewayCallback --> ev_passSuccess["pass booked"]
+  ui_gatewayCallback --> ev_walletSuccess["wallet load balance payment successful"]
+  ui_gatewayCallback --> ev_cardSuccess["online card recharge payment successful"]
+  ui_gatewayCallback --> ev_billSuccess["electricity bill payment successful"]
+  ui_gatewayCallback --> ev_ncmcSuccess["ncmc recharge payment successful"]
+  ui_gatewayCallback --> ev_instantSuccess["instant ticket payment successful"]
+  ui_gatewayCallback --> ev_premiumSuccess["premium bus ticket payment successful"]
+  ui_gatewayCallback --> ev_ondcSuccess["ondc ticket payment successful"]
+  ui_gatewayCallback --> ev_ondcMetroSuccess["ondc metro ticket payment successful"]
+  ui_gatewayCallback --> ev_metroSuccess["metro ticket payment successful"]
 
-  ev_productFailed -->|mticket| ev_mticketFailed["mticket payment failed"]
-  ev_productFailed -->|super pass| ev_passFailed["pass payment failed"]
-  ev_productFailed -->|wallet| ev_walletFailed["wallet load balance payment failed"]
-  ev_productFailed -->|other products| ev_otherFailed["... payment failed"]
+  ui_gatewayCallback --> ev_mticketFailed["mticket payment failed"]
+  ui_gatewayCallback --> ev_passFailed["pass payment failed"]
+  ui_gatewayCallback --> ev_walletFailed["wallet load balance payment failed"]
+  ui_gatewayCallback --> ev_otherFailed["... payment failed"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
 
-  class ev_orderStatus,ev_paymentStatus,ev_cancelled,ev_mticketSuccess,ev_passSuccess,ev_walletSuccess,ev_cardSuccess,ev_billSuccess,ev_ncmcSuccess,ev_instantSuccess,ev_premiumSuccess,ev_ondcSuccess,ev_ondcMetroSuccess,ev_metroSuccess,ev_mticketFailed,ev_passFailed,ev_walletFailed,ev_otherFailed event;
-  class ui_paymentSubmitted,ev_productSuccess,ev_productFailed ui;
+  class ev_orderStatus,ev_paymentStatus,ev_postPaymentOpen,ev_cancelled,ev_mticketSuccess,ev_passSuccess,ev_walletSuccess,ev_cardSuccess,ev_billSuccess,ev_ncmcSuccess,ev_instantSuccess,ev_premiumSuccess,ev_ondcSuccess,ev_ondcMetroSuccess,ev_metroSuccess,ev_mticketFailed,ev_passFailed,ev_walletFailed,ev_otherFailed event;
+  class ui_paymentSubmitted,ui_gatewayCallback ui;
 ```
 
 ## Post-payment screen and booking details fetching
@@ -297,8 +306,9 @@ flowchart TD
 | Method Selection | `Payment mode selected` | User chose a payment method |
 | Checkout | `checkout screen opened` | User entered checkout flow |
 | Gateway Load | `Razorpay webview loaded` | Payment gateway ready |
-| Status | `payment status response` | Payment result received |
-| Success | `mticket payment success` (or product-specific) | Payment completed |
+| Status (backend) | `payment status response` | Backend status poll result (`response` = `SUCCESS`/`FAILED`/`PENDING`/`UNKNOWN`) |
+| Success (business) | `checkout post payment screen opened` | User reached post-payment after backend-confirmed `SUCCESS` |
+| Success (gateway) | `mticket payment success` (or product-specific) | Provider SDK callback success (can occur before backend status; use primarily for diagnostics) |
 | Failure | `mticket payment failed` (or product-specific) | Payment failed |
 | Exit | `checkout activity finished` | User left checkout |
 
@@ -390,8 +400,8 @@ flowchart TD
 **Events (in order):**
 1. `Payment Modes Screen opened`
 2. `Payment mode selected`
-3. `payment status response`
-4. `mticket payment success`
+3. `payment status response` (filter: `response` = "SUCCESS")
+4. `checkout post payment screen opened`
 5. `post payment mticket details fetched`
 
 **Failure path:**
@@ -581,6 +591,8 @@ flowchart TD
 | `bookingId` | string | Booking ID |
 | `fare` | string | Amount paid |
 | `isFreeRide` | string | Free ride flag |
+
+**Important:** These events are emitted on the payment provider SDK callback (gateway-level success/failure). For business-confirmed success funnels, prefer `payment status response` with `response = "SUCCESS"` and/or `checkout post payment screen opened`.
 
 ---
 
