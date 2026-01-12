@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, isAuthEnabled, verifyAuthCookie } from "@/lib/auth";
 
-const AUTH_EXEMPT_PREFIXES = ["/login", "/api/login", "/api/logout"];
+const AUTH_EXEMPT_PREFIXES = ["/login", "/api/login", "/api/logout", "/api/health"];
 
 export async function middleware(request: NextRequest) {
   if (!isAuthEnabled()) {

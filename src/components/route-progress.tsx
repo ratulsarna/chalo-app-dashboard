@@ -11,22 +11,22 @@ export function RouteProgress() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    let hideTimeout: ReturnType<typeof setTimeout> | undefined;
-    let maxTimeout: ReturnType<typeof setTimeout> | undefined;
+    const showTimeout = setTimeout(() => {
+      setVisible(true);
+    }, 0);
 
-    setVisible(true);
-
-    hideTimeout = setTimeout(() => {
+    const hideTimeout = setTimeout(() => {
       setVisible(false);
     }, MIN_VISIBLE_MS);
 
-    maxTimeout = setTimeout(() => {
+    const maxTimeout = setTimeout(() => {
       setVisible(false);
     }, MAX_VISIBLE_MS);
 
     return () => {
-      if (hideTimeout) clearTimeout(hideTimeout);
-      if (maxTimeout) clearTimeout(maxTimeout);
+      clearTimeout(showTimeout);
+      clearTimeout(hideTimeout);
+      clearTimeout(maxTimeout);
     };
   }, [pathname]);
 

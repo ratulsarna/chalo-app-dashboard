@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+export const dynamic = "force-dynamic";
+
 type LoginPageProps = {
   searchParams?: {
     next?: string;
@@ -9,9 +11,10 @@ type LoginPageProps = {
   };
 };
 
-export default function LoginPage({ searchParams }: LoginPageProps) {
-  const nextPath = typeof searchParams?.next === "string" ? searchParams.next : "/";
-  const hasError = searchParams?.error === "1";
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const resolvedSearchParams = await Promise.resolve(searchParams);
+  const nextPath = typeof resolvedSearchParams?.next === "string" ? resolvedSearchParams.next : "/";
+  const hasError = resolvedSearchParams?.error === "1";
 
   return (
     <main className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-4 py-12">
