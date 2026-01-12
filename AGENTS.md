@@ -34,7 +34,7 @@ node scripts/analytics-updater/validate-content.js      # Validate content/analy
 
 ## Project Structure
 
-- `src/app/` — Next.js App Router routes (main routes under `src/app/analytics/`)
+- `src/app/` — Next.js App Router routes (protected routes live under `src/app/(protected)/`)
 - `src/components/` — React components; `src/components/ui/` contains shadcn/ui primitives
 - `src/lib/analytics/` — Analytics domain logic (server-only filesystem adapter, types, search)
 - `content/analytics/` — Analytics docs snapshot (flows, events JSON, Mermaid diagrams)
@@ -82,6 +82,32 @@ State is stored outside git at `~/.local/state/chalo-dashboard/analytics-updater
 - Unit tests use Node's built-in test runner (`node --test`)
 - Test files: `scripts/analytics-updater/test/*.test.js`
 - Manual verification for UI changes: `/analytics`, `/analytics/flows`, `/analytics/events`
+
+## Production deployment (VPS)
+
+Live:
+- Domain: `chalodash.ratulsarna.com`
+- Port: `3010`
+- Repo: `/home/ratul/Developer/chalo/chalo-app-dashboard`
+- Service: systemd user service `chalo-dashboard` (user: `ratul`)
+
+Runtime:
+- Service unit: `~/.config/systemd/user/chalo-dashboard.service`
+- Env file: `~/.config/chalo-dashboard.env` (contains `AUTH_USERNAME`, `AUTH_PASSWORD`, `AUTH_SECRET`, `PORT=3010`, `NODE_ENV=production`)
+
+Operations:
+- Redeploy: `pnpm build` then `systemctl --user restart chalo-dashboard`
+- Logs: `journalctl --user -u chalo-dashboard -f`
+- Content changes under `content/analytics/**` require a service restart to take effect (server-side reads are cached via React `cache()`).
+
+Nginx:
+- Site: `/etc/nginx/sites-available/chalo-dashboard` → `/etc/nginx/sites-enabled/chalo-dashboard`
+- Proxy target: `http://127.0.0.1:3010`
+- Ensure proxy forwards `Host` + `X-Forwarded-Proto` so auth redirects preserve the public origin.
+
+Note on listener binding:
+- This VPS runs other HTTPS vhosts and Tailscale; avoid wildcard IPv6 `listen [::]:443` if it conflicts.
+- Prefer binding to the public IPs explicitly on 80/443 for new sites.
 
 ## ExecPlans
 
