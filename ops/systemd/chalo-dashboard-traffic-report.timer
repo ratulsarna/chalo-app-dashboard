@@ -1,0 +1,11 @@
+[Unit]
+Description=Schedule Chalo Dashboard traffic report generation
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+

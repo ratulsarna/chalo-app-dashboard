@@ -1,0 +1,8 @@
+[Unit]
+Description=Generate Chalo Dashboard GoAccess traffic report
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /home/ratul/Developer/chalo/chalo-app-dashboard/scripts/generate-traffic-report.sh
+
