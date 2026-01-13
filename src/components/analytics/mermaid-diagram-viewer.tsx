@@ -483,15 +483,15 @@ export function MermaidDiagramViewer({
 
   const onClick = React.useCallback((event: React.MouseEvent) => {
     if (draggingRef.current.didDrag) return;
-    const target = event.target as Element | null;
-    if (!target) return;
+    const clickedEl = event.target as Element | null;
+    if (!clickedEl) return;
 
-    const node = target.closest("g.node") as SVGGElement | null;
+    const node = clickedEl.closest("g.node") as SVGGElement | null;
     if (!node) return;
 
-    const target = node.getAttribute("data-analytics-diagram");
-    if (target && onDiagramLinkClick && node.classList.contains("analytics-diagram-link-node")) {
-      onDiagramLinkClick(target);
+    const diagramTarget = node.getAttribute("data-analytics-diagram");
+    if (diagramTarget && onDiagramLinkClick && node.classList.contains("analytics-diagram-link-node")) {
+      onDiagramLinkClick(diagramTarget);
       return;
     }
 
