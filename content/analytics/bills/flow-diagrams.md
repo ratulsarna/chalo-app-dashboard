@@ -89,6 +89,8 @@ flowchart TD
 
   ev_orderCreated --> ext_checkout[Checkout Payment Flow]
 
+  %%chalo:diagram-link ext_checkout -> flow:payment
+
   ext_checkout --> ev_successOpened["eBill payment success screen opened"]
 
   ev_successOpened --> ev_viewInvoice["eBill payment success screen view invoice clicked"]

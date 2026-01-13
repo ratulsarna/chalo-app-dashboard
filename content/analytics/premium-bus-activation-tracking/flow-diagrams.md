@@ -60,7 +60,7 @@ flowchart TD
 
   %%chalo:diagram-link ev_verifyClicked -> title:Validation & Receipt (Premium Reserve Ticket)
   %%chalo:diagram-link ui_cancelFlow -> title:Cancellation Flow (Premium Bus Product Modification)
-  %%chalo:diagram-link ext_reschedule -> title:External: Premium Bus Booking Flow
+  %%chalo:diagram-link ext_reschedule -> flow:premium-bus-booking
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

@@ -34,7 +34,7 @@ Use this diagram to build the primary mTicket purchase funnel from selection to 
 flowchart TD
   %%chalo:diagram-link ev_bookScreenOpen -> title:Route & Stop Selection Flow
   %%chalo:diagram-link ev_selectionScreenOpen -> title:Passenger Selection & Order Creation Flow
-  %%chalo:diagram-link external_checkout -> title:Payment Flow (Checkout Module)
+  %%chalo:diagram-link external_checkout -> flow:payment
   %%chalo:diagram-link ev_activateScreenOpen -> title:Activation Flow
   %%chalo:diagram-link ui_validationFlow -> title:Validation Flow - BLE vs QR Decision
   ui_start([User starts mTicket purchase]) --> ev_bookScreenOpen["book mticket screen opened"]

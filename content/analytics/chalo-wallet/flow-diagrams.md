@@ -119,6 +119,8 @@ flowchart TD
   ev_orderSuccess --> ext_checkout[Checkout payment flow]
   ext_checkout --> ui_success([Return to wallet])
 
+  %%chalo:diagram-link ext_checkout -> flow:payment
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;

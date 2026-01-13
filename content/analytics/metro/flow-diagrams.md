@@ -86,6 +86,8 @@ flowchart TD
   ui_results -->|Routes available| ext_ondcFare[ONDC fare details (instant ticket flow)]
   ui_results -->|Failure| ev_routesFail["stop based stop selection screen route result failure"]
 
+  %%chalo:diagram-link ext_ondcFare -> flow:instant-ticket-purchase title:Alternate Entry: Stop-Based Route Selection
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
 
@@ -100,7 +102,7 @@ This funnel covers the booking confirmation screen through payment initiation.
 
 ```mermaid
 flowchart TD
-  %%chalo:diagram-link ext_checkout -> title:Funnel: Payment to Booking Success
+  %%chalo:diagram-link ext_checkout -> flow:payment
   ui_confirmScreen([Confirm booking screen]) --> ev_confirmOpen["confirm screen opened"]
 
   ev_confirmOpen --> ui_finalFare{Fetch final fare}
@@ -157,6 +159,9 @@ flowchart TD
   class ev_paymentOk,ev_paymentFail,ev_ondcPaymentOk,ev_ondcPaymentFail,ev_bookingConfirmed,ev_ondcBookingConfirmed event;
   class ui_paymentResult,ui_fetchTicketDetails,ui_successScreen ui;
   class ext_checkout,ext_postPaymentFail external;
+
+  %%chalo:diagram-link ext_checkout -> flow:payment
+  %%chalo:diagram-link ext_postPaymentFail -> flow:payment
 ```
 
 ## Funnel: Ticket Validation - QR Flow
@@ -206,7 +211,7 @@ End-to-end funnel for the complete metro booking journey using static QR validat
 flowchart TD
   %%chalo:diagram-link ev_landingOpen -> title:Funnel: Landing Screen to Fare Discovery
   %%chalo:diagram-link ev_confirmOpen -> title:Funnel: Confirm Booking to Order Creation
-  %%chalo:diagram-link ext_checkout -> title:Funnel: Payment to Booking Success
+  %%chalo:diagram-link ext_checkout -> flow:payment
   %%chalo:diagram-link ev_ticketFetched -> title:Funnel: Ticket Validation - QR Flow
   ui_start([User opens metro]) --> ev_landingOpen["stop based metro landing screen opened"]
   ev_landingOpen --> ev_configOk["metro config fetch success"]

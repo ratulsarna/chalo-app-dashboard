@@ -155,7 +155,7 @@ flowchart TD
   class ext_checkout external;
 
   %%chalo:diagram-link ui_linkingFlow -> title:Funnel: Chalo Card linking
-  %%chalo:diagram-link ext_checkout -> title:Checkout payment events (shared across card types)
+  %%chalo:diagram-link ext_checkout -> flow:payment
 ```
 
 ## Funnel: Card transactions history
@@ -310,5 +310,5 @@ flowchart TD
   %%chalo:diagram-link flow_ncmcOnline -> title:Funnel: NCMC online recharge
   %%chalo:diagram-link flow_ncmcOffline -> title:Funnel: NCMC offline recharge
   %%chalo:diagram-link flow_tap -> title:Funnel: NCMC tap operations (NFC)
-  %%chalo:diagram-link flow_checkout -> title:Checkout payment events (shared across card types)
+  %%chalo:diagram-link flow_checkout -> flow:payment
 ```

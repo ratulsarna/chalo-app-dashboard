@@ -72,6 +72,10 @@ flowchart TD
   ev_buyProduct --> ext_checkout[Checkout flow]
   ev_trackBus --> ext_tracking[Live Tracking flow]
 
+  %%chalo:diagram-link ext_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+  %%chalo:diagram-link ext_checkout -> flow:payment
+  %%chalo:diagram-link ext_tracking -> flow:live-tracking
+
   ui_resultsScreen --> ev_back["trip planner back button clicked"]
   ev_responseError --> ev_hopRetry["tp hop api fetch failed snackbar retry event"]
 
@@ -167,6 +171,10 @@ flowchart TD
   ev_buyProduct --> ext_checkout[Checkout flow]
   ev_trackBus --> ext_tracking[Live Tracking flow]
 
+  %%chalo:diagram-link ext_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+  %%chalo:diagram-link ext_checkout -> flow:payment
+  %%chalo:diagram-link ext_tracking -> flow:live-tracking
+
   ui_resultsScreen --> ev_backPressed["stop trip planner results back pressed"]
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
@@ -192,6 +200,10 @@ flowchart TD
 
   ev_buyProduct --> ext_checkout[Checkout flow]
   ev_trackBus --> ext_tracking[Live Tracking flow]
+
+  %%chalo:diagram-link ext_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+  %%chalo:diagram-link ext_checkout -> flow:payment
+  %%chalo:diagram-link ext_tracking -> flow:live-tracking
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

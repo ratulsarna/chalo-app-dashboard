@@ -47,6 +47,8 @@ flowchart TD
   ui_bottomNav --> ev_bottomNavSearchClicked["home screen bottom nav search tab clicked"]
   ev_bottomNavSearchClicked --> external_searchFlow[Trip Planner / Search Flow]
 
+  %%chalo:diagram-link external_searchFlow -> flow:search
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
@@ -90,6 +92,8 @@ flowchart TD
   ui_pbBookingCardTap --> ev_premiumServiceBusInteraction["premium service bus interaction"]
   ev_pbHomescreenBookTripClicked --> external_pbFlow[Premium Bus Booking Flow]
 
+  %%chalo:diagram-link external_pbFlow -> flow:premium-bus-booking
+
   ev_homePageRendered --> ev_pbBookingCardExpired["pb booking card expired"]
 
   ev_homePageRendered --> ev_premiumReserveTicketAckCtaClicked["premium reserve ticket ack cta clicked"]
@@ -128,6 +132,8 @@ flowchart TD
   ev_regularBusPageRendered --> ev_nearbyStopsCardRouteClicked["nearby stops card route clicked"]
 
   ev_nearbyStopsCardRouteClicked --> external_routeDetails[Route Details Flow]
+
+  %%chalo:diagram-link external_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
 
   ev_regularBusPageRendered --> ev_regularBusPageRecentSearchCardClicked["regular bus page recent search card clicked"]
   ev_regularBusPageRendered --> ev_seeAllPassesClicked["see all passes clicked"]
@@ -172,11 +178,16 @@ flowchart TD
   ev_pbExploreAvailableRoutesClicked --> external_pbAllRoutes[Premium Bus All Routes]
   ev_pbLandingRouteClicked --> external_routeDetails[Route Details Flow]
 
+  %%chalo:diagram-link external_pbAllRoutes -> flow:premium-bus-booking
+  %%chalo:diagram-link external_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+
   ev_pbTripDetailsScreenShown --> ui_tripDetailsInput([Select from/to stops + Proceed])
   ui_tripDetailsInput --> ev_pbTripDetailsSubmitted["pb trip details submitted"]
   ev_pbTripDetailsSubmitted --> ev_pbPreferredTimeBottomsheetOpened["pb preferred time bottomsheet opened"]
   ev_pbPreferredTimeBottomsheetOpened --> ev_pbPreferredTimeSubmitted["pb preferred time submitted"]
   ev_pbPreferredTimeSubmitted --> external_pbFlow[Premium Bus Booking Flow]
+
+  %%chalo:diagram-link external_pbAllRoutes -> flow:premium-bus-booking
 
   ev_chaloBusPageRendered --> ev_chaloBusTabNotificationIconClick["chalo bus tab notification icon click"]
 
@@ -417,6 +428,8 @@ flowchart TD
   ev_homePageRendered --> ev_pbHomescreenBookTripClicked["pb homescreen book trip clicked"]
   ev_pbHomescreenBookTripClicked --> external_pbBookingFlow[Premium Bus Booking / Ticket Details]
 
+  %%chalo:diagram-link external_pbBookingFlow -> flow:premium-bus-booking
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;
@@ -434,6 +447,8 @@ flowchart TD
   ev_regularBusPageRendered["regular bus page rendered"]
   ev_regularBusPageRendered --> ev_nearbyStopsCardRouteClicked["nearby stops card route clicked"]
   ev_nearbyStopsCardRouteClicked --> external_routeDetailsActivity[Route Details Activity]
+
+  %%chalo:diagram-link external_routeDetailsActivity -> flow:live-tracking title:Route Details screen open & hooks
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

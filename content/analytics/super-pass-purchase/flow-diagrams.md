@@ -105,6 +105,8 @@ flowchart TD
   ev_orderCreated --> external_checkout[Checkout flow]
   external_checkout --> ev_bookingSuccessOpen["booking success screen open"]
 
+  %%chalo:diagram-link external_checkout -> flow:payment
+
   ev_bookingSuccessOpen --> ev_bookingSuccessUseNow["booking success use now clicked"]
   ev_bookingSuccessOpen --> ev_bookingSuccessUseLater["booking success use later clicked"]
   ev_bookingSuccessOpen --> ev_bookingSuccessViewDetails["booking success view booking details clicked"]

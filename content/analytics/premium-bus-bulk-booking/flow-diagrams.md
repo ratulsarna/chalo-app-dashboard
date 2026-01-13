@@ -94,7 +94,7 @@ flowchart TD
   %%chalo:diagram-link ui_prebookingDetails -> title:Funnel: Bulk Booking - Pre-Booking Details & Eligibility Checks
   %%chalo:diagram-link ui_prebookingFlow -> title:Funnel: Bulk Booking - Stop & Slot Selection
   %%chalo:diagram-link ui_seatSelection -> title:Seat Selection (Bulk Context)
-  %%chalo:diagram-link ext_bookingFlow -> title:External: Premium Bus Booking Flow
+  %%chalo:diagram-link ext_bookingFlow -> flow:premium-bus-booking
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -201,7 +201,7 @@ flowchart TD
 
   ev_linkedSuccess -->|User views receipt| ev_viewReceiptClicked["pb bulk booking view trip receipt button clicked"]
 
-  %%chalo:diagram-link ext_bookingFlow -> title:External: Premium Bus Booking Flow
+  %%chalo:diagram-link ext_bookingFlow -> flow:premium-bus-booking
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

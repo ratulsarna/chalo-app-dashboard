@@ -91,6 +91,8 @@ flowchart TD
   ev_cardClick --> ext_regularBusTab[Regular Bus Tab]
   ev_cashPay --> ext_cashPay[Cash payment web page]
 
+  %%chalo:diagram-link ext_regularBusTab -> flow:home title:Tab 2: Regular Bus Tab
+
   ev_useNow --> ui_notificationCheck{Notification permission?}
   ui_notificationCheck -->|Granted| ev_notifGranted["notification permission granted"]
   ui_notificationCheck -->|Denied| ev_notifDenied["notification permission denied"]
@@ -110,10 +112,14 @@ flowchart TD
   ev_activationFailed --> ev_activationFailedClose["product activation failed bottomsheet positive cta clicked"]
   ui_activationResult -->|Success| ext_validation[Validation Flow]
 
+  %%chalo:diagram-link ext_validation -> flow:validation
+
   ev_renewBtn --> ui_renewCheck{Can renew?}
   ui_renewCheck -->|Not renewable| ev_productSelection["product selection activity launched"]
   ui_renewCheck -->|Error/blocked| ev_renewError["renew error bottomsheet shown"]
   ui_renewCheck -->|Success| ext_superPassPurchase[Super Pass Purchase Flow]
+
+  %%chalo:diagram-link ext_superPassPurchase -> flow:super-pass-purchase
 
   ev_renewError --> ui_renewAction{User choice}
   ui_renewAction -->|Positive CTA| ev_renewPositive["renew error bottomsheet positive cta clicked"]
@@ -180,8 +186,8 @@ flowchart TD
   class ev_viewSummary,ev_open,ev_productOk,ev_productFail,ev_receiptOk,ev_receiptFail,ev_help,ev_invoiceOk,ev_invoiceFail,ev_banner,ev_startValidation,ev_startPremium,ev_bookAgain,ev_fullImageClose,ev_activationFailed event;
   class ui_entry,ui_bookingResolved,ui_receiptFetch,ui_actions,ui_invoice,ui_bannerType,ui_validation,ui_premium,ui_purchase,ui_activationResult ui;
 
-  %%chalo:diagram-link ui_validation -> title:Validation flow
-  %%chalo:diagram-link ui_premium -> title:Premium bus activation flow
+  %%chalo:diagram-link ui_validation -> flow:validation
+  %%chalo:diagram-link ui_premium -> flow:premium-bus-activation-tracking title:Funnel: Booking Confirmed → Ticket Activation & Live Tracking
 ```
 External modules referenced here:
 - Validation: `docs/analytics/validation/`
@@ -213,6 +219,8 @@ flowchart TD
   class ev_hookRendered,ev_hookClick,ev_buyBtn,ev_bottomsheet,ev_productSelectionLaunched event;
   class ui_hookAction,ui_emptyState,ui_hasHooks,ui_selectProduct ui;
   class ext_hookTarget,ext_regularBus,ext_productPurchase external;
+
+  %%chalo:diagram-link ext_regularBus -> flow:home title:Tab 2: Regular Bus Tab
 ```
 
 ## Funnel: Product Reclaim (Multi-Device)

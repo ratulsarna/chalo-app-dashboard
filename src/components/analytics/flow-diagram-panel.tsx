@@ -15,15 +15,25 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { encodeEventNameForPath } from "@/lib/analytics/urls";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 function getSelectedBlockId({
   blocks,
   diagramParam,
+  diagramTitleParam,
 }: {
   blocks: MermaidBlockMeta[];
   diagramParam: string | null;
+  diagramTitleParam: string | null;
 }) {
   if (diagramParam && blocks.some((b) => b.id === diagramParam)) return diagramParam;
+
+  if (diagramTitleParam) {
+    const targetKey = normalizeDiagramHeading(diagramTitleParam);
+    const matches = blocks.filter((b) => normalizeDiagramHeading(b.title) === targetKey);
+    if (matches.length === 1) return matches[0]?.id ?? null;
+  }
+
   return pickDefaultMermaidBlock(blocks)?.id ?? blocks[0]?.id ?? null;
 }
 
@@ -64,14 +74,17 @@ export function FlowDiagramPanel({
   diagramMarkdown,
   occurrences,
   initialDiagramParam = null,
+  initialDiagramTitleParam = null,
   className,
 }: {
   flowSlug: string;
   diagramMarkdown: string;
   occurrences: AnalyticsEventOccurrence[];
   initialDiagramParam?: string | null;
+  initialDiagramTitleParam?: string | null;
   className?: string;
 }) {
+  const router = useRouter();
   const baseId = React.useMemo(
     () => `flow-diagram-${safeId(flowSlug) || "default"}`,
     [flowSlug],
@@ -82,11 +95,12 @@ export function FlowDiagramPanel({
   const occurrenceMenuContentId = `${baseId}-occurrence-content`;
 
   const [diagramParam, setDiagramParam] = React.useState<string | null>(initialDiagramParam);
+  const [diagramTitleParam, setDiagramTitleParam] = React.useState<string | null>(initialDiagramTitleParam);
 
   const blocks = React.useMemo(() => extractMermaidBlocks(diagramMarkdown), [diagramMarkdown]);
   const selectedId = React.useMemo(
-    () => getSelectedBlockId({ blocks, diagramParam }),
-    [blocks, diagramParam],
+    () => getSelectedBlockId({ blocks, diagramParam, diagramTitleParam }),
+    [blocks, diagramParam, diagramTitleParam],
   );
   const [openEventName, setOpenEventName] = React.useState<string | null>(null);
   const matches = React.useMemo(
@@ -104,6 +118,20 @@ export function FlowDiagramPanel({
     [blocks, selectedId],
   );
 
+  React.useEffect(() => {
+    // Canonicalize `diagramTitle` -> `diagram` once resolved.
+    if (!selected) return;
+    if (!diagramTitleParam) return;
+    if (diagramParam) return; // already canonical
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("diagram", selected.id);
+    url.searchParams.delete("diagramTitle");
+    window.history.replaceState({}, "", url);
+    setDiagramParam(selected.id);
+    setDiagramTitleParam(null);
+  }, [diagramParam, diagramTitleParam, selected]);
+
   const diagramLinks = React.useMemo(() => {
     if (!selected) return null;
 
@@ -117,17 +145,27 @@ export function FlowDiagramPanel({
     const labelToDiagram = new Map<string, string | null>();
 
     for (const d of directives) {
-      const diagramId = resolveDiagramIdByTitle(blocks, d.targetTitle);
-      if (!diagramId) {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn(
-            `[FlowDiagramPanel] Unresolved diagram-link target title: "${d.targetTitle}" (nodeId: ${d.nodeId})`,
-          );
+      let target: string | null = null;
+
+      if (d.targetFlowSlug) {
+        const base = `/analytics/flows/${encodeURIComponent(d.targetFlowSlug)}`;
+        target = d.targetTitle ? `${base}?diagramTitle=${encodeURIComponent(d.targetTitle)}` : base;
+      } else if (d.targetTitle) {
+        const diagramId = resolveDiagramIdByTitle(blocks, d.targetTitle);
+        if (!diagramId) {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn(
+              `[FlowDiagramPanel] Unresolved diagram-link target title: "${d.targetTitle}" (nodeId: ${d.nodeId})`,
+            );
+          }
+          continue;
         }
-        continue;
+        target = diagramId;
       }
 
-      byNodeId[d.nodeId] = diagramId;
+      if (!target) continue;
+
+      byNodeId[d.nodeId] = target;
 
       const label = labelsByNodeId.get(d.nodeId);
       if (!label) continue;
@@ -135,8 +173,8 @@ export function FlowDiagramPanel({
       if (key.length === 0) continue;
 
       const prev = labelToDiagram.get(key);
-      if (prev === undefined) labelToDiagram.set(key, diagramId);
-      else if (prev !== diagramId) labelToDiagram.set(key, null);
+      if (prev === undefined) labelToDiagram.set(key, target);
+      else if (prev !== target) labelToDiagram.set(key, null);
     }
 
     for (const [labelKey, diagramId] of labelToDiagram.entries()) {
@@ -151,8 +189,10 @@ export function FlowDiagramPanel({
     (id: string) => {
       const url = new URL(window.location.href);
       url.searchParams.set("diagram", id);
+      url.searchParams.delete("diagramTitle");
       window.history.replaceState({}, "", url);
       setDiagramParam(id);
+      setDiagramTitleParam(null);
     },
     [],
   );
@@ -161,8 +201,10 @@ export function FlowDiagramPanel({
     (id: string) => {
       const url = new URL(window.location.href);
       url.searchParams.set("diagram", id);
+      url.searchParams.delete("diagramTitle");
       window.history.pushState({}, "", url);
       setDiagramParam(id);
+      setDiagramTitleParam(null);
     },
     [],
   );
@@ -176,6 +218,7 @@ export function FlowDiagramPanel({
     function onPopState() {
       const url = new URL(window.location.href);
       setDiagramParam(url.searchParams.get("diagram"));
+      setDiagramTitleParam(url.searchParams.get("diagramTitle"));
     }
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -280,7 +323,10 @@ export function FlowDiagramPanel({
                     code={selected.code}
                     onEventClick={onEventClick}
                     diagramLinks={diagramLinks ?? undefined}
-                    onDiagramLinkClick={(diagramId) => pushDiagram(diagramId)}
+                    onDiagramLinkClick={(target) => {
+                      if (target.startsWith("/")) router.push(target);
+                      else pushDiagram(target);
+                    }}
                     className="h-[calc(100vh-9.5rem)]"
                   />
                 </div>
@@ -298,7 +344,10 @@ export function FlowDiagramPanel({
         code={selected.code}
         onEventClick={onEventClick}
         diagramLinks={diagramLinks ?? undefined}
-        onDiagramLinkClick={(diagramId) => pushDiagram(diagramId)}
+        onDiagramLinkClick={(target) => {
+          if (target.startsWith("/")) router.push(target);
+          else pushDiagram(target);
+        }}
         className="h-[420px]"
       />
 

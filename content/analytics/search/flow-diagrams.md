@@ -79,6 +79,9 @@ flowchart TD
 
   ev_recentTripClicked --> ext_tripPlanner
 
+  %%chalo:diagram-link ext_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+  %%chalo:diagram-link ext_tripPlanner -> flow:trip-planner
+
   ui_resultsList --> ev_clearQuery["search clear query clicked"]
   ui_resultsList --> ev_backClicked["search screen back clicked"]
   ui_errorState --> ev_backClicked
@@ -146,6 +149,8 @@ flowchart TD
   ui_readyToSearch -->|No| ui_fromToFields
   ev_bottomSheetClosed --> ui_fromToFields
 
+  %%chalo:diagram-link ext_tripPlannerResults -> flow:trip-planner
+
   %%chalo:diagram-link ext_universalSearch -> title:Universal Search Flow (Main Funnel)
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
@@ -174,6 +179,9 @@ flowchart TD
   ui_stopProps --> ext_stopDetails[Stop Details Screen]
   ui_placeProps --> ext_nearbyStops[Nearby Stops View]
   ui_tripProps --> ext_tripPlanner[Trip Planner]
+
+  %%chalo:diagram-link ext_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+  %%chalo:diagram-link ext_tripPlanner -> flow:trip-planner
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

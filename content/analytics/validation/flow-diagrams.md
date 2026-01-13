@@ -313,6 +313,8 @@ flowchart TD
   ui_userChoice -->|Menu: View trip receipt| ev_menuReceipt["view trip receipt from menu clicked"]
   ev_menuReceipt --> ext_receiptScreen
 
+  %%chalo:diagram-link ext_receiptScreen -> flow:history title:Funnel: View Summary → Ticket Summary (Data Fetch → Actions)
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;

@@ -170,7 +170,14 @@ export function MermaidDiagramViewer({
     byNodeId?: Record<string, string>;
     byLabel?: Record<string, string>;
   };
-  onDiagramLinkClick?: (diagramId: string) => void;
+  /**
+   * Called when a non-event diagram node is clicked and matches a diagram-link target.
+   *
+   * The target can be either:
+   * - a local diagram id (same-flow navigation), or
+   * - an absolute app path like `/analytics/flows/payment?...` (cross-flow navigation)
+   */
+  onDiagramLinkClick?: (target: string) => void;
 }) {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const svgHostRef = React.useRef<HTMLDivElement | null>(null);
@@ -336,22 +343,22 @@ export function MermaidDiagramViewer({
     for (const node of nodes) {
       if (isEventNode(node)) continue;
 
-      let diagramId: string | undefined;
+      let target: string | undefined;
       if (linkKeys && diagramLinks?.byNodeId) {
         const candidates = extractMermaidNodeIdCandidates(node);
         const matchedKey = candidates.find((c) => linkKeys.has(c));
-        if (matchedKey) diagramId = diagramLinks.byNodeId[matchedKey];
+        if (matchedKey) target = diagramLinks.byNodeId[matchedKey];
       }
 
-      if (!diagramId && diagramLinks?.byLabel) {
+      if (!target && diagramLinks?.byLabel) {
         const label = getNodeLabel(node);
-        if (label.length > 0) diagramId = diagramLinks.byLabel[label];
+        if (label.length > 0) target = diagramLinks.byLabel[label];
       }
 
-      if (!diagramId) continue;
+      if (!target) continue;
 
       node.classList.add("analytics-diagram-link-node");
-      node.setAttribute("data-analytics-diagram", diagramId);
+      node.setAttribute("data-analytics-diagram", target);
     }
   }, [diagramLinks, svg]);
 
@@ -482,9 +489,9 @@ export function MermaidDiagramViewer({
     const node = target.closest("g.node") as SVGGElement | null;
     if (!node) return;
 
-    const diagramId = node.getAttribute("data-analytics-diagram");
-    if (diagramId && onDiagramLinkClick && node.classList.contains("analytics-diagram-link-node")) {
-      onDiagramLinkClick(diagramId);
+    const target = node.getAttribute("data-analytics-diagram");
+    if (target && onDiagramLinkClick && node.classList.contains("analytics-diagram-link-node")) {
+      onDiagramLinkClick(target);
       return;
     }
 

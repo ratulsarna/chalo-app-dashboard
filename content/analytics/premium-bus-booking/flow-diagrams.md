@@ -128,10 +128,10 @@ flowchart TD
 
   %%chalo:diagram-link ev_slotScreenOpen -> title:Slot Selection Detailed Instrumentation
   %%chalo:diagram-link ev_seatScreenOpen -> title:Seat Selection Detailed Instrumentation
-  %%chalo:diagram-link ext_checkout -> title:Payment & Order Creation
-  %%chalo:diagram-link ext_superPassFlow -> title:External: Super Pass Purchase Flow
-  %%chalo:diagram-link ext_routeDetails -> title:External: Route Details Screen & Hooks
-  %%chalo:diagram-link ext_activation -> title:External: Premium Bus Activation & Tracking
+  %%chalo:diagram-link ext_checkout -> flow:payment
+  %%chalo:diagram-link ext_superPassFlow -> flow:super-pass-purchase
+  %%chalo:diagram-link ext_routeDetails -> flow:live-tracking title:Route Details screen open & hooks
+  %%chalo:diagram-link ext_activation -> flow:premium-bus-activation-tracking title:Funnel: Booking Confirmed → Ticket Activation & Live Tracking
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
@@ -173,7 +173,7 @@ flowchart TD
   ext_superPassFlow -->|After pass purchase| ev_slotScreenOpen["pb slot selection screen opened"]
   ev_slotScreenOpen -->|User explores with pass| ev_slotSuccess["pb slot fetch success"]
 
-  %%chalo:diagram-link ext_superPassFlow -> title:External: Super Pass Purchase Flow
+  %%chalo:diagram-link ext_superPassFlow -> flow:super-pass-purchase
   %%chalo:diagram-link ev_slotScreenOpen -> title:Slot Selection Detailed Instrumentation
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
@@ -289,6 +289,7 @@ flowchart TD
   ui_paymentComplete --> ev_couponBookingConfirmed["pb coupon booking confirmed"]
 
   %%chalo:diagram-link ev_bookingConfirmed -> title:External: Premium Bus Activation & Tracking
+  %%chalo:diagram-link ext_checkout -> flow:payment
 
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;

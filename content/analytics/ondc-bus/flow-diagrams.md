@@ -68,6 +68,8 @@ flowchart TD
   external_checkout --> ev_paymentSuccess["ondc ticket payment successful"]
   external_checkout --> ev_paymentFailed["ondc ticket payment failed"]
 
+  %%chalo:diagram-link external_checkout -> flow:payment
+
   ev_paymentSuccess --> ev_bookingConfirmed["ondc booking confirmed"]
   ev_bookingConfirmed --> ui_ticketDisplay([Ticket Display Screen])
 

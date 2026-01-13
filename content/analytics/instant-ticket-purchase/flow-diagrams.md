@@ -129,6 +129,9 @@ flowchart TD
 
   ext_checkout -->|payment success| ev_ticketFetched["instant ticket fetched"]
 
+  %%chalo:diagram-link ext_walletRecharge -> flow:chalo-wallet title:Funnel: Load Money (wallet recharge flow)
+  %%chalo:diagram-link ext_checkout -> flow:payment
+
   classDef event fill:#166534,stroke:#166534,color:#ffffff;
   classDef ui fill:#f3f4f6,stroke:#6b7280,stroke-dasharray: 5 5,color:#111827;
   classDef external fill:#ffffff,stroke:#6b7280,stroke-dasharray: 3 3,color:#111827;

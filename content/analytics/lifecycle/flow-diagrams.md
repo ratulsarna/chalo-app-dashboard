@@ -57,6 +57,11 @@ flowchart TD
   class ev_appOpen,ev_firstScreenOpen,ev_freshInstall,ev_appUpdated,ev_chaloTimeAvailable,ev_chaloTimeNotAvailable,ev_rootDetected,ev_newHomeRendered,ev_tabHomeRendered event;
   class ui_appStarts,ui_splashChecks,ui_exit,ui_homeNavigation,ui_cityDiscontinued,ui_appMigration ui;
   class ext_language,ext_login,ext_consent,ext_citySelection external;
+
+  %%chalo:diagram-link ext_login -> flow:authentication
+  %%chalo:diagram-link ext_language -> flow:onboarding title:Funnel: Language Selection
+  %%chalo:diagram-link ext_citySelection -> flow:onboarding title:Funnel: City Selection (New Flow) - Device Location Path
+  %%chalo:diagram-link ext_consent -> flow:onboarding
 ```
 
 ## AB Experiment Exposure (Dynamic Event Name Family)

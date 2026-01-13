@@ -196,8 +196,8 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  %%chalo:diagram-link ext_checkout -> title:External: Checkout flow (Payment module)
-  %%chalo:diagram-link ext_premiumBooking -> title:External: Premium bus booking flow
+  %%chalo:diagram-link ext_checkout -> flow:payment
+  %%chalo:diagram-link ext_premiumBooking -> flow:premium-bus-booking
   ui_routeDetails([Route details screen displayed]) --> ui_userAction{User action?}
 
   ui_userAction -->|Add to favorites| ev_favAdded["favorite added"]

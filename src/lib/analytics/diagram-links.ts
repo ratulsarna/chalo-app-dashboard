@@ -1,6 +1,7 @@
 export type DiagramLinkDirective = {
   nodeId: string;
-  targetTitle: string;
+  targetTitle?: string;
+  targetFlowSlug?: string;
 };
 
 function normalizeWhitespace(input: string) {
@@ -14,9 +15,12 @@ export function normalizeDiagramHeading(input: string) {
 /**
  * Parses Mermaid comment directives of the form:
  *   %%chalo:diagram-link <nodeId> -> title:<diagramHeading>
+ *   %%chalo:diagram-link <nodeId> -> flow:<flowSlug>
+ *   %%chalo:diagram-link <nodeId> -> flow:<flowSlug> title:<diagramHeading>
  *
  * Notes:
- * - Only `title:` targets are supported for now (same-flow navigation).
+ * - `title:` without `flow:` is same-flow navigation.
+ * - With `flow:`, navigation is cross-flow (optionally to a diagram title).
  * - Invalid directives are ignored.
  */
 export function parseDiagramLinkDirectives(mermaidCode: string): DiagramLinkDirective[] {
@@ -35,12 +39,29 @@ export function parseDiagramLinkDirectives(mermaidCode: string): DiagramLinkDire
     if (!/^[a-zA-Z0-9_]+$/.test(nodeId)) continue;
 
     const rhs = rest.slice(arrowIdx + 2).trim();
-    if (!rhs.toLowerCase().startsWith("title:")) continue;
+    const lower = rhs.toLowerCase();
 
-    const targetTitle = normalizeWhitespace(rhs.slice("title:".length));
-    if (targetTitle.length === 0) continue;
+    // Same-flow: title:<diagramHeading>
+    if (lower.startsWith("title:")) {
+      const targetTitle = normalizeWhitespace(rhs.slice("title:".length));
+      if (targetTitle.length === 0) continue;
+      out.push({ nodeId, targetTitle });
+      continue;
+    }
 
-    out.push({ nodeId, targetTitle });
+    // Cross-flow: flow:<flowSlug> [title:<diagramHeading>]
+    if (lower.startsWith("flow:")) {
+      const match = rhs.match(/^flow:\s*([a-z0-9-]+)(?:\s+title:\s*(.+))?$/i);
+      const targetFlowSlug = (match?.[1] ?? "").trim();
+      if (!/^[a-z0-9-]+$/i.test(targetFlowSlug)) continue;
+
+      const rawTitle = match?.[2];
+      const targetTitle = rawTitle ? normalizeWhitespace(rawTitle) : undefined;
+      if (targetTitle && targetTitle.length === 0) continue;
+
+      out.push({ nodeId, targetFlowSlug, targetTitle });
+      continue;
+    }
   }
 
   return out;

@@ -51,6 +51,8 @@ flowchart TD
 
   ext_loginFlow --> ui_checkCity
 
+  %%chalo:diagram-link ext_loginFlow -> flow:authentication
+
   ui_checkCity -->|Not selected| ui_cityFlow([City Selection Flow])
   ui_checkCity -->|Already selected| ui_checkDiscontinued([Check city discontinued?])
 
