@@ -207,7 +207,7 @@ flowchart TD
 
   ui_userAction -->|Buy ticket/pass| ev_payTicketClick["route details pay for ticket clicked"]
   ui_userAction -->|View existing pass| ev_passBookedClick["route details pass booked clicked"]
-  ui_userAction -->|Reserve seat (premium)| ev_reserveSeatClick["route details reserve seat btn clicked"]
+  ui_userAction -->|"Reserve seat (premium)"| ev_reserveSeatClick["route details reserve seat btn clicked"]
 
   ev_payTicketClick --> ext_checkout[Checkout flow]
   ev_reserveSeatClick --> ext_premiumBooking[Premium bus booking flow]
@@ -215,7 +215,7 @@ flowchart TD
   ui_userAction -->|Check in| ev_checkin["checkin initiated"]
 
   ui_userAction -->|Report problem| ev_reportClick["report problem clicked"]
-  ui_userAction -->|Report issue (with ETA context)| ev_reportHookClick["Report issue hook clicked"]
+  ui_userAction -->|"Report issue (with ETA context)"| ev_reportHookClick["Report issue hook clicked"]
 
   ev_reportClick --> ui_reportUI([Report problem UI])
   ev_reportHookClick --> ui_reportUI
