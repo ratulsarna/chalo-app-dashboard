@@ -193,6 +193,11 @@ async function main() {
 
     if (!committed) {
       console.log(`[no-changes] Codex produced no content changes; advancing state to ${upstreamHead}.`);
+
+      // Clean up: switch back to base branch and delete the unused update branch.
+      await dashboardGit.checkoutBaseAndPull(config.dashboardRepoPath, config.dashboardBaseBranch);
+      await dashboardGit.deleteLocalBranch(config.dashboardRepoPath, branch);
+
       await writeStateAtomic(config.statePath, {
         ...state,
         lastProcessedCommit: upstreamHead,

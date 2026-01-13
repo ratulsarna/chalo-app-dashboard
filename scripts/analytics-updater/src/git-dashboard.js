@@ -58,12 +58,17 @@ async function pushBranch(repoPath, branch) {
   await git(["push", "-u", "origin", branch, "--force-with-lease"], { cwd: repoPath });
 }
 
+async function deleteLocalBranch(repoPath, branch) {
+  await git(["branch", "-D", branch], { cwd: repoPath });
+}
+
 module.exports = {
   getStatusPorcelain,
   checkoutBaseAndPull,
   checkoutOrCreateBranch,
   commitAll,
   pushBranch,
+  deleteLocalBranch,
   hasRemoteBranch,
   checkoutBranchAtRemote,
   countCommitsBetween,
