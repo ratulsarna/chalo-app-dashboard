@@ -46,7 +46,11 @@
     },
     "hasVideo": {
       "type": "boolean",
-      "description": "True if the native ad contains video content."
+      "description": "True if the native ad contains video content.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "adLoadTime": {
       "type": "number",

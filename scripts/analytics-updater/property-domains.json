@@ -279,5 +279,12 @@
       "flows": ["chalo-wallet"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
+  ],
+  "hasVideo": [
+    {
+      "description": "Whether the ad contains video content (boolean-as-string).",
+      "flows": ["ads"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
   ]
 }
