@@ -348,22 +348,26 @@
     "project-structure": {
       "name": "Project Structure",
       "description": "Module tree, Gradle structure, KMP targets (Android/iOS), feature modules",
-      "status": "pending"
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
     },
     "tech-stack": {
       "name": "Tech Stack",
       "description": "Kotlin, Ktor, Koin, SQLDelight, Compose Multiplatform, dependencies",
-      "status": "pending"
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
     },
     "architecture": {
       "name": "Architecture",
       "description": "Clean Architecture layers, data flow, DI setup, Decompose navigation",
-      "status": "pending"
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
     },
     "navigation-guide": {
       "name": "Navigation Guide",
       "description": "How to find: screens → features → use cases → repos. ChaloScenes enum.",
-      "status": "pending"
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
     },
     "build-setup": {
       "name": "Build Setup",
@@ -373,7 +377,8 @@
     "conventions": {
       "name": "Conventions",
       "description": "Naming (UseCase suffix, Repository suffix), package structure, MVI patterns",
-      "status": "pending"
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
     },
     "ios-specifics": {
       "name": "iOS Specifics",
@@ -388,7 +393,8 @@
     "shared-infra": {
       "name": "Shared Infrastructure",
       "description": "Networking, error handling, logging, analytics SDK, BLE, security",
-      "status": "pending"
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
     },
     "testing": {
       "name": "Testing",
