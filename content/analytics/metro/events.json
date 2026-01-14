@@ -14,7 +14,10 @@
     "stop type": {
       "type": "string",
       "description": "Type of stop selection - FROM or TO.",
-      "values": ["FROM", "TO"]
+      "values": [
+        "FROM",
+        "TO"
+      ]
     },
     "from stop id": {
       "type": "string",
@@ -34,7 +37,11 @@
     },
     "isActive": {
       "type": "string",
-      "description": "Whether the metro config is active (boolean as string)."
+      "description": "Whether the metro config is active (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "configId": {
       "type": "string",
@@ -50,7 +57,12 @@
     },
     "bookingMode": {
       "type": "string",
-      "description": "The mode of booking (e.g., regular, return trip)."
+      "description": "The mode of booking (e.g., regular, return trip).",
+      "values": [
+        "Group",
+        "SingleJourney",
+        "Unknown"
+      ]
     },
     "passengerTypes": {
       "type": "string",
@@ -90,7 +102,18 @@
     },
     "ticketStatus": {
       "type": "string",
-      "description": "Status of the metro ticket (e.g., BOOKED, ACTIVE, USED)."
+      "description": "Status of the metro ticket (e.g., BOOKED, ACTIVE, USED).",
+      "values": [
+        "ACTIVE",
+        "CANCELLED",
+        "EXPIRED",
+        "FAILED",
+        "PAYMENT_FAILED",
+        "PAYMENT_PROCESSING",
+        "PUNCHED",
+        "TAPPED_IN",
+        "USED"
+      ]
     },
     "passengerCount": {
       "type": "string",
@@ -98,7 +121,12 @@
     },
     "refundInfoStatus": {
       "type": "string",
-      "description": "Refund eligibility status for the ticket."
+      "description": "Refund eligibility status for the ticket.",
+      "values": [
+        "NOT_ALLOWED",
+        "PENDING",
+        "REFUNDED"
+      ]
     },
     "refundInfoMessage": {
       "type": "string",
@@ -118,11 +146,18 @@
     },
     "productType": {
       "type": "string",
-      "description": "Product type identifier."
+      "description": "Product type identifier.",
+      "values": [
+        "mobileTicket"
+      ]
     },
     "productSubType": {
       "type": "string",
-      "description": "Product sub-type identifier."
+      "description": "Product sub-type identifier.",
+      "values": [
+        "metroTicket",
+        "ondcMetroTicket"
+      ]
     },
     "activationTime": {
       "type": "number",
@@ -138,7 +173,10 @@
     },
     "flowType": {
       "type": "string",
-      "description": "Flow variant identifier (e.g., ondc)."
+      "description": "Flow variant identifier (e.g., ondc).",
+      "values": [
+        "ondc"
+      ]
     },
     "transactionId": {
       "type": "string",
@@ -179,7 +217,9 @@
     "problemSource": {
       "type": "string",
       "description": "Source screen where problem was reported.",
-      "values": ["VALIDATION_SCREEN"]
+      "values": [
+        "VALIDATION_SCREEN"
+      ]
     }
   },
   "stages": [
@@ -275,8 +315,13 @@
       "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
       "description": "ONDC route search returned 0 routes (no routes available).",
       "properties": [
-        { "property": "totalResults" },
-        { "property": "flowType", "context": "ondc" }
+        {
+          "property": "totalResults"
+        },
+        {
+          "property": "flowType",
+          "context": "ondc"
+        }
       ]
     },
     {
@@ -286,7 +331,10 @@
       "source": "Source.STOP_BASED_ROUTE_SELECTION_FRAGMENT",
       "description": "ONDC route search failed due to network/server/parse/local error.",
       "properties": [
-        { "property": "flowType", "context": "ondc" }
+        {
+          "property": "flowType",
+          "context": "ondc"
+        }
       ]
     },
     {
@@ -296,9 +344,15 @@
       "source": "Source.FARE_DETAILS_FETCH_USECASE",
       "description": "Unexpected exception while fetching ticket fare details.",
       "properties": [
-        { "property": "type" },
-        { "property": "reason" },
-        { "property": "invalidResponse" }
+        {
+          "property": "type"
+        },
+        {
+          "property": "reason"
+        },
+        {
+          "property": "invalidResponse"
+        }
       ]
     },
     {
@@ -332,9 +386,16 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "User selected a metro station from the picker.",
       "properties": [
-        { "property": "stop id" },
-        { "property": "stop name" },
-        { "property": "stop type", "context": "FROM or TO indicating which station was selected" }
+        {
+          "property": "stop id"
+        },
+        {
+          "property": "stop name"
+        },
+        {
+          "property": "stop type",
+          "context": "FROM or TO indicating which station was selected"
+        }
       ]
     },
     {
@@ -344,8 +405,12 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "User tapped the swap button to interchange from/to stations.",
       "properties": [
-        { "property": "from stop name" },
-        { "property": "to stop name" }
+        {
+          "property": "from stop name"
+        },
+        {
+          "property": "to stop name"
+        }
       ]
     },
     {
@@ -355,10 +420,18 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "User tapped a recent trip pair to auto-fill stations.",
       "properties": [
-        { "property": "from stop id" },
-        { "property": "from stop name" },
-        { "property": "to stop id" },
-        { "property": "to stop name" }
+        {
+          "property": "from stop id"
+        },
+        {
+          "property": "from stop name"
+        },
+        {
+          "property": "to stop id"
+        },
+        {
+          "property": "to stop name"
+        }
       ]
     },
     {
@@ -368,8 +441,13 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "Metro configuration was successfully fetched.",
       "properties": [
-        { "property": "isActive", "context": "Boolean as string indicating if config is active" },
-        { "property": "configId" }
+        {
+          "property": "isActive",
+          "context": "Boolean as string indicating if config is active"
+        },
+        {
+          "property": "configId"
+        }
       ]
     },
     {
@@ -379,7 +457,9 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "Metro configuration fetch failed.",
       "properties": [
-        { "property": "error" }
+        {
+          "property": "error"
+        }
       ]
     },
     {
@@ -389,7 +469,10 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "All metro stations list was successfully fetched.",
       "properties": [
-        { "property": "count", "context": "Number of stations returned" }
+        {
+          "property": "count",
+          "context": "Number of stations returned"
+        }
       ]
     },
     {
@@ -399,7 +482,9 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "Failed to fetch metro stations list.",
       "properties": [
-        { "property": "error" }
+        {
+          "property": "error"
+        }
       ]
     },
     {
@@ -409,7 +494,10 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "Fare details were successfully fetched for the selected route.",
       "properties": [
-        { "property": "count", "context": "Number of fare options available" }
+        {
+          "property": "count",
+          "context": "Number of fare options available"
+        }
       ]
     },
     {
@@ -419,7 +507,9 @@
       "source": "Source.STOP_BASED_METRO_LANDING_SCREEN",
       "description": "Failed to fetch fare details.",
       "properties": [
-        { "property": "error" }
+        {
+          "property": "error"
+        }
       ]
     },
     {
@@ -445,9 +535,17 @@
       "source": "Source.CONFIRM_BOOKING_SCREEN",
       "description": "Booking confirmation screen was opened.",
       "properties": [
-        { "property": "bookingMode" },
-        { "property": "passengerTypes", "context": "JSON string of passenger type counts" },
-        { "property": "tripDetails", "context": "JSON string with from/to station details" }
+        {
+          "property": "bookingMode"
+        },
+        {
+          "property": "passengerTypes",
+          "context": "JSON string of passenger type counts"
+        },
+        {
+          "property": "tripDetails",
+          "context": "JSON string with from/to station details"
+        }
       ]
     },
     {
@@ -457,7 +555,9 @@
       "source": "Source.CONFIRM_BOOKING_SCREEN",
       "description": "Final fare was successfully calculated.",
       "properties": [
-        { "property": "fare" }
+        {
+          "property": "fare"
+        }
       ]
     },
     {
@@ -467,7 +567,9 @@
       "source": "Source.CONFIRM_BOOKING_SCREEN",
       "description": "Failed to calculate final fare.",
       "properties": [
-        { "property": "error" }
+        {
+          "property": "error"
+        }
       ]
     },
     {
@@ -477,7 +579,9 @@
       "source": "Source.CONFIRM_BOOKING_SCREEN",
       "description": "User clicked the pay button to proceed to payment.",
       "properties": [
-        { "property": "fare" }
+        {
+          "property": "fare"
+        }
       ]
     },
     {
@@ -487,8 +591,12 @@
       "source": "Source.CONFIRM_BOOKING_SCREEN",
       "description": "Metro ticket order was successfully created.",
       "properties": [
-        { "property": "orderId" },
-        { "property": "transaction id" }
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "transaction id"
+        }
       ]
     },
     {
@@ -498,7 +606,9 @@
       "source": "Source.CONFIRM_BOOKING_SCREEN",
       "description": "Failed to create metro ticket order.",
       "properties": [
-        { "property": "error" }
+        {
+          "property": "error"
+        }
       ]
     },
     {
@@ -516,14 +626,30 @@
       "source": "Source.CHECKOUT_ACTIVITY",
       "description": "Metro ticket payment completed successfully.",
       "properties": [
-        { "property": "transactionId" },
-        { "property": "bookingDate" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "amount" },
-        { "property": "paymentId" },
-        { "property": "hourOfEvent" },
-        { "property": "agency" }
+        {
+          "property": "transactionId"
+        },
+        {
+          "property": "bookingDate"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "amount"
+        },
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "agency"
+        }
       ]
     },
     {
@@ -533,12 +659,24 @@
       "source": "Source.CHECKOUT_ACTIVITY",
       "description": "Metro ticket payment failed.",
       "properties": [
-        { "property": "transactionId" },
-        { "property": "bookingDate" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "amount" },
-        { "property": "hourOfEvent" }
+        {
+          "property": "transactionId"
+        },
+        {
+          "property": "bookingDate"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "amount"
+        },
+        {
+          "property": "hourOfEvent"
+        }
       ]
     },
     {
@@ -548,14 +686,30 @@
       "source": "Source.CHECKOUT_ACTIVITY",
       "description": "ONDC metro ticket payment completed successfully.",
       "properties": [
-        { "property": "transactionId" },
-        { "property": "bookingDate" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "amount" },
-        { "property": "paymentId" },
-        { "property": "hourOfEvent" },
-        { "property": "agency" }
+        {
+          "property": "transactionId"
+        },
+        {
+          "property": "bookingDate"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "amount"
+        },
+        {
+          "property": "paymentId"
+        },
+        {
+          "property": "hourOfEvent"
+        },
+        {
+          "property": "agency"
+        }
       ]
     },
     {
@@ -565,12 +719,24 @@
       "source": "Source.CHECKOUT_ACTIVITY",
       "description": "ONDC metro ticket payment failed.",
       "properties": [
-        { "property": "transactionId" },
-        { "property": "bookingDate" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "amount" },
-        { "property": "hourOfEvent" }
+        {
+          "property": "transactionId"
+        },
+        {
+          "property": "bookingDate"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "amount"
+        },
+        {
+          "property": "hourOfEvent"
+        }
       ]
     },
     {
@@ -580,15 +746,33 @@
       "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT",
       "description": "Metro ticket booking confirmed and success screen displayed.",
       "properties": [
-        { "property": "bookingId" },
-        { "property": "route name" },
-        { "property": "pickupStopName" },
-        { "property": "dropStopName" },
-        { "property": "ticketStatus" },
-        { "property": "fare" },
-        { "property": "passengerCount" },
-        { "property": "refundInfoStatus" },
-        { "property": "refundInfoMessage" }
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "pickupStopName"
+        },
+        {
+          "property": "dropStopName"
+        },
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "passengerCount"
+        },
+        {
+          "property": "refundInfoStatus"
+        },
+        {
+          "property": "refundInfoMessage"
+        }
       ],
       "notes": "sendToPlotline is true for this event."
     },
@@ -599,15 +783,33 @@
       "source": "Source.PRODUCT_BOOKING_SUCCESS_FRAGMENT",
       "description": "ONDC metro ticket booking confirmed and success screen displayed.",
       "properties": [
-        { "property": "bookingId" },
-        { "property": "route name" },
-        { "property": "pickupStopName" },
-        { "property": "dropStopName" },
-        { "property": "ticketStatus" },
-        { "property": "fare" },
-        { "property": "passengerCount" },
-        { "property": "refundInfoStatus" },
-        { "property": "refundInfoMessage" }
+        {
+          "property": "bookingId"
+        },
+        {
+          "property": "route name"
+        },
+        {
+          "property": "pickupStopName"
+        },
+        {
+          "property": "dropStopName"
+        },
+        {
+          "property": "ticketStatus"
+        },
+        {
+          "property": "fare"
+        },
+        {
+          "property": "passengerCount"
+        },
+        {
+          "property": "refundInfoStatus"
+        },
+        {
+          "property": "refundInfoMessage"
+        }
       ],
       "notes": "sendToPlotline is true for this event."
     },
@@ -618,13 +820,27 @@
       "source": "validation screen",
       "description": "Metro ticket data was fetched for validation.",
       "properties": [
-        { "property": "fullName" },
-        { "property": "time" },
-        { "property": "date" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "orderId" },
-        { "property": "activationTime" }
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "activationTime"
+        }
       ]
     },
     {
@@ -634,14 +850,31 @@
       "source": "validation screen",
       "description": "ONDC metro ticket data was fetched for validation.",
       "properties": [
-        { "property": "fullName" },
-        { "property": "time" },
-        { "property": "date" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "orderId" },
-        { "property": "activationTime" },
-        { "property": "isOndcTicketOrder", "context": "true" }
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "activationTime"
+        },
+        {
+          "property": "isOndcTicketOrder",
+          "context": "true"
+        }
       ]
     },
     {
@@ -651,9 +884,15 @@
       "source": "validation screen",
       "description": "User clicked to zoom the QR code for easier scanning.",
       "properties": [
-        { "property": "orderId" },
-        { "property": "productType" },
-        { "property": "productSubType" }
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        }
       ]
     },
     {
@@ -663,14 +902,31 @@
       "source": "validation screen",
       "description": "User clicked view trip receipt from the menu.",
       "properties": [
-        { "property": "fullName" },
-        { "property": "time" },
-        { "property": "date" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "orderId" },
-        { "property": "activationTime" },
-        { "property": "isOndcTicketOrder", "context": "true for ONDC metro tickets" }
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "activationTime"
+        },
+        {
+          "property": "isOndcTicketOrder",
+          "context": "true for ONDC metro tickets"
+        }
       ]
     },
     {
@@ -680,16 +936,39 @@
       "source": "validation screen",
       "description": "User clicked report problem button from validation screen.",
       "properties": [
-        { "property": "type", "context": "ACTIVATION_SCREEN_TICKETING_PROBLEMS" },
-        { "property": "problemSource", "context": "VALIDATION_SCREEN" },
-        { "property": "fullName" },
-        { "property": "time" },
-        { "property": "date" },
-        { "property": "productType" },
-        { "property": "productSubType" },
-        { "property": "orderId" },
-        { "property": "activationTime" },
-        { "property": "isOndcTicketOrder", "context": "true for ONDC metro tickets" }
+        {
+          "property": "type",
+          "context": "ACTIVATION_SCREEN_TICKETING_PROBLEMS"
+        },
+        {
+          "property": "problemSource",
+          "context": "VALIDATION_SCREEN"
+        },
+        {
+          "property": "fullName"
+        },
+        {
+          "property": "time"
+        },
+        {
+          "property": "date"
+        },
+        {
+          "property": "productType"
+        },
+        {
+          "property": "productSubType"
+        },
+        {
+          "property": "orderId"
+        },
+        {
+          "property": "activationTime"
+        },
+        {
+          "property": "isOndcTicketOrder",
+          "context": "true for ONDC metro tickets"
+        }
       ]
     }
   ],

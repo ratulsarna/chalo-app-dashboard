@@ -27,7 +27,11 @@
     },
     "installedUpiAppFlow": {
       "type": "string",
-      "description": "Whether native UPI app flow is available (\"true\" or \"false\")."
+      "description": "Whether native UPI app flow is available (\"true\" or \"false\").",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "installedUpiAppsCount": {
       "type": "string",
@@ -47,7 +51,11 @@
     },
     "top mode": {
       "type": "string",
-      "description": "\"true\" or \"false\" (string)."
+      "description": "\"true\" or \"false\" (string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "checkoutFlowType": {
       "type": "string",
@@ -63,7 +71,16 @@
     },
     "paymentProvider": {
       "type": "string",
-      "description": "Payment gateway provider name (Razorpay, Inai, Juspay, etc.)."
+      "description": "CheckoutPaymentProvider.name (payment gateway provider).",
+      "values": [
+        "CHALOPAY",
+        "CUSTOM_URL",
+        "INAI",
+        "NO_PAYMENT",
+        "RAZORPAY",
+        "UNKNOWN",
+        "YES_BANK"
+      ]
     },
     "paymentId": {
       "type": "string",
@@ -115,7 +132,11 @@
     },
     "isFreeRide": {
       "type": "string",
-      "description": "Whether this is a free ride (\"true\" or \"false\")."
+      "description": "Whether this is a free ride (\"true\" or \"false\").",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "productType": {
       "type": "string",
@@ -203,7 +224,11 @@
     },
     "isFlowApplicable": {
       "type": "string",
-      "description": "\"true\" or \"false\" (string)."
+      "description": "\"true\" or \"false\" (string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "attempt": {
       "type": "string",
@@ -259,7 +284,11 @@
     },
     "isOperationCancelled": {
       "type": "string",
-      "description": "Whether UPI operation was cancelled (\"true\" or \"false\")."
+      "description": "Whether UPI operation was cancelled (\"true\" or \"false\").",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "historyCallRetryCount": {
       "type": "number",
@@ -267,11 +296,18 @@
     },
     "chaloPayWalletState": {
       "type": "string",
-      "description": "State of Chalo Pay wallet (\"active\", \"blocked\", \"inactive\").",
+      "description": "WalletStatusForUI.name lowercased (Chalo Pay wallet state).",
       "values": [
         "active",
-        "blocked",
-        "inactive"
+        "api_fetch_failed",
+        "full_kyc_needed",
+        "insufficient_balance",
+        "internet_error",
+        "not_logged_in",
+        "wallet_blocked",
+        "wallet_blocked_app_reclaim",
+        "wallet_blocked_backend_reclaim",
+        "wallet_not_active"
       ]
     },
     "chaloPayWalletBalance": {
@@ -280,7 +316,14 @@
     },
     "bottomsheetCTA": {
       "type": "string",
-      "description": "Text of CTA shown in Chalo Pay bottomsheet."
+      "description": "WalletCTA.name lowercased (CTA shown in Chalo Pay bottomsheet).",
+      "values": [
+        "activate",
+        "confirm_payment",
+        "contact",
+        "recharge",
+        "reclaim"
+      ]
     },
     "juspayNoOfAccountsLinked": {
       "type": "number",

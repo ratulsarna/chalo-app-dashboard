@@ -17,7 +17,15 @@
     },
     "network type": {
       "type": "string",
-      "description": "`NetworkType` enum returned by `NetworkStateManager.resolveNetworkType()` (CELLULAR_2G, CELLULAR_3G, CELLULAR_4G, CELLULAR, WIFI, UNKNOWN)."
+      "description": "`NetworkType` enum returned by `NetworkStateManager.resolveNetworkType()` (CELLULAR_2G, CELLULAR_3G, CELLULAR_4G, CELLULAR, WIFI, UNKNOWN).",
+      "values": [
+        "CELLULAR",
+        "CELLULAR_2G",
+        "CELLULAR_3G",
+        "CELLULAR_4G",
+        "UNKNOWN",
+        "WIFI"
+      ]
     },
     "time": {
       "type": "number",

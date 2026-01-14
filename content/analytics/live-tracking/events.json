@@ -108,7 +108,10 @@
     },
     "mode": {
       "type": "string",
-      "description": "Transit mode, always 'BUS' for live tracking events"
+      "description": "Transit mode, always 'BUS' for live tracking events",
+      "values": [
+        "BUS"
+      ]
     },
     "from": {
       "type": "string",
@@ -124,7 +127,10 @@
     },
     "problemSource": {
       "type": "string",
-      "description": "Source identifier for problem reporting (BusRouteFragment)"
+      "description": "Source identifier for problem reporting (BusRouteFragment)",
+      "values": [
+        "route details screen"
+      ]
     },
     "city": {
       "type": "string",
@@ -276,7 +282,14 @@
     },
     "searchResultType": {
       "type": "string",
-      "description": "Type of search result (ROUTE, STOP, LOCATION, RECENT_TRIP)"
+      "description": "Type of search result (ROUTE, STOP, LOCATION, RECENT_TRIP)",
+      "values": [
+        "LOCATION",
+        "ROUTE",
+        "STOP",
+        "TRIP_LOCATION",
+        "TRIP_STOP"
+      ]
     },
     "total stops and places": {
       "type": "number",
@@ -304,7 +317,15 @@
     },
     "network type": {
       "type": "string",
-      "description": "Type of network connection (WIFI, MOBILE, 4G, 5G, etc.)"
+      "description": "Type of network connection (WIFI, MOBILE, 4G, 5G, etc.)",
+      "values": [
+        "CELLULAR",
+        "CELLULAR_2G",
+        "CELLULAR_3G",
+        "CELLULAR_4G",
+        "UNKNOWN",
+        "WIFI"
+      ]
     },
     "network": {
       "type": "boolean",

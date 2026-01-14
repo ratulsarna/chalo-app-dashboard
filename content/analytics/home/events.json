@@ -136,11 +136,18 @@
     },
     "updateType": {
       "type": "string",
-      "description": "Type of app update (flexible or immediate)"
+      "description": "Type of app update (flexible or immediate)",
+      "values": [
+        "FLEXIBLE",
+        "IMMEDIATE"
+      ]
     },
     "userAction": {
       "type": "string",
-      "description": "Type of user action for premium bus interactions"
+      "description": "Type of user action for premium bus interactions",
+      "values": [
+        "SPECIFIC_USER_BOOKING_ACTION"
+      ]
     },
     "premiumBusStackType": {
       "type": "string",
@@ -155,7 +162,22 @@
     },
     "ticketStatus": {
       "type": "string",
-      "description": "Status of the premium bus ticket"
+      "description": "Status of the premium bus ticket",
+      "values": [
+        "ACTIVE",
+        "BOOKING_FAILED",
+        "BOOKING_UNDER_PROCESS",
+        "EXPIRED",
+        "FAILED",
+        "PAYMENT_FAILED",
+        "PAYMENT_PROCESSING",
+        "PUNCHED",
+        "SYSTEM_CANCELLED",
+        "SYSTEM_RESCHEDULED",
+        "USED",
+        "USER_CANCELLED",
+        "USER_RESCHEDULED"
+      ]
     },
     "pbAckCtaType": {
       "type": "string",
@@ -271,7 +293,15 @@
       "type": "string"
     },
     "network type": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "CELLULAR",
+        "CELLULAR_2G",
+        "CELLULAR_3G",
+        "CELLULAR_4G",
+        "UNKNOWN",
+        "WIFI"
+      ]
     },
     "response time": {
       "type": "string"
@@ -280,7 +310,10 @@
       "type": "string"
     },
     "geoSpatialSrc": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "chalo"
+      ]
     },
     "hourOfEvent": {
       "type": "string"
@@ -289,7 +322,24 @@
       "type": "string"
     },
     "mode": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "ALL",
+        "bus",
+        "BUS",
+        "cab",
+        "CAB",
+        "ferry",
+        "FERRY",
+        "metro",
+        "METRO",
+        "monorail",
+        "MONORAIL",
+        "railway",
+        "TRAIN",
+        "transit",
+        "UNKNOWN"
+      ]
     },
     "routeName": {
       "type": "string"

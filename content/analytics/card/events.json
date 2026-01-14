@@ -85,15 +85,44 @@
     },
     "cardLinkingErrorReason": {
       "type": "string",
-      "description": "Reason for card linking failure."
+      "description": "Reason for card linking failure.",
+      "values": [
+        "API_CALL_AUTHORISATION_ERROR",
+        "CARD_LINKED_TO_ANOTHER_NUMBER",
+        "CARD_NOT_REGISTERED_IN_CURR_CITY",
+        "ERROR_RESPONSE_PARSING_ERROR",
+        "INVALID_CARD_NUMBER",
+        "INVALID_LINK_CODE",
+        "KYC_NOT_DONE",
+        "NO_INTERNET_ERROR",
+        "NO_UPDATE_IN_DATA_BASED_ON_ETAG",
+        "REQUEST_CANCELLATION_ERROR",
+        "SERVER_ERROR",
+        "SUCCESS_RESPONSE_PARSING_ERROR",
+        "UNEXPECTED_EXCEPTION_ERROR",
+        "UNKNOWN_ERROR"
+      ]
     },
     "chaloCardInfoFetchFailedReason": {
       "type": "string",
-      "description": "Reason enum when fetching card info fails."
+      "description": "Reason enum when fetching card info fails.",
+      "values": [
+        "API_CALL_FAILED",
+        "FETCH_NCMC_CARD_ERROR",
+        "FETCH_NCMC_CARD_TIMEOUT_ERROR",
+        "NO_CARD_LINKED"
+      ]
     },
     "refreshChaloCardInfoSource": {
       "type": "string",
-      "description": "Source that triggered card info refresh."
+      "description": "Source that triggered card info refresh.",
+      "values": [
+        "CARD_ACTIVATE_REFRESH",
+        "CARD_LINK_REFRESH",
+        "EMPTY_ERROR_STATE_RETRY",
+        "FETCH_FAILED_SNACKBAR_RETRY",
+        "REFRESH_BTN"
+      ]
     },
     "rechargeAmount": {
       "type": "number",
@@ -117,7 +146,14 @@
     },
     "transactionType": {
       "type": "string",
-      "description": "Type of transaction (RECHARGE, PASS_PURCHASE, TICKET, MERCHANT, UNKNOWN)."
+      "description": "Type of transaction (RECHARGE, PASS_PURCHASE, TICKET, MERCHANT, UNKNOWN).",
+      "values": [
+        "MERCHANT",
+        "PASS_PURCHASE",
+        "RECHARGE",
+        "TICKET",
+        "UNKNOWN"
+      ]
     },
     "orderId": {
       "type": "string",
@@ -177,7 +213,20 @@
     },
     "chaloCardRechargeConfigFetchFailedReason": {
       "type": "string",
-      "description": "Reason for recharge configuration fetch failure."
+      "description": "Reason for recharge configuration fetch failure.",
+      "values": [
+        "API_CALL_AUTHORISATION_ERROR",
+        "ERROR_RESPONSE_PARSING_ERROR",
+        "NO_ACTIVE_RECHARGE_CONFIG_FOUND",
+        "NO_INTERNET_ERROR",
+        "NO_UPDATE_IN_DATA_BASED_ON_ETAG",
+        "REQUEST_CANCELLATION_ERROR",
+        "SERVER_ERROR",
+        "SUCCESS_RESPONSE_PARSING_ERROR",
+        "UNEXPECTED_EXCEPTION_ERROR",
+        "UNKNOWN",
+        "UNKNOWN_ERROR"
+      ]
     },
     "online recharge balance": {
       "type": "string",
@@ -185,7 +234,11 @@
     },
     "ncmc recharge mode": {
       "type": "string",
-      "description": "Mode of NCMC recharge (online/offline)."
+      "description": "Mode of NCMC recharge (online/offline).",
+      "values": [
+        "OFFLINE",
+        "ONLINE"
+      ]
     },
     "offlineBalance": {
       "type": "string",

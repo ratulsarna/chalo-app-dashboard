@@ -414,10 +414,19 @@
       "type": "string",
       "description": "Status of the ticket/booking.",
       "values": [
-        "active",
-        "expired",
-        "cancelled",
-        "upcoming"
+        "ACTIVE",
+        "BOOKING_FAILED",
+        "BOOKING_UNDER_PROCESS",
+        "EXPIRED",
+        "FAILED",
+        "PAYMENT_FAILED",
+        "PAYMENT_PROCESSING",
+        "PUNCHED",
+        "SYSTEM_CANCELLED",
+        "SYSTEM_RESCHEDULED",
+        "USED",
+        "USER_CANCELLED",
+        "USER_RESCHEDULED"
       ]
     },
     "pbAckCtaType": {

@@ -1,0 +1,283 @@
+{
+  "ticketStatus": [
+    {
+      "description": "Premium bus ticket status (PremiumReserveTicketStatus.name).",
+      "flows": [
+        "home",
+        "premium-bus-booking",
+        "premium-bus-activation-tracking",
+        "premium-bus-bulk-booking"
+      ],
+      "sources": [{ "kind": "enumName", "name": "PremiumReserveTicketStatus" }]
+    },
+    {
+      "description": "ONDC bus ticket status (OndcTicketAppModel.status.name).",
+      "flows": ["ondc-bus"],
+      "sources": [
+        {
+          "kind": "enumName",
+          "name": "OndcTicketStatus",
+          "filePath": "shared/productbooking/src/commonMain/kotlin/app/chalo/ondc/model/app/OndcTicketAppModel.kt"
+        }
+      ]
+    },
+    {
+      "description": "Metro ticket status (MetroTicketStatus.name / OndcMetroTicketStatus.name).",
+      "flows": ["metro"],
+      "sources": [
+        { "kind": "enumName", "name": "MetroTicketStatus" },
+        { "kind": "enumName", "name": "OndcMetroTicketStatus" }
+      ]
+    }
+  ],
+  "flowType": [
+    {
+      "description": "Flow variant identifier for metro flow (currently only ONDC route search).",
+      "flows": ["metro"],
+      "sources": [{ "kind": "literal", "values": ["ondc"] }]
+    }
+  ],
+  "bookingMode": [
+    {
+      "description": "ChaloTicketBookingMode.name (as sent by ConfirmBookingScreenComponent).",
+      "flows": ["metro"],
+      "sources": [{ "kind": "enumName", "name": "ChaloTicketBookingMode" }]
+    }
+  ],
+  "productType": [
+    {
+      "description": "Metro checkout/validation productType (MetroTicketConstants.PRODUCT_TYPE / OndcMetroTicketConstants.PRODUCT_TYPE).",
+      "flows": ["metro"],
+      "sources": [
+        { "kind": "const", "name": "MetroTicketConstants.PRODUCT_TYPE" },
+        { "kind": "const", "name": "OndcMetroTicketConstants.PRODUCT_TYPE" }
+      ]
+    }
+  ],
+  "productSubType": [
+    {
+      "description": "Metro checkout/validation productSubType (metroTicket / ondcMetroTicket).",
+      "flows": ["metro"],
+      "sources": [
+        { "kind": "const", "name": "MetroTicketConstants.PRODUCT_SUB_TYPE" },
+        { "kind": "const", "name": "OndcMetroTicketConstants.PRODUCT_SUB_TYPE" }
+      ]
+    }
+  ],
+  "refundInfoStatus": [
+    {
+      "description": "RefundStatus.status (non-empty).",
+      "flows": ["metro"],
+      "sources": [{ "kind": "enumProperty", "enum": "RefundStatus", "property": "status" }]
+    }
+  ],
+  "isActive": [
+    {
+      "description": "Metro config active flag (boolean-as-string).",
+      "flows": ["metro"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "updateType": [
+    {
+      "description": "Home app update type (AppUpdateType.name).",
+      "flows": ["home"],
+      "sources": [{ "kind": "enumName", "name": "AppUpdateType" }]
+    }
+  ],
+  "geoSpatialSrc": [
+    {
+      "description": "Home geoSpatial source value (AnalyticsEventConstants.VALUE_CHALO_AS_SOURCE).",
+      "flows": ["home"],
+      "sources": [{ "kind": "const", "name": "AnalyticsEventConstants.VALUE_CHALO_AS_SOURCE" }]
+    }
+  ],
+  "mode": [
+    {
+      "description": "Home transit mode: mix of ChaloTransitMode.mode (lowercase) and ChaloTransitMode.name (UPPERCASE).",
+      "flows": ["home"],
+      "sources": [
+        { "kind": "enumProperty", "enum": "ChaloTransitMode", "property": "mode" },
+        { "kind": "enumName", "name": "ChaloTransitMode" }
+      ]
+    }
+  ],
+  "network type": [
+    {
+      "description": "NetworkType.name (from networkStateManager.resolveNetworkType().name).",
+      "flows": ["home", "live-tracking", "network"],
+      "sources": [{ "kind": "enumName", "name": "NetworkType" }]
+    }
+  ],
+  "searchResultType": [
+    {
+      "description": "UniversalSearchItemType.name (used by UniversalSearchAnalyticsEventHelperImpl).",
+      "flows": ["live-tracking"],
+      "sources": [{ "kind": "enumName", "name": "UniversalSearchItemType" }]
+    }
+  ],
+  "problemSource": [
+    {
+      "description": "Live-tracking report problem source (RouteDetailsAnalyticsEventValue.ROUTE_DETAILS_SOURCE).",
+      "flows": ["live-tracking"],
+      "sources": [{ "kind": "const", "name": "RouteDetailsAnalyticsEventValue.ROUTE_DETAILS_SOURCE" }]
+    }
+  ],
+  "paymentProvider": [
+    {
+      "description": "CheckoutPaymentProvider.name (e.g. RAZORPAY, INAI, CHALOPAY).",
+      "flows": ["payment"],
+      "sources": [{ "kind": "enumName", "name": "CheckoutPaymentProvider" }]
+    }
+  ],
+  "installedUpiAppFlow": [
+    {
+      "description": "Native UPI app flow availability (boolean-as-string).",
+      "flows": ["payment"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "top mode": [
+    {
+      "description": "Whether selected payment mode was a top/featured mode (boolean-as-string).",
+      "flows": ["payment"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isFlowApplicable": [
+    {
+      "description": "Whether Juspay flow is applicable (boolean-as-string).",
+      "flows": ["payment"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isFreeRide": [
+    {
+      "description": "Whether the ride/ticket is a free ride (boolean-as-string).",
+      "flows": ["payment"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isOperationCancelled": [
+    {
+      "description": "Whether native UPI operation was cancelled (boolean-as-string).",
+      "flows": ["payment"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "bottomsheetCTA": [
+    {
+      "description": "WalletCTA.name lowercased (e.g. recharge, confirm_payment).",
+      "flows": ["payment", "chalo-wallet"],
+      "sources": [{ "kind": "enumName", "name": "WalletCTA", "transform": "lowercase" }]
+    }
+  ],
+  "chaloPayWalletState": [
+    {
+      "description": "WalletStatusForUI.name lowercased (e.g. active, insufficient_balance, wallet_blocked).",
+      "flows": ["payment", "chalo-wallet"],
+      "sources": [{ "kind": "enumName", "name": "WalletStatusForUI", "transform": "lowercase" }]
+    }
+  ],
+  "validationAckDataType": [
+    {
+      "description": "Validation acknowledgment payload type (BleValidationAckData.toDataTypeForAnalytics()).",
+      "flows": ["chalo-wallet"],
+      "sources": [
+        { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_VALIDATION_ACK_DATA" },
+        { "kind": "const", "name": "AnalyticsEventConstants.INVALID_DATA" },
+        { "kind": "const", "name": "AnalyticsEventConstants.TITO_TAP_IN_ACK_DATA" },
+        { "kind": "const", "name": "AnalyticsEventConstants.TITO_TAP_OUT_ACK_DATA" }
+      ]
+    }
+  ],
+  "validationFlowType": [
+    {
+      "description": "Validation flow type (ValidationProcessFlowDetails.toValidationFlowTypeForAnalytics()).",
+      "flows": ["chalo-wallet"],
+      "sources": [
+        { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_OR_UNIFIED_TAP_IN_FLOW" },
+        { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_VALIDATION" },
+        { "kind": "const", "name": "AnalyticsEventConstants.TITO_TAP_OUT" },
+        { "kind": "const", "name": "AnalyticsEventConstants.VEHICLE_BASED_VALIDATION" }
+      ]
+    }
+  ],
+  "wallet transaction summary transaction type": [
+    {
+      "description": "WalletTransactionType.name (QUICK_PAY, LOAD_MONEY, CHALO_PAY).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "enumName", "name": "WalletTransactionType" }]
+    }
+  ],
+  "isBlePermissionGranted": [
+    {
+      "description": "BLE permission granted (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isChaloPay": [
+    {
+      "description": "Hard-coded true for Quick Pay events (AnalyticsEventConstants.ATTRIBUTE_IS_QUICK_PAY_ORDER).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true"] }]
+    }
+  ],
+  "is chalo wallet activated": [
+    {
+      "description": "Whether wallet is activated (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is foreground": [
+    {
+      "description": "Whether app is in foreground (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isFromCheckout": [
+    {
+      "description": "Whether action originated from checkout (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is quick pay bought once": [
+    {
+      "description": "Whether quick pay was bought once (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isSuccessful": [
+    {
+      "description": "Whether action completed successfully (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "kycDone": [
+    {
+      "description": "Whether user completed KYC (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "wasTitoValidation": [
+    {
+      "description": "Whether this was a TITO validation (boolean-as-string).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isInvalidOtpEntered": [
+    {
+      "description": "Whether the entered OTP was invalid (stringified boolean).",
+      "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ]
+}

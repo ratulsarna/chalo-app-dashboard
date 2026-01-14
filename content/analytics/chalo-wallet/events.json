@@ -5,7 +5,10 @@
   "propertyDefinitions": {
     "isChaloPay": {
       "type": "boolean",
-      "description": "Hard-coded `true` (via ATTRIBUTE_IS_QUICK_PAY_ORDER) for Quick Pay events to filter Quick Pay event family."
+      "description": "Hard-coded `true` (via ATTRIBUTE_IS_QUICK_PAY_ORDER) for Quick Pay events to filter Quick Pay event family.",
+      "values": [
+        "true"
+      ]
     },
     "productType": {
       "type": "string",
@@ -58,11 +61,23 @@
     },
     "kycDone": {
       "type": "boolean",
-      "description": "Whether KYC has been completed for the wallet."
+      "description": "Whether KYC has been completed for the wallet.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "walletSyncFailureReason": {
       "type": "string",
-      "description": "Reason why wallet sync failed after recharge."
+      "description": "Reason why wallet sync failed after recharge.",
+      "values": [
+        "API_FETCH_FAILED",
+        "BLOCKED_FOR_APP_RECLAIM",
+        "CHALO_TIME_NOT_AVAILABLE",
+        "KYC_NOT_DONE",
+        "USER_NOT_LOGGED_IN",
+        "WALLET_TIMED_OUT"
+      ]
     },
     "rechargeOrderFailureReason": {
       "type": "string",
@@ -115,7 +130,12 @@
     },
     "wallet transaction summary transaction type": {
       "type": "string",
-      "description": "Transaction type shown in summary (QUICK_PAY/LOAD_MONEY/CHALO_PAY)."
+      "description": "Transaction type shown in summary (QUICK_PAY/LOAD_MONEY/CHALO_PAY).",
+      "values": [
+        "CHALO_PAY",
+        "LOAD_MONEY",
+        "QUICK_PAY"
+      ]
     },
     "wallet transaction summary transaction status": {
       "type": "string",
@@ -131,7 +151,11 @@
     },
     "is chalo wallet activated": {
       "type": "boolean",
-      "description": "Whether the Chalo wallet is currently activated for the user."
+      "description": "Whether the Chalo wallet is currently activated for the user.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "wallet banner url": {
       "type": "string",
@@ -143,7 +167,11 @@
     },
     "isSuccessful": {
       "type": "boolean",
-      "description": "Whether the wallet migration or wallet sync operation succeeded."
+      "description": "Whether the wallet migration or wallet sync operation succeeded.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "error name": {
       "type": "string",
@@ -231,23 +259,48 @@
     },
     "isBlePermissionGranted": {
       "type": "boolean",
-      "description": "BLE permission status for validation screen."
+      "description": "BLE permission status for validation screen.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "validationFlowType": {
       "type": "string",
-      "description": "Type of validation flow (e.g., conductor, TITO)."
+      "description": "Type of validation flow (e.g., conductor, TITO).",
+      "values": [
+        "conductorOrUnifiedTapIn",
+        "conductorValidation",
+        "titoTapOut",
+        "vehicleBasedValidation"
+      ]
     },
     "wasTitoValidation": {
       "type": "boolean",
-      "description": "True if validation was done via TITO (Tap In Tap Out) instead of conductor."
+      "description": "True if validation was done via TITO (Tap In Tap Out) instead of conductor.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "notificationDeliveryMedium": {
       "type": "string",
-      "description": "How validation acknowledgment was delivered (e.g., internet, BLE)."
+      "description": "How validation acknowledgment was delivered (e.g., internet, BLE).",
+      "values": [
+        "BLE",
+        "POLLING_API",
+        "PUSH_NOTIFICATION"
+      ]
     },
     "validationAckDataType": {
       "type": "string",
-      "description": "Type of validation acknowledgment data received."
+      "description": "Type of validation acknowledgment data received.",
+      "values": [
+        "conductorValidationAckData",
+        "invalidData",
+        "titoTapInAckData",
+        "titoTapOutAckData"
+      ]
     },
     "reason": {
       "type": "string",
@@ -279,11 +332,27 @@
     },
     "is quick pay bought once": {
       "type": "boolean",
-      "description": "Flag indicating if user has purchased Quick Pay at least once."
+      "description": "Flag indicating if user has purchased Quick Pay at least once.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "chaloPayWalletState": {
       "type": "string",
-      "description": "Wallet state for Chalo Pay checkout integration (ACTIVE, KYC_INITIATED, etc.)."
+      "description": "Wallet state for Chalo Pay checkout integration (ACTIVE, KYC_INITIATED, etc.).",
+      "values": [
+        "active",
+        "api_fetch_failed",
+        "full_kyc_needed",
+        "insufficient_balance",
+        "internet_error",
+        "not_logged_in",
+        "wallet_blocked",
+        "wallet_blocked_app_reclaim",
+        "wallet_blocked_backend_reclaim",
+        "wallet_not_active"
+      ]
     },
     "chaloPayWalletBalance": {
       "type": "string",
@@ -291,7 +360,14 @@
     },
     "bottomsheetCTA": {
       "type": "string",
-      "description": "CTA action taken from Chalo Pay checkout bottom sheet."
+      "description": "CTA action taken from Chalo Pay checkout bottom sheet.",
+      "values": [
+        "activate",
+        "confirm_payment",
+        "contact",
+        "recharge",
+        "reclaim"
+      ]
     },
     "tripAmountInPaisa": {
       "type": "string",
@@ -299,7 +375,11 @@
     },
     "isFromCheckout": {
       "type": "boolean",
-      "description": "Flag indicating navigation origin was from checkout flow."
+      "description": "Flag indicating navigation origin was from checkout flow.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "min kyc name": {
       "type": "string",
@@ -323,11 +403,20 @@
     },
     "errorBottomSheetCtaType": {
       "type": "string",
-      "description": "CTA type shown on the Min KYC error bottom sheet."
+      "description": "CTA type shown on the Min KYC error bottom sheet.",
+      "values": [
+        "EXIT_KYC_FLOW",
+        "GENERAL_ERROR",
+        "USER_ALREADY_REGISTERED"
+      ]
     },
     "isInvalidOtpEntered": {
       "type": "string",
-      "description": "Whether the entered OTP was invalid (stringified boolean)."
+      "description": "Whether the entered OTP was invalid (stringified boolean).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "productId": {
       "type": "string",
@@ -335,7 +424,11 @@
     },
     "is foreground": {
       "type": "boolean",
-      "description": "Whether the app was in foreground when the event was raised."
+      "description": "Whether the app was in foreground when the event was raised.",
+      "values": [
+        "false",
+        "true"
+      ]
     }
   },
   "stages": [

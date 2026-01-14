@@ -30,6 +30,10 @@ pnpm dlx convex dev    # Start local Convex + write .env.local
 node scripts/analytics-updater/run-once.js --dry-run    # Preview update without side effects
 node scripts/analytics-updater/run-once.js --init       # Initialize state baseline
 node scripts/analytics-updater/validate-content.js      # Validate content/analytics/**
+node scripts/analytics-updater/extract-property-values.js --flow <flowSlug> --only-missing --json                                           # Discover values for propertyDefinitions (uses scripts/analytics-updater/property-domains.json)
+node scripts/analytics-updater/extract-property-values.js --flow <flowSlug> --only-missing --flow-scope --json                              # Discover values, scoped by this flow’s event names
+node scripts/analytics-updater/extract-property-values.js --flow <flowSlug> --only-missing --flow-scope --scope-event "<eventName>" --json  # (optional) Narrow scoping to specific events (repeatable)
+node scripts/analytics-updater/extract-property-values.js --flow <flowSlug> --only-missing --flow-scope --complete-only --apply             # Write only keys marked complete (callsite-resolved or domain-backed)
 ```
 
 ## Project Structure
@@ -51,7 +55,7 @@ node scripts/analytics-updater/validate-content.js      # Validate content/analy
 1. **Source**: `content/analytics/<flowSlug>/events.json` + `flow-diagrams.md`
 2. **Adapter**: `src/lib/analytics/fs-source.ts` reads and normalizes the content (server-only)
 3. **Types**: `src/lib/analytics/types.ts` defines `AnalyticsFlow`, `AnalyticsEventOccurrence`, `AnalyticsSnapshot`
-4. **Routes**: `src/app/analytics/` renders flows, events, and diagrams
+4. **Routes**: `src/app/(protected)/analytics/` renders flows, events, and diagrams
 
 Key data files:
 - `content/analytics/flows.json` — Flow catalog (names, descriptions, lastAudited dates)

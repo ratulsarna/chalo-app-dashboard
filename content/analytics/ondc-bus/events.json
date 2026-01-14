@@ -49,7 +49,16 @@
     },
     "ticketStatus": {
       "type": "string",
-      "description": "Current status of the ticket (ACTIVE, EXPIRED, USED, etc.)."
+      "description": "Current status of the ticket (ACTIVE, EXPIRED, USED, etc.).",
+      "values": [
+        "ACTIVE",
+        "EXPIRED",
+        "FAILED",
+        "PAYMENT_FAILED",
+        "PAYMENT_PROCESSING",
+        "PUNCHED",
+        "USED"
+      ]
     },
     "fare": {
       "type": "string",
