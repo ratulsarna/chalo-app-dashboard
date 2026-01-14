@@ -1,0 +1,68 @@
+{
+  "_comment": "LLM-maintained feature documentation catalog. Maps features to their documentation status.",
+  "_version": "1.0",
+  "features": {
+    "bills": {
+      "name": "Bills",
+      "description": "Bill payments - electricity bills, BEST bills, and other utility payments through the app.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "bills",
+      "status": "draft",
+      "lastUpdated": "2026-01-14",
+      "sourceCommit": "6367036fc1357bc5a7cc3444ad82157094ecfda7"
+    }
+  },
+  "overview": {
+    "project-structure": {
+      "name": "Project Structure",
+      "description": "Module tree, Gradle structure, KMP targets (Android/iOS), feature modules",
+      "status": "pending"
+    },
+    "tech-stack": {
+      "name": "Tech Stack",
+      "description": "Kotlin, Ktor, Koin, SQLDelight, Compose Multiplatform, dependencies",
+      "status": "pending"
+    },
+    "architecture": {
+      "name": "Architecture",
+      "description": "Clean Architecture layers, data flow, DI setup, navigation",
+      "status": "pending"
+    },
+    "navigation-guide": {
+      "name": "Navigation Guide",
+      "description": "How to find: screens → features → use cases → repos",
+      "status": "pending"
+    },
+    "build-setup": {
+      "name": "Build Setup",
+      "description": "Prerequisites, IDE setup, running on Android/iOS emulators",
+      "status": "pending"
+    },
+    "conventions": {
+      "name": "Conventions",
+      "description": "Naming (UseCase suffix, Repository suffix), package structure",
+      "status": "pending"
+    },
+    "ios-specifics": {
+      "name": "iOS Specifics",
+      "description": "iOS-specific patterns, SwiftUI, platform-specific behavior",
+      "status": "pending"
+    },
+    "android-specifics": {
+      "name": "Android Specifics",
+      "description": "Android-specific patterns, Compose, platform-specific behavior",
+      "status": "pending"
+    },
+    "shared-infra": {
+      "name": "Shared Infrastructure",
+      "description": "Networking, error handling, logging, analytics SDK",
+      "status": "pending"
+    },
+    "testing": {
+      "name": "Testing",
+      "description": "Test structure, mocking, test fixtures",
+      "status": "pending"
+    }
+  }
+}

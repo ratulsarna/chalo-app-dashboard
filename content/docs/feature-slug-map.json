@@ -1,0 +1,4 @@
+{
+  "_comment": "Maps folder slugs (kebab-case) to catalog feature keys. Used when folder names differ from catalog keys.",
+  "bills": "bills"
+}
