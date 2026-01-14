@@ -1,4 +1,5 @@
 {
-  "_comment": "Maps folder slugs (kebab-case) to catalog feature keys. Used when folder names differ from catalog keys.",
-  "bills": "bills"
+  "_comment": "Maps folder slugs (kebab-case) to catalog feature keys. Only needed when they differ.",
+  "instant-ticket-purchase": "instant-ticket",
+  "super-pass-purchase": "super-pass"
 }
