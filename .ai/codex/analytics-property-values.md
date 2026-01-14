@@ -60,6 +60,10 @@ Notes:
 node scripts/analytics-updater/validate-content.js
 ```
 
+6) **Update progress tracker.**
+
+- Mark the flow in `.ai/codex/analytics-property-values-progress.md`.
+
 ## What the Domain Registry Does (and Why)
 
 Callsite scanning often can’t prove completeness because instrumentation frequently passes values through variables/params:

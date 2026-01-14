@@ -1205,9 +1205,28 @@ async function extractPropertyValueCandidates({
   const unresolvedByKey = new Map();
   const domainByKey = new Map();
   const domainErrorsByKey = new Map();
+  const callsiteFileIncludesByKey = new Map();
 
   function normalizePath(p) {
     return String(p).replaceAll("\\", "/");
+  }
+
+  function addCallsiteFileIncludes(key, includes) {
+    const list = callsiteFileIncludesByKey.get(key) ?? [];
+    for (const inc of includes) {
+      if (typeof inc !== "string") continue;
+      const v = inc.trim();
+      if (!v) continue;
+      list.push(normalizePath(v));
+    }
+    if (list.length) callsiteFileIncludesByKey.set(key, uniqSorted(list));
+  }
+
+  function fileAllowedForKey(key, filePath) {
+    const includes = callsiteFileIncludesByKey.get(key);
+    if (!includes || includes.length === 0) return true;
+    const p = normalizePath(filePath);
+    return includes.some((inc) => p.includes(inc));
   }
 
   function resolveEnumForDomainSource(source) {
@@ -1254,6 +1273,10 @@ async function extractPropertyValueCandidates({
         if (flows.length > 0) {
           if (typeof flowSlug !== "string" || flowSlug.trim().length === 0) continue;
           if (!flows.includes(flowSlug.trim())) continue;
+        }
+
+        if (Array.isArray(entry.callsiteFilePathIncludes) && entry.callsiteFilePathIncludes.length > 0) {
+          addCallsiteFileIncludes(key, entry.callsiteFilePathIncludes);
         }
 
         const sources = Array.isArray(entry.sources) ? entry.sources : [];
@@ -1392,6 +1415,7 @@ async function extractPropertyValueCandidates({
     for (const item of assignments) {
       const keyString = resolveKeyString(item.key, constIndex);
       if (!keyString || !desired.has(keyString)) continue;
+      if (!fileAllowedForKey(keyString, filePath)) continue;
 
       const fn = findContainingFunction(functions, item.line);
       const stopIndex = fn && typeof fn.bodyEndIndex === "number" ? fn.bodyEndIndex : tokens.length - 1;

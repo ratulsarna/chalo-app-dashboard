@@ -16,7 +16,10 @@
     },
     "isSuperPass": {
       "type": "boolean",
-      "description": "Always `false` for mTicket events to differentiate from super pass events."
+      "description": "Always `false` for mTicket events to differentiate from super pass events.",
+      "values": [
+        "false"
+      ]
     },
     "bookingId": {
       "type": "string",
@@ -32,7 +35,11 @@
     },
     "response": {
       "type": "string",
-      "description": "Boolean string indicating success (`true`) or failure (`false`) of an operation."
+      "description": "Boolean string indicating success (`true`) or failure (`false`) of an operation.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "paymentMode": {
       "type": "string",
@@ -71,7 +78,11 @@
     },
     "isFreeRide": {
       "type": "string",
-      "description": "Boolean string indicating if this is a free ride (`true`/`false`)."
+      "description": "Boolean string indicating if this is a free ride (`true`/`false`).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "routeId": {
       "type": "string",
@@ -130,11 +141,21 @@
     },
     "validationFlowType": {
       "type": "string",
-      "description": "Type of validation flow being used (BLE, QR, etc.)."
+      "description": "Type of validation flow being used (BLE, QR, etc.).",
+      "values": [
+        "conductorOrUnifiedTapIn",
+        "conductorValidation",
+        "titoTapOut",
+        "vehicleBasedValidation"
+      ]
     },
     "isBlePermissionGranted": {
       "type": "boolean",
-      "description": "Whether Bluetooth permission is granted for BLE validation."
+      "description": "Whether Bluetooth permission is granted for BLE validation.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "startStop": {
       "type": "string",
@@ -170,19 +191,34 @@
     },
     "wasTitoValidation": {
       "type": "boolean",
-      "description": "Whether this was a TITO (Tap-In/Tap-Out) validation."
+      "description": "Whether this was a TITO (Tap-In/Tap-Out) validation.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
-    "problemType": {
+    "type": {
       "type": "string",
-      "description": "Report problem category type."
+      "description": "Report problem category type.",
+      "values": [
+        "activationScreenTicketingProblemsV2"
+      ]
     },
     "problemSource": {
       "type": "string",
-      "description": "Source screen from which problem was reported."
+      "description": "Source screen from which problem was reported.",
+      "values": [
+        "validationScreen"
+      ]
     },
     "notificationDeliveryMedium": {
       "type": "string",
-      "description": "Medium through which validation notification was delivered."
+      "description": "Medium through which validation notification was delivered.",
+      "values": [
+        "BLE",
+        "POLLING_API",
+        "PUSH_NOTIFICATION"
+      ]
     },
     "payload": {
       "type": "string"
@@ -1192,8 +1228,8 @@
       "description": "User clicked report problem during validation.",
       "properties": [
         {
-          "property": "problemType",
-          "context": "activation_screen_ticketing_problems"
+          "property": "type",
+          "context": "activationScreenTicketingProblemsV2"
         },
         {
           "property": "problemSource",

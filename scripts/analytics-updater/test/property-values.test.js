@@ -243,3 +243,61 @@ test("extractPropertyValueCandidates domain registry can be scoped by flowSlug",
   assert.deepEqual(b.results.status.values, []);
   assert.equal(b.results.status.complete, false);
 });
+
+test("extractPropertyValueCandidates domain registry can scope callsites by file path", async () => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "chalo-dashboard-enums-"));
+  const upstreamRepoPath = path.join(tmp, "upstream");
+
+  await writeFile(
+    path.join(upstreamRepoPath, "shared", "constants.kt"),
+    `
+      package example
+
+      object AnalyticsEventConstants {
+        const val ATTRIBUTE_SOURCE = "sourceKey"
+      }
+    `.trim(),
+  );
+
+  await writeFile(
+    path.join(upstreamRepoPath, "shared", "mticket", "a.kt"),
+    `
+      package example
+
+      fun emitA() {
+        val props = mapOf(AnalyticsEventConstants.ATTRIBUTE_SOURCE to "A")
+        println(props)
+      }
+    `.trim(),
+  );
+
+  await writeFile(
+    path.join(upstreamRepoPath, "shared", "other", "b.kt"),
+    `
+      package example
+
+      fun emitB() {
+        val props = mapOf(AnalyticsEventConstants.ATTRIBUTE_SOURCE to "B")
+        println(props)
+      }
+    `.trim(),
+  );
+
+  const report = await extractPropertyValueCandidates({
+    upstreamRepoPath,
+    includeDirs: ["shared"],
+    propertyKeys: ["sourceKey"],
+    flowSlug: "mticket",
+    propertyDomains: {
+      sourceKey: {
+        flows: ["mticket"],
+        callsiteFilePathIncludes: ["/mticket/"],
+        sources: [{ kind: "literal", values: ["A"] }],
+      },
+    },
+  });
+
+  assert.deepEqual(report.results.sourceKey.observedValues, ["A"]);
+  assert.deepEqual(report.results.sourceKey.values, ["A"]);
+  assert.equal(report.results.sourceKey.complete, true);
+});

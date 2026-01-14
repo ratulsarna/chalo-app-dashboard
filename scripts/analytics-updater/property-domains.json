@@ -121,6 +121,27 @@
       "description": "Live-tracking report problem source (RouteDetailsAnalyticsEventValue.ROUTE_DETAILS_SOURCE).",
       "flows": ["live-tracking"],
       "sources": [{ "kind": "const", "name": "RouteDetailsAnalyticsEventValue.ROUTE_DETAILS_SOURCE" }]
+    },
+    {
+      "description": "mTicket validation report problem source (ReportProblemFeatureConstants.SRC_VALIDATION_SCREEN).",
+      "flows": ["mticket"],
+      "callsiteFilePathIncludes": ["/app/chalo/mTicketing/"],
+      "sources": [{ "kind": "const", "name": "ReportProblemFeatureConstants.SRC_VALIDATION_SCREEN" }]
+    }
+  ],
+  "notificationDeliveryMedium": [
+    {
+      "description": "ValidationNotificationDeliveryMedium.name (PUSH_NOTIFICATION, POLLING_API, BLE).",
+      "flows": ["mticket", "chalo-wallet"],
+      "sources": [{ "kind": "enumName", "name": "ValidationNotificationDeliveryMedium" }]
+    }
+  ],
+  "type": [
+    {
+      "description": "Report problem category type for validation flows (ReportProblemFeatureConstants.PROBLEM_TYPE_ACTIVATION_SCREEN_TICKETING_PROBLEMS).",
+      "flows": ["mticket"],
+      "callsiteFilePathIncludes": ["/app/chalo/mTicketing/"],
+      "sources": [{ "kind": "const", "name": "ReportProblemFeatureConstants.PROBLEM_TYPE_ACTIVATION_SCREEN_TICKETING_PROBLEMS" }]
     }
   ],
   "paymentProvider": [
@@ -154,7 +175,7 @@
   "isFreeRide": [
     {
       "description": "Whether the ride/ticket is a free ride (boolean-as-string).",
-      "flows": ["payment"],
+      "flows": ["payment", "mticket"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -182,7 +203,7 @@
   "validationAckDataType": [
     {
       "description": "Validation acknowledgment payload type (BleValidationAckData.toDataTypeForAnalytics()).",
-      "flows": ["chalo-wallet"],
+      "flows": ["chalo-wallet", "mticket"],
       "sources": [
         { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_VALIDATION_ACK_DATA" },
         { "kind": "const", "name": "AnalyticsEventConstants.INVALID_DATA" },
@@ -194,7 +215,7 @@
   "validationFlowType": [
     {
       "description": "Validation flow type (ValidationProcessFlowDetails.toValidationFlowTypeForAnalytics()).",
-      "flows": ["chalo-wallet"],
+      "flows": ["chalo-wallet", "mticket"],
       "sources": [
         { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_OR_UNIFIED_TAP_IN_FLOW" },
         { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_VALIDATION" },
@@ -213,7 +234,22 @@
   "isBlePermissionGranted": [
     {
       "description": "BLE permission granted (boolean-as-string).",
-      "flows": ["chalo-wallet"],
+      "flows": ["chalo-wallet", "mticket"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isSuperPass": [
+    {
+      "description": "Whether this validation event is for a super pass (mTicket validation always sends false).",
+      "flows": ["mticket"],
+      "callsiteFilePathIncludes": ["/app/chalo/mTicketing/"],
+      "sources": [{ "kind": "literal", "values": ["false"] }]
+    }
+  ],
+  "response": [
+    {
+      "description": "Operation success/failure (boolean-as-string).",
+      "flows": ["mticket"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -269,7 +305,7 @@
   "wasTitoValidation": [
     {
       "description": "Whether this was a TITO validation (boolean-as-string).",
-      "flows": ["chalo-wallet"],
+      "flows": ["chalo-wallet", "mticket"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
