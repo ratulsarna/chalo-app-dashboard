@@ -335,6 +335,46 @@
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
+  "isChaloConfigMigrated": [
+    {
+      "description": "Lifecycle: whether Chalo Config migration has completed (currently always true).",
+      "flows": ["lifecycle"],
+      "callsiteFilePathIncludes": ["/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt"],
+      "sources": [{ "kind": "literal", "values": ["true"] }]
+    }
+  ],
+  "isForceUpdate": [
+    {
+      "description": "Lifecycle: whether update type is force update (boolean-as-string).",
+      "flows": ["lifecycle"],
+      "callsiteFilePathIncludes": ["/app/chalo/appUpdate/ForceAppUpdateComponent.kt"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "requireHistoryCall": [
+    {
+      "description": "Lifecycle: whether mandatory history call is required (boolean-as-string).",
+      "flows": ["lifecycle"],
+      "callsiteFilePathIncludes": ["/app/chalo/appmigrationpreconditions/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "activationInfo": [
+    {
+      "description": "Lifecycle: legacy key-value → DB migration result for activation info (boolean-as-string).",
+      "flows": ["lifecycle"],
+      "callsiteFilePathIncludes": ["/app/chalo/appmigrationpreconditions/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "lastRideInfo": [
+    {
+      "description": "Lifecycle: legacy key-value → DB migration result for last ride info (boolean-as-string).",
+      "flows": ["lifecycle"],
+      "callsiteFilePathIncludes": ["/app/chalo/appmigrationpreconditions/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
   "response": [
     {
       "description": "Operation success/failure (boolean-as-string).",

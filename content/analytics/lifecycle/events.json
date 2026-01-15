@@ -5,7 +5,10 @@
   "propertyDefinitions": {
     "isChaloConfigMigrated": {
       "type": "boolean",
-      "description": "Hardcoded `true` indicating that config has been migrated. Legacy property from old config system."
+      "description": "Hardcoded `true` indicating that config has been migrated. Legacy property from old config system.",
+      "values": [
+        "true"
+      ]
     },
     "src": {
       "type": "string",
@@ -41,7 +44,11 @@
     },
     "isForceUpdate": {
       "type": "boolean",
-      "description": "True if the update is a forced update (blocking), false if it's recommended (dismissible)."
+      "description": "True if the update is a forced update (blocking), false if it's recommended (dismissible).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "force app update launch failure reason": {
       "type": "string",
@@ -53,7 +60,11 @@
     },
     "requireHistoryCall": {
       "type": "boolean",
-      "description": "Whether history API call is required for app migration flow."
+      "description": "Whether history API call is required for app migration flow.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "attempt": {
       "type": "number",
@@ -63,13 +74,24 @@
       "type": "string"
     },
     "activationInfo": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "lastRideInfo": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "url": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "https://itunes.apple.com/us/app/apple-store/id1607824800?mt=8"
+      ]
     },
     "experimentId": {
       "type": "string",
