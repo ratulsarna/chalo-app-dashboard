@@ -51,7 +51,7 @@ flowchart TD
   ev_optionsClicked --> ev_optionItemClicked["pb active booking option item clicked"]
 
   ev_optionItemClicked -->|Cancellation selected| ev_cancelBottomSheet["pb trip cancel conf bottom sheet opened"]
-  ev_optionItemClicked -->|Reschedule selected| ext_reschedule[Reschedule flow (premium bus booking)]
+  ev_optionItemClicked -->|Reschedule selected| ext_reschedule[Reschedule flow — premium bus booking]
 
   ev_cancelBottomSheet --> ev_cancelGoBack["pb trip cancellation go back cta clicked"]
   ev_cancelBottomSheet --> ui_cancelFlow([Cancellation flow])

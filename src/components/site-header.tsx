@@ -25,9 +25,6 @@ export async function SiteHeader() {
           <Button asChild variant="ghost" size="sm">
             <Link href="/analytics">Analytics</Link>
           </Button>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/docs">Docs</Link>
-          </Button>
           {authEnabled && !isSignedIn ? (
             <Button asChild variant="ghost" size="sm">
               <Link href="/login">Sign in</Link>
