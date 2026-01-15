@@ -1,0 +1,5 @@
+{
+  "_comment": "Maps folder slugs (kebab-case) to catalog feature keys. Only needed when they differ.",
+  "instant-ticket-purchase": "instant-ticket",
+  "super-pass-purchase": "super-pass"
+}

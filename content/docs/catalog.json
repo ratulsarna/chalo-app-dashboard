@@ -1,0 +1,405 @@
+{
+  "_comment": "Feature documentation catalog for chalo-app-kmp. Maps features to analytics flows and tracks documentation status.",
+  "_version": "1.0",
+  "features": {
+    "mticket": {
+      "name": "M-Ticket",
+      "description": "Mobile ticket booking for city buses - ticket selection, fare details, payment, activation, QR display.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "mticket",
+      "kmpModule": "shared/home (mticket, mTicketing)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "instant-ticket": {
+      "name": "Instant Ticket",
+      "description": "Quick ticket buying flow with fare details and summary. Streamlined single-ride purchase.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "instant-ticket",
+      "kmpModule": "shared/productbooking (instantticket)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "super-pass": {
+      "name": "Super Pass",
+      "description": "Monthly/weekly bus passes - pass selection, passenger details, proof submission, verification, activation.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "super-pass",
+      "kmpModule": "shared/home (superpass)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "premium-bus-booking": {
+      "name": "Premium Bus — Booking",
+      "description": "Premium bus booking - trip details, pickup/drop, slot selection, seat selection, checkout, confirmation.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "premium-bus-booking",
+      "kmpModule": "shared/home (premiumbus), shared/productbooking (premiumbus)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "premium-bus-activation-tracking": {
+      "name": "Premium Bus — Activation & Tracking",
+      "description": "Post-booking premium bus - activation screen, live tracking, cancellation, receipts, acknowledgment cards.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "premium-bus-activation-tracking",
+      "kmpModule": "shared/home (premiumbus)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "premium-bus-bulk-booking": {
+      "name": "Premium Bus — Bulk Booking",
+      "description": "Premium bus multi-ride booking - eligibility, stop/slot selection, seat selection for multiple trips, rebooking.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "premium-bus-bulk-booking",
+      "kmpModule": "shared/home (premiumbus)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "metro": {
+      "name": "Metro",
+      "description": "Metro tickets - route discovery, fare fetching, booking, payment, validation, receipts. Includes ONDC metro.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "metro",
+      "kmpModule": "shared/productbooking (metro), shared/home (metro)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "ondc-bus": {
+      "name": "ONDC Bus",
+      "description": "ONDC bus tickets - booking, payment, validation via ONDC protocol. Separate from M-Ticket.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "ondc-bus",
+      "kmpModule": "shared/productbooking (ondc), shared/home (ondc)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "trip-planner": {
+      "name": "Trip Planner",
+      "description": "Trip planning - location/stop-based entry, from/to selection, itineraries, quick filters, route details.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "trip-planner",
+      "kmpModule": "shared/livetracking (tripplanner)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "bills": {
+      "name": "Bills",
+      "description": "Bill payments - electricity bills, BEST bills, and other utility payments through the app.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "bills",
+      "kmpModule": "shared/home (electricitybill)",
+      "status": "draft",
+      "lastUpdated": "2026-01-14",
+      "sourceCommit": "6367036fc1357bc5a7cc3444ad82157094ecfda7"
+    },
+    "card": {
+      "name": "Card",
+      "description": "Physical card operations - Chalo Card linking/recharge, NCMC balance/recharge, card transactions, OCR scanning.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "card",
+      "kmpModule": "shared/home (ncmc)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "chalo-wallet": {
+      "name": "Chalo Wallet & Quick Pay",
+      "description": "Wallet operations - balance, load money, transactions, KYC, migration. Plus Quick Pay wallet payments.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "chalo-wallet",
+      "kmpModule": "shared/wallet (wallet, quickpay), shared/kyc",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "payment": {
+      "name": "Payment",
+      "description": "Payment processing - checkout screens, UPI, cards, net banking, Razorpay, Juspay, Inai, success/failure.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "payment",
+      "kmpModule": "shared/checkout",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "validation": {
+      "name": "Validation",
+      "description": "Ticket/pass validation - BLE scanning, QR codes, tap-in/out, conductor validation, punch notifications.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "validation",
+      "kmpModule": "shared/validationsdk, shared/home (validation, tito)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "history": {
+      "name": "History",
+      "description": "Booking and transaction history - past bookings, receipts, ride feedback, cancellation. Ticket summary.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "history",
+      "kmpModule": "shared/home (home/ui/history, tripreceipt, productsummary)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "home": {
+      "name": "Home",
+      "description": "Home screen - tabs, navigation drawer, nearby stops, home cards, city change. Main app screen.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "home",
+      "kmpModule": "shared/home (home, busesaroundyou)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "search": {
+      "name": "Search",
+      "description": "Route and stop search - universal search/picker, route search results, stop selection.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "search",
+      "kmpModule": "shared/productbooking (routeselection)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "live-tracking": {
+      "name": "Live Tracking",
+      "description": "Route details and live tracking - ETA, schedules, live bus positions, favorites, seat availability.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "live-tracking",
+      "kmpModule": "shared/livetracking, shared/home (routedetails)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "authentication": {
+      "name": "Authentication",
+      "description": "User authentication - login screen, OTP verification, Truecaller, logout, session management.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "authentication",
+      "kmpModule": "shared/login",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "onboarding": {
+      "name": "Onboarding",
+      "description": "First-time user setup - language selection, city selection, tutorials, location permissions.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "onboarding",
+      "kmpModule": "shared/onboarding, shared/home (citylocationselection, locationdisclaimer)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "lifecycle": {
+      "name": "App Lifecycle",
+      "description": "App-level events - launch, splash, force updates, ratings, sharing, terms acceptance.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "lifecycle",
+      "kmpModule": "shared/core, shared/home (appUpdate, appmigrationpreconditions)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "help": {
+      "name": "Help",
+      "description": "Help and support - help screens, issue reporting, chat support.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "help",
+      "kmpModule": "shared/home (appsupport)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "notifications": {
+      "name": "Notifications",
+      "description": "Push notifications, in-app notifications, FCM, permission management, Plotline, Airship.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "notifications",
+      "kmpModule": "shared/home (notification)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "network": {
+      "name": "Network",
+      "description": "Network and connectivity - connection state, socket management, SSL, encryption.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "network",
+      "kmpModule": "shared/network, shared/security",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "ads": {
+      "name": "Ads",
+      "description": "In-app advertising - native ads, banner ads, impressions, clicks, revenue tracking.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": true,
+      "analyticsFlowSlug": "ads",
+      "kmpModule": "shared/chalo-base (ads)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "profile": {
+      "name": "Profile",
+      "description": "User profile management - view profile, edit profile, account settings.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": false,
+      "analyticsFlowSlug": null,
+      "kmpModule": "shared/home (home/ui/profile)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "sos": {
+      "name": "SOS",
+      "description": "Emergency SOS feature - emergency contacts, safety alerts.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": false,
+      "analyticsFlowSlug": null,
+      "kmpModule": "shared/home (sos)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "report-problem": {
+      "name": "Report Problem",
+      "description": "In-app issue reporting - report bugs, feedback submission.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": false,
+      "analyticsFlowSlug": null,
+      "kmpModule": "shared/home (reportproblem)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
+      "sourceCommit": null
+    },
+    "tito": {
+      "name": "Tap-In / Tap-Out (TITO)",
+      "description": "Tap-in/tap-out ride tracking - ride details, fare calculation, ride receipts.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": false,
+      "analyticsFlowSlug": null,
+      "kmpModule": "shared/home (tito, titoridedetail)",
+      "status": "pending",
+      "lastUpdated": null,
+      "sourceCommit": null
+    },
+    "product-activation": {
+      "name": "Product Activation",
+      "description": "Generic product activation flow - ticket/pass activation after purchase.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": false,
+      "analyticsFlowSlug": null,
+      "kmpModule": "shared/home (productactivation)",
+      "status": "pending",
+      "lastUpdated": null,
+      "sourceCommit": null
+    },
+    "webview": {
+      "name": "WebView",
+      "description": "In-app web content - external URLs, payment webviews, terms pages.",
+      "platforms": ["android", "ios", "shared"],
+      "hasAnalyticsFlow": false,
+      "analyticsFlowSlug": null,
+      "kmpModule": "shared/home (webview)",
+      "status": "pending",
+      "lastUpdated": null,
+      "sourceCommit": null
+    }
+  },
+  "overview": {
+    "project-structure": {
+      "name": "Project Structure",
+      "description": "Module tree, Gradle structure, KMP targets (Android/iOS), feature modules",
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
+    },
+    "tech-stack": {
+      "name": "Tech Stack",
+      "description": "Kotlin, Ktor, Koin, SQLDelight, Compose Multiplatform, dependencies",
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
+    },
+    "architecture": {
+      "name": "Architecture",
+      "description": "Clean Architecture layers, data flow, DI setup, Decompose navigation",
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
+    },
+    "navigation-guide": {
+      "name": "Navigation Guide",
+      "description": "How to find: screens → features → use cases → repos. ChaloScenes enum.",
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
+    },
+    "build-setup": {
+      "name": "Build Setup",
+      "description": "Prerequisites, IDE setup, running on Android/iOS emulators",
+      "status": "pending"
+    },
+    "conventions": {
+      "name": "Conventions",
+      "description": "Naming (UseCase suffix, Repository suffix), package structure, MVI patterns",
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
+    },
+    "ios-specifics": {
+      "name": "iOS Specifics",
+      "description": "iOS-specific patterns, SwiftUI, SKIE annotations, platform-specific behavior",
+      "status": "pending"
+    },
+    "android-specifics": {
+      "name": "Android Specifics",
+      "description": "Android-specific patterns, Compose, platform-specific behavior",
+      "status": "pending"
+    },
+    "shared-infra": {
+      "name": "Shared Infrastructure",
+      "description": "Networking, error handling, logging, analytics SDK, BLE, security",
+      "status": "draft",
+      "lastUpdated": "2026-01-14"
+    },
+    "testing": {
+      "name": "Testing",
+      "description": "Test structure, mocking, test fixtures",
+      "status": "pending"
+    }
+  }
+}
