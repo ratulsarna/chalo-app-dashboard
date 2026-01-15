@@ -89,7 +89,7 @@
   "isActive": [
     {
       "description": "Metro config active flag (boolean-as-string).",
-      "flows": ["metro"],
+      "flows": ["metro", "instant-ticket-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -239,7 +239,7 @@
   "validationAckDataType": [
     {
       "description": "Validation acknowledgment payload type (BleValidationAckData.toDataTypeForAnalytics()).",
-      "flows": ["chalo-wallet", "mticket", "validation"],
+      "flows": ["chalo-wallet", "mticket", "validation", "instant-ticket-purchase"],
       "sources": [
         { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_VALIDATION_ACK_DATA" },
         { "kind": "const", "name": "AnalyticsEventConstants.INVALID_DATA" },
@@ -251,7 +251,7 @@
   "validationFlowType": [
     {
       "description": "Validation flow type (ValidationProcessFlowDetails.toValidationFlowTypeForAnalytics()).",
-      "flows": ["chalo-wallet", "mticket", "validation"],
+      "flows": ["chalo-wallet", "mticket", "validation", "instant-ticket-purchase"],
       "sources": [
         { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_OR_UNIFIED_TAP_IN_FLOW" },
         { "kind": "const", "name": "AnalyticsEventConstants.CONDUCTOR_VALIDATION" },
@@ -270,7 +270,7 @@
   "isBlePermissionGranted": [
     {
       "description": "BLE permission granted (boolean-as-string).",
-      "flows": ["chalo-wallet", "mticket", "validation"],
+      "flows": ["chalo-wallet", "mticket", "validation", "instant-ticket-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -322,6 +322,11 @@
       "description": "Whether the validated product is an instant ticket (boolean-as-string).",
       "flows": ["validation"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    },
+    {
+      "description": "Hard-coded true for instant ticket purchase flow (boolean-as-string).",
+      "flows": ["instant-ticket-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true"] }]
     }
   ],
   "isPremiumReserveTicket": [
@@ -341,7 +346,7 @@
   "is chalo wallet activated": [
     {
       "description": "Whether wallet is activated (boolean-as-string).",
-      "flows": ["chalo-wallet"],
+      "flows": ["chalo-wallet", "instant-ticket-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -362,7 +367,35 @@
   "is quick pay bought once": [
     {
       "description": "Whether quick pay was bought once (boolean-as-string).",
-      "flows": ["chalo-wallet"],
+      "flows": ["chalo-wallet", "instant-ticket-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is recharge done once": [
+    {
+      "description": "Whether recharge was done once (boolean-as-string).",
+      "flows": ["instant-ticket-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isChalowWalletActivated": [
+    {
+      "description": "Whether Chalo wallet is activated for the user (boolean-as-string).",
+      "flows": ["instant-ticket-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isQuickPayBoughtOnce": [
+    {
+      "description": "Whether the user has used QuickPay at least once (boolean-as-string).",
+      "flows": ["instant-ticket-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isRechargeDoneOnce": [
+    {
+      "description": "Whether the user has recharged wallet at least once (boolean-as-string).",
+      "flows": ["instant-ticket-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -383,7 +416,7 @@
   "wasTitoValidation": [
     {
       "description": "Whether this was a TITO validation (boolean-as-string).",
-      "flows": ["chalo-wallet", "mticket", "validation"],
+      "flows": ["chalo-wallet", "mticket", "validation", "instant-ticket-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],

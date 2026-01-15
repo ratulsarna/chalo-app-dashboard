@@ -6,7 +6,10 @@
     "isInstantTicket": {
       "type": "boolean",
       "description": "Hard-coded `true` for every event in this flow to allow dashboards to filter the instant ticket event family.",
-      "constant": true
+      "constant": true,
+      "values": [
+        "true"
+      ]
     },
     "productType": {
       "type": "string",
@@ -143,11 +146,19 @@
     },
     "isChalowWalletActivated": {
       "type": "boolean",
-      "description": "Whether Chalo wallet is activated for the user."
+      "description": "Whether Chalo wallet is activated for the user.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isRechargeDoneOnce": {
       "type": "boolean",
-      "description": "Whether the user has recharged wallet at least once."
+      "description": "Whether the user has recharged wallet at least once.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "balanceAmount": {
       "type": "number",
@@ -155,7 +166,11 @@
     },
     "isQuickPayBoughtOnce": {
       "type": "boolean",
-      "description": "Whether the user has used QuickPay at least once."
+      "description": "Whether the user has used QuickPay at least once.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "paymentMethod": {
       "type": "string",
@@ -167,15 +182,29 @@
     },
     "validationFlowType": {
       "type": "string",
-      "description": "Type of validation flow (CONDUCTOR_VALIDATION, TITO, etc.)."
+      "description": "Type of validation flow (CONDUCTOR_VALIDATION, TITO, etc.).",
+      "values": [
+        "conductorOrUnifiedTapIn",
+        "conductorValidation",
+        "titoTapOut",
+        "vehicleBasedValidation"
+      ]
     },
     "isBlePermissionGranted": {
       "type": "boolean",
-      "description": "Whether BLE permission is granted."
+      "description": "Whether BLE permission is granted.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "wasTitoValidation": {
       "type": "boolean",
-      "description": "Whether the validation was TITO (Tap-In Tap-Out) based."
+      "description": "Whether the validation was TITO (Tap-In Tap-Out) based.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "notificationDeliveryMedium": {
       "type": "string",
@@ -195,19 +224,37 @@
     },
     "validationAckDataType": {
       "type": "string",
-      "description": "Type of validation acknowledgment data received."
+      "description": "Type of validation acknowledgment data received.",
+      "values": [
+        "conductorValidationAckData",
+        "invalidData",
+        "titoTapInAckData",
+        "titoTapOutAckData"
+      ]
     },
     "balance amount": {
       "type": "string"
     },
     "is chalo wallet activated": {
-      "type": "boolean"
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "is quick pay bought once": {
-      "type": "boolean"
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "is recharge done once": {
-      "type": "boolean"
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "payload": {
       "type": "string"
@@ -216,7 +263,11 @@
       "type": "string"
     },
     "isActive": {
-      "type": "boolean"
+      "type": "boolean",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "from stop id": {
       "type": "string"
