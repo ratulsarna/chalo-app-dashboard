@@ -13,7 +13,6 @@ export default function AnalyticsHomePage() {
         </p>
         <div className="flex flex-wrap gap-2 pt-2">
           <Badge variant="secondary">Tip: press ⌘K</Badge>
-          <Badge variant="outline">Dark mode default</Badge>
         </div>
       </div>
 
