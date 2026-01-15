@@ -9,8 +9,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "mticket",
       "kmpModule": "shared/home (mticket, mTicketing)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "instant-ticket": {
@@ -20,8 +20,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "instant-ticket",
       "kmpModule": "shared/productbooking (instantticket)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "super-pass": {
@@ -31,8 +31,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "super-pass",
       "kmpModule": "shared/home (superpass)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "premium-bus-booking": {
@@ -42,8 +42,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "premium-bus-booking",
       "kmpModule": "shared/home (premiumbus), shared/productbooking (premiumbus)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "premium-bus-activation-tracking": {
@@ -53,8 +53,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "premium-bus-activation-tracking",
       "kmpModule": "shared/home (premiumbus)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "premium-bus-bulk-booking": {
@@ -64,8 +64,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "premium-bus-bulk-booking",
       "kmpModule": "shared/home (premiumbus)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "metro": {
@@ -75,8 +75,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "metro",
       "kmpModule": "shared/productbooking (metro), shared/home (metro)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "ondc-bus": {
@@ -86,8 +86,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "ondc-bus",
       "kmpModule": "shared/productbooking (ondc), shared/home (ondc)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "trip-planner": {
@@ -96,9 +96,9 @@
       "platforms": ["android", "ios", "shared"],
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "trip-planner",
-      "kmpModule": "shared/home (stoptripdetails)",
-      "status": "pending",
-      "lastUpdated": null,
+      "kmpModule": "shared/livetracking (tripplanner)",
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "bills": {
@@ -119,8 +119,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "card",
       "kmpModule": "shared/home (ncmc)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "chalo-wallet": {
@@ -130,8 +130,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "chalo-wallet",
       "kmpModule": "shared/wallet (wallet, quickpay), shared/kyc",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "payment": {
@@ -141,8 +141,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "payment",
       "kmpModule": "shared/checkout",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "validation": {
@@ -152,8 +152,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "validation",
       "kmpModule": "shared/validationsdk, shared/home (validation, tito)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "history": {
@@ -163,8 +163,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "history",
       "kmpModule": "shared/home (home/ui/history, tripreceipt, productsummary)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "home": {
@@ -174,8 +174,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "home",
       "kmpModule": "shared/home (home, busesaroundyou)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "search": {
@@ -185,8 +185,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "search",
       "kmpModule": "shared/productbooking (routeselection)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "live-tracking": {
@@ -196,8 +196,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "live-tracking",
       "kmpModule": "shared/livetracking, shared/home (routedetails)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "authentication": {
@@ -207,8 +207,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "authentication",
       "kmpModule": "shared/login",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "onboarding": {
@@ -218,8 +218,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "onboarding",
       "kmpModule": "shared/onboarding, shared/home (citylocationselection, locationdisclaimer)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "lifecycle": {
@@ -229,8 +229,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "lifecycle",
       "kmpModule": "shared/core, shared/home (appUpdate, appmigrationpreconditions)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "help": {
@@ -240,8 +240,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "help",
       "kmpModule": "shared/home (appsupport)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "notifications": {
@@ -251,8 +251,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "notifications",
       "kmpModule": "shared/home (notification)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "network": {
@@ -262,8 +262,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "network",
       "kmpModule": "shared/network, shared/security",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "ads": {
@@ -273,8 +273,8 @@
       "hasAnalyticsFlow": true,
       "analyticsFlowSlug": "ads",
       "kmpModule": "shared/chalo-base (ads)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "profile": {
@@ -284,8 +284,8 @@
       "hasAnalyticsFlow": false,
       "analyticsFlowSlug": null,
       "kmpModule": "shared/home (home/ui/profile)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "sos": {
@@ -295,8 +295,8 @@
       "hasAnalyticsFlow": false,
       "analyticsFlowSlug": null,
       "kmpModule": "shared/home (sos)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "report-problem": {
@@ -306,8 +306,8 @@
       "hasAnalyticsFlow": false,
       "analyticsFlowSlug": null,
       "kmpModule": "shared/home (reportproblem)",
-      "status": "pending",
-      "lastUpdated": null,
+      "status": "draft",
+      "lastUpdated": "2026-01-15",
       "sourceCommit": null
     },
     "tito": {
