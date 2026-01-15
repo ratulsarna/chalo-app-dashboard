@@ -1,364 +1,294 @@
 ---
 feature: bills
-lastUpdated: 2026-01-14
+layer: presentation
+lastUpdated: 2026-01-15
 sourceCommit: 6367036fc1357bc5a7cc3444ad82157094ecfda7
 ---
 
 # Bills — Component Documentation
 
+## Architecture Overview
 
-## Architecture Pattern
+The Bills feature follows the **Decompose + MVI** pattern used throughout the Chalo app. Each screen is managed by a Component that:
 
-The Bills feature uses a **Decompose + MVI** architecture:
-- **Decompose**: Component-based navigation and lifecycle management
-- **MVI**: Model-View-Intent pattern with unidirectional data flow
-- **ChaloBaseStateMviComponent**: Base class providing state management
+- Receives user actions as **Intents**
+- Maintains internal **DataState**
+- Transforms state into **ViewState** for the UI
+- Emits **SideEffects** for one-time events like navigation
 
-Each screen consists of:
-1. **Component** — Business logic, state management, navigation
-2. **Contract** — UI state, data state, intents, side effects
-3. **Screen** — Compose UI rendering
+This pattern ensures unidirectional data flow and makes state changes predictable and testable.
 
 ---
 
-## Screen Components
+## Screen Inventory
 
-### EBillFetchScreen
+The feature consists of six screens that guide users through the bill payment journey:
 
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/ebillfetch/ui/EBillFetchScreen.kt`
-- **Component**: `EBillFetchComponent`
-- **Contract**: `EBillFetchContract.kt`
+```mermaid
+flowchart LR
+    Fetch["Fetch Screen\n(Enter Consumer No.)"]
+    Amount["Amount Screen\n(Review & Edit)"]
+    Confirm["Confirmation\n(Final Review)"]
+    Checkout["Checkout\n(Payment)"]
+    Success["Success\n(Receipt)"]
+    History["History\n(Past Payments)"]
+    Invoice["Invoice\n(Payment Details)"]
 
-#### Purpose
-Entry screen where users enter their 9-digit BEST consumer number to fetch bill details.
+    Fetch --> Amount
+    Fetch -.->|"View History"| History
+    Amount --> Confirm
+    Confirm --> Checkout
+    Checkout --> Success
+    Success -.->|"View Invoice"| Invoice
+    History --> Invoice
 
-#### Data State
-```kotlin
-data class EBillFetchDataState(
-    val isLoading: Boolean = false,
-    val customerNoError: String? = null,
-    val isNextBtnClickable: Boolean = false,
-    val currentlyEnteredNumber: String = "",
-    val showEBillPaymentDialog: Boolean = false,
-    val showEBillFetchSnackBar: Boolean = false,
-    val showInternetConnectionSnackBar: Boolean = false,
-    val electricityBillAppModel: ElectricityBillAppModel? = null
-)
+    style Checkout fill:#6b7280,color:#fff
 ```
 
-#### View State
-```kotlin
-data class EBillFetchViewState(
-    val specs: EBillFetchUISpecs,
-    val toolbarUIState: ToolbarUIState,
-    val loader: LoadingDialogUIState?,
-    val title: ChaloTextUIState,
-    val subTitle: ChaloTextUIState,
-    val textFieldUIState: TextFieldUIState,
-    val errorText: ChaloTextUIState?,
-    val proceedButton: ButtonUIState,
-    val viewHistoryBtn: ClickableTextUiState,
-    val paymentDialogUIState: ConfirmationDialogUiState?,
-    val snackbarUIState: SnackbarUIState?
-)
+| Screen | Purpose | Entry From | Exits To |
+|--------|---------|------------|----------|
+| **Fetch** | Consumer number entry and bill lookup | Home, Profile, Deep link | Amount, History |
+| **Amount** | Display bill details, allow amount editing | Fetch | Confirmation |
+| **Confirmation** | Final review before payment | Amount | Checkout (external module) |
+| **Success** | Payment confirmation and receipt | Checkout | Home, Invoice |
+| **History** | List of past bill payments | Fetch | Invoice |
+| **Invoice** | Detailed receipt for a payment | Success, History | Back |
+
+---
+
+## Screen Details
+
+### Fetch Screen
+
+**Purpose:** Entry point where users enter their 9-digit BEST consumer number to retrieve bill details.
+
+**User Journey:**
+1. User enters consumer number in text field
+2. Input is validated in real-time (must be exactly 9 digits)
+3. "Next" button enables when input is valid
+4. On submit, bill details are fetched from BEST API
+5. If bill was already paid this cycle, a confirmation dialog appears
+6. User proceeds to Amount screen with bill data
+
+**State Diagram:**
+
+```mermaid
+stateDiagram-v2
+    [*] --> Empty: Screen Opens
+    Empty --> Typing: User Types
+    Typing --> Invalid: Less than 9 digits
+    Typing --> Valid: Exactly 9 digits
+    Invalid --> Typing: User Continues
+    Valid --> Loading: Submit
+    Loading --> AlreadyPaid: Payment Done This Cycle
+    Loading --> Success: Bill Retrieved
+    Loading --> Error: API Failed
+    AlreadyPaid --> Success: User Confirms Proceed
+    AlreadyPaid --> Empty: User Cancels
+    Error --> Loading: Retry
+    Success --> [*]: Navigate to Amount
 ```
 
-#### Intents
-```kotlin
-sealed class EBillFetchIntent {
-    data class NumberEnteredIntent(val currentlyEnteredNumber: String)
-    data class NextClickIntent(val currentlyEnteredNumber: String)
-    object ViewPaymentHistoryIntent
-    data class ProceedWithPaymentClickedIntent(val electricityBillAppModel: ElectricityBillAppModel)
-    data class RetryBillFetchIntent(val currentlyEnteredNumber: String)
-    data class InternetConnectionIntent(val currentNetworkConnectionType: NetworkConnectionType)
-    object EBillPaymentDialogPositiveBtnClickedIntent
-    object EBillPaymentDialogNegativeBtnClickedIntent
-}
-```
+**Key Behaviors:**
+- Real-time validation provides immediate feedback
+- Network errors show a snackbar with retry option
+- "View Payment History" link allows checking past payments without entering a number
 
-#### UI Elements
-- Title text ("Pay BEST Electricity Bill")
-- Subtitle text (instructions)
-- Consumer number text field (numeric, 9 digits max)
-- Error text (validation/API errors)
-- "Next" button (disabled until valid input)
-- "View Payment History" link
-- Loading dialog (during API call)
-- Payment confirmation dialog (if bill already paid)
-- Snackbar (network errors, retry option)
-
-#### Analytics Events
-- `EBILL_FETCH_SCREEN_OPENED` — Screen opened
-- `EBILL_FETCH_SCREEN_NEXT_BTN_CLICKED` — Next button clicked
-- `EBILL_FETCH_SCREEN_SHOW_PAYMENT_HISTORY_BTN_CLICKED` — History link clicked
-- `EBILL_FETCH_SCREEN_PAYMENT_ALREADY_DONE_DIALOG_SHOWN` — Duplicate payment dialog shown
-- `EBILL_FETCH_SCREEN_PAYMENT_ALREADY_DONE_DIALOG_OK_CLICKED` — Proceed anyway
-- `EBILL_FETCH_SCREEN_PAYMENT_ALREADY_DONE_DIALOG_CANCEL_CLICKED` — Cancel
+**Analytics Events:**
+- Screen opened
+- Next button clicked
+- History link clicked
+- Already-paid dialog shown/dismissed
 
 ---
 
-### EBillAmountScreen
+### Amount Screen
 
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/ebillamount/ui/EBillAmountScreen.kt`
-- **Component**: `EbillAmountComponent`
-- **Contract**: `EBillAmountContract.kt`
+**Purpose:** Displays retrieved bill details and allows users to modify the payment amount.
 
-#### Purpose
-Displays fetched bill details and allows users to enter/modify the payment amount.
+**User Journey:**
+1. Screen shows customer name, consumer number, bill date, due date
+2. Amount field is pre-filled with the due amount
+3. User can edit to pay a different amount
+4. Validation ensures amount is within allowed range
+5. "Proceed" navigates to confirmation
 
-#### Key Features
-- Shows customer info (name, consumer number)
-- Displays due amount and due date
-- Editable amount field (pre-filled with due amount)
-- Amount validation (min: due amount, max: Rs 17,000)
-- Proceed to payment button
+**Validation Rules:**
 
-#### Navigation
-- Entry: From `EBillFetchScreen` with `ElectricityBillAppModel`
-- Exit: To `EBillPaymentConfirmationScreen`
+| Rule | Constraint | Error Message |
+|------|------------|---------------|
+| Minimum | Amount must be > ₹0 | "Amount should be more than 0" |
+| Due Amount | Amount must be ≥ due bill | "Amount should be more than due amount" |
+| Maximum | Amount must be ≤ ₹17,000 | "Amount cannot be greater than Rs 17000" |
 
----
-
-### EBillPaymentConfirmationScreen
-
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/ebillpayment/ui/EBillPaymentConfirmationScreen.kt`
-- **Component**: `EBillPaymentConfirmationComponent`
-- **Contract**: `EBillPaymentConfirmationContract.kt`
-
-#### Purpose
-Final confirmation before initiating payment. Creates the payment order and transitions to checkout.
-
-#### Key Features
-- Summary of payment details
-- Customer information display
-- Confirm payment button
-- Creates order via `EBillCreateOrderUseCase`
-- Navigates to shared checkout module
-
----
-
-### EBillPaymentSuccessScreen
-
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/ebillpaymentsuccess/ui/EBillPaymentSuccessScreen.kt`
-- **Component**: `EBillPaymentSuccessComponent`
-- **Contract**: `EBillPaymentSuccessContract.kt`
-
-#### Purpose
-Displays payment success confirmation with receipt details.
-
-#### Key Features
-- Success message and animation
-- Transaction details summary
-- Receipt/invoice option
-- Done button (returns to home)
-
----
-
-### EBillPaymentHistoryScreen
-
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/paymenthistory/ui/EBillPaymentHistoryScreen.kt`
-- **Component**: `ElectricityBillPaymentHistoryComponent`
-- **Contract**: `ElectricityBillPaymentHistoryContract.kt`
-
-#### Purpose
-Lists historical electricity bill payments made by the user.
-
-#### Key Features
-- List of past payments
-- Each item shows: date, amount, status, consumer number
-- Tap item to view invoice details
-- Empty state for no history
-
----
-
-### EBillPaymentInvoiceScreen
-
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/invoice/ui/EBillPaymentInvoiceScreen.kt`
-- **Component**: `EBillPaymentInvoiceComponent`
-- **Contract**: `EBillPaymentInvoiceContract.kt`
-
-#### Purpose
-Displays detailed invoice/receipt for a specific payment.
-
-#### Key Features
-- Full transaction details
-- Customer information
-- Payment breakdown
-- Share/download option
-
----
-
-## Shared UI Components
-
-### CustomerInfoUI
-
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/base/CustomerInfoUI.kt`
-- **Props**: `CustomerInfoUIState`
-- **Used by**: Amount screen, confirmation screen, success screen
-
-Displays customer details (name, consumer number) in a consistent format.
-
-### TransactionInfoView
-
-- **File**: `shared/home/src/commonMain/kotlin/app/chalo/electricitybill/ui/base/TransactionInfoView.kt`
-- **Props**: `TransactionInfoUIState`
-- **Used by**: Success screen, invoice screen, history items
-
-Displays transaction details (amount, date, status) in a consistent format.
-
----
-
-## Component Base Class
-
-### ChaloBaseStateMviComponent
-
-All screen components extend this base class:
-
-```kotlin
-abstract class ChaloBaseStateMviComponent<
-    Intent,
-    DataState,
-    ViewState,
-    SideEffect
->(componentContext: ComponentContext) {
-
-    // Observable states
-    val dataState: StateFlow<DataState>
-    val viewState: StateFlow<ViewState>
-    val sideEffect: Flow<SideEffect>
-
-    // Methods
-    abstract fun initialDataState(): DataState
-    abstract suspend fun convertToUiState(dataState: DataState): ViewState
-    open fun processIntent(intent: Intent)
-    fun updateState(transform: (DataState) -> DataState)
-
-    // Lifecycle
-    val componentScope: CoroutineScope
-    fun repeatOnStarted(block: suspend () -> Unit)
-}
-```
-
----
-
-## Navigation Flow
-
-### Screen Graph
 ```mermaid
 flowchart TD
-    Entry[Home / Profile] --> Fetch[EBillFetchScreen]
-    Fetch --> Amount[EBillAmountScreen]
-    Fetch --> History[EBillPaymentHistoryScreen]
-    Amount --> Confirm[EBillPaymentConfirmationScreen]
-    Confirm --> Checkout[Checkout Module]
-    Checkout --> Success[EBillPaymentSuccessScreen]
-    History --> Invoice[EBillPaymentInvoiceScreen]
-    Success --> Exit[Home]
-    Invoice --> History
+    Input["User Enters Amount"]
+
+    Input --> CheckPositive{"> ₹0?"}
+    CheckPositive -->|No| ErrorMin["Show minimum error"]
+    CheckPositive -->|Yes| CheckDue{">= Due Amount?"}
+
+    CheckDue -->|No| ErrorDue["Show due amount error"]
+    CheckDue -->|Yes| CheckMax{"<= ₹17,000?"}
+
+    CheckMax -->|No| ErrorMax["Show maximum error"]
+    CheckMax -->|Yes| Enable["Enable Proceed Button"]
 ```
 
-### Navigation Manager
+---
 
-Navigation uses `ChaloNavigationManager` with `ChaloNavigationRequest`:
+### Confirmation Screen
 
-```kotlin
-// Navigate to next screen
-navigationManager.postNavigationRequest(
-    ChaloNavigationRequest.Navigate(
-        args = EBillAmountScreenArgs(model.toJson())
-    )
-)
+**Purpose:** Final review before initiating payment, with terms acceptance.
 
-// Go back
-navigationManager.postNavigationRequest(
-    ChaloNavigationRequest.Pop
-)
+**User Journey:**
+1. Screen displays final payment summary
+2. User taps "Pay" button
+3. Terms & Conditions dialog appears
+4. User accepts terms
+5. Payment order is created via API
+6. User is navigated to the Checkout module
+7. On successful payment, Success screen is shown
+
+**Payment Flow:**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Confirmation
+    participant API
+    participant Checkout
+
+    User->>Confirmation: Tap "Pay"
+    Confirmation->>Confirmation: Show T&C Dialog
+    User->>Confirmation: Accept Terms
+    Confirmation->>API: Create Payment Order
+    API-->>Confirmation: Order Created
+    Confirmation->>Checkout: Navigate with Order
+    Note over Checkout: External payment processing
+    Checkout-->>Confirmation: Payment Result
+    Confirmation->>Confirmation: Navigate to Success
 ```
 
-### Scene Args
+**Key Behaviors:**
+- Loading indicator shown during order creation
+- Network errors allow retry
+- Order ID is passed to the shared Checkout module
 
-Each screen has corresponding args for navigation:
+---
 
-| Screen | Args Class | Data |
+### Success Screen
+
+**Purpose:** Confirms successful payment and provides receipt access.
+
+**User Journey:**
+1. Success animation plays
+2. Transaction summary is displayed
+3. User can view invoice for full details
+4. "OK" returns user to home screen
+
+**Available Actions:**
+- **View Invoice** → Navigate to Invoice screen with payment details
+- **OK** → Clear navigation stack, return to home
+
+---
+
+### History Screen
+
+**Purpose:** Lists all past electricity bill payments for the user.
+
+**User Journey:**
+1. Screen loads payment history from API
+2. Payments are sorted by date (newest first)
+3. Each item shows date, amount, status, consumer number
+4. Tapping an item opens the Invoice screen
+5. Empty state shown if no history exists
+
+**List Item Information:**
+- Transaction date
+- Amount paid (formatted with currency)
+- Payment status (Success, Processing, Failed)
+- Consumer number
+
+**Error Handling:**
+- Network failure shows retry snackbar
+- Empty history shows informational message
+
+---
+
+### Invoice Screen
+
+**Purpose:** Displays detailed receipt for a specific payment.
+
+**Content Displayed:**
+- Transaction ID
+- Payment status badge
+- Customer name and consumer number
+- Bill date and due date
+- Amount paid
+- Payment timestamp
+
+---
+
+## Shared UI Patterns
+
+### Bottom Sheets
+
+The feature uses modal bottom sheets for confirmations and results:
+
+| Type | Usage | Dismissible |
+|------|-------|-------------|
+| T&C Dialog | Terms acceptance before payment | Yes |
+| Success | Payment confirmation | No (must tap OK) |
+| Error | Failure with retry option | Yes |
+
+### Loading States
+
+- **Full-screen loader:** During API calls (bill fetch, order creation)
+- **Button loading:** While processing user action
+- **Skeleton:** Not used (data loads quickly)
+
+### Error Handling
+
+All API errors surface via snackbar with retry action, except:
+- Consumer not found → Inline error below text field
+- Payment failed → Bottom sheet with details
+
+---
+
+## Navigation
+
+### Entry Points
+
+| Source | Deep Link | Args |
 |--------|-----------|------|
-| Fetch | `EBillFetchScreenArgs` | None (data object) |
-| Amount | `EBillAmountScreenArgs` | `model: String` (JSON) |
-| Confirmation | `EBillPaymentConfirmationArgs` | `model: String` (JSON) |
-| Success | `EBillPaymentSuccessArgs` | `model: String`, `createOrderModel: String` |
-| History | `EBillHistoryScreenArgs` | None (data object) |
-| Invoice | `EBillPaymentInvoiceScreenArgs` | `paymentInvoice: String` (JSON) |
+| Home screen | `chalo://electricitybill` | None |
+| Profile section | — | None |
+| History item | — | Payment data |
+
+### Scene Arguments
+
+Data is passed between screens as JSON-encoded models:
+
+| Transition | Data Passed |
+|------------|-------------|
+| Fetch → Amount | Bill details (customer, amounts, dates) |
+| Amount → Confirmation | Updated bill with user-entered amount |
+| Confirmation → Success | Bill details + order response |
+| History → Invoice | Payment history record |
 
 ---
 
-## Dependencies
+## Analytics Events
 
-### Component Dependencies
-
-| Dependency | Purpose |
-|------------|---------|
-| `ComponentContext` | Decompose lifecycle context |
-| `NetworkStateManager` | Network connectivity monitoring |
-| `ChaloNavigationManager` | Navigation requests |
-| `AnalyticsContract` | Analytics event tracking |
-| `StringProvider` | Localized strings |
-| Use cases | Business logic execution |
-
-### DI (Koin)
-
-Components are created via factory functions in `AppComponentFactory`:
-
-```kotlin
-fun createEBillFetchComponent(
-    componentContext: ComponentContext,
-    args: EBillFetchScreenArgs
-): EBillFetchComponent {
-    return EBillFetchComponent(
-        componentContext = componentContext,
-        args = args,
-        networkStateManager = get(),
-        eBillFetchUseCase = get(),
-        navigationManager = get(),
-        analyticsContract = get(),
-        stringProvider = get()
-    )
-}
-```
-
----
-
-## State Management
-
-### Data Flow
-1. User interaction triggers **Intent**
-2. Component's `processIntent()` handles the intent
-3. `updateState()` modifies **DataState**
-4. `convertToUiState()` transforms DataState → **ViewState**
-5. Screen observes ViewState and recomposes
-
-### Example Flow (Number Entry)
-```kotlin
-// 1. User types in text field
-TextFieldUIState(
-    eventHandler = TextFieldEventHandlerHelper.basicWithCharConstraint(
-        maxLength = 9,
-        valueChange = { processIntent(EBillFetchIntent.NumberEnteredIntent(it)) }
-    )
-)
-
-// 2. Component processes intent
-private fun handleNumberEnteredIntent(intent: NumberEnteredIntent) {
-    val isValid = eBillFetchUseCase.isConsumerNoLengthValid(intent.currentlyEnteredNumber)
-    updateState {
-        it.copy(
-            isNextBtnClickable = isValid,
-            currentlyEnteredNumber = intent.currentlyEnteredNumber
-        )
-    }
-}
-
-// 3. ViewState updates button enabled state
-proceedButton = ButtonUIStateFactory.chaloOrangeButton(
-    enabled = dataState.isNextBtnClickable
-)
-```
+| Screen | Event | Trigger |
+|--------|-------|---------|
+| Fetch | `ebill_fetch_screen_opened` | Screen opens |
+| Fetch | `ebill_fetch_next_clicked` | Next button tapped |
+| Fetch | `ebill_fetch_history_clicked` | History link tapped |
+| Fetch | `ebill_already_paid_dialog_shown` | Dialog appears |
+| Amount | `ebill_amount_entered` | Amount changed |
+| Confirm | `ebill_payment_initiated` | Pay button tapped |
+| Success | `ebill_payment_success` | Screen opens |
+| History | `ebill_history_viewed` | Screen opens |
