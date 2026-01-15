@@ -341,6 +341,36 @@
       "flows": ["lifecycle"],
       "callsiteFilePathIncludes": ["/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt"],
       "sources": [{ "kind": "literal", "values": ["true"] }]
+    },
+    {
+      "description": "Onboarding: app open event uses this flag (currently always true).",
+      "flows": ["onboarding"],
+      "callsiteFilePathIncludes": ["/app/chalo/domain/FireAppOpenEventIfRequiredUseCase.kt"],
+      "sources": [{ "kind": "literal", "values": ["true"] }]
+    }
+  ],
+  "is coarse location enabled": [
+    {
+      "description": "Onboarding: whether coarse location permission is granted (boolean-as-string).",
+      "flows": ["onboarding"],
+      "callsiteFilePathIncludes": ["/app/chalo/locationdisclaimer/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is fine location enabled": [
+    {
+      "description": "Onboarding: whether fine location permission is granted (boolean-as-string).",
+      "flows": ["onboarding"],
+      "callsiteFilePathIncludes": ["/app/chalo/locationdisclaimer/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is gps enabled": [
+    {
+      "description": "Onboarding: whether GPS is enabled (boolean-as-string).",
+      "flows": ["onboarding"],
+      "callsiteFilePathIncludes": ["/app/chalo/locationdisclaimer/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
   "isForceUpdate": [

@@ -28,7 +28,7 @@ Rule: only write `values[]` when the value set is provably **complete** (domain-
 | mticket | mticket | done | Added validation/report-problem finite keys (incl `type`, `problemSource`, `notificationDeliveryMedium`, boolean flags). |
 | network | network | done | |
 | notifications | notifications | todo | |
-| onboarding | onboarding | todo | |
+| onboarding | onboarding | done | Added finite values for location permission/GPS flags and app open migration flag. |
 | ondc-bus | ondc-bus | done | |
 | payment | payment | done | |
 | premium-bus-activation-tracking | premium-bus-activation-tracking | done | |

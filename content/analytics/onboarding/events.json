@@ -87,7 +87,10 @@
     },
     "isChaloConfigMigrated": {
       "type": "boolean",
-      "description": "Whether Chalo Config has been migrated. Sent on `app open`."
+      "description": "Whether Chalo Config has been migrated. Sent on `app open`.",
+      "values": [
+        "true"
+      ]
     },
     "src": {
       "type": "string",
@@ -122,15 +125,27 @@
     },
     "is fine location enabled": {
       "type": "boolean",
-      "description": "Whether fine (precise) location permission is granted. Sent on Location Disclaimer events."
+      "description": "Whether fine (precise) location permission is granted. Sent on Location Disclaimer events.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "is coarse location enabled": {
       "type": "boolean",
-      "description": "Whether coarse (approximate) location permission is granted. Sent on Location Disclaimer events."
+      "description": "Whether coarse (approximate) location permission is granted. Sent on Location Disclaimer events.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "is gps enabled": {
       "type": "boolean",
-      "description": "Whether GPS is enabled. Sent on Location Disclaimer events."
+      "description": "Whether GPS is enabled. Sent on Location Disclaimer events.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "result denied": {
       "type": "number",
