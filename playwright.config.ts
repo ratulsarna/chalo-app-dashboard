@@ -1,7 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
 const baseURL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
-const reuseExistingServer = process.env.E2E_REUSE_SERVER === "1";
 const port = (() => {
   try {
     const url = new URL(baseURL);
@@ -23,10 +22,10 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: `pnpm dev --port ${port}`,
+    // Use a production server for stable hydration (avoid dev/HMR flakiness and Next dev lock).
+    command: `pnpm build && pnpm exec next start -p ${port}`,
     url: baseURL,
-    // Prefer a clean server per run; set E2E_REUSE_SERVER=1 to reuse an existing dev server.
-    reuseExistingServer,
+    reuseExistingServer: process.env.E2E_REUSE_SERVER === "1",
     timeout: 120_000,
   },
   projects: [
