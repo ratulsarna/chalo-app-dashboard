@@ -1,6 +1,16 @@
 import { defineConfig } from "@playwright/test";
 
 const baseURL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
+const reuseExistingServer = process.env.E2E_REUSE_SERVER === "1";
+const port = (() => {
+  try {
+    const url = new URL(baseURL);
+    const parsed = Number(url.port);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 3000;
+  } catch {
+    return 3000;
+  }
+})();
 
 export default defineConfig({
   testDir: "./e2e",
@@ -13,9 +23,10 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "pnpm dev --port 3000",
+    command: `pnpm dev --port ${port}`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    // Prefer a clean server per run; set E2E_REUSE_SERVER=1 to reuse an existing dev server.
+    reuseExistingServer,
     timeout: 120_000,
   },
   projects: [
@@ -25,4 +36,3 @@ export default defineConfig({
     },
   ],
 });
-
