@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CopyIcon, ExternalLinkIcon, SearchIcon } from "lucide-react";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
+import type { AnalyticsPropertyDefinition, AnalyticsPropertyKey } from "@/lib/analytics/types";
 import { encodeEventNameForPath } from "@/lib/analytics/urls";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,10 +14,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { PropertyValuesBadges } from "@/components/analytics/property-values-badges";
 
 type FlowEventsProps = {
   flowSlug: string;
   occurrences: AnalyticsEventOccurrence[];
+  propertyDefinitions: Record<AnalyticsPropertyKey, AnalyticsPropertyDefinition>;
 };
 
 function occurrenceMatches(occurrence: AnalyticsEventOccurrence, q: string) {
@@ -41,7 +44,7 @@ async function copyToClipboard(text: string) {
   }
 }
 
-export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
+export function FlowEvents({ flowSlug, occurrences, propertyDefinitions }: FlowEventsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -187,6 +190,8 @@ export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
                     <h3 className="text-sm font-semibold">Properties used</h3>
                     <div className="space-y-2">
                         {selected.propertiesUsed.map((p, idx) => {
+                          const def = propertyDefinitions?.[p.property];
+                          const values = Array.isArray(def?.values) ? def.values : [];
                           return (
                             <div key={`${selected.id}::${p.property}::${idx}`} className="rounded-md border p-3">
                               <Link
@@ -197,9 +202,13 @@ export function FlowEvents({ flowSlug, occurrences }: FlowEventsProps) {
                               >
                                 {p.property}
                               </Link>
+                              {def?.type ? (
+                                <p className="mt-1 text-xs text-muted-foreground">Type: {def.type}</p>
+                              ) : null}
                               {p.context ? (
                                 <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
                               ) : null}
+                              {values.length > 0 ? <PropertyValuesBadges values={values} /> : null}
                             </div>
                           );
                         })}

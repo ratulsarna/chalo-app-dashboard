@@ -5,9 +5,11 @@ import { ChevronDownIcon, Maximize2Icon } from "lucide-react";
 import Link from "next/link";
 
 import type { AnalyticsEventOccurrence } from "@/lib/analytics/types";
+import type { AnalyticsPropertyDefinition, AnalyticsPropertyKey } from "@/lib/analytics/types";
 import { extractMermaidBlocks, pickDefaultMermaidBlock, type MermaidBlockMeta } from "@/lib/analytics/diagram-markdown";
 import { extractNodeLabelsFromMermaid, normalizeDiagramHeading, parseDiagramLinkDirectives } from "@/lib/analytics/diagram-links";
 import { MermaidDiagramViewer } from "@/components/analytics/mermaid-diagram-viewer";
+import { PropertyValuesBadges } from "@/components/analytics/property-values-badges";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -73,6 +75,7 @@ export function FlowDiagramPanel({
   flowSlug,
   diagramMarkdown,
   occurrences,
+  propertyDefinitions,
   initialDiagramParam = null,
   initialDiagramTitleParam = null,
   className,
@@ -80,6 +83,7 @@ export function FlowDiagramPanel({
   flowSlug: string;
   diagramMarkdown: string;
   occurrences: AnalyticsEventOccurrence[];
+  propertyDefinitions: Record<AnalyticsPropertyKey, AnalyticsPropertyDefinition>;
   initialDiagramParam?: string | null;
   initialDiagramTitleParam?: string | null;
   className?: string;
@@ -486,8 +490,17 @@ export function FlowDiagramPanel({
                             >
                               {p.property}
                             </Link>
+                            {propertyDefinitions?.[p.property]?.type ? (
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                Type: {propertyDefinitions[p.property].type}
+                              </p>
+                            ) : null}
                             {p.context ? (
                               <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                            ) : null}
+                            {Array.isArray(propertyDefinitions?.[p.property]?.values) &&
+                            propertyDefinitions[p.property].values.length > 0 ? (
+                              <PropertyValuesBadges values={propertyDefinitions[p.property].values} />
                             ) : null}
                           </div>
                         ))}

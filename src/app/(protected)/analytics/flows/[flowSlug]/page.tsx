@@ -165,6 +165,7 @@ export default async function AnalyticsFlowDetailPage({
                   flowSlug={flow.slug}
                   diagramMarkdown={flow.diagramMarkdown}
                   occurrences={flowOccurrences}
+                  propertyDefinitions={flow.propertyDefinitions}
                   initialDiagramParam={diagramParam ?? null}
                   initialDiagramTitleParam={diagramTitleParam ?? null}
                 />
@@ -181,7 +182,11 @@ export default async function AnalyticsFlowDetailPage({
           aria-labelledby={tabTriggerId("events")}
           className="space-y-6"
         >
-          <FlowEvents flowSlug={flow.slug} occurrences={flowOccurrences} />
+          <FlowEvents
+            flowSlug={flow.slug}
+            occurrences={flowOccurrences}
+            propertyDefinitions={flow.propertyDefinitions}
+          />
         </TabsContent>
 
         <TabsContent
