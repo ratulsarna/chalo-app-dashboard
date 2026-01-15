@@ -25,7 +25,11 @@
     },
     "isPlotlineNotification": {
       "type": "boolean",
-      "description": "Whether this notification was sent via Plotline SDK"
+      "description": "Whether this notification was sent via Plotline SDK",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "plotlineNotifPayload": {
       "type": "string",
@@ -37,7 +41,11 @@
     },
     "isNotificationPermissionGranted": {
       "type": "boolean",
-      "description": "Whether the POST_NOTIFICATIONS permission is currently granted"
+      "description": "Whether the POST_NOTIFICATIONS permission is currently granted",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "source": {
       "type": "string",
@@ -97,11 +105,20 @@
     },
     "isTripReceiptAvailable": {
       "type": "boolean",
-      "description": "Whether trip receipt information is available in the punch notification"
+      "description": "Whether trip receipt information is available in the punch notification",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "notificationDeliveryMedium": {
       "type": "string",
-      "description": "How the validation notification was delivered (PUSH_NOTIFICATION, POLLING_API, BLE)"
+      "description": "How the validation notification was delivered (PUSH_NOTIFICATION, POLLING_API, BLE)",
+      "values": [
+        "BLE",
+        "POLLING_API",
+        "PUSH_NOTIFICATION"
+      ]
     },
     "cardNumber": {
       "type": "string",
@@ -121,7 +138,11 @@
     },
     "wasTitoValidation": {
       "type": "boolean",
-      "description": "Whether this was a TITO validation flow"
+      "description": "Whether this was a TITO validation flow",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "titoRideExpiryTimeInMillis": {
       "type": "number",
@@ -145,7 +166,11 @@
     },
     "invalidConductorPunchDataRecv": {
       "type": "boolean",
-      "description": "Whether invalid conductor punch data was received"
+      "description": "Whether invalid conductor punch data was received",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "notification type": {
       "type": "string"

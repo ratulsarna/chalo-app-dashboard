@@ -153,7 +153,7 @@
   "notificationDeliveryMedium": [
     {
       "description": "ValidationNotificationDeliveryMedium.name (PUSH_NOTIFICATION, POLLING_API, BLE).",
-      "flows": ["mticket", "chalo-wallet", "validation"],
+      "flows": ["mticket", "chalo-wallet", "validation", "notifications"],
       "sources": [{ "kind": "enumName", "name": "ValidationNotificationDeliveryMedium" }]
     }
   ],
@@ -528,7 +528,35 @@
   "wasTitoValidation": [
     {
       "description": "Whether this was a TITO validation (boolean-as-string).",
-      "flows": ["chalo-wallet", "mticket", "validation", "instant-ticket-purchase"],
+      "flows": ["chalo-wallet", "mticket", "validation", "instant-ticket-purchase", "notifications"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isNotificationPermissionGranted": [
+    {
+      "description": "Whether notifications permission is granted (boolean-as-string).",
+      "flows": ["notifications"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isPlotlineNotification": [
+    {
+      "description": "Whether incoming FCM notification is Plotline-backed (boolean-as-string).",
+      "flows": ["notifications"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isTripReceiptAvailable": [
+    {
+      "description": "Whether trip receipt is available in punch notification payload (boolean-as-string).",
+      "flows": ["notifications"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "invalidConductorPunchDataRecv": [
+    {
+      "description": "Whether invalid conductor punch data was received (boolean-as-string).",
+      "flows": ["notifications"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
