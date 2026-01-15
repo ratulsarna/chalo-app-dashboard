@@ -602,5 +602,35 @@
       "flows": ["authentication"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
+  ],
+  "sosSentSuccessfully": [
+    {
+      "description": "SOS: whether alert was sent successfully (boolean-as-string).",
+      "flows": ["help"],
+      "callsiteFilePathIncludes": ["/app/chalo/sos/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isDeviceAutoLinked": [
+    {
+      "description": "Report Problem: whether device auto-link succeeded (boolean-as-string).",
+      "flows": ["help"],
+      "callsiteFilePathIncludes": ["/app/chalo/reportproblem/"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "pass status": [
+    {
+      "description": "Booking help cancel API status (CancelBookingStatus.name).",
+      "flows": ["help"],
+      "callsiteFilePathIncludes": ["/app/chalo/appsupport/BookingHelpScreenComponent.kt"],
+      "sources": [
+        {
+          "kind": "enumName",
+          "name": "CancelBookingStatus",
+          "filePath": "shared/home/src/commonMain/kotlin/app/chalo/appsupport/data/models/app/CancelBookingAppModel.kt"
+        }
+      ]
+    }
   ]
 }

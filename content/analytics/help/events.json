@@ -30,7 +30,12 @@
     },
     "pass status": {
       "type": "string",
-      "description": "Status of the booking cancellation (Success, Failed, Error)."
+      "description": "Status of the booking cancellation (Success, Failed, Error).",
+      "values": [
+        "Error",
+        "Failed",
+        "Success"
+      ]
     },
     "message": {
       "type": "string",
@@ -58,7 +63,11 @@
     },
     "sosSentSuccessfully": {
       "type": "boolean",
-      "description": "Indicates whether SOS message was sent successfully to contacts."
+      "description": "Indicates whether SOS message was sent successfully to contacts.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "errorType": {
       "type": "string",
@@ -70,14 +79,21 @@
     },
     "isDeviceAutoLinked": {
       "type": "boolean",
-      "description": "Indicates whether device was automatically linked during report problem flow."
+      "description": "Indicates whether device was automatically linked during report problem flow.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "ss reclaim type": {
       "type": "string",
       "description": "Type of super saver reclaim operation."
     },
     "source": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "deeplinkHelper"
+      ]
     }
   },
   "stages": [
