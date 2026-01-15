@@ -9,7 +9,11 @@
     },
     "isTrueCallerInstalled": {
       "type": "boolean",
-      "description": "True when a Truecaller UID has been obtained in the login options flow (computed as uidForTruecaller != null)."
+      "description": "True when a Truecaller UID has been obtained in the login options flow (computed as uidForTruecaller != null).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "method": {
       "type": "string",
@@ -25,7 +29,11 @@
     },
     "isInvalidOtpEntered": {
       "type": "boolean",
-      "description": "True when the OTP verification fails specifically due to an invalid OTP (LoginOtpEnterComponent only)."
+      "description": "True when the OTP verification fails specifically due to an invalid OTP (LoginOtpEnterComponent only).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "otpRequestErrorMsg": {
       "type": "string",
@@ -37,11 +45,19 @@
     },
     "loggedOutSuccessfully": {
       "type": "boolean",
-      "description": "True if logout completed successfully, false if it failed."
+      "description": "True if logout completed successfully, false if it failed.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "is user profile deleted url opened": {
       "type": "boolean",
-      "description": "True when the account deletion URL is successfully opened."
+      "description": "True when the account deletion URL is successfully opened.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "initiallySelectedDate": {
       "type": "string",
@@ -49,7 +65,11 @@
     },
     "sessionLogout": {
       "type": "boolean",
-      "description": "True when logout was user-triggered; false when session/logout is triggered automatically (sent as a boolean string)."
+      "description": "True when logout was user-triggered; false when session/logout is triggered automatically (sent as a boolean string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "url": {
       "type": "string"

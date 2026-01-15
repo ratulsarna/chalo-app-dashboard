@@ -567,5 +567,40 @@
       "flows": ["search"],
       "sources": [{ "kind": "literal", "values": ["Stop", "Place", "NearestStopToPlace", "AllNearbyStops"] }]
     }
+  ],
+  "isInvalidOtpEntered": [
+    {
+      "description": "Whether an invalid OTP was entered (boolean-as-string).",
+      "flows": ["authentication"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isTrueCallerInstalled": [
+    {
+      "description": "Whether Truecaller is installed (boolean-as-string).",
+      "flows": ["authentication"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is user profile deleted url opened": [
+    {
+      "description": "Whether the user profile deletion URL was opened successfully (boolean-as-string).",
+      "flows": ["authentication"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "loggedOutSuccessfully": [
+    {
+      "description": "Whether logout succeeded (boolean-as-string).",
+      "flows": ["authentication"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "sessionLogout": [
+    {
+      "description": "Whether logout was user-triggered (boolean-as-string).",
+      "flows": ["authentication"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
   ]
 }

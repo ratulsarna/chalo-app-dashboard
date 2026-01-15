@@ -14,7 +14,7 @@ Rule: only write `values[]` when the value set is provably **complete** (domain-
 | Flow key (flows.json) | Flow slug (content dir) | Status | Notes |
 |---|---|---|---|
 | ads | ads | done | Added `hasVideo` (boolean). |
-| authentication | authentication | todo | |
+| authentication | authentication | done | Added finite domains for boolean flags (`isInvalidOtpEntered`, `isTrueCallerInstalled`, `loggedOutSuccessfully`, `sessionLogout`, and profile delete URL opened). |
 | bills | bills | todo | |
 | card | card | done | |
 | chalo-wallet | chalo-wallet | done | |
