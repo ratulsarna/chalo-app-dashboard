@@ -70,7 +70,12 @@ function tokenizeKotlin(sourceText) {
 
   function push(kind, raw, value) {
     const tok = { kind, raw, line };
-    if (kind === "string") tok.value = value;
+    if (kind === "string") {
+      tok.value = value;
+      // Kotlin string templates contain `$ident` or `${expr}` and are not finite values.
+      // Treat them as dynamic so we don't incorrectly mark them as complete enum-like sets.
+      tok.interpolated = /\$\{/.test(value) || /\$[A-Za-z_]/.test(value);
+    }
     tokens.push(tok);
   }
 
@@ -769,6 +774,7 @@ function resolveIdentToStrings(valueIdentRaw, opts) {
 function resolveStringLiteralWithPostfix(tokens, index, stopIndex) {
   const tok = tokens[index];
   if (!tok || tok.kind !== "string") return { values: undefined, endIndex: index, reason: "not_string" };
+  if (tok.interpolated) return { values: undefined, endIndex: index, reason: "interpolated_string" };
 
   let value = tok.value;
   let endIndex = index;

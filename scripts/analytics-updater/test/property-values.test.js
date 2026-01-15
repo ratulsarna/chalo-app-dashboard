@@ -301,3 +301,35 @@ test("extractPropertyValueCandidates domain registry can scope callsites by file
   assert.deepEqual(report.results.sourceKey.values, ["A"]);
   assert.equal(report.results.sourceKey.complete, true);
 });
+
+test("extractPropertyValueCandidates ignores interpolated Kotlin string templates", async () => {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "chalo-dashboard-enums-"));
+  const upstreamRepoPath = path.join(tmp, "upstream");
+
+  const kt = `
+    package example
+
+    object AnalyticsEventConstants {
+      const val ATTRIBUTE_LAT_LONG = "userLatLong"
+    }
+
+    fun emit(lat: Double, lng: Double) {
+      val props = mapOf(
+        AnalyticsEventConstants.ATTRIBUTE_LAT_LONG to "lat: ${'$'}lat, long: ${'$'}lng"
+      )
+      println(props)
+    }
+  `.trim();
+
+  await writeFile(path.join(upstreamRepoPath, "shared", "interp.kt"), kt);
+
+  const report = await extractPropertyValueCandidates({
+    upstreamRepoPath,
+    includeDirs: ["shared"],
+    propertyKeys: ["userLatLong"],
+  });
+
+  assert.deepEqual(report.results.userLatLong.values, []);
+  assert.equal(report.results.userLatLong.complete, false);
+  assert.equal(report.results.userLatLong.unresolved.length, 1);
+});
