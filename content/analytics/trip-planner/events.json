@@ -30,12 +30,23 @@
     "selected_tab": {
       "type": "string",
       "description": "Currently selected tab type (DIRECT, CONNECTING, HOP, etc.).",
-      "values": ["DIRECT", "CONNECTING", "HOP", "DIRECT_PREMIUM_BUS", "CONNECTING_PREMIUM_BUS"]
+      "values": [
+        "DIRECT",
+        "CONNECTING",
+        "HOP",
+        "DIRECT_PREMIUM_BUS",
+        "CONNECTING_PREMIUM_BUS"
+      ]
     },
     "place_type": {
       "type": "string",
       "description": "Type of place selected (coordinates, place, stop, recent).",
-      "values": ["coordinates", "place", "stop", "recent"]
+      "values": [
+        "coordinates",
+        "place",
+        "stop",
+        "recent"
+      ]
     },
     "place_name": {
       "type": "string",
@@ -47,7 +58,11 @@
     },
     "is_place_recent": {
       "type": "boolean",
-      "description": "Whether the place was selected from recent searches."
+      "description": "Whether the place was selected from recent searches.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "route_id": {
       "type": "string",
@@ -80,7 +95,10 @@
     "next_arrival_type": {
       "type": "string",
       "description": "Type of next arrival information (eta or scheduled).",
-      "values": ["eta", "scheduled"]
+      "values": [
+        "eta",
+        "scheduled"
+      ]
     },
     "eta_in_seconds": {
       "type": "number",
@@ -88,11 +106,19 @@
     },
     "is_halted": {
       "type": "boolean",
-      "description": "Whether the bus is currently stationary."
+      "description": "Whether the bus is currently stationary.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "is_delayed": {
       "type": "boolean",
-      "description": "Whether the bus is delayed."
+      "description": "Whether the bus is delayed.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "distance_to_prev_location": {
       "type": "number",
@@ -140,7 +166,11 @@
     },
     "is_collapsed": {
       "type": "boolean",
-      "description": "Whether a section is collapsed or expanded."
+      "description": "Whether a section is collapsed or expanded.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "last_refresh_nudge_timestamp": {
       "type": "number",
@@ -172,7 +202,11 @@
     },
     "is_logged_in": {
       "type": "boolean",
-      "description": "Whether the user is logged in."
+      "description": "Whether the user is logged in.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "product_type": {
       "type": "string",
@@ -212,7 +246,11 @@
     },
     "is_premium_bus_route": {
       "type": "boolean",
-      "description": "Whether the route is a premium bus route."
+      "description": "Whether the route is a premium bus route.",
+      "values": [
+        "false",
+        "true"
+      ]
     }
   },
   "stages": [

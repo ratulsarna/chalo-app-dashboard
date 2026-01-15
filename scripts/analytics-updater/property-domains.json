@@ -775,5 +775,47 @@
         }
       ]
     }
+  ],
+  "is_collapsed": [
+    {
+      "description": "Trip planner: whether a UI section is collapsed (boolean-as-string).",
+      "flows": ["trip-planner"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is_delayed": [
+    {
+      "description": "Trip planner: whether live ETA indicates delay (boolean-as-string).",
+      "flows": ["trip-planner"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is_halted": [
+    {
+      "description": "Trip planner: whether live ETA indicates halt (boolean-as-string).",
+      "flows": ["trip-planner"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is_logged_in": [
+    {
+      "description": "Trip planner: whether user is logged in (boolean-as-string).",
+      "flows": ["trip-planner"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is_place_recent": [
+    {
+      "description": "Trip planner: whether the selected place is from recents (boolean-as-string).",
+      "flows": ["trip-planner"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "is_premium_bus_route": [
+    {
+      "description": "Trip planner: whether route is premium bus (boolean-as-string).",
+      "flows": ["trip-planner"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
   ]
 }
