@@ -37,4 +37,4 @@ Rule: only write `values[]` when the value set is provably **complete** (domain-
 | search | search | todo | |
 | super-pass | super-pass-purchase | todo | |
 | trip-planner | trip-planner | todo | |
-| validation | validation | todo | |
+| validation | validation | done | Added finite report-problem + validation booleans; removed duplicate `failureReason` key via normalization. |

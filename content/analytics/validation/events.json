@@ -27,7 +27,11 @@
     },
     "isSuperPass": {
       "type": "boolean",
-      "description": "Whether the product is a super pass."
+      "description": "Whether the product is a super pass.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "bookingId": {
       "type": "string",
@@ -47,19 +51,35 @@
     },
     "isChaloPay": {
       "type": "boolean",
-      "description": "Whether this is a Quick Pay (Chalo Pay) order."
+      "description": "Whether this is a Quick Pay (Chalo Pay) order.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isInstantTicket": {
       "type": "boolean",
-      "description": "Whether this is an Instant Ticket order."
+      "description": "Whether this is an Instant Ticket order.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isPremiumReserveTicket": {
       "type": "boolean",
-      "description": "Whether this is a Premium Reserve Ticket."
+      "description": "Whether this is a Premium Reserve Ticket.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isOndcTicketOrder": {
       "type": "boolean",
-      "description": "Whether this is an ONDC ticket order."
+      "description": "Whether this is an ONDC ticket order.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "validationFlowType": {
       "type": "string",
@@ -73,7 +93,11 @@
     },
     "isBlePermissionGranted": {
       "type": "boolean",
-      "description": "Whether BLE permissions are granted."
+      "description": "Whether BLE permissions are granted.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "validationAckDataType": {
       "type": "string",
@@ -87,7 +111,11 @@
     },
     "wasTitoValidation": {
       "type": "boolean",
-      "description": "True if the post-validation action happened after a TITO validation (note: some implementations may serialize this as a string)."
+      "description": "True if the post-validation action happened after a TITO validation (note: some implementations may serialize this as a string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "notificationDeliveryMedium": {
       "type": "string",
@@ -156,7 +184,7 @@
     },
     "failureReason": {
       "type": "string",
-      "description": "Detailed failure reason for syncing failures."
+      "description": "Failure reason (also used by TwoWayBleCommPilot)."
     },
     "rawData": {
       "type": "string",
@@ -172,11 +200,21 @@
     },
     "type": {
       "type": "string",
-      "description": "Report problem type/category (exact values owned by report-problem feature)."
+      "description": "Report problem type/category (exact values owned by report-problem feature).",
+      "values": [
+        "activationScreenTicketingProblemsV2",
+        "otherTicketingProblemsV2",
+        "passVerificationProblemsV2"
+      ]
     },
     "problemSource": {
       "type": "string",
-      "description": "Report problem source screen/module."
+      "description": "Report problem source screen/module.",
+      "values": [
+        "activatePassScreen",
+        "mPassPurchaseActivity",
+        "validationScreen"
+      ]
     },
     "fullName": {
       "type": "string",
@@ -190,7 +228,6 @@
       "type": "string",
       "description": "Date string added by some validation analytics managers."
     },
-
     "notification title": {
       "type": "string",
       "description": "TITO notification title (raw)."
@@ -263,7 +300,6 @@
       "type": "number",
       "description": "Expiry time from TITO notification payload (Quick Pay only)."
     },
-
     "source": {
       "type": "string",
       "description": "Source (Source enum value) as emitted by TwoWayBleCommPilot logger."
@@ -303,10 +339,6 @@
     "padding": {
       "type": "string",
       "description": "Padding extracted from TwoWayBleCommPilot data (when available)."
-    },
-    "failureReason": {
-      "type": "string",
-      "description": "Failure reason (also used by TwoWayBleCommPilot)."
     },
     "timeSinceActModeBrCalled": {
       "type": "number",
@@ -401,7 +433,6 @@
         "Raised when validation is attempted but the product cannot be resolved."
       ]
     },
-
     {
       "name": "super pass fetched",
       "description": "Super Pass validation product data fetched.",
@@ -525,7 +556,6 @@
         "Raised when Quick Pay product validation data is fetched in validation flow."
       ]
     },
-
     {
       "name": "ble screen open",
       "description": "BLE validation screen opened.",
@@ -553,7 +583,6 @@
         "Raised when device does not support BLE hardware."
       ]
     },
-
     {
       "name": "BLE permission check on validation initialization",
       "description": "BLE permission status checked when validation initializes.",
@@ -702,7 +731,6 @@
         "Raised when user selects QR fallback after BLE denial."
       ]
     },
-
     {
       "name": "ble bottom sheet clicked",
       "description": "User clicked product/details bottom sheet on BLE validation screen.",
@@ -775,7 +803,6 @@
         "Raised when user clicks 'Got it' on switch-to-QR prompt."
       ]
     },
-
     {
       "name": "exit chalo pay confirmation shown",
       "description": "Exit confirmation dialog shown (uses legacy Chalo Pay naming).",
@@ -800,7 +827,6 @@
         "Raised when user cancels exit on back press."
       ]
     },
-
     {
       "name": "qr validation screen help button clicked",
       "description": "Help button clicked on QR validation screen.",
@@ -843,7 +869,6 @@
         "Raised when trip planner fails from QR validation flow."
       ]
     },
-
     {
       "name": "mticket qr code zoomed",
       "description": "M-Ticket QR zoomed/opened.",
@@ -888,7 +913,6 @@
         "Raised when user taps zoom on QR for supported products that use generic zoom event."
       ]
     },
-
     {
       "name": "report problem clicked v2",
       "description": "Report problem clicked from validation flow.",
@@ -913,7 +937,6 @@
         "Raised when user taps report problem/help entry from validation flow."
       ]
     },
-
     {
       "name": "mpass activation duration expired dialog shown",
       "description": "Product activation duration expired dialog shown in validation flow.",
@@ -980,7 +1003,6 @@
         "Raised when user clicks View Summary/See Details on expiry dialog."
       ]
     },
-
     {
       "name": "tito tapIn notif recv on conductor flow",
       "description": "TITO tap-in notification received during conductor/unified flow.",
@@ -1095,7 +1117,6 @@
         "Raised when polling yields invalid tap-in data."
       ]
     },
-
     {
       "name": "invalid ble validation ack data received",
       "description": "Invalid BLE validation ACK data received.",
@@ -1169,7 +1190,6 @@
         "Raised when post-validation sync step fails."
       ]
     },
-
     {
       "name": "view trip receipt from menu clicked",
       "description": "User clicked 'View trip receipt' from menu on validation UI.",
@@ -1215,7 +1235,6 @@
         "Raised when user clicks post-validation CTA (view receipt or exit)."
       ]
     },
-
     {
       "name": "superPass trip punch",
       "description": "Super Pass trip punched by conductor.",
@@ -1374,7 +1393,6 @@
         "Raised when Quick Pay receipt/punch is received."
       ]
     },
-
     {
       "name": "superPass receipt payload",
       "description": "Super Pass receipt payload captured (debug).",
@@ -1435,7 +1453,6 @@
         "Raised when ONDC ticket punch event receipt payload is recorded for debugging."
       ]
     },
-
     {
       "name": "BLE advertisement sent",
       "description": "TwoWayBleCommPilot: BLE advertisement sent.",
