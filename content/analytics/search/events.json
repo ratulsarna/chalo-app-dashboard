@@ -96,11 +96,19 @@
     },
     "isRecentResult": {
       "type": "string",
-      "description": "Whether the selected item is from recent searches (boolean as string)."
+      "description": "Whether the selected item is from recent searches (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isDeviceBackClicked": {
       "type": "string",
-      "description": "Whether device back button was used to exit search (boolean as string)."
+      "description": "Whether device back button was used to exit search (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "timeFromResultShown": {
       "type": "string",
@@ -108,7 +116,11 @@
     },
     "searchResult1Type": {
       "type": "string",
-      "description": "Type of the 1st search result in the list (STOP, LOCATION, etc.)."
+      "description": "Type of the 1st search result in the list (STOP, LOCATION, etc.).",
+      "values": [
+        "PLACE",
+        "STOP"
+      ]
     },
     "searchResult1Name": {
       "type": "string",
@@ -116,7 +128,11 @@
     },
     "searchResult2Type": {
       "type": "string",
-      "description": "Type of the 2nd search result in the list."
+      "description": "Type of the 2nd search result in the list.",
+      "values": [
+        "PLACE",
+        "STOP"
+      ]
     },
     "searchResult2Name": {
       "type": "string",
@@ -124,7 +140,11 @@
     },
     "searchResult3Type": {
       "type": "string",
-      "description": "Type of the 3rd search result in the list."
+      "description": "Type of the 3rd search result in the list.",
+      "values": [
+        "PLACE",
+        "STOP"
+      ]
     },
     "searchResult3Name": {
       "type": "string",
@@ -160,7 +180,11 @@
     },
     "isFreeRide": {
       "type": "string",
-      "description": "Whether the route offers free rides (boolean as string)."
+      "description": "Whether the route offers free rides (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "length": {
       "type": "string",
@@ -168,15 +192,30 @@
     },
     "universal item clicked": {
       "type": "string",
-      "description": "Type of item clicked in universal search (LOCATION, STOP, ROUTE, TRIP_STOP, TRIP_LOCATION)."
+      "description": "Type of item clicked in universal search (LOCATION, STOP, ROUTE, TRIP_STOP, TRIP_LOCATION).",
+      "values": [
+        "LOCATION",
+        "ROUTE",
+        "STOP",
+        "TRIP_LOCATION",
+        "TRIP_STOP"
+      ]
     },
     "fromRecentList": {
       "type": "string",
-      "description": "Whether item is from recent list (boolean as string)."
+      "description": "Whether item is from recent list (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isPopularRoute": {
       "type": "string",
-      "description": "Whether route is a popular route (boolean as string)."
+      "description": "Whether route is a popular route (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "searchString": {
       "type": "string",
@@ -188,7 +227,11 @@
     },
     "networkStatus": {
       "type": "string",
-      "description": "Network connectivity status (boolean as string)."
+      "description": "Network connectivity status (boolean as string).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "origin": {
       "type": "string",
@@ -216,7 +259,13 @@
     },
     "from_type": {
       "type": "string",
-      "description": "Type of FROM selection (STOP or PLACE)."
+      "description": "Type of FROM selection (STOP or PLACE).",
+      "values": [
+        "AllNearbyStops",
+        "NearestStopToPlace",
+        "Place",
+        "Stop"
+      ]
     },
     "from_stop name": {
       "type": "string",
@@ -236,7 +285,13 @@
     },
     "to_type": {
       "type": "string",
-      "description": "Type of TO selection (STOP or PLACE)."
+      "description": "Type of TO selection (STOP or PLACE).",
+      "values": [
+        "AllNearbyStops",
+        "NearestStopToPlace",
+        "Place",
+        "Stop"
+      ]
     },
     "to_stop name": {
       "type": "string",

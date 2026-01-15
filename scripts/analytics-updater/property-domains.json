@@ -477,5 +477,95 @@
       "flows": ["ads"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
+  ],
+  "isDeviceBackClicked": [
+    {
+      "description": "Universal Search: whether device back was used (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "fromRecentList": [
+    {
+      "description": "Universal Search: whether selected item is from recent list (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isPopularRoute": [
+    {
+      "description": "Universal Search: whether selected route is popular (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "networkStatus": [
+    {
+      "description": "Universal Search: whether network is available (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isFreeRide": [
+    {
+      "description": "Universal Search: whether route is free ride (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isRecentResult": [
+    {
+      "description": "Universal Search: whether clicked result is recent (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "universal item clicked": [
+    {
+      "description": "Universal Search item type (UniversalSearchItemType.name).",
+      "flows": ["search"],
+      "sources": [
+        {
+          "kind": "enumName",
+          "name": "UniversalSearchItemType",
+          "filePath": "shared/livetracking/src/commonMain/kotlin/app/chalo/livetracking/universalsearch/analytics/UniversalSearchAnalyticsEventHelperImpl.kt"
+        }
+      ]
+    }
+  ],
+  "searchResult1Type": [
+    {
+      "description": "Universal Search: top results list type (places/stops only).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["PLACE", "STOP"] }]
+    }
+  ],
+  "searchResult2Type": [
+    {
+      "description": "Universal Search: top results list type (places/stops only).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["PLACE", "STOP"] }]
+    }
+  ],
+  "searchResult3Type": [
+    {
+      "description": "Universal Search: top results list type (places/stops only).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["PLACE", "STOP"] }]
+    }
+  ],
+  "from_type": [
+    {
+      "description": "Stop-based trip planner search: from location type (StopBasedSearchSelectedLocation.typeForAnalytics).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["Stop", "Place", "NearestStopToPlace", "AllNearbyStops"] }]
+    }
+  ],
+  "to_type": [
+    {
+      "description": "Stop-based trip planner search: to location type (StopBasedSearchSelectedLocation.typeForAnalytics).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["Stop", "Place", "NearestStopToPlace", "AllNearbyStops"] }]
+    }
   ]
 }

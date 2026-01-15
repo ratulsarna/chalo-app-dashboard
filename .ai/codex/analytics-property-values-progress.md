@@ -34,7 +34,7 @@ Rule: only write `values[]` when the value set is provably **complete** (domain-
 | premium-bus-activation-tracking | premium-bus-activation-tracking | done | |
 | premium-bus-booking | premium-bus-booking | done | |
 | premium-bus-bulk-booking | premium-bus-bulk-booking | done | |
-| search | search | todo | |
+| search | search | done | Added finite domains for boolean flags, `from_type`/`to_type`, top-result type (`PLACE`/`STOP`), and `universal item clicked` enum. |
 | super-pass | super-pass-purchase | done | Added finite domains for pass purchase booleans, `gender`, `coming from source`, report-problem keys, and super pass subtypes. |
 | trip-planner | trip-planner | todo | |
 | validation | validation | done | Added finite report-problem + validation booleans; removed duplicate `failureReason` key via normalization. |
