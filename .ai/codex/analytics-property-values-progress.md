@@ -35,6 +35,6 @@ Rule: only write `values[]` when the value set is provably **complete** (domain-
 | premium-bus-booking | premium-bus-booking | done | |
 | premium-bus-bulk-booking | premium-bus-bulk-booking | done | |
 | search | search | todo | |
-| super-pass | super-pass-purchase | todo | |
+| super-pass | super-pass-purchase | done | Added finite domains for pass purchase booleans, `gender`, `coming from source`, report-problem keys, and super pass subtypes. |
 | trip-planner | trip-planner | todo | |
 | validation | validation | done | Added finite report-problem + validation booleans; removed duplicate `failureReason` key via normalization. |

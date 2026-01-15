@@ -52,6 +52,12 @@
         { "kind": "const", "name": "MetroTicketConstants.PRODUCT_TYPE" },
         { "kind": "const", "name": "OndcMetroTicketConstants.PRODUCT_TYPE" }
       ]
+    },
+    {
+      "description": "Super pass purchase productType (DigitalTripReceiptRepository: mTicket/superPass).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/", "/app/chalo/superpass/"],
+      "sources": [{ "kind": "constPrefix", "prefix": "AnalyticsEventConstants.PRODUCT_TYPE_" }]
     }
   ],
   "productSubType": [
@@ -61,6 +67,15 @@
       "sources": [
         { "kind": "const", "name": "MetroTicketConstants.PRODUCT_SUB_TYPE" },
         { "kind": "const", "name": "OndcMetroTicketConstants.PRODUCT_SUB_TYPE" }
+      ]
+    },
+    {
+      "description": "Super pass purchase sub-type (magicPass / rideBasedPass).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/", "/app/chalo/superpass/"],
+      "sources": [
+        { "kind": "const", "name": "SuperPassConstants.SUBTYPE_MAGIC_PASS" },
+        { "kind": "const", "name": "SuperPassConstants.SUBTYPE_RIDE_PASS" }
       ]
     }
   ],
@@ -127,6 +142,12 @@
       "flows": ["mticket"],
       "callsiteFilePathIncludes": ["/app/chalo/mTicketing/"],
       "sources": [{ "kind": "const", "name": "ReportProblemFeatureConstants.SRC_VALIDATION_SCREEN" }]
+    },
+    {
+      "description": "Super pass purchase report problem source (ReportProblemFeatureConstants.SRC_MPASS_PURCHASE_ACTIVITY).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/"],
+      "sources": [{ "kind": "const", "name": "ReportProblemFeatureConstants.SRC_MPASS_PURCHASE_ACTIVITY" }]
     }
   ],
   "notificationDeliveryMedium": [
@@ -147,6 +168,16 @@
       "description": "Report problem category types (ReportProblemFeatureConstants.PROBLEM_TYPE_*).",
       "flows": ["validation"],
       "sources": [{ "kind": "constPrefix", "prefix": "ReportProblemFeatureConstants.PROBLEM_TYPE_" }]
+    },
+    {
+      "description": "Super pass purchase: overloaded `type` key used for both report-problem category and product type (DigitalTripReceiptFeature).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/", "/app/chalo/superpass/"],
+      "sources": [
+        { "kind": "const", "name": "ReportProblemFeatureConstants.PROBLEM_TYPE_PASS_VERIFICATION_PROBLEMS" },
+        { "kind": "const", "name": "AnalyticsEventConstants.PRODUCT_TYPE_SUPER_PASS" },
+        { "kind": "const", "name": "AnalyticsEventConstants.PRODUCT_TYPE_MTICKET" }
+      ]
     }
   ],
   "paymentProvider": [
@@ -254,12 +285,23 @@
       "description": "Whether the validated product is a super pass (boolean-as-string).",
       "flows": ["validation"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    },
+    {
+      "description": "Hard-coded true for super pass purchase flow (boolean-as-string).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/", "/app/chalo/productpurchase/passselection/"],
+      "sources": [{ "kind": "literal", "values": ["true"] }]
     }
   ],
   "response": [
     {
       "description": "Operation success/failure (boolean-as-string).",
       "flows": ["mticket"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    },
+    {
+      "description": "Operation success/failure (boolean-as-string).",
+      "flows": ["super-pass-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -349,6 +391,50 @@
     {
       "description": "Whether the entered OTP was invalid (stringified boolean).",
       "flows": ["chalo-wallet"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "gender": [
+    {
+      "description": "Gender.name (MALE/FEMALE/OTHER/NULL).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/"],
+      "sources": [{ "kind": "enumName", "name": "Gender" }]
+    }
+  ],
+  "coming from source": [
+    {
+      "description": "Super pass purchase entry source string (currently sourceSuperPassPurchaseFragment).",
+      "flows": ["super-pass-purchase"],
+      "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/"],
+      "sources": [{ "kind": "literal", "values": ["sourceSuperPassPurchaseFragment"] }]
+    }
+  ],
+  "canActivate": [
+    {
+      "description": "Whether pass can be activated now (boolean-as-string).",
+      "flows": ["super-pass-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isConvertedToRenewFlow": [
+    {
+      "description": "Whether flow converted to renew (boolean-as-string).",
+      "flows": ["super-pass-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isDismissed": [
+    {
+      "description": "Whether a UI element was dismissed (boolean-as-string).",
+      "flows": ["super-pass-purchase"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isRejectedProofImage": [
+    {
+      "description": "Whether the proof image is rejected (boolean-as-string).",
+      "flows": ["super-pass-purchase"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],

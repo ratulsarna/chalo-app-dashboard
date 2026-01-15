@@ -17,7 +17,10 @@
     },
     "isSuperPass": {
       "type": "boolean",
-      "description": "Hard-coded `true` for every event in this flow to allow dashboards to filter the super pass event family."
+      "description": "Hard-coded `true` for every event in this flow to allow dashboards to filter the super pass event family.",
+      "values": [
+        "true"
+      ]
     },
     "productId": {
       "type": "string",
@@ -25,11 +28,19 @@
     },
     "productType": {
       "type": "string",
-      "description": "Product type; these events always log `superPass`."
+      "description": "Product type; these events always log `superPass`.",
+      "values": [
+        "mTicket",
+        "superPass"
+      ]
     },
     "productSubType": {
       "type": "string",
-      "description": "Product sub-type (magicPass, ridePass, etc.) pulled from the configuration metadata."
+      "description": "Product sub-type (magicPass, ridePass, etc.) pulled from the configuration metadata.",
+      "values": [
+        "magicPass",
+        "rideBasedPass"
+      ]
     },
     "passengerType": {
       "type": "string",
@@ -112,7 +123,11 @@
     },
     "isConvertedToRenewFlow": {
       "type": "boolean",
-      "description": "True when smart passenger selection triggers the renew conversion path."
+      "description": "True when smart passenger selection triggers the renew conversion path.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "fullName": {
       "type": "string",
@@ -124,7 +139,13 @@
     },
     "gender": {
       "type": "string",
-      "description": "Gender enum name from the user input."
+      "description": "Gender enum name from the user input.",
+      "values": [
+        "FEMALE",
+        "MALE",
+        "NULL",
+        "OTHER"
+      ]
     },
     "mobileNumber": {
       "type": "string",
@@ -144,7 +165,11 @@
     },
     "isRejectedProofImage": {
       "type": "boolean",
-      "description": "Flag to differentiate rejected proof zoom states."
+      "description": "Flag to differentiate rejected proof zoom states.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "proofId": {
       "type": "string",
@@ -156,7 +181,11 @@
     },
     "isDismissed": {
       "type": "boolean",
-      "description": "True if the camera permission dialog was dismissed."
+      "description": "True if the camera permission dialog was dismissed.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "passStartDate": {
       "type": "string",
@@ -164,11 +193,18 @@
     },
     "coming from source": {
       "type": "string",
-      "description": "Source tag passed when the name-only screen is triggered (usually sourceSuperPassPurchaseFragment)."
+      "description": "Source tag passed when the name-only screen is triggered (usually sourceSuperPassPurchaseFragment).",
+      "values": [
+        "sourceSuperPassPurchaseFragment"
+      ]
     },
     "canActivate": {
       "type": "boolean",
-      "description": "True when activation is possible from the booking success screen."
+      "description": "True when activation is possible from the booking success screen.",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "source": {
       "type": "string",
@@ -187,11 +223,19 @@
     },
     "type": {
       "type": "string",
-      "description": "Report problem category (pass_verification_problems)."
+      "description": "Report problem category (pass_verification_problems).",
+      "values": [
+        "mTicket",
+        "passVerificationProblemsV2",
+        "superPass"
+      ]
     },
     "problemSource": {
       "type": "string",
-      "description": "Source tag for report problem events (src_mPassPurchaseActivity)."
+      "description": "Source tag for report problem events (src_mPassPurchaseActivity).",
+      "values": [
+        "mPassPurchaseActivity"
+      ]
     },
     "durationId": {
       "type": "string"
@@ -237,7 +281,11 @@
       "type": "string"
     },
     "response": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "recent product mticket clicked": {
       "type": "string"
