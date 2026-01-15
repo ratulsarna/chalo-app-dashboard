@@ -19,7 +19,7 @@ Rule: only write `values[]` when the value set is provably **complete** (domain-
 | card | card | done | |
 | chalo-wallet | chalo-wallet | done | |
 | help | help | done | Added finite domains for `pass status` (cancel booking), SOS + autolink booleans, and `chat screen` source. |
-| history | history | todo | |
+| history | history | done | Added finite domains for overloaded `type`, super pass `pass status`, renew flags, `verificationFlag`, `isFreeRide`, and renew dialog source. |
 | home | home | done | |
 | instant-ticket | instant-ticket-purchase | done | Added finite domains for validation ack/flow types and several boolean flags. |
 | lifecycle | lifecycle | todo | |

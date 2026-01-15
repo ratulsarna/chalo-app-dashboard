@@ -178,6 +178,19 @@
         { "kind": "const", "name": "AnalyticsEventConstants.PRODUCT_TYPE_SUPER_PASS" },
         { "kind": "const", "name": "AnalyticsEventConstants.PRODUCT_TYPE_MTICKET" }
       ]
+    },
+    {
+      "description": "History: overloaded `type` key used for tickets-page hooks (TicketsPageFeature.featureType) and report-problem type (ReportProblemFeatureConstants.PROBLEM_TYPE_*).",
+      "flows": ["history"],
+      "callsiteFilePathIncludes": ["/app/chalo/home/ui/history/"],
+      "sources": [
+        {
+          "kind": "enumName",
+          "name": "TicketsPageFeature",
+          "filePath": "shared/chalo-base/src/commonMain/kotlin/app/chalo/homescreen/data/model/app/TicketsPassesSectionAppModel.kt"
+        },
+        { "kind": "constPrefix", "prefix": "ReportProblemFeatureConstants.PROBLEM_TYPE_" }
+      ]
     }
   ],
   "paymentProvider": [
@@ -212,6 +225,16 @@
     {
       "description": "Whether the ride/ticket is a free ride (boolean-as-string).",
       "flows": ["payment", "mticket"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    },
+    {
+      "description": "Universal Search: whether route is free ride (boolean-as-string).",
+      "flows": ["search"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    },
+    {
+      "description": "History: whether the activated mTicket is a free ride (boolean-as-string).",
+      "flows": ["history"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
@@ -291,6 +314,25 @@
       "flows": ["super-pass-purchase"],
       "callsiteFilePathIncludes": ["/app/chalo/productpurchase/passpurchase/", "/app/chalo/productpurchase/passselection/"],
       "sources": [{ "kind": "literal", "values": ["true"] }]
+    },
+    {
+      "description": "History: whether the product is a super pass (boolean-as-string).",
+      "flows": ["history"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "isRenewFromProductStatusCard": [
+    {
+      "description": "History: whether renew started from product status card (boolean-as-string).",
+      "flows": ["history"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    }
+  ],
+  "verificationFlag": [
+    {
+      "description": "History: whether super pass verification is required/valid (boolean-as-string).",
+      "flows": ["history"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
   "response": [
@@ -425,6 +467,11 @@
       "description": "Whether the entered OTP was invalid (stringified boolean).",
       "flows": ["chalo-wallet"],
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
+    },
+    {
+      "description": "Whether an invalid OTP was entered (boolean-as-string).",
+      "flows": ["authentication"],
+      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
   "gender": [
@@ -506,13 +553,6 @@
       "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
-  "isFreeRide": [
-    {
-      "description": "Universal Search: whether route is free ride (boolean-as-string).",
-      "flows": ["search"],
-      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
-    }
-  ],
   "isRecentResult": [
     {
       "description": "Universal Search: whether clicked result is recent (boolean-as-string).",
@@ -566,13 +606,6 @@
       "description": "Stop-based trip planner search: to location type (StopBasedSearchSelectedLocation.typeForAnalytics).",
       "flows": ["search"],
       "sources": [{ "kind": "literal", "values": ["Stop", "Place", "NearestStopToPlace", "AllNearbyStops"] }]
-    }
-  ],
-  "isInvalidOtpEntered": [
-    {
-      "description": "Whether an invalid OTP was entered (boolean-as-string).",
-      "flows": ["authentication"],
-      "sources": [{ "kind": "literal", "values": ["true", "false"] }]
     }
   ],
   "isTrueCallerInstalled": [
@@ -629,6 +662,18 @@
           "kind": "enumName",
           "name": "CancelBookingStatus",
           "filePath": "shared/home/src/commonMain/kotlin/app/chalo/appsupport/data/models/app/CancelBookingAppModel.kt"
+        }
+      ]
+    },
+    {
+      "description": "History: super pass status (SuperPassStatus.name).",
+      "flows": ["history"],
+      "callsiteFilePathIncludes": ["/app/chalo/home/ui/history/"],
+      "sources": [
+        {
+          "kind": "enumName",
+          "name": "SuperPassStatus",
+          "filePath": "shared/chalo-base/src/commonMain/kotlin/app/chalo/features/productsync/constants/SuperPassStatus.kt"
         }
       ]
     }

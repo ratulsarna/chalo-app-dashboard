@@ -45,7 +45,16 @@
     },
     "type": {
       "type": "string",
-      "description": "Hook type or feature type identifier"
+      "description": "Hook type or feature type identifier",
+      "values": [
+        "activationScreenTicketingProblemsV2",
+        "CHALO_BUS",
+        "otherTicketingProblemsV2",
+        "passVerificationProblemsV2",
+        "PRODUCT_PURCHASE",
+        "REGULAR_BUS",
+        "UNKNOWN"
+      ]
     },
     "position": {
       "type": "string",
@@ -105,11 +114,19 @@
     },
     "isRenewFromProductStatusCard": {
       "type": "boolean",
-      "description": "True if renew action was triggered from product status card banner"
+      "description": "True if renew action was triggered from product status card banner",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "isSuperPass": {
       "type": "boolean",
-      "description": "Hard-coded true for super pass bookings to allow filtering"
+      "description": "Hard-coded true for super pass bookings to allow filtering",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "passId": {
       "type": "string",
@@ -125,11 +142,25 @@
     },
     "pass status": {
       "type": "string",
-      "description": "Pass status (e.g., ACTIVE, EXPIRED). Key emitted as `pass status`."
+      "description": "Pass status (e.g., ACTIVE, EXPIRED). Key emitted as `pass status`.",
+      "values": [
+        "CANCELLED",
+        "EXPIRED",
+        "FAILED",
+        "INACTIVE",
+        "PAYMENT_FAILED",
+        "PAYMENT_PROCESSING",
+        "UNUSED",
+        "USED"
+      ]
     },
     "verificationFlag": {
       "type": "string",
-      "description": "Verification requirement flag for pass"
+      "description": "Verification requirement flag for pass",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "verificationExpiryTime": {
       "type": "string",
@@ -273,7 +304,11 @@
     },
     "isFreeRide": {
       "type": "string",
-      "description": "Boolean string indicating if this is a free ride (`true`/`false`)."
+      "description": "Boolean string indicating if this is a free ride (`true`/`false`).",
+      "values": [
+        "false",
+        "true"
+      ]
     },
     "selectedRating": {
       "type": "number",
@@ -303,7 +338,10 @@
       "type": "number"
     },
     "renew disabled product source": {
-      "type": "string"
+      "type": "string",
+      "values": [
+        "myTicketsScreenTab"
+      ]
     },
     "ctaType": {
       "type": "string"
