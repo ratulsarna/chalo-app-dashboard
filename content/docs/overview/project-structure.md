@@ -11,57 +11,53 @@ lastUpdated: 2026-01-14
 
 ## Root Directory Layout
 
-```
-chalo-app-kmp/
-├── androidApp/              # Android application module
-├── iosApp/                  # iOS application (Xcode project)
-├── shared/                  # KMP shared modules
-│   ├── src/                 # Main shared module
-│   ├── analytics/           # Analytics SDK integration
-│   ├── ble-communication/   # BLE validation
-│   ├── chalo-base/          # Base classes, models, utilities
-│   ├── checkout/            # Payment processing
-│   ├── core/                # App core, navigation, DI
-│   ├── framework-city-data/ # City data management
-│   ├── framework-wallet/    # Wallet framework
-│   ├── home/                # Home + many features
-│   ├── kyc/                 # KYC verification
-│   ├── livetracking/        # Live bus tracking
-│   ├── login/               # Authentication
-│   ├── network/             # Networking layer
-│   ├── onboarding/          # Onboarding flow
-│   ├── productbooking/      # Product booking (tickets, passes)
-│   ├── security/            # Encryption, security
-│   ├── test-utils/          # Test utilities
-│   ├── validationsdk/       # Ticket validation
-│   ├── vault/               # Secure storage
-│   └── wallet/              # Wallet + Quick Pay
-├── gradle/                  # Gradle wrapper, version catalog
-├── docs/                    # Documentation
-├── scripts/                 # Build/utility scripts
-└── build.gradle.kts         # Root build configuration
-```
+- `chalo-app-kmp/`
+  - `androidApp/` — Android application module
+  - `iosApp/` — iOS application (Xcode project)
+  - `shared/` — KMP shared modules
+    - `src/` — Main shared module
+    - `analytics/` — Analytics SDK integration
+    - `ble-communication/` — BLE validation
+    - `chalo-base/` — Base classes, models, utilities
+    - `checkout/` — Payment processing
+    - `core/` — App core, navigation, DI
+    - `framework-city-data/` — City data management
+    - `framework-wallet/` — Wallet framework
+    - `home/` — Home + many features
+    - `kyc/` — KYC verification
+    - `livetracking/` — Live bus tracking
+    - `login/` — Authentication
+    - `network/` — Networking layer
+    - `onboarding/` — Onboarding flow
+    - `productbooking/` — Product booking (tickets, passes)
+    - `security/` — Encryption, security
+    - `test-utils/` — Test utilities
+    - `validationsdk/` — Ticket validation
+    - `vault/` — Secure storage
+    - `wallet/` — Wallet + Quick Pay
+  - `gradle/` — Gradle wrapper, version catalog
+  - `docs/` — Documentation
+  - `scripts/` — Build/utility scripts
+  - `build.gradle.kts` — Root build configuration
 
 ## Shared Module Structure
 
 Each shared module follows a consistent KMP structure:
 
-```
-shared/<module>/
-├── build.gradle.kts
-└── src/
-    ├── commonMain/          # Shared Kotlin code (all platforms)
-    │   └── kotlin/
-    │       └── app/chalo/<feature>/
-    │           ├── data/        # Data layer (repositories, data sources)
-    │           ├── domain/      # Domain layer (use cases, models)
-    │           ├── di/          # Koin DI modules
-    │           └── ui/          # Presentation layer (components, screens)
-    ├── androidMain/         # Android-specific implementations
-    │   └── kotlin/
-    └── iosMain/             # iOS-specific implementations
-        └── kotlin/
-```
+- `shared/<module>/`
+  - `build.gradle.kts`
+  - `src/`
+    - `commonMain/` — Shared Kotlin code (all platforms)
+      - `kotlin/`
+        - `app/chalo/<feature>/`
+          - `data/` — Data layer (repositories, data sources)
+          - `domain/` — Domain layer (use cases, models)
+          - `di/` — Koin DI modules
+          - `ui/` — Presentation layer (components, screens)
+    - `androidMain/` — Android-specific implementations
+      - `kotlin/`
+    - `iosMain/` — iOS-specific implementations
+      - `kotlin/`
 
 ## Key Modules
 
@@ -135,14 +131,12 @@ kotlin {
 
 The iOS app uses CocoaPods for KMP integration:
 
-```
-iosApp/
-├── iosApp.xcodeproj
-├── iosApp/
-│   ├── ContentView.swift
-│   └── iOSApp.swift
-└── Podfile
-```
+- `iosApp/`
+  - `iosApp.xcodeproj`
+  - `iosApp/`
+    - `ContentView.swift`
+    - `iOSApp.swift`
+  - `Podfile`
 
 KMP shared code is exposed to Swift via SKIE annotations for better interop:
 - `@SealedInterop.Enabled` on sealed classes
@@ -150,15 +144,13 @@ KMP shared code is exposed to Swift via SKIE annotations for better interop:
 
 ## Android App Structure
 
-```
-androidApp/
-├── src/main/
-│   ├── java/app/chalo/android/
-│   │   └── MainActivity.kt
-│   ├── res/
-│   └── AndroidManifest.xml
-└── build.gradle.kts
-```
+- `androidApp/`
+  - `src/main/`
+    - `java/app/chalo/android/`
+      - `MainActivity.kt`
+    - `res/`
+    - `AndroidManifest.xml`
+  - `build.gradle.kts`
 
 The Android app is primarily a thin shell that hosts the KMP Compose UI via `DecomposeApp`.
 

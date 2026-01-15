@@ -203,20 +203,32 @@ sealed class LanguageSelectionSnackbarType {
 
 ## Navigation Decision Tree
 
-```
-SplashScreen
-├── Language Not Selected → LanguageSelection
-│   └── After Selection
-│       ├── Not Logged In → LoginOptions
-│       ├── No City → CityLocationSelection
-│       └── Ready → HomeScreen
-├── Not Logged In → LoginOptions
-├── No City → CityLocationSelection
-│   ├── GPS Success → CityWelcome → HomeScreen
-│   ├── GPS Failed → ManualSelection
-│   └── Manual → CitySelection → HomeScreen
-├── City Discontinued → CityDiscontinued → CityLocationSelection
-└── Ready → HomeScreen
+```mermaid
+flowchart TD
+  Splash[SplashScreen]
+  Lang[LanguageSelection]
+  Next{After selection}
+  Login[LoginOptions]
+  CityLoc[CityLocationSelection]
+  CityWelcome[CityWelcome]
+  ManualSel[ManualSelection]
+  CitySel[CitySelection]
+  CityDisc[CityDiscontinued]
+  Home[HomeScreen]
+
+  Splash -->|Language not selected| Lang --> Next
+  Next -->|Not logged in| Login
+  Next -->|No city| CityLoc
+  Next -->|Ready| Home
+
+  Splash -->|Not logged in| Login
+  Splash -->|No city| CityLoc
+  Splash -->|City discontinued| CityDisc --> CityLoc
+  Splash -->|Ready| Home
+
+  CityLoc -->|GPS success| CityWelcome --> Home
+  CityLoc -->|GPS failed| ManualSel
+  CityLoc -->|Manual| CitySel --> Home
 ```
 
 ## Dependencies

@@ -11,32 +11,46 @@ lastUpdated: 2026-01-14
 
 ## Architecture Layers
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Presentation Layer                        │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │  Screen (UI)    │  │   Component     │  │   ViewState     │  │
-│  │  (Compose)      │◄─┤   (ViewModel)   │  │   DataState     │  │
-│  └─────────────────┘  └────────┬────────┘  └─────────────────┘  │
-└────────────────────────────────┼────────────────────────────────┘
-                                 │
-                                 ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                         Domain Layer                             │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │    UseCase      │  │  Domain Model   │  │  Repository     │  │
-│  │   (Business)    │  │   (Entities)    │  │  (Interface)    │  │
-│  └────────┬────────┘  └─────────────────┘  └─────────────────┘  │
-└───────────┼─────────────────────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                          Data Layer                              │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
-│  │  Repository     │  │   DataSource    │  │    Mappers      │  │
-│  │  (Impl)         │  │  (Remote/Local) │  │  (DTO ↔ Model)  │  │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  %% This diagram is kept as Mermaid (not ASCII art) so it scales cleanly and stays aligned in browsers.
+
+  subgraph Presentation["Presentation Layer"]
+    direction LR
+    Screen["Screen (UI)<br/>(Compose)"]
+    Component["Component<br/>(ViewModel)"]
+    ViewState["ViewState<br/>DataState"]
+    Screen -->|ViewIntent| Component
+    Component -->|ViewState| Screen
+    Component --> ViewState
+  end
+
+  subgraph Domain["Domain Layer"]
+    direction LR
+    UseCase["UseCase<br/>(Business)"]
+    DomainModel["Domain Model<br/>(Entities)"]
+    Repo["Repository<br/>(Interface)"]
+    UseCase --> DomainModel
+    UseCase --> Repo
+  end
+
+  subgraph Data["Data Layer"]
+    direction LR
+    RepoImpl["Repository<br/>(Impl)"]
+    DataSource["DataSource<br/>(Remote/Local)"]
+    Mappers["Mappers<br/>(DTO ↔ Model)"]
+    RepoImpl --> DataSource
+    RepoImpl --> Mappers
+  end
+
+  Component --> UseCase
+  Repo --> RepoImpl
+
+  classDef box fill:#1f2937,stroke:#e5e7eb,color:#f9fafb,stroke-width:1px;
+  class Screen,Component,ViewState,UseCase,DomainModel,Repo,RepoImpl,DataSource,Mappers box;
+  style Presentation fill:transparent,stroke:#e5e7eb,stroke-width:1px;
+  style Domain fill:transparent,stroke:#e5e7eb,stroke-width:1px;
+  style Data fill:transparent,stroke:#e5e7eb,stroke-width:1px;
 ```
 
 ## MVI Pattern with Decompose
@@ -253,17 +267,14 @@ object AppComponentFactory : KoinComponent {
 
 ### Scope Hierarchy
 
-```
-├── Application Scope (single)
-│   ├── NetworkClient
-│   ├── Database
-│   ├── AnalyticsContract
-│   └── NavigationManager
-│
-└── Feature Scope (factory)
-    ├── UseCases
-    └── Components
-```
+- **Application scope** (single)
+  - `NetworkClient`
+  - `Database`
+  - `AnalyticsContract`
+  - `NavigationManager`
+- **Feature scope** (factory)
+  - `UseCases`
+  - `Components`
 
 ## Data Layer Patterns
 

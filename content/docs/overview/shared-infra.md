@@ -13,22 +13,20 @@ The `chalo-app-kmp` codebase has shared infrastructure modules that provide cros
 
 ### Architecture
 
-```
-shared/network/
-├── rest/
-│   ├── ChaloRestClient.kt          # HTTP client wrapper
-│   ├── ChaloRestClientManager.kt   # Client lifecycle
-│   └── generic/
-│       └── ChaloAuthPlugin.kt      # Auth interceptor
-├── config/
-│   ├── NetworkConfig.kt            # Base URLs, timeouts
-│   └── ChaloJson.kt                # JSON serialization
-├── exception/
-│   ├── BaseNetworkException.kt
-│   └── ChaloLocalException.kt
-└── di/
-    └── SharedNetworkModule.kt
-```
+- `shared/network/`
+  - `rest/`
+    - `ChaloRestClient.kt` — HTTP client wrapper
+    - `ChaloRestClientManager.kt` — client lifecycle
+    - `generic/`
+      - `ChaloAuthPlugin.kt` — auth interceptor
+  - `config/`
+    - `NetworkConfig.kt` — base URLs, timeouts
+    - `ChaloJson.kt` — JSON serialization
+  - `exception/`
+    - `BaseNetworkException.kt`
+    - `ChaloLocalException.kt`
+  - `di/`
+    - `SharedNetworkModule.kt`
 
 ### ChaloRestClient
 
@@ -217,15 +215,13 @@ class EBillFetchComponent(
 
 ### Encryption
 
-```
-shared/security/
-├── encryption/
-│   ├── ChaloEncryption.kt         # Encryption interface
-│   ├── ChaloEncryptionImpl.kt     # AES implementation
-│   └── KeyManager.kt              # Key storage
-└── ssl/
-    └── CertificatePinning.kt      # SSL pinning
-```
+- `shared/security/`
+  - `encryption/`
+    - `ChaloEncryption.kt` — encryption interface
+    - `ChaloEncryptionImpl.kt` — AES implementation
+    - `KeyManager.kt` — key storage
+  - `ssl/`
+    - `CertificatePinning.kt` — SSL pinning
 
 ### Encryption Contract
 
@@ -287,17 +283,15 @@ class IOSSecureVault : SecureVault {
 
 ### BLE Validation Flow
 
-```
-shared/ble-communication/
-├── scanner/
-│   └── BleScanner.kt              # Device discovery
-├── connection/
-│   └── BleConnectionManager.kt    # GATT connections
-├── protocol/
-│   └── ValidationProtocol.kt      # Message format
-└── validation/
-    └── BleValidationHandler.kt    # Validation logic
-```
+- `shared/ble-communication/`
+  - `scanner/`
+    - `BleScanner.kt` — device discovery
+  - `connection/`
+    - `BleConnectionManager.kt` — GATT connections
+  - `protocol/`
+    - `ValidationProtocol.kt` — message format
+  - `validation/`
+    - `BleValidationHandler.kt` — validation logic
 
 ### BLE States
 
@@ -331,21 +325,19 @@ sealed class ValidationResult {
 
 ### Architecture
 
-```
-shared/validationsdk/
-├── blevalidation/
-│   ├── ui/
-│   │   └── BleValidationComponent.kt
-│   ├── domain/
-│   │   └── ValidateTicketUseCase.kt
-│   └── config/
-│       └── ProductValidationAnalyticManager.kt
-└── qrvalidation/
-    ├── ui/
-    │   └── QrScannerComponent.kt
-    └── domain/
-        └── ProcessQrUseCase.kt
-```
+- `shared/validationsdk/`
+  - `blevalidation/`
+    - `ui/`
+      - `BleValidationComponent.kt`
+    - `domain/`
+      - `ValidateTicketUseCase.kt`
+    - `config/`
+      - `ProductValidationAnalyticManager.kt`
+  - `qrvalidation/`
+    - `ui/`
+      - `QrScannerComponent.kt`
+    - `domain/`
+      - `ProcessQrUseCase.kt`
 
 ### Validation Modes
 
