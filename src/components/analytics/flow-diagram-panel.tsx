@@ -480,30 +480,29 @@ export function FlowDiagramPanel({
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold">Properties used</h3>
                       <div className="space-y-2">
-                        {selectedOccurrence.propertiesUsed.map((p, idx) => (
-                          <div key={`${selectedOccurrence.id}::${p.property}::${idx}`} className="rounded-md border p-3">
-                            <Link
-                              className="font-mono text-sm underline underline-offset-4 hover:text-primary"
-                              href={`/analytics/flows/${encodeURIComponent(flowSlug)}?tab=properties#prop-${encodeURIComponent(
-                                p.property,
-                              )}`}
-                            >
-                              {p.property}
-                            </Link>
-                            {propertyDefinitions?.[p.property]?.type ? (
-                              <p className="mt-1 text-xs text-muted-foreground">
-                                Type: {propertyDefinitions[p.property].type}
-                              </p>
-                            ) : null}
-                            {p.context ? (
-                              <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
-                            ) : null}
-                            {Array.isArray(propertyDefinitions?.[p.property]?.values) &&
-                            propertyDefinitions[p.property].values.length > 0 ? (
-                              <PropertyValuesBadges values={propertyDefinitions[p.property].values} />
-                            ) : null}
-                          </div>
-                        ))}
+                        {selectedOccurrence.propertiesUsed.map((p, idx) => {
+                          const def = propertyDefinitions?.[p.property];
+                          const values = Array.isArray(def?.values) ? def.values : [];
+                          return (
+                            <div key={`${selectedOccurrence.id}::${p.property}::${idx}`} className="rounded-md border p-3">
+                              <Link
+                                className="font-mono text-sm underline underline-offset-4 hover:text-primary"
+                                href={`/analytics/flows/${encodeURIComponent(flowSlug)}?tab=properties#prop-${encodeURIComponent(
+                                  p.property,
+                                )}`}
+                              >
+                                {p.property}
+                              </Link>
+                              {def?.type ? (
+                                <p className="mt-1 text-xs text-muted-foreground">Type: {def.type}</p>
+                              ) : null}
+                              {p.context ? (
+                                <p className="mt-1 text-xs text-muted-foreground">{p.context}</p>
+                              ) : null}
+                              {values.length > 0 ? <PropertyValuesBadges values={values} /> : null}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   ) : null}
