@@ -60,54 +60,50 @@ app.chalo.electricitybill.data.model.appmodel
 
 ### Feature Package Layout
 
-```
-app/chalo/{feature}/
-├── di/
-│   └── {Feature}Module.kt
-├── domain/
-│   ├── {Action}UseCase.kt
-│   ├── model/
-│   │   └── {DomainModel}.kt
-│   └── repository/
-│       └── {Entity}Repository.kt       # Interface only
-├── data/
-│   ├── repository/
-│   │   └── {Entity}RepositoryImpl.kt   # Implementation
-│   ├── remote/
-│   │   ├── {Entity}RemoteDataSource.kt
-│   │   └── {Entity}RemoteDataSourceImpl.kt
-│   ├── local/
-│   │   └── {Entity}LocalDataSource.kt
-│   ├── model/
-│   │   ├── apimodel/
-│   │   │   ├── request/
-│   │   │   │   └── {Request}ApiModel.kt
-│   │   │   └── response/
-│   │   │       └── {Response}ApiModel.kt
-│   │   └── appmodel/
-│   │       └── {Name}AppModel.kt
-│   └── mapper/
-│       └── {Entity}Mapper.kt
-├── ui/
-│   └── {screen}/
-│       ├── {Screen}Component.kt
-│       ├── {Screen}Screen.kt           # Compose UI
-│       ├── {Screen}ViewState.kt
-│       └── {Screen}Intent.kt
-└── exception/
-    └── {Feature}Exceptions.kt
-```
+- `app/chalo/{feature}/`
+  - `di/`
+    - `{Feature}Module.kt`
+  - `domain/`
+    - `{Action}UseCase.kt`
+    - `model/`
+      - `{DomainModel}.kt`
+    - `repository/`
+      - `{Entity}Repository.kt` — interface only
+  - `data/`
+    - `repository/`
+      - `{Entity}RepositoryImpl.kt` — implementation
+    - `remote/`
+      - `{Entity}RemoteDataSource.kt`
+      - `{Entity}RemoteDataSourceImpl.kt`
+    - `local/`
+      - `{Entity}LocalDataSource.kt`
+    - `model/`
+      - `apimodel/`
+        - `request/`
+          - `{Request}ApiModel.kt`
+        - `response/`
+          - `{Response}ApiModel.kt`
+      - `appmodel/`
+        - `{Name}AppModel.kt`
+    - `mapper/`
+      - `{Entity}Mapper.kt`
+  - `ui/`
+    - `{screen}/`
+      - `{Screen}Component.kt`
+      - `{Screen}Screen.kt` — Compose UI
+      - `{Screen}ViewState.kt`
+      - `{Screen}Intent.kt`
+  - `exception/`
+    - `{Feature}Exceptions.kt`
 
 ### Source Sets
 
-```
-src/
-├── commonMain/kotlin/       # Shared code (all platforms)
-├── androidMain/kotlin/      # Android-specific
-├── iosMain/kotlin/          # iOS-specific
-├── androidUnitTest/kotlin/  # Android unit tests
-└── commonTest/kotlin/       # Shared tests
-```
+- `src/`
+  - `commonMain/kotlin/` — shared code (all platforms)
+  - `androidMain/kotlin/` — Android-specific
+  - `iosMain/kotlin/` — iOS-specific
+  - `androidUnitTest/kotlin/` — Android unit tests
+  - `commonTest/kotlin/` — shared tests
 
 ## MVI Conventions
 

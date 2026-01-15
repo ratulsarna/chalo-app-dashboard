@@ -134,23 +134,28 @@ flowchart LR
 
 ## Ticket Lifecycle
 
-```
-BOOKING
-  ↓ (CreateMTicketOrderUseCase)
-STORED (in TicketDao)
-  ↓ (User activates on bus)
-ACTIVATED
-  ├─ isUpTripActivated = true
-  ├─ upTripActivationTime = timestamp
-  ├─ qrCode stored
-  └─ tone stored
-  ↓ (Conductor scans QR)
-PUNCHED (MTicketTripReceipt)
-  ├─ punchTimeStamp = conductor_scan_time
-  ├─ vehicleNo stored
-  └─ conductorId stored
-  ↓ (4 hours pass)
-EXPIRED (updateExpiryState)
+```mermaid
+stateDiagram-v2
+  [*] --> BOOKING
+  BOOKING --> STORED: CreateMTicketOrderUseCase
+  STORED --> ACTIVATED: User activates on bus
+
+  note right of ACTIVATED
+    isUpTripActivated = true
+    upTripActivationTime = timestamp
+    qrCode stored
+    tone stored
+  end note
+
+  ACTIVATED --> PUNCHED: Conductor scans QR
+
+  note right of PUNCHED
+    punchTimeStamp = conductor_scan_time
+    vehicleNo stored
+    conductorId stored
+  end note
+
+  PUNCHED --> EXPIRED: 4 hours pass (updateExpiryState)
 ```
 
 ## Edge Cases & Error Handling

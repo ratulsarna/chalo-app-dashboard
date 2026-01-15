@@ -169,21 +169,19 @@ flowchart LR
 
 ## Verification Workflow
 
-```
-SUBMITTED
-  ↓ (Backend validation)
-PENDING_VERIFICATION
-  ├─ Profile verified? → Check proofs
-  ├─ Proofs verified? → VERIFIED
-  └─ Issues found? → REJECTED with reasons
+```mermaid
+stateDiagram-v2
+  [*] --> SUBMITTED
+  SUBMITTED --> PENDING_VERIFICATION: Backend validation
 
-REJECTED
-  ↓ (User resubmits)
-PENDING_VERIFICATION (re-evaluation)
+  note right of PENDING_VERIFICATION
+    Profile verified → check proofs
+  end note
 
-VERIFIED
-  ↓ (Pass activated)
-ACTIVE (usable for rides)
+  PENDING_VERIFICATION --> VERIFIED: Proofs verified
+  PENDING_VERIFICATION --> REJECTED: Issues found (with reasons)
+  REJECTED --> PENDING_VERIFICATION: User resubmits
+  VERIFIED --> ACTIVE: Pass activated
 ```
 
 ## Data Models

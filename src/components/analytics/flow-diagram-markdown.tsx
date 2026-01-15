@@ -147,13 +147,13 @@ export function FlowDiagramMarkdown({
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            code({ className, children, ...props }) {
+            code({ className, children }) {
               const text = String(children ?? "").replace(/\n$/, "");
               if (isMermaidCodeBlock(className)) {
                 return <MermaidBlock code={text} />;
               }
               return (
-                <code className={className} {...props}>
+                <code className={className}>
                   {children}
                 </code>
               );

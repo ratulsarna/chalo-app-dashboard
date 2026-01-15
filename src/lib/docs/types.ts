@@ -27,11 +27,15 @@ export type DocsIssue = {
  * Parsed from the top of each markdown document.
  */
 export type DocsFrontmatter = {
+  // Shared keys found across docs
   feature?: DocsFeatureSlug;
+  slug?: string; // e.g. overview docs sometimes declare their own slug
+  layer?: string; // e.g. "presentation" in LLD docs
   lastUpdated?: string; // ISO date string
   sourceCommit?: string; // Git SHA
   platforms?: DocsPlatform[];
   hasAnalyticsFlow?: boolean;
+  analyticsFlowSlug?: string;
 };
 
 /**

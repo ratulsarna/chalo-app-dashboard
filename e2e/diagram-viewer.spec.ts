@@ -1,6 +1,5 @@
 import { expect, test, type Page } from "playwright/test";
-
-const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
+import { gotoAuthed } from "./helpers/auth";
 
 async function getScrollTop(page: Page) {
   return page.evaluate(() => {
@@ -23,7 +22,7 @@ function trackHydrationMismatches(page: Page) {
 
 test("wheel-zoom on inline diagram does not scroll page", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   // Ensure the page can scroll so we can detect scroll chaining.
   await page.evaluate(() => window.scrollTo(0, 350));
@@ -43,7 +42,7 @@ test("wheel-zoom on inline diagram does not scroll page", async ({ page }) => {
 
 test("wheel-zoom on expanded diagram does not scroll page", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   await page.evaluate(() => window.scrollTo(0, 350));
   await page.getByRole("button", { name: "Expand" }).first().click();
@@ -65,7 +64,7 @@ test("wheel-zoom on expanded diagram does not scroll page", async ({ page }) => 
 
 test("clicking a green node opens event sheet (best-effort)", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
   await expect(viewer).toBeVisible();
@@ -85,7 +84,7 @@ test("clicking a green node opens event sheet (best-effort)", async ({ page }) =
 
 test("diagram selector switches diagrams", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/search`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/search");
 
   // Open selector dropdown.
   const selector = page.getByRole("button", { name: "Select diagram" }).first();
@@ -102,7 +101,7 @@ test("diagram selector switches diagrams", async ({ page }) => {
 test("clicking a sub-flow node navigates to the sub-diagram (same flow)", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const hydrationMismatches = trackHydrationMismatches(page);
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   const selector = page.getByRole("button", { name: "Select diagram" }).first();
   await expect(selector).toBeVisible();
@@ -129,7 +128,7 @@ test("clicking a sub-flow node navigates to the sub-diagram (same flow)", async 
 
 test("authentication flow: clicking a funnel node navigates to the funnel diagram", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/authentication`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/authentication");
 
   const selector = page.getByRole("button", { name: "Select diagram" }).first();
   await expect(selector).toBeVisible();
@@ -155,7 +154,7 @@ test("authentication flow: clicking a funnel node navigates to the funnel diagra
 
 test("expand button stays within viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   const expand = page.getByRole("button", { name: "Expand" }).first();
   await expect(expand).toBeVisible();
@@ -193,7 +192,7 @@ test("expand button stays within viewport", async ({ page }) => {
 
 test("global search returns event name matches for short queries", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   await page.getByRole("button", { name: /Search flows and events/i }).click();
 
@@ -207,7 +206,7 @@ test("global search returns event name matches for short queries", async ({ page
 
 test("zoom buttons and drag-pan update transform", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/payment`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/payment");
 
   const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
   const host = viewer.locator('div[data-diagram-host="1"]').first();
@@ -236,7 +235,7 @@ test("zoom buttons and drag-pan update transform", async ({ page }) => {
 
 test("fit-to-screen does not over-zoom out (authentication flow)", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 900 });
-  await page.goto(`${BASE_URL}/analytics/flows/authentication`, { waitUntil: "networkidle" });
+  await gotoAuthed(page, "/analytics/flows/authentication");
 
   const viewer = page.getByRole("application", { name: "Diagram viewer" }).first();
   await expect(viewer).toBeVisible();
