@@ -38,7 +38,7 @@ Add a comprehensive, browsable, and searchable documentation suite for `chalo-ap
 | 0.5 | ✅ Complete | 31 features discovered and cataloged |
 | 1 | ✅ Complete | 8 overview docs created |
 | 2 | ✅ Complete | 28 HLD files for all features |
-| 3 | 🟡 In Progress | 4/31 features done (bills, help, ads, profile) |
+| 3 | 🟡 In Progress | 7/31 features done (bills, help, ads, profile, authentication, onboarding, search) |
 | 4 | ⬜ Not Started | — |
 | 5 | ⬜ Not Started | — |
 | 6 | ⬜ Not Started | — |
@@ -48,7 +48,10 @@ Add a comprehensive, browsable, and searchable documentation suite for `chalo-ap
 - [x] help (revised to prose+diagrams)
 - [x] ads
 - [x] profile
-- [ ] 27 remaining features
+- [x] authentication
+- [x] onboarding
+- [x] search
+- [ ] 24 remaining features
 
 ---
 
