@@ -174,4 +174,4 @@ For complex features or significant refactors, write an ExecPlan under `.ai/plan
 - Property keys must preserve exact spelling (including spaces)
 - The analytics updater must never push directly to `main` — always via PR
 - Convex writes local env values to `.env.local` during dev (gitignored)
-- Do not mention claude or claude code in commit messages.
+- DO NOT MENTION claude or claude code in commit messages.
