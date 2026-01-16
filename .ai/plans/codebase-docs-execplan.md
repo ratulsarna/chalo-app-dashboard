@@ -38,28 +38,22 @@ Add a comprehensive, browsable, and searchable documentation suite for `chalo-ap
 | 0.5 | ✅ Complete | 31 features discovered and cataloged |
 | 1 | ✅ Complete | 8 overview docs created |
 | 2 | ✅ Complete | 28 HLD files for all features |
-| 3 | 🟡 In Progress | 15/31 features done (bills, help, ads, profile, authentication, onboarding, search, payment, mticket, card, chalo-wallet, premium-bus-booking, validation, notifications, lifecycle) |
+| 3 | ✅ Complete | 28/28 features with LLDs generated via KMP code exploration (3 features without HLDs: tito, product-activation, webview) |
 | 4 | ⬜ Not Started | — |
 | 5 | ⬜ Not Started | — |
 | 6 | ⬜ Not Started | — |
 
 **Phase 3 Detail:**
-- [x] bills (pilot, revised to prose+diagrams)
-- [x] help (revised to prose+diagrams)
-- [x] ads
-- [x] profile
-- [x] authentication
-- [x] onboarding
-- [x] search
-- [x] payment
-- [x] mticket
-- [x] card
-- [x] chalo-wallet
-- [x] premium-bus-booking
-- [x] validation
-- [x] notifications
-- [x] lifecycle
-- [ ] 16 remaining features
+
+All LLDs generated via agents that explored the actual KMP codebase at `~/Developer/chalo/chalo-app-kmp/`, tracing real component implementations, use cases, and repositories. Each feature has 3 LLD files: `components.md`, `usecases.md`, `repositories.md`.
+
+**Batch 1 (initial):** bills, help, ads, profile, authentication, onboarding, search, payment, mticket, card, chalo-wallet, premium-bus-booking, validation, notifications, lifecycle
+
+**Batch 2 (KMP exploration):** history, home, instant-ticket, live-tracking, metro, network, ondc-bus, premium-bus-activation-tracking
+
+**Batch 3 (KMP exploration):** premium-bus-bulk-booking, report-problem, sos, super-pass, trip-planner
+
+Total: 28 features × 3 LLDs = **84 LLD files**
 
 ---
 
