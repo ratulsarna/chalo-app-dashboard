@@ -1,564 +1,686 @@
 ---
 slug: shared-infra
-lastUpdated: 2026-01-14
+lastUpdated: 2026-01-16
 ---
 
 # Shared Infrastructure
 
 ## Overview
 
-The `chalo-app-kmp` codebase has shared infrastructure modules that provide cross-cutting concerns like networking, analytics, security, and validation across all features.
+The Chalo App's shared infrastructure provides cross-cutting concerns that all features depend on—networking, analytics, security, persistence, validation, and logging. These modules live in the `shared/` directory and are designed to be feature-agnostic, providing consistent behavior across the entire application.
 
-## Networking (`shared/network`)
+## Infrastructure Module Landscape
+
+```mermaid
+flowchart TB
+    subgraph Network["Networking"]
+        NetworkMod["network module"]
+        RestClient["ChaloRestClient"]
+        Auth["Auth Plugin"]
+        Socket["ChaloSocket"]
+    end
+
+    subgraph Analytics["Analytics & Monitoring"]
+        AnalyticsMod["analytics module"]
+        Mixpanel["Mixpanel"]
+        Firebase["Firebase"]
+        Crashlytics["Crashlytics"]
+        Plotline["Plotline"]
+    end
+
+    subgraph Storage["Data Storage"]
+        Core["core module"]
+        SQLDelight["SQLDelight DB"]
+        DataStore["DataStore Prefs"]
+        Vault["vault module"]
+    end
+
+    subgraph Security["Security"]
+        SecurityMod["security module"]
+        Encryption["Encryption"]
+        KeyMgmt["Key Management"]
+        SSL["SSL Pinning"]
+    end
+
+    subgraph Validation["Validation"]
+        ValidationSDK["validationsdk module"]
+        BLE["BLE Communication"]
+        QR["QR Scanning"]
+    end
+
+    Features["Feature Modules"] --> Network
+    Features --> Analytics
+    Features --> Storage
+    Features --> Security
+    Features --> Validation
+
+    style Network fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Analytics fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style Storage fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
+    style Security fill:#1e3a5f,stroke:#8b5cf6,color:#f8fafc
+    style Validation fill:#1e3a5f,stroke:#ef4444,color:#f8fafc
+```
+
+## Networking Layer
+
+The `shared/network` module provides the HTTP client infrastructure used by all features.
 
 ### Architecture
 
-- `shared/network/`
-  - `rest/`
-    - `ChaloRestClient.kt` — HTTP client wrapper
-    - `ChaloRestClientManager.kt` — client lifecycle
-    - `generic/`
-      - `ChaloAuthPlugin.kt` — auth interceptor
-  - `config/`
-    - `NetworkConfig.kt` — base URLs, timeouts
-    - `ChaloJson.kt` — JSON serialization
-  - `exception/`
-    - `BaseNetworkException.kt`
-    - `ChaloLocalException.kt`
-  - `di/`
-    - `SharedNetworkModule.kt`
+```mermaid
+flowchart TB
+    subgraph Network["network module"]
+        direction TB
+        Manager["NetworkManager"]
+        Client["ChaloRestClient"]
+        Auth["ChaloAuthPlugin"]
+        Config["NetworkConfig"]
+        Exception["Exception Types"]
+    end
+
+    subgraph Engines["Platform Engines"]
+        OkHttp["OkHttp (Android)"]
+        Darwin["Darwin (iOS)"]
+    end
+
+    Manager --> Client
+    Client --> Auth
+    Client --> Engines
+
+    style Network fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Engines fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+```
+
+### NetworkManager Interface
+
+The **NetworkManager** provides priority-based request builders, allowing features to specify request importance.
+
+| Priority | Use Case | Characteristics |
+|----------|----------|-----------------|
+| **Low** | Background sync, prefetching | Longer timeouts, may be delayed |
+| **Standard** | Regular API calls | Default configuration |
+| **High** | Critical user actions | Shorter timeouts, prioritized |
+| **Custom** | Special requirements | Configurable timeout and priority |
 
 ### ChaloRestClient
 
-Wraps Ktor `HttpClient` with consistent API:
+The REST client wraps Ktor's HttpClient with a consistent API for all HTTP operations.
 
-```kotlin
-class ChaloRestClient(
-    private val httpClient: HttpClient
-) {
-    suspend fun makeGetRequest(
-        url: String,
-        headerMap: Map<String, String>,
-        queryMap: Map<String, String>
-    ): HttpResponse
-
-    suspend fun makePostRequest(
-        url: String,
-        headerMap: Map<String, String>,
-        queryMap: Map<String, String>,
-        body: Any?
-    ): HttpResponse
-
-    suspend fun makeMultipartPostRequest(
-        url: String,
-        headerMap: Map<String, String>,
-        fileItem: MultipartRequestFormDataType?,
-        additionalInfo: MultipartRequestFormDataType?
-    ): HttpResponse
-
-    suspend fun makeDeleteRequest(...)
-    suspend fun makePutRequest(...)
-}
-```
-
-### Platform HTTP Engines
-
-```kotlin
-// Android: OkHttp engine
-HttpClient(OkHttp) {
-    engine {
-        config {
-            connectTimeout(30, TimeUnit.SECONDS)
-            readTimeout(30, TimeUnit.SECONDS)
-        }
-    }
-    install(ContentNegotiation) {
-        json(ChaloJson.Json)
-    }
-}
-
-// iOS: Darwin engine
-HttpClient(Darwin) {
-    engine {
-        configureRequest {
-            setTimeoutInterval(30.0)
-        }
-    }
-}
-```
+| Operation | Purpose |
+|-----------|---------|
+| **GET** | Fetch data with query parameters |
+| **POST** | Submit data with request body |
+| **PUT** | Update existing resources |
+| **DELETE** | Remove resources |
+| **Multipart** | Upload files with form data |
 
 ### Authentication Plugin
 
-`ChaloAuthPlugin` adds auth headers and handles token refresh:
+The **ChaloAuthPlugin** intercepts all requests to handle authentication transparently.
 
-```kotlin
-class ChaloAuthPlugin {
-    // Intercepts requests to add auth headers
-    // Handles 401 responses for token refresh
-    // Manages session expiry
-}
+```mermaid
+sequenceDiagram
+    participant Feature as Feature
+    participant Client as RestClient
+    participant Plugin as AuthPlugin
+    participant Server as API Server
+
+    Feature->>Client: Make request
+    Client->>Plugin: Intercept
+    Plugin->>Plugin: Add auth headers
+    Plugin->>Server: Request with auth
+    Server-->>Plugin: Response
+    alt 401 Unauthorized
+        Plugin->>Plugin: Refresh token
+        Plugin->>Server: Retry with new token
+    end
+    Plugin-->>Feature: Response
 ```
 
-### Request Configuration
+| Responsibility | Behavior |
+|----------------|----------|
+| **Header injection** | Adds authorization token to all requests |
+| **Token refresh** | Automatically refreshes expired tokens |
+| **Session expiry** | Triggers re-authentication flow when session invalid |
 
-```kotlin
-data class ChaloRequest(
-    val url: String,
-    val requestType: HttpRequestType,
-    val headers: Map<String, String>,
-    val queryParams: Map<String, String>,
-    val body: Any?,
-    val priority: PriorityLevel,
-    val retryStrategy: RetryStrategyType
-)
+### Platform HTTP Engines
 
-enum class HttpRequestType {
-    GET, POST, PUT, DELETE, MULTIPART
-}
+| Platform | Engine | Features |
+|----------|--------|----------|
+| **Android** | OkHttp | Connection pooling, HTTP/2, interceptors |
+| **iOS** | Darwin | URLSession-based, native SSL handling |
 
-enum class PriorityLevel {
-    LOW, NORMAL, HIGH, CRITICAL
-}
-```
+Both engines are configured with consistent timeouts (30 seconds default) and JSON content negotiation.
 
 ### Error Handling
 
-```kotlin
-sealed class NetworkResponse<out T> {
-    data class Success<T>(val data: T) : NetworkResponse<T>()
-    data class Error(val errorType: ErrorType, val message: String) : NetworkResponse<Nothing>()
-}
+Network errors are categorized into typed exceptions.
 
-enum class ErrorType {
-    NETWORK_ERROR,
-    TIMEOUT,
-    SERVER_ERROR,
-    PARSE_ERROR,
-    AUTH_ERROR
-}
+| Exception Type | When Thrown |
+|----------------|-------------|
+| **NetworkException** | Connection failures, DNS errors |
+| **TimeoutException** | Request exceeded timeout |
+| **ServerException** | 5xx HTTP responses |
+| **AuthException** | 401/403 responses after retry |
+| **ChaloLocalException** | Response parsing failures |
+
+### Request Configuration
+
+Each request can be configured with priority, retry strategy, and custom headers.
+
+| Configuration | Options |
+|---------------|---------|
+| **Priority** | Low, Normal, High, Critical |
+| **Retry strategy** | None, Exponential backoff, Linear |
+| **Timeout** | Custom duration in seconds |
+
+## Analytics Layer
+
+The `shared/analytics` module provides unified analytics tracking across multiple providers.
+
+### Analytics Architecture
+
+```mermaid
+flowchart TB
+    subgraph Features["Feature Components"]
+        Component1["FeatureComponent"]
+        Component2["AnotherComponent"]
+    end
+
+    subgraph Contract["AnalyticsContract"]
+        Interface["Interface"]
+        Impl["Implementation"]
+    end
+
+    subgraph Providers["Analytics Providers"]
+        direction LR
+        Mixpanel["Mixpanel"]
+        Firebase["Firebase"]
+        Adjust["Adjust"]
+        Plotline["Plotline"]
+    end
+
+    Features --> Contract
+    Contract --> Providers
+
+    style Features fill:#374151,stroke:#6b7280,color:#f8fafc
+    style Contract fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Providers fill:#1e3a5f,stroke:#10b981,color:#f8fafc
 ```
 
-## Analytics (`shared/analytics`)
+### AnalyticsContract Interface
 
-### AnalyticsContract
+The analytics contract provides a unified API for all analytics operations.
 
-Core interface for all analytics operations:
+| Operation | Purpose |
+|-----------|---------|
+| **raiseAnalyticsEvent** | Fire an analytics event with properties |
+| **raiseDebugEvent** | Fire debug-only event (not in production) |
+| **addToPeopleProperties** | Set user profile properties |
+| **addToSuperProperties** | Set properties attached to all events |
+| **sendAnalyticsEventToPlotline** | Specifically target Plotline |
+| **setupAnalytics** | Initialize analytics on app launch |
+| **incrementProperty** | Increment numeric user property |
 
-```kotlin
-interface AnalyticsContract {
-    fun raiseAnalyticsEvent(
-        name: String,
-        source: String,
-        eventProperties: Map<String, Any>? = null,
-        frequency: AnalyticsFrequency = AnalyticsFrequency.Always,
-        sendToPlotline: Boolean = true
-    )
+### Event Frequency Control
 
-    fun raiseDebugEvent(
-        name: String,
-        source: String,
-        eventProperties: Map<String, Any>? = null
-    )
+Events can be controlled to prevent over-firing.
 
-    fun addToPeopleProperties(properties: Map<String, String>)
-    fun addToSuperProperties(properties: Map<String, String>)
-    fun addEmail(emailId: String)
-    fun addUsername(username: String)
-
-    fun sendAnalyticsEventToPlotline(eventName: String, source: String, properties: Map<String, Any>?)
-    fun setUserPropertiesForPlotline(properties: Map<String, String>)
-
-    fun setupAnalytics()
-    fun sendLatLongToAnalytics(latitude: Double, longitude: Double)
-    fun incrementProperty(property: String, increment: Double)
-}
-```
-
-### Event Frequency
-
-```kotlin
-enum class AnalyticsFrequency {
-    Always,           // Fire every time
-    OncePerSession,   // Fire once per app session
-    OncePerLifetime   // Fire only once ever
-}
-```
+| Frequency | Behavior |
+|-----------|----------|
+| **Always** | Fire on every call |
+| **OncePerSession** | Fire only once per app session |
+| **OncePerLifetime** | Fire only once ever (persisted) |
 
 ### Analytics Providers
 
 | Provider | Platform | Purpose |
 |----------|----------|---------|
-| Mixpanel | Android | User analytics, funnels |
-| Firebase | Android | Events, crashes |
-| Plotline | Shared | In-app engagement |
-| Adjust | Android | Attribution |
+| **Mixpanel** | Android | User analytics, funnels, retention |
+| **Firebase Analytics** | Both | Event tracking, audiences |
+| **Adjust** | Android | Attribution, marketing analytics |
+| **Plotline** | Both | In-app engagement, messaging |
 
-### Usage in Components
+### Crash Reporting
 
-```kotlin
-class EBillFetchComponent(
-    private val analyticsContract: AnalyticsContract
-) {
-    private fun raiseScreenOpenedEvent() {
-        analyticsContract.raiseAnalyticsEvent(
-            name = "ebill_fetch_screen_opened",
-            source = "",
-            eventProperties = mapOf(
-                "consumer_number" to consumerNumber
-            )
-        )
-    }
-}
+```mermaid
+flowchart LR
+    subgraph App["Application"]
+        Crash["Exception"]
+        Logger["CrashlyticsLogger"]
+    end
+
+    subgraph Backend["Crash Services"]
+        FirebaseCrash["Firebase Crashlytics"]
+        CrashKiOS["CrashKiOS (iOS)"]
+    end
+
+    Crash --> Logger
+    Logger --> FirebaseCrash
+    Logger --> CrashKiOS
+
+    style App fill:#1e3a5f,stroke:#ef4444,color:#f8fafc
+    style Backend fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
 ```
 
-## Security (`shared/security`)
+| Platform | Crash Reporter | Special Handling |
+|----------|----------------|------------------|
+| **Android** | Firebase Crashlytics | Native integration |
+| **iOS** | CrashKiOS | Bridges Kotlin exceptions to iOS crash reports |
 
-### Encryption
+The **CrashlyticsLogger** provides a safe wrapper that logs exceptions without crashing the app during non-fatal errors.
 
-- `shared/security/`
-  - `encryption/`
-    - `ChaloEncryption.kt` — encryption interface
-    - `ChaloEncryptionImpl.kt` — AES implementation
-    - `KeyManager.kt` — key storage
-  - `ssl/`
-    - `CertificatePinning.kt` — SSL pinning
+## Security Layer
 
-### Encryption Contract
+The `shared/security` module handles encryption, key management, and SSL security.
 
-```kotlin
-interface ChaloEncryption {
-    fun encrypt(plainText: String): String
-    fun decrypt(cipherText: String): String
-    fun encryptWithKey(plainText: String, key: String): String
-    fun decryptWithKey(cipherText: String, key: String): String
-}
+### Security Architecture
+
+```mermaid
+flowchart TB
+    subgraph Security["security module"]
+        direction TB
+        Encryption["ChaloEncryption"]
+        KeyManager["KeyManager"]
+        SSL["CertificatePinning"]
+    end
+
+    subgraph Platform["Platform Security"]
+        AndroidKeystore["Android Keystore"]
+        iOSKeychain["iOS Keychain"]
+    end
+
+    Security --> Platform
+
+    style Security fill:#1e3a5f,stroke:#8b5cf6,color:#f8fafc
+    style Platform fill:#1e3a5f,stroke:#10b981,color:#f8fafc
 ```
 
-### Secure Storage
+### Encryption Services
 
-| Platform | Implementation |
-|----------|----------------|
-| Android | EncryptedSharedPreferences |
-| iOS | Keychain Services |
+| Operation | Purpose |
+|-----------|---------|
+| **encrypt** | Encrypt plaintext with default key |
+| **decrypt** | Decrypt ciphertext with default key |
+| **encryptWithKey** | Encrypt with specific key |
+| **decryptWithKey** | Decrypt with specific key |
 
-### Root Detection (Android)
+The encryption implementation uses AES with secure random IVs, ensuring each encryption produces unique ciphertext.
 
-```kotlin
-// Uses RootBeer library
-class RootDetector {
-    fun isDeviceRooted(): Boolean
-}
+### Key Management
+
+| Platform | Key Storage |
+|----------|-------------|
+| **Android** | Android Keystore with hardware-backed keys where available |
+| **iOS** | Keychain Services with Secure Enclave support |
+
+### Root/Jailbreak Detection
+
+| Platform | Detection |
+|----------|-----------|
+| **Android** | RootBeer library checks for root indicators |
+| **iOS** | Checks for jailbreak artifacts |
+
+The app can restrict functionality or warn users when running on compromised devices.
+
+## Vault (Secure Storage)
+
+The `shared/vault` module provides an abstraction over platform-specific secure storage.
+
+### Vault Architecture
+
+```mermaid
+flowchart TB
+    subgraph Common["commonMain"]
+        Interface["SecureVault Interface"]
+    end
+
+    subgraph Android["androidMain"]
+        AndroidImpl["EncryptedSharedPreferences"]
+    end
+
+    subgraph iOS["iosMain"]
+        iOSImpl["Keychain + SQLCipher"]
+    end
+
+    Interface -.-> AndroidImpl
+    Interface -.-> iOSImpl
+
+    style Common fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Android fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style iOS fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
 ```
 
-## Vault (`shared/vault`)
+### SecureVault Operations
 
-Secure storage abstraction:
-
-```kotlin
-interface SecureVault {
-    suspend fun store(key: String, value: String)
-    suspend fun retrieve(key: String): String?
-    suspend fun delete(key: String)
-    suspend fun clear()
-}
-```
+| Operation | Purpose |
+|-----------|---------|
+| **store** | Save sensitive value by key |
+| **retrieve** | Get sensitive value by key |
+| **delete** | Remove specific key |
+| **clear** | Remove all vault contents |
 
 ### Platform Implementations
 
-```kotlin
-// Android
-class AndroidSecureVault(
-    context: Context
-) : SecureVault {
-    private val encryptedPrefs = EncryptedSharedPreferences.create(...)
-}
+| Platform | Implementation | Encryption |
+|----------|----------------|------------|
+| **Android** | EncryptedSharedPreferences | AndroidX Security Crypto |
+| **iOS** | SQLCipher database | AES-256 encryption |
 
-// iOS
-class IOSSecureVault : SecureVault {
-    // Uses Keychain
-}
+## Data Persistence
+
+### SQLDelight Database
+
+The `shared/core` module hosts the main SQLDelight database schema.
+
+```mermaid
+flowchart TB
+    subgraph Schema["SQLDelight Schema"]
+        direction LR
+        SQ["*.sq files"]
+        Migrations["*.sqm migrations"]
+        Adapters["Column Adapters"]
+    end
+
+    subgraph Generated["Generated Code"]
+        Queries["Type-safe Queries"]
+        Models["Data Classes"]
+    end
+
+    subgraph Drivers["Platform Drivers"]
+        AndroidDriver["AndroidSqliteDriver"]
+        NativeDriver["NativeSqliteDriver"]
+    end
+
+    Schema --> Generated
+    Generated --> Drivers
+
+    style Schema fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Generated fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style Drivers fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
 ```
 
-## BLE Communication (`shared/ble-communication`)
+### Database Features
+
+| Feature | Description |
+|---------|-------------|
+| **Type-safe queries** | Compile-time verified SQL |
+| **Migrations** | Versioned schema changes |
+| **Flow integration** | Reactive queries via SQLDelight Coroutines |
+| **Encryption** | SQLCipher support for sensitive data |
+
+### Column Adapters
+
+Custom adapters handle complex types that don't map directly to SQLite.
+
+| Adapter Type | Converts |
+|--------------|----------|
+| **JSON adapter** | Complex objects ↔ JSON strings |
+| **Enum adapter** | Enum values ↔ String/Int |
+| **Date adapter** | DateTime ↔ Long timestamps |
+
+### DataStore Preferences
+
+Type-safe key-value storage using Jetpack DataStore.
+
+| Aspect | Description |
+|--------|-------------|
+| **Type safety** | Keys define their value types |
+| **Coroutines** | All operations are suspend functions |
+| **Flow observation** | Changes emit to collectors |
+| **Multiplatform** | Works on both Android and iOS |
+
+### Preference Key Categories
+
+| Category | Examples |
+|----------|----------|
+| **User identity** | User ID, auth token, city ID |
+| **App state** | Last sync time, onboarding complete |
+| **Cached data** | Frequently accessed values |
+
+## Validation SDK
+
+The `shared/validationsdk` module handles ticket validation across multiple methods.
+
+### Validation Architecture
+
+```mermaid
+flowchart TB
+    subgraph Entry["Validation Entry"]
+        ValidationParent["ValidationParentComponent"]
+    end
+
+    subgraph Methods["Validation Methods"]
+        direction LR
+        BLE["BLE Validation"]
+        QR["QR Validation"]
+        NFC["NFC Tap-In/Out"]
+    end
+
+    subgraph Flow["Validation Flow"]
+        Scan["Scan/Connect"]
+        Validate["Send Ticket"]
+        Result["Process Result"]
+    end
+
+    Entry --> Methods
+    Methods --> Flow
+
+    style Entry fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Methods fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style Flow fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
+```
+
+### Validation Methods
+
+| Method | Description | Use Case |
+|--------|-------------|----------|
+| **BLE** | Bluetooth Low Energy to conductor device | Bus validation |
+| **QR** | Scan QR code for verification | Metro entry/exit |
+| **NFC** | Tap card for entry/exit | Metro gates |
 
 ### BLE Validation Flow
 
-- `shared/ble-communication/`
-  - `scanner/`
-    - `BleScanner.kt` — device discovery
-  - `connection/`
-    - `BleConnectionManager.kt` — GATT connections
-  - `protocol/`
-    - `ValidationProtocol.kt` — message format
-  - `validation/`
-    - `BleValidationHandler.kt` — validation logic
-
-### BLE States
-
-```kotlin
-enum class BleConnectionState {
-    DISCONNECTED,
-    SCANNING,
-    CONNECTING,
-    CONNECTED,
-    VALIDATING,
-    SUCCESS,
-    FAILURE
-}
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> Scanning: Start
+    Scanning --> Connecting: Device found
+    Connecting --> Connected: GATT connected
+    Connected --> Validating: Send ticket
+    Validating --> Success: Valid response
+    Validating --> Failure: Invalid/timeout
+    Success --> [*]
+    Failure --> [*]
 ```
 
-### Validation Protocol
+### BLE Connection States
 
-```kotlin
-interface ValidationProtocol {
-    fun createValidationRequest(ticket: TicketData): ByteArray
-    fun parseValidationResponse(response: ByteArray): ValidationResult
-}
+| State | Description |
+|-------|-------------|
+| **Disconnected** | No active connection |
+| **Scanning** | Searching for conductor device |
+| **Connecting** | Establishing GATT connection |
+| **Connected** | Ready to send validation request |
+| **Validating** | Ticket sent, awaiting response |
+| **Success** | Validation approved |
+| **Failure** | Validation rejected or timed out |
 
-sealed class ValidationResult {
-    data class Success(val receipt: ValidationReceipt) : ValidationResult()
-    data class Failure(val reason: ValidationFailureReason) : ValidationResult()
-}
-```
+### Validation Result Types
 
-## Validation SDK (`shared/validationsdk`)
+| Result | Contains |
+|--------|----------|
+| **Success** | Validation receipt with timestamp |
+| **Failure** | Failure reason (expired, invalid, network error) |
 
-### Architecture
-
-- `shared/validationsdk/`
-  - `blevalidation/`
-    - `ui/`
-      - `BleValidationComponent.kt`
-    - `domain/`
-      - `ValidateTicketUseCase.kt`
-    - `config/`
-      - `ProductValidationAnalyticManager.kt`
-  - `qrvalidation/`
-    - `ui/`
-      - `QrScannerComponent.kt`
-    - `domain/`
-      - `ProcessQrUseCase.kt`
-
-### Validation Modes
-
-| Mode | Description |
-|------|-------------|
-| BLE | Bluetooth Low Energy validation via conductor device |
-| QR | QR code scanning for ticket verification |
-| Tap-In/Tap-Out | NFC-based entry/exit tracking |
-
-## DataStore (`shared/chalo-base`)
-
-### Preferences DataStore
-
-```kotlin
-// Type-safe preference keys
-object PreferenceKeys {
-    val CITY_ID = stringPreferencesKey("city_id")
-    val USER_ID = stringPreferencesKey("user_id")
-    val AUTH_TOKEN = stringPreferencesKey("auth_token")
-    val LAST_SYNC = longPreferencesKey("last_sync")
-}
-```
-
-### Usage
-
-```kotlin
-class UserPreferencesDataSource(
-    private val dataStore: DataStore<Preferences>
-) {
-    val cityId: Flow<String?> = dataStore.data.map { it[PreferenceKeys.CITY_ID] }
-
-    suspend fun setCityId(cityId: String) {
-        dataStore.edit { it[PreferenceKeys.CITY_ID] = cityId }
-    }
-}
-```
-
-## SQLDelight (`shared/*/data/db`)
-
-### Database Setup
-
-```kotlin
-// Schema definition
-// shared/wallet/src/commonMain/sqldelight/app/chalo/wallet/data/db/Wallet.sq
-
-CREATE TABLE wallet_transaction (
-    id TEXT PRIMARY KEY,
-    amount INTEGER NOT NULL,
-    type TEXT NOT NULL,
-    timestamp INTEGER NOT NULL,
-    description TEXT
-);
-
-selectAll:
-SELECT * FROM wallet_transaction ORDER BY timestamp DESC;
-
-insertTransaction:
-INSERT INTO wallet_transaction VALUES (?, ?, ?, ?, ?);
-```
-
-### Driver Configuration
-
-```kotlin
-// Android
-val driver = AndroidSqliteDriver(
-    schema = ChaloDatabase.Schema,
-    context = context,
-    name = "chalo.db",
-    factory = SupportSQLiteOpenHelper.Factory(
-        SQLCipherOpenHelperFactory("encryption_key".toByteArray())
-    )
-)
-
-// iOS
-val driver = NativeSqliteDriver(
-    schema = ChaloDatabase.Schema,
-    name = "chalo.db"
-)
-```
-
-## Logging (`shared/chalo-base`)
+## Logging Infrastructure
 
 ### ChaloLog
 
-```kotlin
-object ChaloLog {
-    fun debug(tag: String, message: String)
-    fun info(tag: String, message: String)
-    fun warn(tag: String, message: String)
-    fun error(tag: String, message: String, throwable: Throwable? = null)
-}
-```
+Centralized logging utility replacing platform-specific loggers.
 
-### Crashlytics Integration
+| Level | Purpose |
+|-------|---------|
+| **debug** | Development information, stripped in release |
+| **info** | General information messages |
+| **warn** | Warning conditions |
+| **error** | Error conditions with optional throwable |
 
-```kotlin
-class NetworkCrashlyticsLogger {
-    fun logNetworkError(url: String, error: Throwable)
-    fun logNetworkSuccess(url: String, responseTime: Long)
-}
-```
+### Network Logging
 
-## Feature Flags & Remote Config
+In debug builds, network requests are logged via Chucker (Android) for inspection.
 
-### Firebase Remote Config (Android)
-
-```kotlin
-interface RemoteConfigContract {
-    fun getString(key: String): String
-    fun getBoolean(key: String): Boolean
-    fun getLong(key: String): Long
-    suspend fun fetchAndActivate()
-}
-```
-
-### Common Feature Flags
-
-| Flag | Type | Purpose |
-|------|------|---------|
-| `enable_quick_pay` | Boolean | Toggle Quick Pay feature |
-| `min_app_version` | String | Force update threshold |
-| `payment_providers` | JSON | Enabled payment methods |
-| `cities_config` | JSON | City-specific settings |
+| Logged Data | Visibility |
+|-------------|------------|
+| **Request URL** | Debug only |
+| **Headers** | Debug only (sensitive masked) |
+| **Body** | Debug only |
+| **Response** | Debug only |
 
 ## Network State Management
 
 ### NetworkStateManager
 
-```kotlin
-interface NetworkStateManager {
-    val networkState: StateFlow<NetworkConnectionType>
-}
+Monitors device connectivity and exposes it as observable state.
 
-enum class NetworkConnectionType {
-    CONNECTED,
-    DISCONNECTED,
-    METERED,
-    UNKNOWN
-}
+| State | Description |
+|-------|-------------|
+| **Connected** | Device has internet access |
+| **Disconnected** | No internet connectivity |
+| **Metered** | Connected via metered connection (cellular) |
+| **Unknown** | State cannot be determined |
+
+### Component Integration
+
+Components observe network state to update UI and behavior.
+
+```mermaid
+flowchart LR
+    Manager["NetworkStateManager"]
+    StateFlow["StateFlow<NetworkConnectionType>"]
+    Component["FeatureComponent"]
+    UI["Show offline banner"]
+
+    Manager --> StateFlow
+    StateFlow -->|"collect"| Component
+    Component -->|"update state"| UI
+
+    style Manager fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Component fill:#1e3a5f,stroke:#10b981,color:#f8fafc
 ```
 
-### Usage in Components
+## Feature Flags & Remote Config
 
-```kotlin
-init {
-    repeatOnStarted {
-        networkStateManager.networkState.collect { state ->
-            processIntent(InternetConnectionIntent(state))
-        }
-    }
-}
-```
+### Remote Config Integration
 
-## Dependency Injection Modules
+Firebase Remote Config (Android) provides runtime configuration.
 
-### Core Modules
+| Capability | Description |
+|------------|-------------|
+| **Feature toggles** | Enable/disable features remotely |
+| **Config values** | String, boolean, long values |
+| **Fetch & activate** | Pull latest values from server |
 
-```kotlin
-// shared/core/src/commonMain/.../di/SharedCoreModule.kt
-val sharedCoreModule = module {
-    single<ChaloNavigationManager> { ChaloNavigationManagerImpl(get(), get()) }
-    single<AppComponentFactory> { AppComponentFactory }
-}
+### Common Feature Flags
 
-// shared/network/src/commonMain/.../di/SharedNetworkModule.kt
-val sharedNetworkModule = module {
-    single { ChaloRestClient(get()) }
-    single { ChaloRestClientManager(get(), get()) }
-}
+| Flag | Type | Purpose |
+|------|------|---------|
+| **enable_quick_pay** | Boolean | Toggle Quick Pay feature |
+| **min_app_version** | String | Force update threshold |
+| **payment_providers** | JSON | Configure available payment methods |
+| **cities_config** | JSON | City-specific settings |
 
-// shared/analytics/src/commonMain/.../di/AnalyticsModule.kt
-val analyticsModule = module {
-    single<AnalyticsContract> { AnalyticsContractImpl(get(), get()) }
-}
-```
-
-### Module Registration
-
-```kotlin
-// Application startup
-startKoin {
-    modules(
-        sharedCoreModule,
-        sharedNetworkModule,
-        analyticsModule,
-        electricityBillModule,
-        walletModule,
-        // ... feature modules
-    )
-}
-```
-
-## Cross-Cutting Concerns
+## Cross-Cutting Utilities
 
 ### String Provider
 
-```kotlin
-interface StringProvider {
-    fun getString(stringEnum: StringEnum): String
-    fun getString(stringEnum: StringEnum, vararg args: Any): String
-}
-```
+Abstraction over platform-specific string resources.
+
+| Capability | Description |
+|------------|-------------|
+| **String lookup** | Get localized string by enum key |
+| **String formatting** | Insert arguments into format strings |
+| **Multiplatform** | Works identically on Android and iOS |
 
 ### Date/Time Utilities
 
-```kotlin
-// Using kotlinx-datetime
-val now = Clock.System.now()
-val localDate = now.toLocalDateTime(TimeZone.currentSystemDefault())
+Using **kotlinx-datetime** for multiplatform date handling.
+
+| Utility | Purpose |
+|---------|---------|
+| **TimeUtilsContract** | Centralized time operations |
+| **Clock.System.now()** | Current instant |
+| **TimeZone handling** | Convert between timezones |
+
+### Image Loading
+
+**Coil 3** provides multiplatform image loading.
+
+| Feature | Description |
+|---------|-------------|
+| **Disk caching** | Persistent cache across sessions |
+| **Memory caching** | Fast access for visible images |
+| **Transformations** | Resize, crop, round corners |
+| **Compose integration** | AsyncImage composable |
+
+## Dependency Injection Modules
+
+### Core Infrastructure Modules
+
+| Module | Contents |
+|--------|----------|
+| **sharedCoreModule** | NavigationManager, AppComponentFactory, Database |
+| **sharedNetworkModule** | RestClient, NetworkManager, AuthPlugin |
+| **analyticsModule** | AnalyticsContract implementation |
+| **securityModule** | Encryption services, KeyManager |
+| **vaultModule** | SecureVault implementation |
+
+### Module Registration
+
+All infrastructure modules are registered during application startup before any feature modules. This ensures infrastructure dependencies are available when features initialize.
+
+```mermaid
+flowchart LR
+    StartKoin["startKoin { }"]
+    Core["Core Modules"]
+    Infra["Infrastructure Modules"]
+    Features["Feature Modules"]
+
+    StartKoin --> Core
+    Core --> Infra
+    Infra --> Features
+
+    style StartKoin fill:#374151,stroke:#6b7280,color:#f8fafc
+    style Core fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Infra fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style Features fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
 ```
 
-### Image Loading (Coil 3)
+## Platform Abstraction Patterns
 
-```kotlin
-// Compose Multiplatform
-AsyncImage(
-    model = ImageRequest.Builder(LocalPlatformContext.current)
-        .data(imageUrl)
-        .crossfade(true)
-        .build(),
-    contentDescription = null,
-    modifier = Modifier.fillMaxWidth()
-)
-```
+### PlatformDependencyFactory
+
+For complex platform-specific code that can't use simple expect/actual.
+
+| Request Type | Creates |
+|--------------|---------|
+| **ChaloHttpClientRequest** | Configured Ktor HttpClient |
+| **ChaloSocketRequest** | Platform-specific WebSocket |
+| **MapUtilsRequest** | Platform map utilities |
+
+The factory is injected at app startup, then shared code uses it to obtain platform implementations without direct platform dependencies.
+
+### Provider/Setter Pattern
+
+For features requiring Activity or ActivityResultContract.
+
+| Provider | Purpose |
+|----------|---------|
+| **PermissionHandlerProvider** | Runtime permissions |
+| **ImagePickerProvider** | Gallery/camera access |
+| **PhoneNumberHintProvider** | Phone number suggestions |
+| **TruecallerSetupHandler** | Truecaller SDK |
+| **InstalledUpiAppsHelper** | UPI app detection |
+| **AppRatingProcessManager** | In-app ratings |
+
+Providers are lazy-initialized and setters are called from MainActivity/AppDelegate, bridging platform-specific Activity/UIViewController requirements to shared code.

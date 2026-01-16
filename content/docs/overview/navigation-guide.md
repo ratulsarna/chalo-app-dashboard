@@ -1,464 +1,321 @@
 ---
 slug: navigation-guide
-lastUpdated: 2026-01-14
+lastUpdated: 2026-01-16
 ---
 
 # Navigation Guide
 
 ## Overview
 
-Navigation in `chalo-app-kmp` uses Decompose's `ChildStack` for managing screen stacks. All navigation flows through `ChaloNavigationManager`, which emits navigation requests to the `RootComponent`.
+Navigation in the Chalo App is built on **Decompose's ChildStack**, providing a type-safe, multiplatform navigation system. All navigation flows through a centralized **ChaloNavigationManager**, which emits navigation requests that the **RootComponent** processes to manipulate the navigation stack.
 
-## ChaloScenes Enum
+This document explains how to navigate the codebase by understanding the navigation system—from screen names to code locations.
 
-All navigable destinations are defined in `ChaloScenes`:
+## Navigation System Architecture
 
-```kotlin
-// shared/chalo-base/src/commonMain/kotlin/app/chalo/scenes/ChaloScenes.kt
+```mermaid
+flowchart TB
+    subgraph UI["UI Layer"]
+        Screen["Compose Screen"]
+        Component["Feature Component"]
+    end
 
-@EnumInterop.Enabled
-enum class ChaloScenes(val baseRoute: String) {
-    // Authentication
-    SplashScreen("/splashScreen"),
-    LoginOptions("/loginOptions"),
-    LoginOtp("/loginOtp"),
-    UserConsent("/userConsent"),
+    subgraph Navigation["Navigation Infrastructure"]
+        NavManager["ChaloNavigationManager"]
+        NavStream["navStream: SharedFlow"]
+        Root["RootComponent"]
+        Stack["ChildStack"]
+    end
 
-    // Onboarding
-    LanguageSelection("/languageSelection"),
-    CitySelection("/oldCitySelection"),
-    CityLocationSelection("/cityLocationSelection"),
-    LocationDisclaimer("/locationDisclaimer"),
+    subgraph Children["Screen Components"]
+        Child1["HomeComponent"]
+        Child2["EBillFetchComponent"]
+        Child3["CheckoutParentComponent"]
+        More["...80+ screens"]
+    end
 
-    // Home & Core
-    Home("/home"),
-    ForceAppUpdate("/forceAppUpdate"),
-    WebViewScene("/webView"),
+    Component -->|"postNavigationRequest()"| NavManager
+    NavManager --> NavStream
+    NavStream -->|"collect"| Root
+    Root --> Stack
+    Stack --> Children
 
-    // Tickets
-    FareDetails("/fareDetails"),
-    InstantTicket("/instantTicket"),
-    MTicketSelection("/mticketSelection"),
-    MTicketTripInfo("/mticketTripInfo"),
-    TicketSummaryScreen("/ticketSummaryScreen"),
-
-    // Passes (Super Pass)
-    PassSelectionScreen("/passSelection"),
-    PassPassengerSelectionScreen("/passPassengerSelectionScreen"),
-    PassUserEnterDetailsScreen("/passBasicUserDetailsScreen"),
-    PassUserProofsOverviewScreen("/passUserProofsOverviewScreen"),
-    ConfirmSuperPassScreen("/confirmSuperPassScreen"),
-    SuperPassBookingSuccessScreen("/superPassBookingSuccess"),
-    SuperPassVerificationStatusScreen("/superPassVerificationStatus"),
-    PassSummaryScreen("/passSummaryScreen"),
-
-    // Premium Bus
-    PremiumBus("/premiumBus"),
-    PremiumBusActivation("/premiumBusActivation"),
-    PremiumBusSeatSelectionScreen("/premiumBusSeatSelection"),
-    PremiumBusSlotSelection("/pbSlotSelection"),
-    PremiumBusStopSelection("/pbStopSelection"),
-    PremiumBusAllRoutes("/pbAllRoutes"),
-    PBBulkBooking("/premiumBusBulkBooking"),
-    PBPreBookingDetails("/pbPreBookingDetails"),
-    PBPreBookingSlotSelection("/pbPreBookingSlotSelection"),
-    PBPreBookingRideConfirmation("/pbPreBookingRideConfirmation"),
-
-    // Metro
-    MetroLandingScreen("/metroLandingScreen"),
-    StopBasedMetroLandingScreen("/stopBasedMetroLandingScreen"),
-    ConfirmBookingScreen("/confirmBookingScreen"),
-
-    // Checkout / Payment
-    CheckoutPaymentMain("/checkoutPaymentMain"),
-    CheckoutUpi("/checkoutUpi"),
-    CheckoutAddUpi("/checkoutAddUpi"),
-    CheckoutCard("/checkoutCard"),
-    CheckoutNetBanking("/checkoutNetBanking"),
-    CheckoutWallet("/checkoutWallet"),
-    CheckoutRazorpay("/checkoutRazorpay"),
-    CheckoutInai("/checkoutInai"),
-    CheckoutPostPayment("/checkoutPostPayment"),
-
-    // Wallet
-    WalletBalance("/walletBalance"),
-    WalletLoadMoney("/walletLoadMoney"),
-    WalletLoadBalanceSuccess("/walletLoadBalanceSuccess"),
-    WalletAllTransactions("/walletAllTransactions"),
-    WalletTransactionSummary("/walletTransactionSummary"),
-
-    // Card (NCMC)
-    ChaloCardLandingScreen("/chaloCardLandingScreen"),
-    ChaloCardEnterDetails("/chaloCardEnterDetails"),
-    CardLinkingScreen("/cardLinkingScreen"),
-    CardRechargeEnterAmount("/cardRechargeEnterAmount"),
-    CardTransactionHistory("/cardTransactionHistory"),
-    CardTransactionDetailScreen("/cardTransactionDetailScreen"),
-    NcmcOnlineRecharge("/ncmcOnlineRecharge"),
-    NcmcOfflineRecharge("/ncmcOfflineRecharge"),
-
-    // Bills
-    EBillFetchScreen("/eBillFetchScreen"),
-    EBillAmountScreen("/eBillAmountScreen"),
-    EBillPaymentConfirmation("/eBillPaymentConfirmation"),
-    EBillPaymentSuccess("/eBillPaymentSuccess"),
-    EBillPaymentInvoiceScreen("/eBillPaymentInvoiceScreen"),
-    EBillHistoryScreen("/eBillHistoryScreen"),
-
-    // Live Tracking
-    RouteDetails("/routeDetails"),
-    StopTripDetails("/stopTripDetails"),
-    UniversalPicker("/universalPicker"),
-    TripPlannerResultsScreen("/tripPlannerResultsScreen"),
-    TripPlannerDetailsScreen("/tripPlannerDetailsScreen"),
-
-    // Validation
-    BleValidation("/bleValidation"),
-    QrScanner("/qrScanner"),
-    QrValidation("/qrValidation"),
-
-    // Quick Pay
-    QuickPay("/quickFlow"),
-    PayForTicket("/payForTicket"),
-
-    // User Profile
-    UserProfileDisplay("/userProfile"),
-    UserProfileEdit("/editUserProfile"),
-
-    // KYC
-    MinKycDetails("/minKycDetails"),
-    MinKycOtp("/minKycOtp"),
-
-    // Misc
-    ProductActivation("/productActivation"),
-    ProductSelection("/productSelection"),
-    ProductBookingSuccessScreen("/productBookingSuccessScreen"),
-    BookingHelpScreen("/bookingHelpScreen"),
-    ReportProblem("/reportProblem"),
-    Sos("/sos"),
-    // ... and more
-}
+    style UI fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Navigation fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style Children fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
 ```
 
-## Scene Arguments
+## Core Navigation Concepts
 
-Each scene has a corresponding `SceneArgs` class that carries navigation parameters:
+### ChaloScenes
 
-```kotlin
-// Base interface
-@Serializable
-sealed interface SceneArgs {
-    fun resolveChaloScene(): ChaloScenes
-}
+Every navigable destination is defined in the **ChaloScenes** enum. Each scene has a unique route identifier and maps to a specific component.
 
-// Example: Simple args
-@Serializable
-data object SplashArgs : SceneArgs {
-    override fun resolveChaloScene() = ChaloScenes.SplashScreen
-}
+| Category | Example Scenes |
+|----------|----------------|
+| **Authentication** | SplashScreen, LoginOptions, LoginOtp, UserConsent |
+| **Onboarding** | LanguageSelection, CitySelection, CityLocationSelection, LocationDisclaimer |
+| **Home & Core** | Home, ForceAppUpdate, WebViewScene |
+| **Tickets** | FareDetails, InstantTicket, MTicketSelection, MTicketTripInfo, TicketSummaryScreen |
+| **Passes (Super Pass)** | PassSelectionScreen, PassPassengerSelectionScreen, PassUserEnterDetailsScreen, ConfirmSuperPassScreen, SuperPassBookingSuccessScreen |
+| **Premium Bus** | PremiumBus, PremiumBusActivation, PremiumBusSeatSelectionScreen, PremiumBusSlotSelection, PremiumBusStopSelection |
+| **Metro** | MetroLandingScreen, StopBasedMetroLandingScreen, ConfirmBookingScreen |
+| **Checkout** | CheckoutPaymentMain, CheckoutUpi, CheckoutAddUpi, CheckoutCard, CheckoutNetBanking, CheckoutWallet, CheckoutPostPayment |
+| **Wallet** | WalletBalance, WalletLoadMoney, WalletLoadBalanceSuccess, WalletAllTransactions, WalletTransactionSummary |
+| **Card (NCMC)** | ChaloCardLandingScreen, ChaloCardEnterDetails, CardLinkingScreen, CardRechargeEnterAmount, NcmcOnlineRecharge |
+| **Bills** | EBillFetchScreen, EBillAmountScreen, EBillPaymentConfirmation, EBillPaymentSuccess, EBillHistoryScreen |
+| **Live Tracking** | RouteDetails, StopTripDetails, UniversalPicker, TripPlannerResultsScreen, TripPlannerDetailsScreen |
+| **Validation** | BleValidation, QrScanner, QrValidation |
+| **Quick Pay** | QuickPay, PayForTicket |
+| **User Profile** | UserProfileDisplay, UserProfileEdit |
+| **KYC** | MinKycDetails, MinKycOtp |
 
-// Example: Args with data
-@Serializable
-data class EBillAmountScreenArgs(
-    val electricityBillJson: String
-) : SceneArgs {
-    override fun resolveChaloScene() = ChaloScenes.EBillAmountScreen
-}
+### Scene Arguments
 
-// Example: Parent flow args
-@Serializable
-data class CheckoutArgs(
-    val checkoutDataJson: String,
-    override val componentInstanceId: String = uuid4().toString()
-) : SceneArgs, ParentArgs {
-    override fun resolveChaloScene() = ChaloScenes.CheckoutPaymentMain
-}
+Each scene has a corresponding **SceneArgs** class that carries navigation parameters. Arguments are serializable to support state restoration and deep linking.
+
+| Argument Pattern | Description |
+|------------------|-------------|
+| **Data object** | Simple destinations with no parameters (e.g., SplashArgs, HomeArgs) |
+| **Data class** | Destinations requiring data (e.g., EBillAmountScreenArgs with bill JSON) |
+| **Parent args** | Flow entry points with unique instance IDs for nested navigation |
+
+Every SceneArgs implements a `resolveChaloScene()` method that returns the corresponding ChaloScenes enum value, enabling type-safe routing.
+
+## Navigation Patterns
+
+### Simple Navigation Flow
+
+```mermaid
+sequenceDiagram
+    participant UI as Compose UI
+    participant Component as FeatureComponent
+    participant NavMgr as NavigationManager
+    participant Root as RootComponent
+    participant Stack as ChildStack
+
+    UI->>Component: User taps button
+    Component->>NavMgr: postNavigationRequest(Navigate(args))
+    NavMgr->>Root: navStream emits request
+    Root->>Stack: Push new configuration
+    Stack->>UI: New screen displayed
 ```
 
-## ChaloNavigationManager
+### Navigation Request Types
 
-All navigation goes through `ChaloNavigationManager`:
+| Request Type | Behavior | Use Case |
+|--------------|----------|----------|
+| **Navigate** | Push new screen onto stack | Standard forward navigation |
+| **Navigate with popUpTo** | Push and pop intermediate screens | Replace current screen or return to specific point |
+| **GoBack** | Pop current screen | Back button handling |
+| **GoBack with popUpTo** | Pop multiple screens | Return to specific destination |
+| **BuildStack** | Replace entire stack | Deep link handling |
+| **ClearAllAndNavigate** | Clear stack and navigate | Logout, session expiry |
 
-```kotlin
-interface ChaloNavigationManager {
-    val navStream: SharedFlow<ChaloNavigationRequest>
-    fun postNavigationRequest(navRequest: ChaloNavigationRequest)
-}
+### Pop-Up-To Configuration
+
+The pop-up-to configuration controls which screens are removed when navigating.
+
+| Configuration | Behavior |
+|---------------|----------|
+| **None** | Standard push, no screens removed |
+| **Prev** | Replace current screen (pop then push) |
+| **Scene(target, inclusive=false)** | Pop screens until reaching target, keep target |
+| **Scene(target, inclusive=true)** | Pop screens including target |
+| **ClearAll** | Remove all screens from stack |
+| **Finish(parentArgs)** | Complete a nested parent flow |
+
+### Navigation Options
+
+| Option | Effect |
+|--------|--------|
+| **launchSingleTop** | Prevents duplicate screens on top of stack |
+| **includePath** | Consider full path when checking for duplicates |
+| **popUpToConfig** | Specifies which screens to remove |
+
+## Parent Components (Nested Navigation)
+
+Complex multi-step flows use **ParentComponent** to manage their own internal navigation stack while appearing as a single entry in the root stack.
+
+### Parent Component Architecture
+
+```mermaid
+flowchart TB
+    subgraph RootStack["Root Navigation Stack"]
+        direction LR
+        Screen1["Home"]
+        Screen2["ProductBooking"]
+        Parent["CheckoutParentComponent"]
+    end
+
+    subgraph ParentInternal["Checkout Internal Stack"]
+        direction TB
+        Internal1["PaymentMainScreen"]
+        Internal2["UPIScreen"]
+        Internal3["CardScreen"]
+        Internal4["PostPaymentScreen"]
+    end
+
+    Parent --> ParentInternal
+
+    style RootStack fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style ParentInternal fill:#1e3a5f,stroke:#10b981,color:#f8fafc
 ```
 
-### Navigation Requests
+### Parent Components in Codebase
 
-```kotlin
-sealed class ChaloNavigationRequest {
-    // Navigate to a new screen
-    data class Navigate(
-        val args: SceneArgs,
-        val navOptions: ChaloNavOptions? = null
-    ) : ChaloNavigationRequest()
+| Parent Component | Entry Scene | Internal Screens | Purpose |
+|------------------|-------------|------------------|---------|
+| **CheckoutParentComponent** | CheckoutPaymentMain | UPI, Card, NetBanking, Wallet, PostPayment | Payment flow orchestration |
+| **SuperPassParentComponent** | PassSelection | PassengerSelection, UserDetails, ProofUpload | Pass booking flow |
+| **PremiumBusParentComponent** | PremiumBus | StopSelection, SlotSelection, SeatSelection | Premium bus booking |
+| **WalletParentComponent** | WalletBalance | LoadMoney, Transactions, TransactionSummary | Wallet management flow |
+| **ValidationParentComponent** | BleValidation | QrScanner, QrValidation | Ticket validation flow |
+| **CitySelectionParentComponent** | CitySelection | CityLocationSelection | City selection during onboarding |
 
-    // Go back (optional pop configuration)
-    data class GoBack(
-        val popUpToConfig: PopUpToConfig? = null
-    ) : ChaloNavigationRequest()
+### Completing a Parent Flow
 
-    // Replace entire stack
-    data class BuildStack(
-        val args: List<SceneArgs>
-    ) : ChaloNavigationRequest()
-}
+When a nested flow completes (e.g., payment successful), it signals completion to its parent, which then pops the entire flow from the root stack.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    [*] --> PaymentMain: Enter checkout
+    PaymentMain --> UPI: Select UPI
+    UPI --> PostPayment: Payment success
+    PostPayment --> [*]: Flow complete (Finish)
 ```
 
-## Common Navigation Patterns
+The Finish navigation request carries the parent's args, enabling the root to identify and remove the correct parent entry.
 
-### Simple Navigation
+## Deep Linking
 
-```kotlin
-// Navigate to a screen
-navigationManager.postNavigationRequest(
-    ChaloNavigationRequest.Navigate(
-        args = EBillAmountScreenArgs(billJson)
-    )
-)
+Deep links are handled by building a complete navigation stack that recreates the expected back-stack for the destination.
 
-// Or use the extension
-navigationManager.navigate(
-    args = EBillAmountScreenArgs(billJson)
-)
+### Deep Link Stack Building
+
+```mermaid
+flowchart LR
+    DeepLink["chalo://routeDetails?routeId=R123"]
+    Parse["Parse deep link"]
+    Build["Build stack"]
+    Stack["[Splash, Home, RouteDetails]"]
+    Display["Show RouteDetails"]
+
+    DeepLink --> Parse --> Build --> Stack --> Display
+
+    style DeepLink fill:#374151,stroke:#6b7280,color:#f8fafc
+    style Stack fill:#1e3a5f,stroke:#10b981,color:#f8fafc
 ```
 
-### Go Back
+When handling a deep link to route details, the system builds a stack containing Splash → Home → RouteDetails. This ensures the user can navigate back naturally even when entering via deep link.
 
-```kotlin
-// Simple back
-navigationManager.goBack()
+### Deep Link Format
 
-// Go back to specific screen
-navigationManager.goBack(
-    popUpToConfig = PopUpToConfig.Scene(
-        scene = ChaloScenes.Home,
-        inclusive = false
-    )
-)
-```
-
-### Clear Stack and Navigate
-
-```kotlin
-// Navigate and clear all history (e.g., after logout)
-navigationManager.navigateAndClearBackStack(
-    args = LoginOptionsArgs
-)
-
-// Or explicitly
-navigationManager.postNavigationRequest(
-    ChaloNavigationRequest.Navigate(
-        args = HomeArgs(),
-        navOptions = ChaloNavOptions(
-            popUpToConfig = PopUpToConfig.ClearAll()
-        )
-    )
-)
-```
-
-### Build Stack (Deep Link)
-
-```kotlin
-// Build a complete navigation stack (e.g., for deep links)
-navigationManager.buildStack(
-    SplashArgs,
-    HomeArgs(),
-    RouteDetailsArgs(routeId = "R123")
-)
-```
-
-### Pop Up To
-
-```kotlin
-// Navigate and pop everything up to (but not including) Home
-navigationManager.navigate(
-    args = ProductBookingSuccessScreenArgs(...),
-    navOptions = ChaloNavOptions(
-        popUpToConfig = PopUpToConfig.Scene(
-            scene = ChaloScenes.Home,
-            inclusive = false  // Keep Home in stack
-        )
-    )
-)
-
-// Navigate and pop including the target screen
-navigationManager.navigate(
-    args = HomeArgs(),
-    navOptions = ChaloNavOptions(
-        popUpToConfig = PopUpToConfig.Scene(
-            scene = ChaloScenes.CheckoutPaymentMain,
-            inclusive = true  // Remove Checkout from stack
-        )
-    )
-)
-```
-
-### Finish Parent Flow
-
-```kotlin
-// From within a nested flow, finish and return to parent
-navigationManager.goBack(
-    popUpToConfig = PopUpToConfig.Finish(
-        parentArgs = checkoutArgs
-    )
-)
-```
-
-## PopUpToConfig Options
-
-| Config | Behavior |
-|--------|----------|
-| `None` | No pop, just push new screen |
-| `Prev` | Pop the previous screen (replace) |
-| `Scene(scene, inclusive)` | Pop to specified scene |
-| `ClearAll(inclusive)` | Clear entire navigation stack |
-| `Finish(parentArgs)` | Finish a nested parent flow |
-
-## Navigation Options
-
-```kotlin
-data class ChaloNavOptions(
-    val launchSingleTop: Boolean = false,  // Prevent duplicate on top
-    val includePath: Boolean = false,       // Compare full path for single-top
-    val popUpToConfig: PopUpToConfig = PopUpToConfig.None
-)
-```
-
-### Single Top
-
-```kotlin
-// Prevent duplicate Home screens on top
-navigationManager.navigate(
-    args = HomeArgs(),
-    navOptions = ChaloNavOptions(launchSingleTop = true)
-)
-```
+| Component | Format |
+|-----------|--------|
+| Scheme | `chalo://` |
+| Path | Scene route (e.g., `routeDetails`) |
+| Parameters | URL-encoded JSON args |
 
 ## Finding Code by Navigation
 
 ### From Screen Name to Code
 
-1. **Find the scene**: Search `ChaloScenes` for the screen name
-2. **Find the args**: Search for `{SceneName}Args` (e.g., `EBillFetchScreenArgs`)
-3. **Find the component**: Search for classes that use those args
+Follow this tracing path to find the implementation for any screen:
 
-```
-Screen Name → ChaloScenes.EBillFetchScreen
-           → EBillFetchScreenArgs
-           → EBillFetchComponent
-           → EBillFetchScreen (Composable)
-```
+```mermaid
+flowchart LR
+    Name["Screen Name"]
+    Scene["ChaloScenes enum"]
+    Args["SceneArgs class"]
+    Component["Component class"]
+    Screen["Compose Screen"]
 
-### From Feature to Screens
+    Name --> Scene --> Args --> Component --> Screen
 
-1. **Find the feature module**: Look in `shared/<feature>/`
-2. **Find UI components**: Look in `src/commonMain/kotlin/app/chalo/<feature>/ui/`
-3. **Find screens**: Components ending with `Component`
-
-### Mapping Table
-
-| Feature | Module Path | Key Scenes |
-|---------|-------------|------------|
-| Bills | `shared/home/.../electricitybill/` | `EBillFetch`, `EBillAmount`, `EBillPaymentSuccess` |
-| Instant Ticket | `shared/productbooking/.../instantticket/` | `FareDetails`, `InstantTicket` |
-| Super Pass | `shared/home/.../superpass/` | `PassSelection`, `ConfirmSuperPass`, `SuperPassBookingSuccess` |
-| Premium Bus | `shared/home/.../premiumbus/` | `PremiumBus`, `PremiumBusActivation`, `PBSlotSelection` |
-| Checkout | `shared/checkout/` | `CheckoutPaymentMain`, `CheckoutUpi`, `CheckoutPostPayment` |
-| Wallet | `shared/wallet/` | `WalletBalance`, `WalletLoadMoney`, `WalletTransactionSummary` |
-| Card | `shared/home/.../ncmc/` | `ChaloCardLanding`, `CardLinking`, `NcmcOnlineRecharge` |
-| Live Tracking | `shared/livetracking/` | `RouteDetails`, `StopTripDetails`, `TripPlannerResults` |
-| Login | `shared/login/` | `LoginOptions`, `LoginOtp`, `UserConsent` |
-| Onboarding | `shared/onboarding/` | `LanguageSelection`, `CitySelection`, `LocationDisclaimer` |
-
-## Parent Components (Nested Navigation)
-
-Complex flows use `ParentComponent` for internal navigation stacks:
-
-### Parent Components in Codebase
-
-| Parent | Entry Scene | Internal Screens |
-|--------|-------------|------------------|
-| `CheckoutParentComponent` | `CheckoutPaymentMain` | UPI, Card, NetBanking, Wallet, PostPayment |
-| `SuperPassParentComponent` | `PassSelection` | PassengerSelection, UserDetails, ProofUpload |
-| `PremiumBusParentComponent` | `PremiumBus` | StopSelection, SlotSelection, SeatSelection |
-| `WalletParentComponent` | `WalletBalance` | LoadMoney, Transactions, TransactionSummary |
-| `ValidationParentComponent` | `BleValidation` | QrScanner, QrValidation |
-| `CitySelectionParentComponent` | `CitySelection` | CityLocationSelection |
-
-### Navigation Within Parent Flow
-
-When inside a parent flow:
-
-```kotlin
-// Navigate within the parent's internal stack
-navigationManager.navigate(args = CheckoutUpiArgs(...))
-
-// Finish the entire parent flow
-navigationManager.goBack(
-    popUpToConfig = PopUpToConfig.Finish(parentArgs = checkoutArgs)
-)
+    style Name fill:#374151,stroke:#6b7280,color:#f8fafc
+    style Scene fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style Args fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style Component fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
+    style Screen fill:#1e3a5f,stroke:#8b5cf6,color:#f8fafc
 ```
 
-## Deep Links
+| Step | What to Search | Example |
+|------|----------------|---------|
+| 1. Find scene | Search `ChaloScenes` for screen name | `EBillFetchScreen` → `ChaloScenes.EBillFetchScreen` |
+| 2. Find args | Search for `{SceneName}Args` | `EBillFetchScreenArgs` |
+| 3. Find component | Search for classes using those args | `EBillFetchComponent` |
+| 4. Find screen | Component typically references its screen | `EBillFetchScreen` (Composable) |
 
-Deep links are handled by building a complete navigation stack:
+### Feature to Module Mapping
 
-```kotlin
-// When receiving a deep link to route details
-val deepLinkStack = listOf(
-    SplashArgs,
-    HomeArgs(),
-    RouteDetailsArgs(routeId = deepLinkRouteId)
-)
-navigationManager.buildStack(deepLinkStack)
-```
+| Feature Area | Module Path | Key Scenes |
+|--------------|-------------|------------|
+| **Bills** | `shared/home/.../electricitybill/` | EBillFetch, EBillAmount, EBillPaymentSuccess |
+| **Instant Ticket** | `shared/productbooking/.../instantticket/` | FareDetails, InstantTicket |
+| **Super Pass** | `shared/home/.../superpass/` | PassSelection, ConfirmSuperPass, SuperPassBookingSuccess |
+| **Premium Bus** | `shared/home/.../premiumbus/` | PremiumBus, PremiumBusActivation, PBSlotSelection |
+| **Checkout** | `shared/checkout/` | CheckoutPaymentMain, CheckoutUpi, CheckoutPostPayment |
+| **Wallet** | `shared/wallet/` | WalletBalance, WalletLoadMoney, WalletTransactionSummary |
+| **Card** | `shared/home/.../ncmc/` | ChaloCardLanding, CardLinking, NcmcOnlineRecharge |
+| **Live Tracking** | `shared/livetracking/` | RouteDetails, StopTripDetails, TripPlannerResults |
+| **Login** | `shared/login/` | LoginOptions, LoginOtp, UserConsent |
+| **Onboarding** | `shared/onboarding/` | LanguageSelection, CitySelection, LocationDisclaimer |
 
-### Deep Link Format
+### Module Internal Navigation
 
-```
-chalo://{scene-route}?args={encoded-args-json}
+Within a feature module, screens are organized under the `ui/` package.
 
-// Example
-chalo://routeDetails?args={"routeId":"R123","source":"deeplink"}
-```
+| Package | Contents |
+|---------|----------|
+| `ui/{screen}/` | Screen-specific component, contract, and Composable |
+| `ui/{screen}/{Screen}Component.kt` | MVI component (ViewModel equivalent) |
+| `ui/{screen}/{Screen}Screen.kt` | Compose UI |
+| `ui/{screen}/{Screen}Contract.kt` | ViewIntent, DataState, ViewState, SideEffect |
 
 ## iOS Navigation (Swift)
 
-Thanks to SKIE annotations, Swift code uses the same navigation patterns:
+SKIE annotations enable Swift code to use the same navigation patterns as Kotlin.
 
-```swift
-// Navigate from SwiftUI
-navigationManager.postNavigationRequest(
-    ChaloNavigationRequest.Navigate(
-        args: EBillAmountScreenArgs(electricityBillJson: billJson),
-        navOptions: nil
-    )
-)
+### Swift Navigation Interop
 
-// Handle back button
-navigationManager.goBack(popUpToConfig: nil)
-```
+| Kotlin Feature | Swift Equivalent |
+|----------------|------------------|
+| Sealed class navigation requests | Swift enum with associated values |
+| SceneArgs data classes | Swift structs |
+| ChaloScenes enum | Swift enum |
+| Flow collection | AsyncSequence iteration |
+
+Thanks to SKIE's sealed class interop, Swift code can pattern-match on navigation requests and handle them identically to Kotlin code.
 
 ## Debugging Navigation
 
-### Enable Logging
+### Tracing Navigation Flow
 
-Navigation events are logged via `ChaloLog`:
+Navigation events are logged via the centralized logging infrastructure. Key log tags to filter:
 
-```kotlin
-ChaloLog.info("ChaloNavigationManager", "Navigate to: ${args.resolveChaloScene()}")
-```
+| Tag | Information |
+|-----|-------------|
+| `ChaloNavigationManager` | Navigation requests posted |
+| `RootComponent` | Stack manipulation operations |
+| `DeepLinkRuntime` | Deep link parsing and handling |
 
-### Inspect Stack
+### Inspecting Current Stack
 
-```kotlin
-// In RootComponent
-val currentStack = childStack.value.items.map {
-    (it.configuration as? SceneArgs)?.resolveChaloScene()
-}
-println("Current stack: $currentStack")
-```
+The current navigation stack can be inspected by examining the RootComponent's childStack value. Each entry contains the SceneArgs configuration and the resolved ChaloScene.
+
+| Stack Property | Contents |
+|----------------|----------|
+| `items` | List of stack entries (oldest to newest) |
+| `active` | Currently visible screen |
+| `backStack` | All screens behind the active one |
+
+## Navigation Anti-Patterns
+
+| Anti-Pattern | Problem | Correct Approach |
+|--------------|---------|------------------|
+| Direct stack manipulation | Bypasses navigation manager, breaks consistency | Always use ChaloNavigationManager |
+| Passing large objects in args | Args must be serializable, large objects slow navigation | Pass IDs, fetch data in destination |
+| Navigation from background | Component may be destroyed, causing crashes | Check lifecycle state before navigating |
+| Hardcoded back navigation | Fragile when flows change | Use popUpTo with scene targets |

@@ -1,447 +1,392 @@
 ---
 slug: conventions
-lastUpdated: 2026-01-14
+lastUpdated: 2026-01-16
 ---
 
 # Coding Conventions
 
+## Overview
+
+The Chalo App codebase follows consistent naming conventions, package structures, and patterns that enable developers to navigate and understand the code quickly. These conventions are designed to make the codebase self-documenting—when you see a class name, you immediately know its role and where to find related code.
+
 ## Naming Conventions
 
-### Classes
+### Class Naming Patterns
+
+Every class type follows a predictable naming pattern that reveals its architectural role.
+
+| Type | Pattern | Example | Purpose |
+|------|---------|---------|---------|
+| **Component** | `{Feature}Component` | `EBillFetchComponent` | Screen-level ViewModel implementing MVI |
+| **Parent Component** | `{Feature}ParentComponent` | `CheckoutParentComponent` | Manages nested navigation flow |
+| **UseCase** | `{Action}UseCase` | `EBillFetchUseCase` | Single business operation |
+| **Repository Interface** | `{Entity}Repository` | `ElectricityBillRepository` | Data abstraction contract |
+| **Repository Implementation** | `{Entity}RepositoryImpl` | `ElectricityBillRepositoryImpl` | Concrete data operations |
+| **Remote Data Source** | `{Entity}RemoteDataSource` | `ElectricityBillRemoteDataSource` | Network API operations |
+| **Local Data Source** | `{Entity}LocalDataSource` | `WalletLocalDataSource` | Database/cache operations |
+| **API Model** | `{Name}ApiModel` | `FetchElectricityBillResponseApiModel` | Network response DTO |
+| **App Model** | `{Name}AppModel` | `ElectricityBillAppModel` | Domain representation |
+| **Scene Args** | `{Scene}Args` | `EBillFetchScreenArgs` | Navigation parameters |
+| **ViewState** | `{Feature}ViewState` | `EBillFetchViewState` | UI-ready presentation state |
+| **DataState** | `{Feature}DataState` | `EBillFetchDataState` | Internal business state |
+| **Intent** | `{Feature}Intent` | `EBillFetchIntent` | User action sealed interface |
+| **Side Effect** | `{Feature}SideEffect` | `EBillFetchSideEffect` | One-time UI events |
+| **Exception** | `{Entity}{Action}Exception` | `ElectricityBillConsumerNotFoundException` | Domain-specific error |
+| **Mapper** | `{Entity}Mapper` | `ElectricityBillMapper` | Model transformation functions |
+| **DI Module** | `{feature}Module` | `electricityBillModule` | Koin dependency definitions |
+
+### File Naming Patterns
+
+Files mirror their primary class names.
 
 | Type | Pattern | Example |
 |------|---------|---------|
-| Component (Screen ViewModel) | `{Feature}Component` | `EBillFetchComponent` |
-| Parent Component | `{Feature}ParentComponent` | `CheckoutParentComponent` |
-| UseCase | `{Action}UseCase` | `EBillFetchUseCase` |
-| Repository Interface | `{Entity}Repository` | `ElectricityBillRepository` |
-| Repository Implementation | `{Entity}RepositoryImpl` | `ElectricityBillRepositoryImpl` |
-| Remote Data Source | `{Entity}RemoteDataSource` | `ElectricityBillRemoteDataSource` |
-| Local Data Source | `{Entity}LocalDataSource` | `WalletLocalDataSource` |
-| API Model | `{Name}ApiModel` | `FetchElectricityBillResponseApiModel` |
-| App Model | `{Name}AppModel` | `ElectricityBillAppModel` |
-| Screen Args | `{Scene}Args` | `EBillFetchScreenArgs` |
-| ViewState | `{Feature}ViewState` | `EBillFetchViewState` |
-| DataState | `{Feature}DataState` | `EBillFetchDataState` |
-| Intent | `{Feature}Intent` | `EBillFetchIntent` |
-| Side Effect | `{Feature}SideEffect` | `EBillFetchSideEffect` |
-| Exception | `{Entity}{Action}Exception` | `ElectricityBillConsumerNotFoundException` |
-| Mapper | `{Entity}Mapper` | `ElectricityBillMapper` |
-| DI Module | `{feature}Module` (camelCase) | `electricityBillModule` |
+| **Component** | `{Feature}Component.kt` | `EBillFetchComponent.kt` |
+| **Screen** | `{Feature}Screen.kt` | `EBillFetchScreen.kt` |
+| **Contract** | `{Feature}Contract.kt` | `EBillFetchContract.kt` |
+| **UseCase** | `{Action}UseCase.kt` | `EBillFetchUseCase.kt` |
+| **Repository** | `{Entity}Repository.kt` | `ElectricityBillRepository.kt` |
+| **API Model** | `{Name}ApiModel.kt` | `FetchElectricityBillResponseApiModel.kt` |
+| **DI Module** | `{Feature}Module.kt` | `ElectricityBillModule.kt` |
 
-### Files
+### Package Naming
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| Component | `{Feature}Component.kt` | `EBillFetchComponent.kt` |
-| Screen (Composable) | `{Feature}Screen.kt` | `EBillFetchScreen.kt` |
-| ViewState/Intent | `{Feature}ViewState.kt` | `EBillFetchViewState.kt` |
-| UseCase | `{Action}UseCase.kt` | `EBillFetchUseCase.kt` |
-| Repository | `{Entity}Repository.kt` | `ElectricityBillRepository.kt` |
-| API Model | `{Name}ApiModel.kt` | `FetchElectricityBillResponseApiModel.kt` |
-| DI Module | `{Feature}Module.kt` | `ElectricityBillModule.kt` |
+Package names use lowercase without underscores, following Java/Kotlin conventions.
 
-### Packages
-
-Package names use lowercase without underscores:
-
-```
-app.chalo.{module}.{layer}.{sublayer}
-
-Examples:
-app.chalo.electricitybill.ui.ebillfetch
-app.chalo.electricitybill.domain
-app.chalo.electricitybill.data.repository
-app.chalo.electricitybill.data.model.apimodel
-app.chalo.electricitybill.data.model.appmodel
-```
+| Pattern | Example |
+|---------|---------|
+| `app.chalo.{module}.{layer}` | `app.chalo.electricitybill.data` |
+| `app.chalo.{module}.{layer}.{sublayer}` | `app.chalo.electricitybill.data.repository` |
+| `app.chalo.{module}.ui.{screen}` | `app.chalo.electricitybill.ui.ebillfetch` |
 
 ## Package Structure
 
 ### Feature Package Layout
 
-- `app/chalo/{feature}/`
-  - `di/`
-    - `{Feature}Module.kt`
-  - `domain/`
-    - `{Action}UseCase.kt`
-    - `model/`
-      - `{DomainModel}.kt`
-    - `repository/`
-      - `{Entity}Repository.kt` — interface only
-  - `data/`
-    - `repository/`
-      - `{Entity}RepositoryImpl.kt` — implementation
-    - `remote/`
-      - `{Entity}RemoteDataSource.kt`
-      - `{Entity}RemoteDataSourceImpl.kt`
-    - `local/`
-      - `{Entity}LocalDataSource.kt`
-    - `model/`
-      - `apimodel/`
-        - `request/`
-          - `{Request}ApiModel.kt`
-        - `response/`
-          - `{Response}ApiModel.kt`
-      - `appmodel/`
-        - `{Name}AppModel.kt`
-    - `mapper/`
-      - `{Entity}Mapper.kt`
-  - `ui/`
-    - `{screen}/`
-      - `{Screen}Component.kt`
-      - `{Screen}Screen.kt` — Compose UI
-      - `{Screen}ViewState.kt`
-      - `{Screen}Intent.kt`
-  - `exception/`
-    - `{Feature}Exceptions.kt`
+Every feature follows a consistent package organization aligned with Clean Architecture layers.
+
+```mermaid
+flowchart TB
+    subgraph Feature["app/chalo/{feature}/"]
+        direction TB
+        DI["di/<br/>Koin modules"]
+        Domain["domain/<br/>Business logic"]
+        Data["data/<br/>Data operations"]
+        UI["ui/<br/>Presentation"]
+        Exception["exception/<br/>Error types"]
+    end
+
+    subgraph DomainDetail["domain/"]
+        UseCases["Use cases"]
+        DomainModels["model/<br/>Domain models"]
+        RepoInterfaces["repository/<br/>Interfaces only"]
+    end
+
+    subgraph DataDetail["data/"]
+        RepoImpl["repository/<br/>Implementations"]
+        Remote["remote/<br/>API data sources"]
+        Local["local/<br/>DB/cache data sources"]
+        DataModels["model/<br/>API/App models"]
+        Mappers["mapper/<br/>Transformations"]
+    end
+
+    subgraph UIDetail["ui/"]
+        Screen1["screen1/<br/>Component + Screen"]
+        Screen2["screen2/<br/>Component + Screen"]
+    end
+
+    Domain --> DomainDetail
+    Data --> DataDetail
+    UI --> UIDetail
+
+    style Feature fill:#1e3a5f,stroke:#3b82f6,color:#f8fafc
+    style DomainDetail fill:#1e3a5f,stroke:#10b981,color:#f8fafc
+    style DataDetail fill:#1e3a5f,stroke:#f59e0b,color:#f8fafc
+    style UIDetail fill:#1e3a5f,stroke:#8b5cf6,color:#f8fafc
+```
+
+### Layer Contents
+
+| Layer | Package | Contents |
+|-------|---------|----------|
+| **di/** | `{feature}/di/` | Koin module definition wiring dependencies |
+| **domain/** | `{feature}/domain/` | Use cases, domain models, repository interfaces |
+| **domain/model/** | `{feature}/domain/model/` | Pure domain entities |
+| **domain/repository/** | `{feature}/domain/repository/` | Repository interfaces (contracts) |
+| **data/** | `{feature}/data/` | All data layer code |
+| **data/repository/** | `{feature}/data/repository/` | Repository implementations |
+| **data/remote/** | `{feature}/data/remote/` | Remote data source interface and implementation |
+| **data/local/** | `{feature}/data/local/` | Local data source for DB/cache |
+| **data/model/** | `{feature}/data/model/` | DTOs (API models, app models) |
+| **data/model/apimodel/** | `{feature}/data/model/apimodel/` | Network request/response models |
+| **data/model/appmodel/** | `{feature}/data/model/appmodel/` | Internal app representation |
+| **data/mapper/** | `{feature}/data/mapper/` | Model transformation functions |
+| **ui/** | `{feature}/ui/` | All presentation layer code |
+| **ui/{screen}/** | `{feature}/ui/{screen}/` | Screen-specific component, contract, composable |
+| **exception/** | `{feature}/exception/` | Feature-specific exception classes |
 
 ### Source Sets
 
-- `src/`
-  - `commonMain/kotlin/` — shared code (all platforms)
-  - `androidMain/kotlin/` — Android-specific
-  - `iosMain/kotlin/` — iOS-specific
-  - `androidUnitTest/kotlin/` — Android unit tests
-  - `commonTest/kotlin/` — shared tests
+| Source Set | Purpose |
+|------------|---------|
+| **commonMain/** | Shared code for all platforms |
+| **androidMain/** | Android-specific actual implementations |
+| **iosMain/** | iOS-specific actual implementations |
+| **androidUnitTest/** | Android unit tests |
+| **commonTest/** | Cross-platform tests |
 
-## MVI Conventions
+## MVI Contract Conventions
 
-### Intent Pattern
+### Intent Design
 
-```kotlin
-sealed interface EBillFetchIntent {
-    // User actions (from UI)
-    data class NumberEnteredIntent(val currentlyEnteredNumber: String) : EBillFetchIntent
-    data class NextClickIntent(val currentlyEnteredNumber: String) : EBillFetchIntent
-    data object ViewPaymentHistoryIntent : EBillFetchIntent
+Intents represent all possible user actions for a screen. They are defined as sealed interfaces with descriptive names.
 
-    // System events
-    data class InternetConnectionIntent(val currentNetworkConnectionType: NetworkConnectionType) : EBillFetchIntent
-}
-```
+| Intent Category | Naming Pattern | Example |
+|-----------------|----------------|---------|
+| **User input** | `{Input}EnteredIntent` | `NumberEnteredIntent(number: String)` |
+| **Button clicks** | `{Button}ClickIntent` | `NextClickIntent`, `BackClickIntent` |
+| **Navigation** | `View{Target}Intent` | `ViewPaymentHistoryIntent` |
+| **System events** | `{Event}Intent` | `InternetConnectionIntent(state)` |
+| **Lifecycle** | `Screen{Event}Intent` | `ScreenOpenedIntent`, `ScreenResumedIntent` |
 
-### DataState Pattern
+### DataState Design
 
-```kotlin
-data class EBillFetchDataState(
-    val isLoading: Boolean = false,
-    val currentlyEnteredNumber: String = "",
-    val customerNoError: String? = null,
-    val isNextBtnClickable: Boolean = false,
-    val showEBillPaymentDialog: Boolean = false,
-    val electricityBillAppModel: ElectricityBillAppModel? = null
-)
-```
+DataState holds raw business data without presentation formatting.
 
-### ViewState Pattern
+| Field Category | Examples |
+|----------------|----------|
+| **Loading flags** | `isLoading: Boolean`, `isFetching: Boolean` |
+| **Domain models** | `electricityBillAppModel: ElectricityBillAppModel?` |
+| **User input** | `currentlyEnteredNumber: String` |
+| **Validation** | `customerNoError: EBillFetchErrorType?` |
+| **UI triggers** | `showEBillPaymentDialog: Boolean` |
 
-```kotlin
-data class EBillFetchViewState(
-    val specs: EBillFetchUISpecs,
-    val toolbarUIState: ToolbarUIState,
-    val loader: DialogUIState?,
-    val title: ChaloTextUIState,
-    val subTitle: ChaloTextUIState,
-    val textFieldUIState: TextFieldUIState,
-    val errorText: ChaloTextUIState?,
-    val proceedButton: ButtonUIState,
-    val paymentDialogUIState: DialogUIState?,
-    val snackbarUIState: SnackbarUIState?
-)
-```
+All fields should have sensible defaults, typically `false` for booleans, empty strings, and `null` for optional models.
 
-### Side Effect Pattern
+### ViewState Design
 
-```kotlin
-sealed interface EBillFetchSideEffect {
-    data class ShowToast(val message: String) : EBillFetchSideEffect
-    data object NavigateBack : EBillFetchSideEffect
-}
-```
+ViewState contains UI-ready representations consumed by Compose.
+
+| Field Category | Examples |
+|----------------|----------|
+| **Text content** | `title: ChaloTextUIState`, `errorText: ChaloTextUIState?` |
+| **UI components** | `toolbarUIState: ToolbarUIState`, `proceedButton: ButtonUIState` |
+| **Input fields** | `textFieldUIState: TextFieldUIState` |
+| **Dialogs** | `loader: DialogUIState?`, `paymentDialogUIState: DialogUIState?` |
+| **Snackbars** | `snackbarUIState: SnackbarUIState?` |
+
+ViewState uses UI state factory classes (like `ButtonUIStateFactory`) to ensure consistent styling.
+
+### Side Effect Design
+
+Side effects represent one-time events that shouldn't survive recomposition.
+
+| Effect Category | Examples |
+|-----------------|----------|
+| **User feedback** | `ShowToast(message: String)` |
+| **Navigation** | `NavigateBack`, `NavigateToSuccess` |
+| **Keyboard** | `DismissKeyboard`, `RequestFocus` |
+| **External** | `OpenBrowser(url: String)`, `ShareContent(text: String)` |
 
 ## UseCase Conventions
 
 ### Naming
 
-- Use action-oriented names: `FetchXxxUseCase`, `CreateXxxUseCase`, `ValidateXxxUseCase`
-- Single responsibility: one use case = one action
+Use cases are named with action verbs describing their single responsibility.
+
+| Action Type | Pattern | Example |
+|-------------|---------|---------|
+| **Fetch/Get** | `Fetch{Entity}UseCase` | `FetchElectricityBillUseCase` |
+| **Create** | `Create{Entity}UseCase` | `CreatePaymentOrderUseCase` |
+| **Validate** | `Validate{Entity}UseCase` | `ValidateConsumerNumberUseCase` |
+| **Update** | `Update{Entity}UseCase` | `UpdateUserProfileUseCase` |
+| **Delete** | `Delete{Entity}UseCase` | `DeleteSavedCardUseCase` |
+| **Process** | `Process{Action}UseCase` | `ProcessPaymentUseCase` |
 
 ### Structure
 
-```kotlin
-class EBillFetchUseCase(
-    private val repository: ElectricityBillRepository,
-    private val userInfoContract: UserInfoContract
-) {
-    suspend fun fetchEBillOnline(
-        consumerNumber: String
-    ): ChaloUseCaseResult<ElectricityBillAppModel, EBillError> {
-        // Validation
-        if (!isConsumerNoLengthValid(consumerNumber)) {
-            return ChaloUseCaseResult.Failure(EBillError.InvalidLength)
-        }
+Use cases follow a consistent structure with clear separation of concerns.
 
-        // Get required data
-        val userId = userInfoContract.getUserId()
-            ?: return ChaloUseCaseResult.Failure(EBillError.NotLoggedIn)
+| Section | Purpose |
+|---------|---------|
+| **Constructor dependencies** | Repository interfaces, contracts needed for execution |
+| **Public methods** | Named operations returning result types |
+| **Validation helpers** | Exposed for UI to show real-time feedback |
+| **Companion constants** | Business rule constants (lengths, limits) |
 
-        // Execute
-        return try {
-            val result = repository.fetchElectricityBill(userId, consumerNumber)
-            ChaloUseCaseResult.Success(result)
-        } catch (e: Exception) {
-            ChaloUseCaseResult.Failure(EBillError.ApiFailed(e.message))
-        }
-    }
+### Result Handling
 
-    // Validation helpers exposed for UI
-    fun isConsumerNoLengthValid(number: String): Boolean =
-        number.length == CONSUMER_NUMBER_LENGTH
+Use cases return sealed result types forcing callers to handle success and failure.
 
-    companion object {
-        private const val CONSUMER_NUMBER_LENGTH = 9
-    }
-}
-```
+| Result | When Returned |
+|--------|---------------|
+| **Success(data)** | Operation completed successfully with data |
+| **Failure(error)** | Operation failed with domain-specific error type |
 
 ## Repository Conventions
 
-### Interface (Domain Layer)
+### Interface Design
 
-```kotlin
-interface ElectricityBillRepository {
-    @Throws(ElectricityBillConsumerNotFoundException::class, CancellationException::class)
-    suspend fun fetchElectricityBill(
-        userId: String,
-        consumerNumber: String
-    ): ElectricityBillAppModel
+Repository interfaces define data contracts in the domain layer.
 
-    suspend fun getPaymentHistory(): List<ElectricityBillPaymentHistoryAppModel>
-}
-```
+| Aspect | Convention |
+|--------|------------|
+| **Location** | `domain/repository/` package |
+| **Exception declaration** | Use `@Throws` to declare possible exceptions |
+| **Return types** | Domain models (AppModel), never API models |
+| **Parameters** | Domain primitives, no framework types |
 
-### Implementation (Data Layer)
+### Implementation Design
 
-```kotlin
-class ElectricityBillRepositoryImpl(
-    private val remoteDataSource: ElectricityBillRemoteDataSource,
-    private val basicInfoContract: BasicInfoContract
-) : ElectricityBillRepository {
+Repository implementations coordinate data sources in the data layer.
 
-    override suspend fun fetchElectricityBill(
-        userId: String,
-        consumerNumber: String
-    ): ElectricityBillAppModel {
-        return remoteDataSource.fetchElectricityBill(consumerNumber)
-            .toElectricityBillAppModel()
-    }
-}
-```
+| Aspect | Convention |
+|--------|------------|
+| **Location** | `data/repository/` package |
+| **Constructor** | Inject data sources and mappers |
+| **Mapping** | Transform API models to domain models |
+| **Error handling** | Catch data source exceptions, throw domain exceptions |
 
 ## API Model Conventions
 
 ### Request Models
 
-```kotlin
-@Serializable
-data class ElectricityBillPaymentCreateOrderRequestApiModel(
-    val cityId: String,
-    val appVer: Int,
-    val userId: String,
-    val deviceId: String,
-    val billProps: EbillProps
-)
-```
+| Aspect | Convention |
+|--------|------------|
+| **Suffix** | `RequestApiModel` |
+| **Annotation** | `@Serializable` |
+| **Fields** | Match API contract exactly |
+| **Nullability** | Non-null for required fields |
 
 ### Response Models
 
-```kotlin
-@Serializable
-data class FetchElectricityBillResponseApiModel(
-    val consumerNumber: String?,    // Nullable for safety
-    val customerName: String?,
-    val dueAmount: Int?,
-    val dueDate: Long?,
-    val billDate: Long?
-)
-```
+| Aspect | Convention |
+|--------|------------|
+| **Suffix** | `ResponseApiModel` |
+| **Annotation** | `@Serializable` |
+| **Fields** | Nullable for safety (API may omit fields) |
+| **Parsing** | Handle missing/null fields gracefully |
 
-### Mapper Extensions
+### Mappers
 
-```kotlin
-fun FetchElectricityBillResponseApiModel.toElectricityBillAppModel(): ElectricityBillAppModel {
-    return ElectricityBillAppModel(
-        consumerNumber = consumerNumber ?: "",
-        customerName = customerName ?: "",
-        dueBillAmountInPaisa = dueAmount ?: 0,
-        dueDate = dueDate ?: 0L,
-        billDate = billDate ?: 0L
-    )
-}
-```
+Mapper functions transform between model types using extension functions.
+
+| Direction | Pattern | Example |
+|-----------|---------|---------|
+| **API → Domain** | `{ApiModel}.toAppModel()` | `response.toElectricityBillAppModel()` |
+| **Domain → UI** | `{AppModel}.toUIState()` | `bill.toBillSummaryUIState()` |
+| **Local → Domain** | `{DbModel}.toAppModel()` | `walletEntity.toWalletAppModel()` |
 
 ## Dependency Injection Conventions
 
-### Module Definition
+### Module Organization
 
-```kotlin
-val electricityBillModule = module {
-    // Data layer - single instances
-    single<ElectricityBillRemoteDataSource> { ElectricityBillRemoteDataSourceImpl(get()) }
-    single<ElectricityBillRepository> { ElectricityBillRepositoryImpl(get(), get()) }
+Each feature defines its own Koin module.
 
-    // Domain layer - factory (new instance each time)
-    factory { EBillFetchUseCase(get(), get()) }
-    factory { EBillAmountUseCase(get()) }
-    factory { EBillCreateOrderUseCase(get(), get(), get()) }
-}
-```
+| Convention | Description |
+|------------|-------------|
+| **Function name** | `getShared{Feature}Module()` returns module |
+| **Variable name** | `{feature}Module` for val declarations |
+| **Location** | `{feature}/di/{Feature}Module.kt` |
 
 ### Scope Guidelines
 
 | Scope | Use For |
 |-------|---------|
-| `single` | Repositories, DataSources, Singletons |
-| `factory` | UseCases, Components (screen-specific) |
+| **single** | Repositories, data sources, managers (shared instances) |
+| **factory** | Use cases, components (fresh instances) |
+| **factoryOf** | Koin shorthand for constructor injection |
 
 ## Analytics Conventions
 
 ### Event Naming
 
-```kotlin
-object AnalyticsEventConstants {
-    // Pattern: {SCREEN}_{ACTION}
-    const val EBILL_FETCH_SCREEN_OPENED = "ebill_fetch_screen_opened"
-    const val EBILL_FETCH_SCREEN_NEXT_BTN_CLICKED = "ebill_fetch_screen_next_btn_clicked"
-    const val EBILL_FETCH_SCREEN_SHOW_PAYMENT_HISTORY_BTN_CLICKED = "ebill_fetch_screen_show_payment_history_btn_clicked"
-}
-```
+Analytics events follow a consistent naming pattern.
 
-### Raising Events
+| Pattern | Example |
+|---------|---------|
+| `{screen}_{action}` | `ebill_fetch_screen_opened` |
+| `{screen}_{element}_{action}` | `ebill_fetch_screen_next_btn_clicked` |
 
-```kotlin
-private fun raiseEBillScreenOpenedEvent() {
-    analyticsContract.raiseAnalyticsEvent(
-        name = AnalyticsEventConstants.EBILL_FETCH_SCREEN_OPENED,
-        source = "",
-        eventProperties = mutableMapOf()
-    )
-}
-```
+### Event Properties
+
+| Convention | Description |
+|------------|-------------|
+| **Case sensitivity** | Event names must match backend exactly |
+| **Property keys** | Preserve exact spelling including spaces |
+| **Constants** | Define in `AnalyticsEventConstants` object |
 
 ## Error Handling Conventions
 
 ### Error Types
 
-```kotlin
-enum class EBillFetchErrorType {
-    CONSUMER_NUM_LENGTH_TOO_SHORT,
-    CONSUMER_NUM_LENGTH_TOO_LONG,
-    CONSUMER_NOT_FOUND,
-    API_RESPONSE_FAILED,
-    USER_NOT_LOGGED_IN
-}
-```
+Each feature defines its own error enum.
+
+| Pattern | Example Values |
+|---------|----------------|
+| `{Feature}ErrorType` | `CONSUMER_NUM_LENGTH_TOO_SHORT`, `API_RESPONSE_FAILED`, `USER_NOT_LOGGED_IN` |
 
 ### Custom Exceptions
 
-```kotlin
-class ElectricityBillConsumerNotFoundException(
-    override val message: String
-) : Exception(message)
-
-class ElectricityBillPaymentOrderCreationException(
-    override val message: String
-) : Exception(message)
-```
+| Pattern | Example |
+|---------|---------|
+| `{Entity}{Issue}Exception` | `ElectricityBillConsumerNotFoundException` |
+| `{Action}FailedException` | `PaymentOrderCreationFailedException` |
 
 ## iOS Interop Conventions
 
 ### SKIE Annotations
 
-```kotlin
-// For sealed classes exposed to Swift
-@SealedInterop.Enabled
-sealed class ChaloNavigationRequest { ... }
+Use SKIE annotations on types exposed to Swift.
 
-// For enums exposed to Swift
-@EnumInterop.Enabled
-enum class ChaloScenes { ... }
-
-// For Flow properties exposed to Swift
-@FlowInterop.Enabled
-val navStream: SharedFlow<ChaloNavigationRequest>
-```
+| Annotation | Apply To | Effect |
+|------------|----------|--------|
+| **@SealedInterop.Enabled** | Sealed classes | Swift enum with exhaustive switch |
+| **@EnumInterop.Enabled** | Enums | Better Swift enum representation |
+| **@FlowInterop.Enabled** | Flow properties | Swift AsyncSequence bridging |
 
 ## Testing Conventions
 
 ### Test File Location
 
-```
-src/androidUnitTest/kotlin/
-    app/chalo/{feature}/ui/{screen}/
-        {Screen}ComponentTest.kt
-
-src/commonTest/kotlin/
-    app/chalo/{feature}/domain/
-        {Action}UseCaseTest.kt
-```
+| Test Type | Location |
+|-----------|----------|
+| **Component tests** | `androidUnitTest/.../ui/{screen}/{Screen}ComponentTest.kt` |
+| **UseCase tests** | `commonTest/.../domain/{Action}UseCaseTest.kt` |
+| **Repository tests** | `androidUnitTest/.../data/repository/{Entity}RepositoryTest.kt` |
 
 ### Test Naming
 
-```kotlin
-class EBillFetchComponentTest {
-    @Test
-    fun `processIntent NumberEntered updates currentlyEnteredNumber`() { }
+Tests use descriptive names with backticks following the pattern: `{method} {condition} {expected result}`.
 
-    @Test
-    fun `processIntent NextClick with valid number fetches bill`() { }
-
-    @Test
-    fun `processIntent NextClick with invalid number shows error`() { }
-}
-```
+| Example |
+|---------|
+| `` `processIntent NumberEntered updates currentlyEnteredNumber` `` |
+| `` `processIntent NextClick with valid number fetches bill` `` |
+| `` `fetchEBill returns failure when consumer not found` `` |
 
 ## Code Style Guidelines
 
 ### Null Safety
 
-```kotlin
-// Prefer safe calls
-val result = someNullable?.property ?: defaultValue
-
-// Use requireNotNull for assertions
-val userId = requireNotNull(userInfoContract.getUserId()) {
-    "User must be logged in"
-}
-```
+| Guideline | Rationale |
+|-----------|-----------|
+| Prefer safe calls (`?.`) over `!!` | Prevents runtime crashes |
+| Use `requireNotNull` for assertions | Clear failure messages |
+| Provide defaults with `?:` | Explicit fallback values |
 
 ### Coroutines
 
-```kotlin
-// Launch in component scope
-componentScope.launch {
-    val result = useCase.execute()
-    updateState { it.copy(data = result) }
-}
-
-// Use repeatOnStarted for collecting flows
-repeatOnStarted {
-    networkStateManager.networkState.collect { state ->
-        processIntent(InternetConnectionIntent(state))
-    }
-}
-```
+| Guideline | Rationale |
+|-----------|-----------|
+| Launch in `componentScope` | Automatic lifecycle cancellation |
+| Use `repeatOnStarted` for collections | Lifecycle-aware Flow collection |
+| Avoid `GlobalScope` | Prevents leaks and unmanaged work |
 
 ### State Updates
 
-```kotlin
-// Always use updateState for immutable state updates
-updateState { currentState ->
-    currentState.copy(
-        isLoading = true,
-        error = null
-    )
-}
-```
+| Guideline | Rationale |
+|-----------|-----------|
+| Always use `updateState { }` | Thread-safe, immutable updates |
+| Never mutate state directly | Ensures proper recomposition |
+| Use `copy()` on data classes | Preserves immutability |
