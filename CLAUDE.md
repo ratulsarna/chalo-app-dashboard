@@ -2,6 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Critical Thinking
+- Fix root cause (not band-aid).
+- Unsure: read more code; if still stuck, ask w/ short options.
+- Conflicts: call out; pick safer path.
+- Unrecognized changes: assume other agent; keep going; focus your changes. If it causes issues, stop + ask user.
+- Leave breadcrumb notes in thread.
+
 ## Project Overview
 
 Internal dashboard web app for Chalo, currently focused on Analytics documentation. The app displays analytics flows, events, and Mermaid diagrams sourced from a checked-in content snapshot.
@@ -167,3 +174,4 @@ For complex features or significant refactors, write an ExecPlan under `.ai/plan
 - Property keys must preserve exact spelling (including spaces)
 - The analytics updater must never push directly to `main` — always via PR
 - Convex writes local env values to `.env.local` during dev (gitignored)
+- Do not mention claude or claude code in commit messages.
