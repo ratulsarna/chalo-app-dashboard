@@ -107,9 +107,17 @@ export type AnalyticsEventOccurrence = {
   note?: string;
 };
 
+export type DiagramReference = {
+  flowSlug: AnalyticsFlowSlug;
+  flowName: string;
+  diagramId: string;
+  diagramTitle: string;
+};
+
 export type AnalyticsSnapshot = {
   flows: AnalyticsFlow[];
   occurrences: AnalyticsEventOccurrence[];
   occurrencesByEventName: Record<AnalyticsEventName, AnalyticsEventOccurrence[]>;
+  diagramsByEventName: Record<AnalyticsEventName, DiagramReference[]>;
   issues?: AnalyticsDocIssue[];
 };

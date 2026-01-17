@@ -44,12 +44,18 @@ export async function GET(request: Request) {
       eventName: string;
       count: number;
       sample: Array<{ flowSlug: string; flowName: string }>;
+      diagrams: Array<{ flowSlug: string; flowName: string; diagramId: string; diagramTitle: string }>;
     }
   >();
 
   for (const hit of hits) {
     const key = hit.occurrence.eventName;
-    const entry = byName.get(key) ?? { eventName: key, count: 0, sample: [] };
+    const entry = byName.get(key) ?? {
+      eventName: key,
+      count: 0,
+      sample: [],
+      diagrams: snapshot.diagramsByEventName[key] ?? [],
+    };
     entry.count += 1;
     if (
       entry.sample.length < 3 &&

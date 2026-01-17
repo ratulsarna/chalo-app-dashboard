@@ -14,6 +14,7 @@ type SearchResponse = {
     eventName: string;
     count: number;
     sample: Array<{ flowSlug: string; flowName: string }>;
+    diagrams: Array<{ flowSlug: string; flowName: string; diagramId: string; diagramTitle: string }>;
   }>;
 };
 
@@ -139,8 +140,15 @@ export function GlobalSearchCommand() {
                       router.push(`/analytics/events/${encodeEventNameForPath(ev.eventName)}`);
                     }}
                   >
-                    <span className="truncate">{ev.eventName}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate">{ev.eventName}</span>
+                      {ev.diagrams.length > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                          {ev.diagrams.length} diagram{ev.diagrams.length === 1 ? "" : "s"}
+                        </span>
+                      )}
+                    </div>
+                    <span className="ml-auto shrink-0 text-xs text-muted-foreground">
                       {ev.count}
                     </span>
                   </CommandItem>

@@ -5,10 +5,12 @@ import {
   getAnalyticsSnapshot,
   searchAnalyticsOccurrences,
 } from "@/lib/analytics";
+import type { DiagramReference } from "@/lib/analytics/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { GitBranchIcon } from "lucide-react";
 
 export default async function AnalyticsEventsPage({
   searchParams,
@@ -29,6 +31,7 @@ export default async function AnalyticsEventsPage({
         matchCount: number;
         matchedOn: Set<string>;
         sampleFlows: Map<string, string>;
+        diagrams: DiagramReference[];
       }
     >();
 
@@ -41,6 +44,7 @@ export default async function AnalyticsEventsPage({
           matchCount: 0,
           matchedOn: new Set<string>(),
           sampleFlows: new Map<string, string>(),
+          diagrams: snapshot.diagramsByEventName[key] ?? [],
         };
 
       entry.matchCount += 1;
@@ -115,6 +119,24 @@ export default async function AnalyticsEventsPage({
                         </Badge>
                       ))}
                     </div>
+                    {ev.diagrams.length > 0 && (
+                      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                        <GitBranchIcon className="size-3.5" />
+                        {ev.diagrams.slice(0, 3).map((d) => (
+                          <span
+                            key={`${d.flowSlug}::${d.diagramId}`}
+                            className="rounded bg-muted px-1.5 py-0.5"
+                          >
+                            {d.diagramTitle}
+                          </span>
+                        ))}
+                        {ev.diagrams.length > 3 && (
+                          <span className="text-muted-foreground">
+                            +{ev.diagrams.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </CardHeader>
                 </Card>
               </Link>

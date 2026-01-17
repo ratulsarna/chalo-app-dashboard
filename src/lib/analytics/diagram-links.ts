@@ -89,22 +89,32 @@ export function extractNodeLabelsFromMermaid(code: string) {
     }
   }
 
+  // Match nodeId(["label"]) - stadium shape with quoted label
   addAll(
-    /(^|\n)\s*([a-zA-Z0-9_]+)\s*\(\[([^\]]+)\]\)\s*(?=$|\n)/g,
+    /\b([a-zA-Z0-9_]+)\s*\(\[\s*"([^"]+)"\s*\]\)/g,
+    (m) => m[1] ?? "",
     (m) => m[2] ?? "",
-    (m) => m[3] ?? "",
   );
 
+  // Match nodeId([label]) - stadium shape with unquoted label
   addAll(
-    /(^|\n)\s*([a-zA-Z0-9_]+)\s*\[\s*"([^"]+)"\s*\]\s*(?=$|\n)/g,
+    /\b([a-zA-Z0-9_]+)\s*\(\[([^\]]+)\]\)/g,
+    (m) => m[1] ?? "",
     (m) => m[2] ?? "",
-    (m) => m[3] ?? "",
   );
 
+  // Match nodeId["label"] - box with quoted label
   addAll(
-    /(^|\n)\s*([a-zA-Z0-9_]+)\s*\[\s*([^\]"]+?)\s*\]\s*(?=$|\n)/g,
+    /\b([a-zA-Z0-9_]+)\s*\[\s*"([^"]+)"\s*\]/g,
+    (m) => m[1] ?? "",
     (m) => m[2] ?? "",
-    (m) => m[3] ?? "",
+  );
+
+  // Match nodeId[label] - box with unquoted label (avoid matching [...] links)
+  addAll(
+    /\b([a-zA-Z0-9_]+)\s*\[\s*([^\]"]+?)\s*\]/g,
+    (m) => m[1] ?? "",
+    (m) => m[2] ?? "",
   );
 
   return out;

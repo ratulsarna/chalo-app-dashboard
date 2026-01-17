@@ -11,7 +11,10 @@ import type {
   AnalyticsFlowEventsFile,
   AnalyticsFlowSlug,
   AnalyticsSnapshot,
+  DiagramReference,
 } from "@/lib/analytics/types";
+import { extractMermaidBlocks } from "@/lib/analytics/diagram-markdown";
+import { extractNodeLabelsFromMermaid } from "@/lib/analytics/diagram-links";
 
 const ANALYTICS_ROOT = path.join(process.cwd(), "content", "analytics");
 const ANALYTICS_ROOT_RESOLVED = path.resolve(ANALYTICS_ROOT);
@@ -533,10 +536,52 @@ export const getAnalyticsSnapshot = cache(async (): Promise<AnalyticsSnapshot> =
     }
   }
 
+  // Build diagramsByEventName: for each diagram, extract node labels and match to known event names
+  const diagramsByEventName: Record<string, DiagramReference[]> = {};
+  const knownEventNames = new Set(Object.keys(occurrencesByEventName));
+
+  for (const flow of flows) {
+    if (!flow.diagramMarkdown) continue;
+
+    const blocks = extractMermaidBlocks(flow.diagramMarkdown);
+    for (const block of blocks) {
+      if (block.kind === "visual-key") continue;
+
+      const labels = extractNodeLabelsFromMermaid(block.code);
+      const matchedEvents = new Set<string>();
+
+      for (const label of labels.values()) {
+        if (knownEventNames.has(label) && !matchedEvents.has(label)) {
+          matchedEvents.add(label);
+
+          const ref: DiagramReference = {
+            flowSlug: flow.slug,
+            flowName: flow.flowName,
+            diagramId: block.id,
+            diagramTitle: block.title,
+          };
+
+          if (!diagramsByEventName[label]) {
+            diagramsByEventName[label] = [];
+          }
+
+          // Deduplicate by (flowSlug, diagramId)
+          const existing = diagramsByEventName[label].find(
+            (r) => r.flowSlug === ref.flowSlug && r.diagramId === ref.diagramId
+          );
+          if (!existing) {
+            diagramsByEventName[label].push(ref);
+          }
+        }
+      }
+    }
+  }
+
   return {
     flows: flows.sort((a, b) => a.flowName.localeCompare(b.flowName)),
     occurrences,
     occurrencesByEventName,
+    diagramsByEventName,
     issues: issues.length ? issues : undefined,
   };
 });
